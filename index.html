@@ -113,6 +113,42 @@ table.ratio td:last-child{text-align:left;font-family:var(--f-body);font-size:12
 .status .bad b,.status .bad{color:var(--bad)}
 .toast{margin:-8px 4px 0;min-height:1.2em}
 .tabpane[hidden]{display:none!important}
+.aicard{border-color:var(--brass)!important;background:linear-gradient(135deg,var(--brass-wash),var(--abyss))!important}
+.aicard b{color:var(--brass)}
+dialog#ai,dialog#share{background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:8px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100vh - 24px)}
+dialog#ai::backdrop,dialog#share::backdrop{background:rgba(0,0,0,.6)}
+.dlgform{padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.dlgform h2{margin:0}
+.dlgform textarea{width:100%;box-sizing:border-box;font:inherit;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:6px;padding:8px 10px;resize:vertical}
+.linkline{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center;margin-left:4px}
+.linkbox{width:min(360px,70vw);font-family:var(--f-mono);font-size:11.5px;padding:3px 6px}
+
+input[type=range]{-webkit-appearance:none;appearance:none;height:22px;background:transparent;flex:1 1 140px;min-width:100px;cursor:pointer;padding:0;border:0}
+input[type=range]:focus{outline:none}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:linear-gradient(90deg,var(--brass) 0%,var(--brass) var(--fill,50%),var(--kelp) var(--fill,50%));border:1px solid var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--bone);border:3px solid var(--brass);margin-top:-7px;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .12s}
+input[type=range]:hover::-webkit-slider-thumb,input[type=range]:focus-visible::-webkit-slider-thumb{transform:scale(1.12)}
+input[type=range]::-moz-range-track{height:8px;border-radius:999px;background:var(--kelp);border:1px solid var(--line)}
+input[type=range]::-moz-range-progress{height:8px;border-radius:999px;background:var(--brass)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--bone);border:3px solid var(--brass);box-shadow:0 2px 6px rgba(0,0,0,.35)}
+input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--bone);outline-offset:2px}
+input[type=range]:disabled{opacity:.45;cursor:default}
+.split{background:var(--abyss);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+
+.tipcard{position:fixed;z-index:50;background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:8px;padding:9px 11px;font-size:13px;line-height:1.4;box-shadow:0 10px 30px rgba(0,0,0,.35);pointer-events:none;display:flex;flex-direction:column;gap:4px}
+.tipcard[hidden]{display:none}
+.tipcard .tipreq{font-size:11.5px;color:var(--dim)}
+.synsec{display:flex;flex-direction:column;gap:4px;margin:2px 0 8px}
+.synwith{font-size:12px;color:var(--dim)}
+.synwith b{color:var(--bone);font-weight:600}
+.desc{margin:4px 0 0;font-size:13px;color:var(--bone);opacity:.9;line-height:1.4}
+.reqbrowse{max-height:520px;overflow:auto}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:6px 10px;background:var(--abyss);border:1px solid var(--line);border-radius:4px}
+.brow.open{border-color:var(--brass)}
+.brow .bname{background:none;border:0;padding:0;text-align:left;color:var(--bone);display:flex;flex-direction:column;gap:1px}
+.brow .bname small{font-family:var(--f-mono);font-size:11px;color:var(--dim)}
+.brow .desc{grid-column:1/-1}
+
 .modeseg button[aria-pressed=true]{background:var(--brass);color:var(--brass-ink);border-color:var(--brass)}
 .shrinebtns{gap:8px}
 .snapbtns{gap:6px;margin-top:8px}
@@ -339,6 +375,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="seg modeseg" id="modeseg" role="group" aria-label="Planner mode"><button class="mini" data-mode="opt" title="The optimizer picks pre-shrine stats, raises stats for your talents and spends leftovers">Optimizer</button><button class="mini" data-mode="man" title="You set every stat yourself; nothing is raised or chosen for you">Manual</button></div>
+  <button id="sharebtn" title="Get a link to this build, export it, or import someone else's">⇪ Share / Import</button>
   <button id="undo" disabled title="Nothing to undo">↶ Undo</button>
   <button class="primary" data-optimize="1">Optimize build</button>
 </nav>
@@ -380,14 +417,14 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
 
   <section class="panel">
-    <h2>Attunements</h2>
+    <div class="row spread"><h2>Attunements</h2><button class="mini" id="aresetbtn">Reset attunements</button></div>
     <p class="hint">Tick each attunement and set its final target. 80 gives level‑5 mantras. Every attunement after the first gets its first point free.</p>
     <div class="att" id="atts"></div>
   </section>
 </div>
 <div class="col">
   <section class="panel">
-    <div class="row spread"><h2>Talents <small id="tcount"></small></h2><button class="accentbtn" id="autopick" title="Fill free talent slots with the best talents your current stats already reach">Auto‑pick talents</button></div>
+    <div class="row spread"><h2>Talents <small id="tcount"></small></h2><span class="row" style="gap:6px"><button class="mini" id="tresetbtn" title="Remove every picked talent (required ones stay)">Reset talents</button><button class="accentbtn" id="autopick" title="Fill free talent slots with the best talents your current stats already reach">Auto‑pick talents</button></span></div>
     <div class="row">
       <div class="seg" id="tfilter"></div>
       <div class="seg" id="tgroup"></div>
@@ -406,12 +443,16 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <h2>Required talents <small id="reqcount"></small></h2>
     <p class="hint">Type the talents or mantras the build must have. Optimize treats them as fixed: it never drops them to fit the budget, removes other talents first, and plans stats around them. They stay when you load a preset.</p>
     <form class="row" id="reqform" autocomplete="off">
-      <input type="search" id="reqin" list="reqdl" placeholder="Start typing a talent or mantra name" aria-label="Talent or mantra name" style="flex:1 1 220px">
-      <datalist id="reqdl"></datalist>
+      <input type="search" id="reqin" placeholder="Search talents by name, stat or what they do (e.g. 'insanity', 'charm')" aria-label="Search talents" style="flex:1 1 220px">
       <button class="primary" type="submit">Add</button>
     </form>
     <p class="hint" id="reqmsg" aria-live="polite"></p>
     <div class="list" id="reqitems"></div>
+  </section>
+  <section class="panel">
+    <h2>Browse talents <small id="reqbrcount"></small></h2>
+    <p class="hint">Click a talent to read what it does. “Require” locks it into the build.</p>
+    <div class="list reqbrowse" id="reqbrowse"></div>
   </section>
 </div>
 <div class="col">
@@ -546,7 +587,9 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   <section class="panel">
     <h2>Health</h2>
     <div class="dmg" id="ehp"></div>
-    <label class="hint split" for="gfocus">Optimize for<select id="gfocus" style="flex:0 1 auto"><option value="bal">Both (raise the weaker side)</option><option value="phys">Physical hits</option><option value="ele">Mantra hits</option></select></label>
+    <label class="hint split" for="gw">Favor <b style="color:var(--bone)">Health</b><input type="range" id="gw" min="0" max="100" step="10"><b style="color:var(--bone)">Physical armor</b></label>
+    <label class="hint split" for="gminhp">Minimum health<input type="range" id="gminhp" min="300" max="700" step="10"><b class="mono" id="gminhpv" style="color:var(--bone)"></b></label>
+    <p class="hint" style="margin:0">Optimize equipment reaches the minimum health first, then spends pips on health or physical armor by the slider. Elemental armor isn't used, and Transfusion Ring is never picked.</p>
     <p class="hint" id="gnote"></p>
   </section>
   <section class="panel">
@@ -558,6 +601,26 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 </div>
 <dialog id="wiz" aria-labelledby="wiz-title"><form method="dialog" id="wizform"></form></dialog>
 <dialog id="som" aria-labelledby="som-title"><form method="dialog" id="somform"></form></dialog>
+<dialog id="ai" aria-labelledby="ai-title"><form method="dialog" id="aiform" class="dlgform">
+  <h2 id="ai-title">✨ AI build maker</h2>
+  <p class="hint" style="margin:0">Type in what you want for your build and we will make it for you! Mention attunements, a weapon, stats, an oath, talents or a play style.</p>
+  <textarea id="aitext" rows="4" placeholder="e.g. insanity build with flamecharm and a heavy weapon, tanky, Silentheart"></textarea>
+  <div class="chips" id="aiex"></div>
+  <p class="hint" id="aimsg" aria-live="polite" style="margin:0"></p>
+  <div class="wizact"><button value="cancel" formnovalidate>Cancel</button><button type="button" class="primary" id="ai-go">Make my build</button></div>
+</form></dialog>
+<dialog id="share" aria-labelledby="share-title"><form method="dialog" id="shareform" class="dlgform">
+  <h2 id="share-title">Share &amp; import</h2>
+  <h3>Your build link</h3>
+  <p class="hint" style="margin:0">Anyone who opens this link gets your build loaded.</p>
+  <div class="row"><input type="text" id="sharelink" readonly aria-label="Build link" style="flex:1 1 220px"><button type="button" class="primary" data-x="copylink">Copy link</button></div>
+  <div class="row"><button type="button" data-x="img">Save image</button><button type="button" data-x="sheet">Save build sheet</button><button type="button" data-x="text">Copy as text</button></div>
+  <h3>Import a build</h3>
+  <p class="hint" style="margin:0">Paste a Meta Builder link or build code.</p>
+  <textarea id="imptext" rows="3" placeholder="https://itsmrchickenss.github.io/meta-builder/#dw1…"></textarea>
+  <p class="hint" id="impmsg" aria-live="polite" style="margin:0"></p>
+  <div class="wizact"><button value="cancel" formnovalidate>Close</button><button type="button" class="primary" data-x="import">Import build</button></div>
+</form></dialog>
 <p class="hint">Meta Builder. Talent, mantra, weapon and oath data and the reference builds come from deepwoken.co (October 2026). Race stat bonuses aren't counted.</p>
 </div>
 
@@ -2827,6 +2890,641 @@ Vigil's Grace|Whenever you gain a speed boost, increase your swing speed by 0.02
 Action Surge|Adrenaline Surge now increases your swing speed by 0.04 for its duration.
 Breeze|Gain a permanent +2 speed at all times.
 Justicar's Gift|Your Justicar support mantras now heal allies for 10 health instead of 5. Karita Aid lasts 15 seconds.</script>
+<script type="text/plain" id="dwtdesc">Against All Odds|For each combat tag you have on your character, increase your damage by 2% (max of 14%).
+Emergency Reserves|When you get hit below 20% health, gain 20% tempo immediately.
+Unswayed|The effects of Taunt and Encore no longer work on you.
+Kick Off|You easily brush off shorter falls, taking no damage. Your first wall jump will always send you higher than normal.…
+Steady Footing|You're much more resistant to being pushed around.
+Time To Go|Taking a life grants a speed boost for 10 seconds. Taking a player's life doubles the speed boost and the duration.
+An Ironsinger's Instinct|Successfully dodging an attack coats you in metal and reduces the damage of the next attack taken.
+Exposed Durability|Deal 10% more damage to opponents with no armor durability left.
+Phantom Edge|Your weapon M1's have +0.25 range.
+Everchanging Aegis|You take 20% less from attacks the same element as the last element you were hit with, but 10% more damage from…
+Neural Overload|You can input up to 4 copies of each Mantra ingredient instead of being limited to 3.
+Overflowing Dam|Having full Ether for 2 seconds or more grants an aura to your attacks that grant them 10% more damage.
+Perfect Flash|Having over 95% health causes your mantras to do +25% damage. This damage bonus will scale down to 10% if your enemies…
+Wyvern's Claw|You deal 10% more damage while airborne. Mantras receive a 5% damage increase instead.
+Aerogliding|When falling from a high place, hold spacebar to generate wind currents until you hit the floor. Also gives you more…
+Gale Trap|Knocking a player places a wind trap, causing anyone to pick up that body to get sent flying. Gain a speed boost…
+Suffocating Impact|When flourishing enemies into walls they are suffocated and winded for a short duration.
+Stifled Jump|Suffocating now applies Dazed if enemies jump. Suffocated PvE enemies now also get Sluggish when they are suffocated.
+Apothecary|Potions you prepare will have amplified positive effects when consumed, and amplified negative effects when thrown.
+Chain Reaction|When applying a potion effect to someone who already has one, the new effect is amplified. You have a 25% chance not…
+Placebo Effect|Drinking potions near allies will share the potion's effect with them.
+Potion Quaffer|You're accustomed to drinking toxic fluids quickly. You'll get along famously with the other patrons at the tavern.…
+Endurance Runner|Your speed is decreased less by low health.
+Scaredy Cat|When enemies initiate a fight first, gain a speed boost.
+Conditioned Runner|You take 5-15% less damage. The damage reduction amount scales with your agility stat and how long you have been…
+Approaching Singularity|You now gain +1% Mantra PEN for every 10 point of Intelligence.
+Flame Within|An application of Pleeksty's concept of the inner flame, also known as the soul of man. Set yourself ablaze to gain…
+Proficient Baiting|Casting your line excites ocean life, reducing the chances of fishing up trash.
+Hook, Line, and Sinker|Once something's caught your line, it's much harder to get loose.
+Fisher's Lure|Fish are drawn to your line more quickly.
+Collapsed Lung|Block breaking an opponent closes off their ability to Vent for 8s, with this duration scaling with Strength. PvE…
+Carnivore|In return for losing the ability to eat vegetation, satiate your hunger by killing others.
+Grand Feast|Regain tempo, ether, blood and health when gaining hunger from killing.
+Sunken Predator|Enemies you hit in the water or the depths have their speed buffs nullified and are slowed.
+Arc Module: Dash|[In Arc Suit] Your dashes become Jet Dashes, allowing you to attack while dashing.
+Arc Module: Eject|[In Arc Suit] When blockbroken, eject from your suit.
+Arc Module: Enhance|[In Arc Suit] Your Arcwarder Mantras deal increased damage.
+Arc Module: Guard|[In Arc Suit] You can block attacks from any direction and cannot be backstabbed.
+Arc Module: Leap|[In Arc Suit] Holding Spacebar after double jumping propels you up for a short duration.
+Arc Module: Null|[In Arc Suit] Outgoing and incoming enchant effects are nullified. Can be toggled with N.
+Master Craftsman|Your skills alone substitute the need for a Craft Station.
+Deep Wound|Assassinating a target applies anti-heal for 20s and gives you a speed boost for 6s. Assassination damage now scales…
+Lights Out|Assassinations now give you 30% PEN and blind the target for 5s. Those you carry are now blindfolded.
+Lowstride|When crouching, your stealth and roll distance are increased. Your speed while crouching is less slow. You now draw…
+Unseen Threat|You can assassinate those with weapons out provided you're not in combat yourself. Those you assassinate are slowed…
+Authority Intimidation|Lightning moves slow your opponent more.
+Resolve Crusher|Lightning moves now apply stacks of 'Resolve Crusher'. At 4 stacks, you apply 'Electrified' to your opponent. Attacks…
+First Interrogation|Attacks from opponents who are Electrified will give you ether proportional to their initial damage.
+Second Interrogation|Attacks from Electrified opponents deal 50% less damage and 50% less posture damage to you.
+Horn of Authority|Mark escaping prisoners.
+Authority Ensign|You are a member of the Authority deployed to the Eastern Luminant. You may find trouble with the local factions and…
+Battle Tendency|You can breathe more easily with +20% faster posture regen.
+Braced Collapse|After being block broken, the next attack to hit you deals reduced damage.
+Moving Fortress|Blocking no longer slows you down as much.
+Perseverance|Reduces the duration you're Ragdolled and Unconscious for by 25%.
+Reinforced Armor|Incoming PEN is reduced by 30%.
+Armored Plating|Put on extra plating on your armor, giving you 50 temp health whenever you are put in combat. Due to the weight of…
+Crossguard|If you are using a sword, you gain 10% chip against other opponents wielding swords.
+Riot Shield|While you are fighting two or more opponents and are using a shield, reduce the total amount of chip damage you take…
+Oppressive Force|When using a weapon found in the Merit Armory, gain a unique two-hit flourish that does not knock back opponents and…
+Steel Tread|Gain a bit of knockback resistance as well as damage resistance against attacks that ragdoll you.
+All-Seeing Eye|The mystic eye through which you now see the world can perceive the imperceptible. Invisible foes are highlighted.
+Berserk|One with nothing to lose has everything to gain. Succumb to burning rage within and enter Berserk State.
+Float Like a Butterfly|While having True Strength active, cancel your air dash to enter a frenzy of slashes.
+Lithe Step|When Sprinting, roll-cancel and instantly vanish and surge with unmatched speed.
+Reveal|Pour your heart out, and reveal your true strength.
+Soaring Storm|Empower your uppercuts with the way of the blade, after Lithe Stepping, flourishing, or landing an Oath ability.
+Untouchable|By landing consecutive hits on your opponent without taking any damage, reveal your True Strength for a short duration.
+Anchor Shock|Your Blightshock prevents targets from using mobility mantras.
+Blight Pierce|Your Blightshock attacks pierce through your enemies hyperarmor and gain more penetration.
+Blighted Touch|Landing Basic Attacks during Sovereign State now applies Blightshock.
+Blightlash|Your swing range is enhanced during Sovereign State.
+Sovereign State|Landing physical hits builds your Blight Meter. At full gauge, enter a Blight State that changes your critical and…
+Bloodwarden's Sense|Enemies you attack with a mantra above 60% Blood Poisoning are marked with Bloodwarden's Mark for 5s.
+Smell of Blood|Enemies that touch your blood pools or are blockbroken by you are afflicted with Bloodscent for 6s.
+Bloodrend Unbounded|You have gained the ability to surpass your limits and train your Bloodrend to its fullest.
+Bloodrender|Grants you the ability to command Blood as a Bloodrender. Your Bloodrend mantras replenish your blood, steal blood and…
+Adept Bloodrender|You can now obtain 1-star Bloodrender mantras.
+Expert Bloodrender|You can now obtain 2-star Bloodrender mantras.
+Master Bloodrender|You can now obtain 3-star Bloodrender mantras. Your maximum blood capacity is 25% more than a normal individual. You…
+Crimson Fountain|Blockbreaking or flourishing an enemy now spills a pool of blood below them. Blood mantras cast within blood pools…
+First Blood|Your first blood mantra you use in combat has no blood cost and deals additional blood drain.
+Hemorrhaging Blow|Block breaking your opponent with a blood mantra turns your opponent's combat healing into damage for 8 seconds.
+Rush Hour|Stab yourself to become stronger, faster, and deal increased blood bar damage.
+Sanguine Siphon|Landing a critical attack while in a blood pool will consume that pool and empower your next blood mantra.
+Blood and Iron|Pulling rods out of your opponent now replenishes an equivalent amount of blood.
+Brain Death|Enemies that are already suffocated will have their suffocation duration extended when hit by a bloodrend mantra.
+Cold Blooded|Chilled enemies passively build up blood poison, alternatively when crystals explode it'll apply blood poison.
+Electrolyte|Hitting Bloodrend mantras while having temporary health applies Shocked while removing a portion of temporary health.
+Malevolent Sapper|The more blood poisoning your opponent has, the more ether your shadow mantras steal from your opponent.
+Bruiser's Mixup|Switching your Fist Style mid-fight makes your basic Fist attacks inflict bleed temporarily.
+Impairing Blow|[Greataxes] Basic Attacks will slightly slow your enemy for 2 seconds. Running attacks will slow your enemy for 3…
+Brazen Blow|[Greataxes] Attacking an enemy slowed by your Greataxe grants you temporary hyperarmor.
+Heavy Fatigue|[Greataxes] Hitting an enemy slowed by your Greataxe temporarily reduces how far they can roll and applies Sluggish to…
+Rending Impact|[Greataxes] Block breaking an enemy applies knockdown.
+Defensive Reprisal|Being flourished grants you 10% posture resistance for 20s.
+Dancing Guard|Parrying an opponent and then parrying another enemy in quick succession applies slow for 7s.
+Down to your Level|While you have a speed debuff, your Basic Attacks slow your enemies for 5s.
+Knuckle Guard|Hitting Dazed enemies grants you 10% posture resistance for 15s.
+Swift Rebound|Move faster after successfully dodging an attack.
+Evasive Expert|Your speed boost granted from dodging is increased.
+Risky Moves|When you successfully dodge, you'll automatically dodge the next attack.
+Ghost|Dodging a move will briefly make you invisible, ending early if you attack.
+Perpetual Wrath|Unleash the true power of Restrain. Each successive hit will increase its damage.
+Chainlash|On flourish, gain the ability to summon a chain on an enemy for 5 seconds by right clicking. This lets you whip your…
+Champion's Regalia|Flourishing an opponent grants you +50% posture damage on Basic Attacks for 10 seconds.
+Defiance|Negative status effects are half as effective when you are below 35% HP.
+Underdog|You deal 2.5% more damage to those with higher HP than you, scaling up to 4% at 60 WLL. Additionally, you deal +10%…
+Charismatic Cast|Landing a hit with a mantra on an enemy applies Charmed. Allies recover from being knocked twice as quickly when…
+Chaotic Charm|Charm enemies nearby when attacked at low health. Enemies affected by this charm have their damage increased to anyone…
+Lasting Charisma|Enemies charmed by your mantras are charmed longer.
+Tough Love|Deal 10% more damage to enemies Charmed by you. Mantras deal +5% instead. Being hit by someone the same Aspect or Oath…
+Dazing Finisher|Flourishing enemies that are charmed by you cause them to not be knocked back and dazed instead.
+Freezing Wight|Your Haunted Gale now procs Chilled.
+Destructive Recovery|[Greatsword] Enemies recover 20% less Posture when parrying.
+Heavy Hitter|[Heavy Weapons] Your posture damage is increased by 5%.
+Lord's Tithe|Everyone you Reinforce is drained of their Ether while Reinforced. Drain scales with your Shadowcast. Drain health…
+Grand Support|Everyone you buff with Reinforce is healed lightly. You're healed slightly if you heal others.
+Hidden Tendril|Landing any physical mantra places a Hidden Tendril on the opponent.
+String Trick|Pulls together any two opponents you've attached Hidden Tendril to.
+Pressure Detonation|Block breaking an opponent with a Shadow mantra generates a small vacuum that suffocates those hit and steals their Tempo.
+Finishing Touch|[Dagger] Instantly execute enemies finished with the critical attack of your dagger.
+Knife's Journey|[Dagger] Cancelling an enemy's Mantra windup with your Basic Attacks now deals 15% more damage.
+Successive Throw|[Dagger] When you successfully flourish an enemy, you throw out a dagger afterwards.
+Chilling Flourish|When flourishing an enemy, they leave behind a trail of ice in the direction you send them.
+Spike Traps|Press F during the wind up of your Ice Spikes to create traps around you instead of spawning a spike in the normal spot.
+Condensation Drip|Passively collect condensation from the air, greatly reducing your thirst.
+Cool Head|If set on fire while on ice, immediately put it out and gain the Cool Head status for 30s. During Cool Head, you…
+Fragile Freeze|Your Basic Attacks and Criticals now apply Frozen to Chilled opponents on guardbreak.
+Preceding Chill|Enemies hit during the last moments of your ice beam are frozen.
+Golden Age|Your Iron Pull now detonates Crystals and overloads Surges.
+Blood Thirsty|Gain a speed boost after causing an opponent heavy blood loss.
+In a Hurry|You grip faster with a movement speed boost.
+Muffled Screams|You quieten the cries of help of those you execute, reducing the distance at which their allies will hear it and come…
+Blighted Song|Attaching your Shadow Chains to enemies disables yours and the enemy's ability to cast mantras. You take reduced…
+Dark God|If a Shadowcast mantra would drain your opponent's Ether to 0, drain from their Tempo instead and increase your Tempo.…
+Dark Synergy|Engulf your enemy in shadows when flourishing them.
+Dark Waltz|Anytime you guardbreak your opponent with a light attack or critical, steal half of your opponent's current tempo.…
+Dark Hours|Your Shadowcast Mantras deal 15% more damage at night and in realms the Sun does not reach.
+Dark Rift|Enter a rifted state when you successfully dodge, where you can't be damaged until its duration ends. Can be cancelled…
+Night Terror|Your light attacks now proc Fear the Dark.
+Overwhelming Drain|If multiple enemies are hit by your Shadow Eruption, they are Dazed for 0.7s.
+Shadow Overflow|Extra ether stolen with mantras are exerted as dark energy, damaging and absorbing ether from those nearby.
+Absolute Radiance|Dealing damage with Dawnwalker mantras briefly makes you immune to all elemental effects for a short period.
+Protagonist Syndrome|The grasp of shadow is meaningless in the face of your blinding light. Your Dawnwalker mantras are empowered after…
+Luminous Flash|After dealing a certain amount of damage in Absolute Radiance, gain a chance to empower your strikes with pure light.
+Blackhole|Your singularity pulls everyone nearby in.
+Energy Siphon|Your singularity now pulls ether from the extra players affected by Blackhole.
+Spell Shout|You will now shout your mantra name upon cast.
+Frozen Web|Landing a critical with a Static Link on your opponent applies Chilled.
+Buster Call|Radio in the Authority's navy for a buster call, sending out a barrage of bombardment wherever you see fit.
+Officer's Slash|You now gain an additional critical attack with Authority armory weaponry while your regular critical attack is on…
+Officer's Training|While using a Sword or Rapier, take 30% less posture damage from criticals.
+Target Focus|Enemies you charm take more damage from your squadmates in your party.
+Ethiron's Gaze|Your eyes have been opened to the wasteland. You can see through the harsh fog of the storm of the Eternal Gale more…
+Concussion|Enemies you flourish into walls have their vision altered for a short duration and are dazed longer than usual.…
+Concussive Force|Enemies you knocked remain downed longer than usual.
+Precise Swing|After landing a critical your next basic attack will gain 25% chip past your opponent's block.
+Spine Cutter|Hitting an enemy in the back after a roll cancel will initiate a second attack that deals your weapon's raw damage.
+Steady Nerves|You dance from toe to toe - successful dodges restore posture.
+Strong Hold|[Medium Weapons] When above half health and two-handing, posture damage taken is reduced by 5%.
+Strong Stern|The duration you are dazed from wall bangs is cut in half. Slightly reduce your guardbreak stun time from PvE enemies…
+Tap Dancer|Dodging immediately after a roll-cancel no longer puts your Dodge on a longer cooldown.
+Concussive Flash|Your blinding light now concusses foes.
+Charged Return|Being under an elemental status effect causes your Basic Attacks and Criticals to do 10% more damage.
+Nullifying Clarity|Deal 10% more damage to enemies with elemental status effects, but remove the status on hit.
+Cornered Fool|Blockbreaking a Charmed opponent procs Taunted for 5s, making them take and deal more damage.
+Give and Take|Deal less damage to comrades and receive less damage from comrades.
+Off Your Game|You now slow Taunted enemies when you hit them.
+Robber Baron|Halves the number of items you drop on death. You no longer lose Notes on death.
+Ether Absorption|Receive Ether back when inflicted with damage from Mantras.
+Eureka|Gain a stack of Inspiration every time you land or parry a Mantra. Whiffing a Mantra removes a stack of Inspiration.…
+Keen Recovery|Landing a basic attack after feinting a mantra will restore the feinted mantra's ether cost.
+Behind You|Landing a basic attack behind your enemy after feinting a mantra will apply an ether slash, dealing extra damage based…
+Unwavering Focus|When your mantras are parried, receive less posture (scales with intelligence).
+Reverse Leech|Anytime you proc Behind You, steal ether from your opponent too.
+Barber's Skillset|What type of look are we going for today?
+Hair Product|What's in these things?
+Hair Spray|Apply your Hair Products.
+Meteor Impact|Aerial moves you land will follow up into a devastating slam. This is also possible when you yourself gets hit by an…
+Phoenix Impact|If you Meteor Slam an opponent whilst on fire, restore some HP and Ether.
+Fang and Coil|Adopt the path of the serpent.
+Fishman|When your Blood is over 50%, you won't drown when Unconscious in water. Gain additional healing from knocking others…
+Landshark|Killing a Megalodaunt will grant lifesteal on your attacks for 30 seconds.
+Dancing Steps|Fire mantras now move you in the direction you're facing.
+Graceful Steps|Your dancing steps now gives a faster speed boost.
+The Final Act|Landing a fire mantra immediately after flourishing an opponent will cause them to explode.
+Cauterized Wounds|Blood loss from all sources is lowered.
+Warding Radiance|Every fire mantra builds up one halo stack. At 3 stacks a halo appears that allows you to slide further. Hell's…
+Flamewalker|When Warding Radiance is active you leave trails of flame when you slide.
+Hell's Partisan|After landing a flame dagger on an opponent, your next hit against them will impale with a divine spear from above.
+Flamecharm Unbounded|You have gained the ability to surpass your limits and train your Flamecharm to its fullest.
+Flamecharmer|Grants you the ability to command Fire as a Flamecharmer.
+Adept Flamecharmer|You can now obtain 1-Star Leveled Flamecharmer Mantras.
+Expert Flamecharmer|You can now obtain 2-Star Leveled Flamecharmer Mantras.
+Master Flamecharmer|You can now obtain 3-Star Leveled Flamecharmer Mantras.
+Azure Flames|Many of your flames turn blue, signifying their increased intensity.
+Temperature Shock|Your fire mantras now detonate any stacked crystals.
+Exoskeleton|You have a layer of fortified Natural Armor that replenishes when you rest. Your Natural Armor will resist 10%…
+Glacial Mobility|Cast while slide-jumping to perform a running attack with your ice sabers.
+Frostdraw Unbounded|You have gained the ability to surpass your limits and train your Frostdraw to its fullest.
+Frostdrawer|Grants you the ability to command Ice as a Frostdrawer.
+Adept Frostdrawer|You can now obtain 1-Star Leveled Frostdrawer Mantras.
+Expert Frostdrawer|You can now obtain 2-Star Leveled Frostdraw Mantras.
+Master Frostdrawer|You can now obtain 3-Star Leveled Frostdraw Mantras.
+Cold Front|Your vent is imbued with glacial frost.
+Fulgurite Formation|When your Crystals explode, lightning strikes. When your Surge charges Overload on an enemy, your Crystals apply twice…
+Orbital Ice|When landing a parry while standing on ice, automatically form a ring of ice that grants 15% Physical Resistance. The…
+Glacial Coasting|Sliding while Orbital Ice is active leaves trails of ice.
+Frozen Legs|Chilled applied by Mantras prevents your opponents from rolling.
+Imperium Kata|Wield an advanced form of the Legion's martial arts.
+Legion Kata|Gain the ability to use the Legion's martial arts.
+Galebreathe Unbounded|You have gained the ability to surpass your limits and train your Galebreathe to its fullest.
+Galebreather|Grants you the ability to command wind as a Galebreather.
+Adept Galebreather|You can now obtain 1-Star Leveled Galebreathe mantras.
+Expert Galebreather|You can now obtain 2-Star Leveled Galebreathe mantras.
+Master Galebreather|You can now obtain 3-Star Leveled Galebreathe mantras.
+After Cut|If an attack is physical and wind it will apply an after cut that does 5% of the damage you dealt. If an attack was a…
+Breathing Impact|Knocking enemies into objects with wind spells deals additional blunt damage based on how hard they're hit.
+Inhale|Canceling a Wind Mantra stores it for 5 seconds, empowering the next Wind Mantra cast in that time. [7 sec CD, gets…
+Neuroplasticity|Your mind is a pliable, flexible substance. The Ether cost of additional modifications to your Mantras is now reduced…
+Glass Path: Crystallization|Your ice abilities no longer grant a slow effect or the ability to freeze and instead cause ice crystals to grow on…
+Crystal Shrapnel|Your crystal explosions now have an AoE that applies crystals to all hit.
+Reclaimed Glass|Your Crystal Shrapnel explosions now grant you and any allies caught in them 10% Elemental Resistance for 10 seconds.
+Fortitude Unbounded|You have gained the ability to surpass your limits and train your fortitude to its fullest.
+Bodkin Arrow|Your charged shots now do extra armor damage to armored enemies and extra damage to unarmored enemies.
+Hard Stop|Landing a charged shot will knock your opponent back.
+Precision Crusher|Landing a charged shot will knock your opponent down instead of back.
+Armor Piercing|[Guns] Your gun attacks now ignore 10% of an opponent's blunt armor. Applied Multiplicatively before PEN is applied.
+Execution|Your offhand gun attacks now count as flourishes and do a flat 20 extra damage when used with no bullets.
+Gunpowder Blast|Pistol shots without bullets do 2 extra posture. [Dual Guns]
+Hip Shooter|When wielded with a Medium/Heavy weapon, your side gun can now fire a bullet projectile.
+Parting Gift|After you land a flourish, gain the ability to shoot bullets for 5 seconds. [Dual Gun]
+True Ether Bullets|Using Ether Bullets applies elemental damage of your highest investment.
+Prime Ether Bullets|Your bullets take one less hit to proc elemental effects and now have slight intelligence scaling. [Dual Gun]
+Quickdraw|Allows you to fire your offhand gun right after swinging. [Not necessary on dual guns]
+Quick Swap|Massively reduce your bullet swap cooldown. [Dual Gun]
+Brain Rattler|[Clubs] Guardbreaking an opponent with your Critical rattles their brain in its container, causing increased blood…
+Dispatch|[Clubs] Bear Trapped targets deal 20% less posture. Dazed targets deal 20% less posture. This can stack.
+Hammerfall|[Clubs] Aerial attacks do 25% more posture damage when blocked.
+Fan the Flames|Your stored Wind mantras can now empower your Fire mantras.
+All the Dead Gods|Your Basic Attacks now apply anti-heal and 5% Heal Boost against PvE for 8s.
+All Above, Gods Below|Any healing your opponent were to receive while All The Dead Gods is active on them is stolen and given to you,…
+Heretic's Sutra|A chant that steers you into the state of Insanity for 20 seconds.
+Sin Stacker|Your All The Dead Gods' duration is now based on how many stacks of antiheal you already have on your opponent,…
+Brick Wall|You refuse. You cannot be knocked off your feet until you are knocked completely Unconscious. Also reduces the…
+Not a Scratch|You don't show any signs of damage.
+Peripheral Vision|Your glare now ignores if your opponent is facing you.
+Bottom Freeze|Hitting chilled enemies with Ice Projectiles while they are on ice freezes them to the ground.
+Cryonis|All ice spells casted ontop of ice cost less Ether.
+Frost Buster|Greatsword Criticals and Greathammer Criticals now leave a place Ice below the path they carve.
+Frozen Anchor|Apply bottom freeze and chill to your opponent whenever you land a flourish, uppercut, or crit.
+Frostbite|Enemies can no longer heal when Chilled by you. PvE enemies also net you 5% more Heal Boost when Chilled.
+Frozen Pin-Cushion|Your Ice Daggers now apply Frozen.
+Saint Jay|When a Chilled enemy receives a heal, it's nullified and 60% of the healing is redirected to you. While this is active…
+Union Card|A card representing your membership in the Ignition Union. Entitles you to speedier experience gain from Dungeons and…
+Union Pager|Check up on job listings remotely.
+Union Hook|You can now make use of the Ignition Union hooks to ascend or descend.
+Agitating Spark|Applying Burning to enemies spreads it to anyone nearby. Including yourself.
+Immolation|Fire spells cost 70% less while on fire. If you hit someone while on fire, apply fire damage. You take 50% less damage…
+Phoenix Flames|Any time you would burn to death, you instead rise again with 50% of your health restored. Has a 60 second cooldown.
+Corpse Explosion|Bodies that you burn to death immediately explode, dealing massive damage. Your fires will incinerate unconscious…
+Pleeksty's Faith|When on fire, automatically quench flames at the cost of some ether.
+Pleeksty's Will|You gain significantly more ether from consuming elemental ingredients.
+Chitin|You have a layer of Natural Armor that replenishes when you rest.
+Deepfolk|The secrets of the Deep are easier for you to unravel. Your mind is sturdier against its effects, as well as using…
+Feathered Glider|As a show of independence when they come of age, Tirans will strike out on their own with just their hand-crafted…
+Echolocator|Your highly tuned hearing helps you navigate, seeing better in the dark and sensing potential threats.
+Loyalty|Your bond with your allies is strong enough to reduce damage between you.
+Mark of Jurik|Mark of Jurik, the Moonseye. A beacon of calm, those in your presence are resistant to insanity.
+Mark of Ku|Mark of Ku, the Mother. Improves the rest of those in your presence.
+Mark of Nemit|Mark of Nemit, the First Beast. Food consumed in your presence is more nourishing.
+Maudet|Your understanding of your destiny is such that learning new things often comes naturally to you. People appreciate…
+Molt|Ailments and blessings alike fade away more quickly.
+Mothwing Dust|You release Mothwing Dust when others are the first to strike, granting you vision of your attacker. Your antennae…
+Navae's Guidance|Navae's star guides your path, showing you the way forward. Right-clicking on maps sets a Waymarker which can be…
+Nightchild|Relying on your instincts, you are naturally more stealthy. You are more nimble on wooden surfaces.
+Seaborne|You have a keen understanding of ships and their maintenance.
+Teachings of the Edenkite|Find your centre.
+Versatile|You learn how to use new pieces of equipment quicker than others. You can equip things at 3 points lower than the…
+Backstabber|Landing a backhit with a light attack causes you to grab your opponent and stab them again, dealing an extra 15…
+Executioner's Frenzy|Landing a light attack while their posture is paused reduces their assassination cooldown by 5 seconds.
+Fatal Stealth|You deal increased backstab damage to opponents based on how high your stealth stat currently is.
+Flanking Maneuvers|Enemies you assassinate take more PEN from your squadmates in your party.
+Stature Break|Landing a backstab of any kind disables posture for 4 seconds. [8 second CD]
+Tacet Minimization|Focus your Tacet even further, allowing the radius at which you get spotted to become smaller temporarily.
+Critical Engine|You gain the ability to use Deep Gems on your critical attack. Hold out the Deep Gem you wish to apply to your crit…
+Ironsing Unbounded|You have gained the ability to surpass your limits and train your Ironsing to its fullest.
+Ironsinger|Grants you the ability to command Metal as an Ironsinger. Press X to Pull on Metal Rods.
+Adept Ironsinger|You can now obtain 1-star Ironsinger mantras.
+Expert Ironsinger|You can now obtain 2-star Ironsinger mantras.
+Master Ironsinger|You can now obtain 3-star Ironsinger mantras.
+Alloyblood|You don't bleed like others do. Bleed damage reduced by 30%. Blood loss is reduced by 75%.
+Heavy Shoulders|If your opponent has 3 or more rods, their dodges are slower.
+Laced Traps|People hit by your 'Caltrops' cannot jump and are slowed for a small duration, while also applying Sluggish to PvE…
+Metal Shackles|Guardbreaking an opponent prevents them from receiving speed boost for 5 seconds, while PvE opponents will be Sluggish…
+Piercing Metal|Deal additional armor damage to enemies per metal rod affecting them.
+Thornmail|Getting flourished applies a metal rod on your attacker.
+Willpower Unbounded|You have gained the ability to surpass your limits and train your willpower to its fullest.
+Grand Skewer|Your Grand Javelin now carries opponents through the air.
+Acceleration Points|Striking an opponent in the back with mobility mantras or Basic Attacks now steals and grants additional momentum.
+Decisive Winds|When damage below 50% health, don an aura of Decisive Winds for 10s.
+Jetstream Pursuit|Upon a successful flourish, teleport to the opponent when they stop moving. Receive a significant boost of momentum.
+Rush of Ancients|Dashing at maximum sprint momentum makes you one with the wind itself.
+Stratos Step|Holding space while climbing will now let your perform Stratos Steps to get even higher.
+Electrify|Shock yourself and apply Amped for 15s. Can be used while Carried to escape.
+Amplified Reflexes|Amped now grants enhanced speed and parkour.
+Amplified Rage|Amped now grants you an additional +10% weapon damage. Also self-damage and cooldown by 3x.
+Jus Karita|Adopt the kick-based fighting style of the Justicars.
+Justicar's Prowess|Jus Karita gains +30% posture damage against other fist styles.
+Justicar's Renewal|Hitting an opponent with your Jus Karita critical resets the cooldown.
+Flying Swiftkick|Hitting a Jus Karita critical attack while Swiftkick Prodigy is active will greatly slow your enemy, and consume your…
+Kickstart|Play the resurrector. Use your lightning to defibrillate your allies on the battlefield.
+Blade's Edge|[Spears] Damage dealt with the tip of the spear is increased by 10%.
+Defensive Sweep|[Spears] Posture breaking an opponent grants you +50% PEN for 3 seconds.
+Driving Impact|[Spears] The first hit of your Spear's Critical Attack will deal greatly increased posture damage. Subsequent hits…
+Lancer's Impale|[Spears] Hitting an enemy after a perfect dodge makes your next attack deal bleed damage. If that attack would already…
+Hoplite|Posture damage is reduced by 15% when wielding a spear and standing still.
+Eruption Path: Lava Serpent|Your fire abilities no longer proc burn and instead proc an eruption under the enemies feet.
+Empowered Eruption|Your next Eruption after landing a critical is Empowered with +50% range and damage.
+Flash Point|Block breaking an opponent causes your Eruptions to be Empowered for the next 10s. Block breaking an opponent with a…
+The Floor is Lava|Your Eruptions leave lethal pools of lava beneath them. Don't fall in.
+Callout|You can mark objects or enemies by pressing Z, which will mark them for all nearby allies.
+Spotter|Marking enemies while in Rhythm will now indicate their health status to your allies.
+Observation|Dodge frames are larger if you cancel your roll immediately.
+Safety Dance|Your base dodge frames are increased by 0.05s.
+Air Pressure|Dodging an attack or hitting an enemy's block will transform your next dash into a Gale Dash. Gale Dashes carry you…
+Cyclone Blade|After a successful Gale Dash you wrap your weapon in wind, causing your next Light attack to do +15% damage as bleed…
+Pressure Break|Breaking an enemy's posture will cause them to take intense wind pressure, increasing the attack's damage by +15% and…
+Wind Step|Create a step of wind below you when jumping in the air. Jumping while sliding down a slope or off a cliff launches…
+Scorched Peak|Blockbreaking an enemy on fire or with a fire mantra causes them to be struck by lightning.
+Comeback Kid|When waking up from being knocked you are unable to be knocked down for 5 seconds. (120 second cooldown)
+Last Resort|Deal +5% more damage when your health is below 25%.
+The Eleventh Hour|When below 15% health your mantras require no ether to cast for 11 seconds.
+Entropy Link|The world is broken, linked by fragile webs. Traverse the path by stating your destination amidst the flame.
+Symbiotic Link|Press X while hovering over an ally to buff them, or while hovering over an opponent to debuff them. The links you…
+Mark of the Lone Warrior|Progress much faster when progressing alone. Gain a damage boost when facing threats alone and also when outnumbered.
+Silencer's Song|Silencer's Blade now procs on your mantras.
+Old Habits Die Hard|Blocking an attack with your lingering block frames after failing a parry will cause the attack to deal 15% less…
+Thresher Claws|Grants +5% Weapon PEN.
+Leg Shot|[Rifles] Landing your critical slows your enemy for a bit while making PvE enemies Sluggish, and also disables any…
+Stock Bash|[Rifles] Your running attacks now apply a brief amount of daze and Stagger PvE enemies.
+Tactical Reload|[Rifles] Activate to make your rifle shoot bullets for 15 seconds.
+Impervious Slumber|Getting hit while Unconscious no longer resets your time Unconscious.
+Breathing Exercise|Your sanity recovers more quickly once out of terrifying situations.
+Conquer your Fears|Killing the beings of the deep replenishes your sanity somewhat. When an Ally grips an enemy nearby to you, you regain…
+Disbelief|Reduces the duration of illusions cast on you by 30%. Halves the duration of the Charmed status on you.
+Intuitive Repairs|Your 'Iron Skin' repairs armor while it's active.
+Metal Absorption|Your 'Iron Hug' also absorbs armor from the enemy.
+Metal Eater|When you have no ether, consume Armor durability to cast your Ironsing mantras.
+Metal Thief|Pulling an opponent absorbs a portion of their current Armor durability.
+Polished Armor|You receive 5% less damage when your Armor protects you from an attack and has over 90% durability. This 5% will scale…
+Chain of Perfection|You gain stacks of Perfection on hitting mobs with Weapon Attacks or Mantras. Mantras are only worth half a stack.
+Echoing Lunatic|Your Ardour Scream now inflicts insanity.
+Lose Your Mind|Deal more damage the more insane you are. Grants +15% damage at maximum insanity.
+Shared Misery|Using a M1/Critical Attack on an enemy while losing sanity causes them to lose sanity.
+Charisma Unbounded|You have gained the ability to surpass your limits and train your charisma to its fullest.
+Murmur: Ardour|An application of your Soul Murmur that enables one to channel the murmur into raw strength. Press H.
+Ardour Scream|Amplify your shout into a scream using Ardour, dominating weaker foes, Victims take 12.5% more damage and 50% more…
+Murmur: Rhythm|An application of your Soul Murmur that enables the user to perceive the subtle murmur emanating from all things.…
+Murmur: Tacet|An application of your Soul Murmur that enables the user to suppress their own murmur. Press T while crouched.
+Armor Conserver|You lose 15% less armor when hit.
+Lightweight|Move faster when your armor runs out of durability.
+Padded Armor|While your armor is broken (or if you have no armor), you take 5% less damage.
+Steel Scales|You take an additional 5% less damage when your armor is broken.
+Captain Etrea|[Fists] Moving while blocking with a shield no longer slows you down.
+Fists of Fortitude|Every 6 hits with your fists builds up a shield of endurance reducing incoming damage by 15%. 70s CD.
+Way of Navae|Gain the ability to use fist combat against weapons. Including the ability to block weapons with your hands using Ether.
+Defensive Stance|[Rapier] Gain more parry frames the lower your health is.
+Duelist's Lunge|[Rapier] Running attacks deal increased posture damage. Upon landing your Critical, your next running attack will have…
+Frenzied Dance|[Rapier] The more posture you currently have, the more chip and posture damage you deal.
+Pressure Skewer|[Rapier] Flourishing an enemy causes your M1's to deal additional chip damage, blood loss and makes your hits deal 3…
+Fast Blade|Extend the speed boost you get from successfully parrying an attack.
+Lightspeed Reflexes|When you parry an attack after feinting an attack, gain a 5s speed boost.
+Speed Emission|[Land a Vent] Gain a 5s speed boost and apply a 3s slow to your opponent.
+All Knowing|Your prediction now ignores the range requirement to reflect attacks.
+Intelligence Unbounded|You have gained the ability to surpass your limits and train your Intelligence to its fullest.
+Successive Prediction|Predicting an attack will briefly allow you to predict another.
+Twelve Steps Ahead|Landing Prediction will halve the cooldown to a minimum of 2s. Whiffing will double the cooldown to a maximum of 30s.…
+Absolute Force|Evolve the technique of your Oppressive Force, letting both hits of your flourish deal 50% more posture damage.
+Amp Overdrive|Guardbreaking an opponent causes them to take extra thunder damage and applies Electrify for 7 seconds.
+Martial Brutality|The less health your opponent has, the more posture you deal to them.
+Shocking Reverb|Landing enough lightning mantras without getting hit grants you a defensive lightning cloak for 15 seconds, letting…
+Lock n Load|[1H Guns] The first bullet in your gun does more damage when fully loaded. This damage buff scales with the number of…
+Rapid Fire|[1H Guns] When you land a critical shot, gain Rapid Fire for 2s. 12s Cooldown.
+Rapid Reload|[1H Guns] You have 20% faster reload when reloading an empty pistol.
+Sleight of Hands|[1H Guns] When you flourish an opponent you instantly load a bullet.
+Ultrakill|[1H Guns] When under the effects of Rapid Fire you reload 2X as fast.
+Cult of Personality|You gain +3% PEN for each person Charmed, capping at +15% PEN.
+Pardon Me|Crimes you commit in allied territories are often ignored. Who's asking?
+Excavator|Chance to receive two sets of ore when mining, mine ores a lot faster.
+Harvester|Chance to receive two sets of ingredients when harvesting.
+Celebrity|Your base reputation with factions is higher and your reputation caps out higher. Reduces the penalty for committing…
+Under The Radar|The negative reputation threshold for a faction to put out posters of you is now higher.
+You'll Need To Get Past Me|When you're attacked, one of your many allies will leap into action to protect their boss.
+Going Nowhere|When enemies dodge your attacks, their momentum is killed and they're briefly prevented from sprinting.
+Volcanic Glass|Detonating crystals causes an eruption soon after.
+Hungry Flames|When you have no Ether, consume Stomach and Water to instantly cast your next fire mantra [15 second CD].
+Blood Bag|You receive extra blood from knocking an enemy.
+Blood Transfusion|Successfully landing a critical attack while under a negative status effect will transfer the effect plus recover a…
+Open Wound|Guardbreaking enemies leaves enemies more susceptible to blood loss from Bloodrend mantras.
+Kj's Courage|Gain 10% more Knowledge from all sources, rounded down.
+Nanji's Training|Nanji shows you a better way to properly block attacks using a weapon, granting you 1 Posture.
+Supernatural Sense|After dealing with literal ghosts, you feel emboldened.
+Bulldozer|Enemies you flourish into a wall have a chance of breaking the wall and are guard broken on impact.
+Broken Ankles|Blockbreaking an opponent puts their Mobility slot Mantras on CD for 12s.
+Piercing Blow|Attacks that break an opponent's block ignore their Armor resistances.
+Shield Breaker|Blunt damage now fully ignores the posture bonus from shields.
+Unwavering Resolve|Getting parried punishes your posture 33% less.
+Million Ton Piercer|Gain 5% extra PEN and remove the cap on your PEN. Go beyond your limits.
+Jolting Current|Your lightning attacks in water strike others near them with lightning.
+Rending Needle: Conductor|5 metal rods will combine into a conductor rod. If an enemy uses a non-Ironsing elemental mantra, they're dealt with…
+Conductor's Cable|Applying Conductor rods on opponents steals some of their armor to you.
+Rending Needle: Impaler|If an enemy is affected by 5 or more metal rods, your Ironsing Pull instead pulls out all of the rods for massive damage.
+Rending Needle: Jailer|If an enemy has 5 or more rods, your Ironsing Pull will restrain them for 1s instead of pulling them.
+Family Recipe|You can now craft bombs at a crafting bench.
+Incendiary Formula|Bombs will set your enemies on fire upon detonation, as well as launch with more force. Bombs will deal 20% increased…
+Sulphur Surprise|Your cooldown for throwing bombs will be shortened after your first bomb damages an enemy.
+Hot Potato|Gain a large boost of speed after throwing a bomb. Your bombs have a chance to detonate twice.
+Explosive Efficiency|Crafting a bomb will yield two bombs. Chance to make three.
+Pocket Bombs|You have a chance to activate a bomb in your inventory when damaged.
+Chorus of Souls|Alone, the Wisps lack a voice. But surrounded by so many, the frequencies overlap and you hear it true.
+Will o' Wisp|Your mastery over the Wisps of the Song enables you to mediate the innate conflicts between your wisps, allowing any…
+Wisp Convergence|When empowered by the Chorus, your Wisps now grant their elements to your strikes.
+Light Weapons Unbounded|You have gained the ability to surpass your limits and train your Light Weapons attribute to its fullest.
+Medium Weapons Unbounded|You have gained the ability to surpass your limits and train your Medium Weapons attribute to its fullest.
+Heavy Weapons Unbounded|You have gained the ability to surpass your limits and train your Heavy Weapons attribute to its fullest.
+Saint's Negation|Once per stance cycle you can fully block an attack that matches your Saint Stance.
+Saint's Overload|After a full rotation of stances your elemental scaling is increased by 15% and Mantra Modifiers increased by 10%.
+Saint's Synergy|15% of your highest element scaling is applied to other elemental damage.
+Antithetic Salts|Alter your brews to invert their effects. Does not count towards the ingredient limit.
+Aromatic Salts|Alter your brews to create lingering clouds of mist on shattering. Does not count towards the ingredient limit.
+Biotic Salts|Alter your brews to not provide their positive effects to your enemies. Does not count towards the ingredient limit.
+Enhanced Flow|Refine your Rush Hour, allowing you to now also gain temp health whenever you hit a player while using Rush Hour. You…
+Torture Mastery|Landing a critical on opponents applies 15 seconds of Torture Mastery. Heal any chip damage off players who have…
+Dark Receiver|Shadow moves will also steal Ether from those you are Static Linked tethered to.
+Blood Bank|Consuming 'Charm' now gives slight temporary health.
+Sharing is Caring|Charmed on opponents also slightly increases your blood drain against them.
+Windwaker|Call upon a gust of wind to propel your boat even faster.
+Dirty Boxing|Hitting an enemy with a Basic Attack after feinting applies bleed, obscures their vision slightly and makes PvE…
+Pocket Sand|[Fist] Feinting into an uppercut blinds, applies Stagger to PvE enemies and also applies Dazed briefly.
+Gilded Path: Scrapsinger|Flourishing an enemy consumes any rods they have and siphons their armor to you per rod.
+Artisan's Blade|Activating Scrapsinger forges a metal blade behind you for every 2 rods you consume. Metal blades will fire at a…
+Masterwork|Successful hits from Artisan's Blades will proc metal rods and deal 50% more damage.
+Refine and Reuse|Consuming rods with Scrapsinger reduces incoming PEN against you for 14 seconds. Each rod reduces PEN by 5%…
+Songs Unforged|Your weapon criticals will now activate scrapsinger.
+Reshape and Remold|Successful procs of Scrapsinger will increase the amount of armor damage your opponent takes. After hitting 10 stacks,…
+Gruesome Harvest|Landing Bloodrend mantras on opponents with over 70% blood poison will give you slight temporary health.
+Hemolysis|Deal 20% more critical attack damage to opponents with over 25% blood poisoning.
+Hemolytic Transfusion|Guardbreaking an enemy with a Bloodrend mantra increases the amount of blood poison from the attack.
+Juicy Snack|Eliminating enemies returns their amount of blood poison as health to you.
+Panacea|Hitting an enemy with a Bloodrend mantra stops their blood poison from decaying briefly.
+Tainted Ground|Enemies who stand in blood pools will not decay blood poison and gain 15% more blood poisoning.
+Vasculitis|Hitting your opponent while they have over 20% blood poisoning disables their deep gems for a brief duration while…
+Shadowcast Unbounded|You have gained the ability to surpass your limits and train your Shadowcast to its fullest.
+Shadowcaster|Grants you the ability to command shadows as a Shadowcaster.
+Adept Shadowcaster|You can now obtain 1-star Leveled Shadowcaster Mantras.
+Expert Shadowcaster|You can now obtain 2-star Leveled Shadowcaster Mantras.
+Master Shadowcaster|You can now obtain 3-star Leveled Shadowcaster Mantras.
+Blossoming Darkness|The more Ether you drain during Shadow Roar, the bigger it gets.
+Fear the Dark|Enemies that run from you after being hit by your shadows will hang in place briefly.
+Lasting Sorrow|Shadows last longer on your opponent.
+Shadow Travel|Teleport to a location in exchange for Ether cost. Certain ranges will require a health sacrifice. Be careful as this…
+Sightless Still|The more a person is affected by your Shadowcast the more you obscure their vision. Block breaking an opponent…
+Singularity|Enemies will briefly hang in place immediately after being hit by a shadow move.
+Knight's Rally|When using a shield, you ready your block more quickly after taking a hit.
+Turtle Shell|If your shield is on your back, take reduced backstab damage and negate Spine Cutter.
+Grounding Bolt|Anytime you summon a lightning strike on your oppponent, disable their ability to jump. Uppercutting your opponent…
+Silencer's Blade|Meleeing a 'Suffocated' opponent will extend the duration of the Suffocation and grant a speed boost.
+A World Without Song|Every 3 hits with a Wind Mantra now procs Suffocating.
+Dread Fighter|Parrying and getting hit by mantras now give you stacks of Dread. Each stack lasts for 15 seconds.
+Flow State|Enter a moment of extreme focus in which you can change the windup of your special attacks with the correct timing.
+Mayhem|Initiate a special dash attack by pressing M1 during the start of your dodge.
+Relentless Hunt|M1 while doing an Aerial Attack to initiate a special gap closer attack.
+Rising Star|Press CTRL + M2 to activate a special uppercut attack.
+Silent Cascade|Landing physical attacks on an opponent charges up your Silent Cascade, a devastating barrage that can be released…
+True Vantage|Venting makes you invisible briefly, as well as boosting your speed.
+Unmatched Dexterity|Press X to Quick Swap between weapons within your toolbar.
+Vengeful Pursuit|Your running attacks that don't hit send out a special mid-range crescent projectile that slows on hit. Tracks onto…
+Golden Tongue|Typing or using a gesture gives a random buff to you and those around you. (60 second cooldown)
+Snake Oil|Gain 40% more Notes from selling items.
+Absolute Pitch|You can cast Ritual Mantras instantly.
+Ether Overdrive|Gain 5% extra PEN and remove the cap on your PEN. Go beyond your limits.
+Bloodiron Spirit|You regain some Armor upon killing enemies.
+Soul Infusion|Infuse Ardour into your executions. If your execute is interrupted, the opponent remains down for a longer amount of…
+Formless|Teleport to a location within your Tacet bubble. Receive a slight speed boost when activating Tacet.
+Heart Reverb|Those picked up by your Rhythm are marked for 8 seconds. Whenever an opponent dodges your attack, detect their rhythm…
+Haunted Path: Specter|Build up spectral energy by performing successful dodges and landing Wind mantras. Your abilities no longer suffocate…
+Phantom Step|Press X to begin running at high speeds. While in Phantom Step, your dashes transform into Gale Dashes.…
+Vanishing Wraith|Your 'Aerial Attacks' while in Phantom Step will now teleport you behind your target.
+Possession|After an apparition hits an enemy, receive 7.5% posture damage on all Galebreath attacks for 8 seconds. If the…
+Death From Above|Upon cancelling your Air Dash, reveal your wings and strike your enemy.
+Ichor Imbuement|Using a Starkindred mantra while your wings are not out increases the damage they deal by 2 times.
+Static Link|Flourishing or uppercutting an enemy creates a static link between you and your enemy.
+Jumper Cables|Being made Unconscious with an active tether allows you to steal health from a tethered target and not be made…
+Link Conduction|While you have active tethers your lightning mantras cost less ether.
+Static Ace|Using Lightning Stream with an active tether link targets your closest active link.
+Static Allure|Having two active tethers will cause the previous tethered enemy to get magnetized to your newest tethered enemy, also…
+Storm Link|While you have a Static Link on someone, your Wind mantras that hit them are imbued with flashes of Lightning.
+Grasp on Reality|Damage taken from insanity is reduced.
+Magical Resolve|Being hit increases Ether regen for a short duration, the strength of the regen scales off your Willpower.
+Unfazed|You are more resilient to the side effects of going insane. You no longer Shiver and you Panic with less severity.
+Voltaic Conductor|Your Thundercall Mantras deal 30% chip damage against enemies with conductor rods.
+Iron Gut|You have resistance against being poisoned by foods.
+Termite|You can eat things most would consider inedible.
+Dustlunge|You can now assassinate your enemies from much farther, shadestepping to their location if they're too far.…
+None Left Behind|You can now shadestep to pick up Unconscious humanoids far away from you.
+Foolish Outburst|Blocking or parrying a vent will absorb the Tempo cost of the vent. A Tactician steadies the course of battle.
+Hard Read|Hitting your opponent during a feint will cause them to be Dazed for 3s.
+Punishing Blow|[Heavy Weapons] Daze opponents for 3s and Stagger PvE enemies for 2s when you interrupt their Basic Attack / actions…
+Target Switch|Parrying an opponent then hitting someone else makes your next mantra free.
+Water off a Duck's Back|Venting will shift any elemental status effects affecting you onto those hit by your vent.
+Controlled Combustion|Your Agitating Spark no longer spreads to your allies.
+Artisan Chef|The food you cook now becomes Artisan food, increasing its hunger and thirst gained by +25%.
+Master Chef|Buffs applied by food you cook now have their buff effects amplified by +30%.
+Explosive Finish|If an enemy is on fire when you flourish, blast them away with a fire blast.
+Flaming Flourish|Set enemies on fire when you flourish or uppercut them.
+Emperor Flame|Absorb fire produced by you, once you reach 5 stacks your next attack will be an automatic Explosive Finish flourish.…
+Mirage Clone|Successfully dodging leaves behind a heat mirage clone that sets enemies that swung at you on fire.
+Grasp of Eylis|You can temporarily teleport to locations near your bounty target, if one can be found. However, you must stay close,…
+Cap Artist|Pressing CapArtist while crouching allows you to fake being dead. You also take a bit less damage from PvE while…
+Pickpocket|Gain the ability to pickpocket by pressing N. Deal a little more damage the more notes you have against PvE opponents…
+Discharge|[Light Weapons] On 5th successful attack you will discharge static dealing lightning damage to those nearby.
+Rain of Static|After successfully casting lightning impact, strike down countless thunder at those below. In return your Lightning…
+Windup Battery|Landing 3 Thundercall Mantras without whiffing reduces the windup of your next Mantra by 10%.
+Static Blade|Hitting blocks, blocking or parrying hits will now generate an electric charge in your blade, granting a small speed…
+Gathering Electricity|Reaching 5 Static Blade charges will now consume the stacks and apply a lightning buff to your blade. 60 second cooldown.
+Overcharge|Your next dash after activating Static Blade is enhanced by lightning.
+Thundercall Unbounded|You have gained the ability to surpass your limits and train your Thundercall to its fullest.
+Thundercaller|Grants you the ability to command Lightning as a Thundercaller.
+Adept Thundercaller|You can now obtain 1-star Thundercaller mantras.
+Expert Thundercaller|You can now obtain 2-star Thundercaller mantras.
+Master Thundercaller|You can now obtain 3-star Thundercaller mantras.
+Discovery of Fire|Flints and Flamecharm are for simpletons.
+Shocking Finish|Following a flourish up with a lightning beam causes it to be casted instantly.
+Static Fakeout|Roll cancelling immediately after a parry will cause you to teleport behind your opponent.
+Static Flash Clone|When using lightning clones you instead disappear leaving behind a static clone for a short duration.
+Manipulator|Deal 20% more critical attack damage to charmed enemies, but the effect is removed on impact.
+Narcissist|Charming an already Charmed opponent Overcharms you briefly. Guess you really were always that great.
+Sow and Mend|Sacrifice 35% of your blood for temporary health.
+Cyclical Exsanguination|Whenever you deal more than 20 damage to an enemy in an instance, pause your temporary health decay for 3 seconds.
+Embolism|If an enemy is guardbroken while you have temporary health, convert your temporary health into additional damage.
+Hypovolemic Focus|While you have temporary health, your opponent regains far less posture from parrying you.
+Cheap Shot|Your attacks gain 10% PEN multiplicatively when you have an active speed boost.
+Crippling Comeuppance|Landing Revenge puts your opponent's Mobility slot Mantras on CD and applies Sluggish to PvE enemies for 15s.
+Down Comes the Claw|Landing a Critical while you have a speed boost prevents your opponent from being able to dodge twice in a row for 5s.
+Maiming Claws|Down Comes the Claw now disables your opponent's posture regeneration for 6s on proc.
+Pursuit|If you land your Revenge, clear the cooldown immediately. (25s cooldown)
+Face Cutter|Your Spine Cutter now deals an additional hit.
+Turning of the Wheel|After perfect dodging a swing or critical attack, step backwards and ramp up your swingspeed.
+Wraith Path: Twisted Puppets|Your Flamecharm mantras summon puppets of shadow and flame. Your flames are now black.
+Burning Puppets|Your puppets can now inflict burn and fire-based Talents when they explode.
+Burning Sacrifice|Sacrifice puppets who have been alive for half of their lifetime and burn purple for Emperor Flame Stacks, a damage…
+Explosive Rage|Causing explosion will make your puppets go into a frenzy, speeding up and dealing 50% more damage.
+Moths to a Flame|Your Twister Puppets now home towards burning enemies.
+Audacity|Once you've brought down your prey, instill fear into all those who would separate you from claiming it. Charmed or…
+No Survivors|Your allies and yourself execute faster when affected by Overcharm.
+Denial Repulse|You now emit a delayed burst of flames after coming close to death.
+Undying Flame|Your Graceful Flame burns brightly even underwater. Those that gather around it are soothed and regain sanity.
+Surge Path: Unstable Capacitor|Your lightning no longer applies Shock, instead apply Surge. At maximum stacks of Surge, your opponents will Overload,…
+Battery Sapper|If your Human Battery targets have Ether, it will drain their Ether to help pay for your Mantras.
+Catalytic Strike|Posture breaking an enemy will Overload their Surge stack.
+Closed Circuit|Surge Overloads that fail to arc to other opponents will deal additional damage to the Overloaded enemy.
+Human Battery|When you are out of Ether, convert the Surge stacks of nearby enemies into Ether to pay the cost of your Mantras.
+Flashboil|Landing Ice/fire attacks on burning/chilled enemies extinguishes the flame and generates steam.
+Boiling Point|Using a fire mantra near your own steam cloud detonates it.
+Bear Trap|Landing a hit with your critical against an opponent makes your opponent unable to jump for a duration. Also slows…
+Blade Dancer|Landing a Basic Attack removes your roll cooldown.
+Cut to the Chase|Air Counter damage scaling is largely increased. Landing an Air Counter now initiates an uppercut. Deal 5% more damage…
+Speed Demon|Your attacks now inflict a reduced-strength bleed while you have a speed boost. 1s cooldown.
+Spinning Swordsman|Running attacks do +15% extra damage when you have a speed boost.
+Cheap Trick|When hit below half health briefly disappear, leaving behind an illusion clone to keep your enemy occupied for a short…
+Reality Shift|Command the closest conjured servant to attack their hallucinating target, either using a Critical Attack or a Mantra.
+Shared Mimicry|The servants you have conjured will imitate your actions when you Swing/Block/Parry/Jump.
+Encore|Your Sing will stun opponents who are already charmed.
+Vow of Mastery|The Vow of Mastery grants the Master the power to command their Subject. To initiate a vow you must ask the other…
+Command: Live|Once per hour, command a servant to defy all odds and obey your command - live.
+Command: Summon|Command your servant to obey your summons and appear before you no matter the distance.
+Chronostasis|Landing a Basic Attack or Critical puts the target's Resonance on cooldown for a short duration, while also applying…
+Conditioned Swimmer|You lose less hunger and thirst while swimming.
+Brutal Momentum|[Heavy Weapons] Successfully dodging will give you hyperarmour on your next swing.
+Matador|Deal +20% more damage to human enemies with hyperarmor.
+Showstopper|When an enemy would roll through one of your physical attacks, stomp the ground, dazing anyone nearby. Removes speed…
+Switchblade|You can now utilize Dagger Talents when not wielding a dagger.
+Warrior's Swing|[Heavy Weapons] Reduces incoming damage by 5% if hit during Heavy swing hyperarmor.
+Haunted Gale|Landing 3 Galebreathe Mantras without whiffing calls forth a Haunted Phantom. The Phantom will attack alongside you…
+Agility Unbounded|You have gained the ability to surpass your limits and train your agility to its fullest.
+Ash Ember|The more wither your opponent has, the more damage your burn deals.
+Brassneck|Knocking an enemy grants you 20% damage resistance for 15 seconds.
+Careful Handling|Reduce your chances of dropping ingredients on death.
+Dragon's Song|Using a mantra after an uppercut grants ether.
+Full Reset|Knocking an enemy resets your resonance cooldowns. This effect has a 60 second cooldown.
+Gourmand|Your hunger and thirst gain from eating is increased.
+Heavy Haul|Enemies who carry you move significantly slower. Take slightly less posture damage from large enemies.
+Martyr|When you're knocked Unconscious, enemies gain less health and posture, and allies around you are granted Martyrdom for 20s.
+Polite Awakening|Upon recovering from being Unconscious, your health is restored up to a minimum of 15% of your max health.
+Ready or Not|The first attack to hit you while out of combat has its damage cut in half.
+Replenishing Knockout|You gain more health and posture from downing enemies.
+Treefelling Blow|You can collect lumber from the trees you fell with your fists. It's only natural.
+Assassin's Strike|Your Rapid Slashes now deals twice the amount of damage.
+Battle Frenzy|The grip on your weapon tightens, reduce the posture of all mantras you block with this effect scaling with the number…
+Belief|Your medium weapon mantras now deal extra damage based on how much Willpower you have.
+Blitz|Increase how quick you release your Prominence Draw.
+Blood Drinker|Recover health on hit. When landing a critical, deal 30 bleed damage over 5 seconds.
+Bulwark Breaker|Increase the size of your Pressure Blast, with the last hit of it dealing increased posture damage.…
+Careful Stance|Gain a bit more autoparry frames on successful parries.
+Clutch Recovery|When at 30% health or below, every time you land a light attack or critical hit heal 1%.
+Corporeal Dissolution|Applies Wither on any weapon attack that drains Ether, and scales on the amount of Ether drain.
+Cruel Counter|When using your initial charge up on your Krulian Knife, if you interrupt someone's attack with it apply Cruel Counter…
+Curved Edge|Your light weapon mantras now gain 30% more chip.
+Expeditionary Evasiveness|The design of this rapier allows you to much more swiftly attack in tandem with your mantras, giving Agility mantras…
+Expeditious Combo|Landing an uppercut will grant a buff to your Onslaught for 15 seconds, using Onslaught during this time will…
+Extended Trauma|Successful light attacks and criticals on your opponent now also gives them a bit of posture.
+Finishing Slay|If you land a critical attack while also having stacks from the Chain of Perfection talent, consume all those for a…
+Forced Fulfilment|Your Metal Greatsword now has Metal Fakeout as its critical attack.…
+Fortify|Slow down your movement in exchange for fortifying your defenses.
+Phantom|For the next 5 seconds, your next basic attack bypasses block after landing a crit. [45 second CD]
+Pierce Through|Remove the autoparry frames the first hit of your base spear critical has.
+Pugnacious|Become stronger the more you are combat tagged. Gain even more strength whenever you grip a player.
+Punishing Riposte|When parrying a guardbreak, enhance your critical for the next 15 seconds.…
+Rat's Spirit|Each hit of your critical will deal an extra 10 true damage per combat tag whenever you are combat tagged by 2 or more…
+Rosen's Technique|If you use Tactical Reload, Rosen's Peacemaker has 45 seconds less off its cooldown.
+Sable Winds|You can now Inhale Shadowcast mantras. Aftercut effects now drain a small amount of ether based on the damage they deal.
+Sacrificial Boon|Sacrifice 5 knowledge to activate Blessing, giving you a random blessing from Navae.
+Soar|Retain full walkspeed while using your crit.
+Sovereign's Counter|Improve the efficiency of every counter you use.…
+Spinal Splinter|Landing a backstab with your critical deals 15 extra true damage.
+Static Beatdown|Landing a Thundercall mantra electrifies the metal in your Cestus for 8 seconds, extending how long your opponents are…
+Subzero|Landing a running attack inflicts your opponent with a deep freeze. Additional light hits after the opponent thaws out…
+Swift Strike|Land a light attack behind your opponent to enhance your next critical, allowing you to teleport behind your opponent…
+True Seraph Slash|Landing the first hit of your critical attack enhances your next critical, giving you access to the Angels' spear…
+True Shatter|Landing a critical shatters your opponent, ridding them of their speed debuffs and dealing true damage scaling off how…
+Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
+Drop Dead|Take less damage when you are crouching.
+Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
 <script>
 // ================= data =================
 const ATTR=['STR','FTD','AGL','INT','WLL','CHA'];
@@ -3013,6 +3711,12 @@ const TEMPLATES=[
 // Starting presets: medians and most common pre-shrine peaks from 685 normal top-rated + most-viewed deepwoken.co builds
 const PRESETS=[
  {n:'Clean Slate',d:'0 in everything · no oath, weapon target or attunement',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
+ {n:'Bossraid',d:'FTD 50 + WLL 40 before · FTD 50 after · Heavy 90',src:'92 heavy boss-raid builds',pre:{FTD:50,WLL:40},post:{FTD:50},oath:'Silentheart',wtype:'HVY',wtarget:90,atts:{},dsplit:0,prio:30,
+  t:['Thresher Claws','Bloodiron Spirit','Fishman','Carnivore','Underdog','Replenishing Knockout','Exoskeleton','Padded Armor','Steel Scales','Armor Conserver']},
+ {n:'Bossraid Mage',d:'FTD 50 + WLL 50 + INT 25 before · Frostdraw 80, no weapon',src:'37 caster boss-raid builds',pre:{FTD:50,WLL:50,INT:25},post:{FTD:50},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:80},dsplit:100,prio:30,
+  t:['Neuroplasticity','Breathing Exercise','Underdog','Exoskeleton','Fishman','Carnivore','Bloodiron Spirit','Charged Return']},
+ {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 + CHA 25 before · FTD 50 after · Medium 80',src:'199 Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30,CHA:25},post:{FTD:50},oath:'Bladeharper',wtype:'MED',wtarget:80,atts:{FLM:80},dsplit:50,prio:40,
+  t:['Exoskeleton','Swift Rebound','Speed Demon','Evasive Expert','Battle Tendency','Moving Fortress','Spine Cutter','Showstopper','Unwavering Resolve','Bear Trap']},
  {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after',src:'119 builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'LHT',wtarget:75,atts:{BLD:80},
   t:['Charismatic Cast','Chaotic Charm','Lasting Charisma','Tough Love','Manipulator','Golden Tongue','Unnecessary Theatrics','Ghost','Exoskeleton','To The Finish']},
  {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after',src:'72 builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},
@@ -3080,6 +3784,9 @@ function renderLook(){
   document.getElementById('f-size').value=LOOK.size;document.getElementById('f-size-v').textContent=LOOK.size+'%';
 }
 applyLook();
+// range sliders show their filled part
+function paintRanges(){document.querySelectorAll('input[type=range]').forEach(r=>{const p=(r.value-r.min)/((r.max-r.min)||1)*100;r.style.setProperty('--fill',p+'%')})}
+document.addEventListener('input',e=>{if(e.target.type==='range')paintRanges()});
 
 // ================= state =================
 let S={prio:50,dsplit:50,wtype:'HVY',wtarget:90,atts:{FLM:80},sel:[],mantras:[],when:{},mins:{},preMin:{},oath:'Oathless',weapon:'',tfilter:'fit',mfilter:'fit',spend:true,gear:{outfit:'',slots:{},focus:'bal'},req:[],pin:{},order:true,mastery:{on:false,pre:{},post:{}},manual:false,man:{pre:{},fin:{}},enchant:'None',wcmp:'',mview:''};
@@ -3287,6 +3994,14 @@ function noShrineFree(R){
   const nAtt=ATTS.filter(k=>final[k]>0).length;return BUDGET-(ALL.reduce((s,k)=>s+adds[k],0)-Math.max(0,nAtt-1));
 }
 const isReq=n=>(S.req||[]).includes(n);
+// Talent cap: drop the least valuable picked talents (never required ones) until the build fits 52 + (12 - mantras) x 2
+function trimToCap(){const dropped=[];let guard=80;
+  while(guard-->0){const C=closure();const cn=counts(C);if(cn.nTal<=cn.cap)break;
+    const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n));if(!cand.length)break;
+    let pick=null;for(const n of cand){const keep=S.sel;S.sel=keep.filter(x=>x!==n);const c2=counts(closure()).nTal;S.sel=keep;const freed=cn.nTal-c2;if(freed<=0)continue;
+      const md=DMG_MODS[n];const val=1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS+(md?((md.dmg||0)+(md.pen||0))*100:0);const r=val/freed;if(!pick||r<pick.r)pick={n,r}}
+    if(!pick)break;S.sel=S.sel.filter(x=>x!==pick.n);dropped.push(pick.n)}
+  return dropped}
 const prevP=()=>last&&last.best?last.best.P:null;
 // Over budget: drop the picked talent that frees the most points per unit of value (popularity + synergy + damage), repeat
 function trimToBudget(res){const dropped=[];let guard=40;
@@ -3397,6 +4112,8 @@ const GEAR=[],OUTFITS=[],OTAL=new Map(),TDESC=new Map();
   else if(sec==='OT')OTAL.set(f[0],(f[1]||'').split(';').filter(Boolean));
   else if(sec==='TD')TDESC.set(f[0],f[1]||'')}
   for(const o of OUTFITS)o.tal=OTAL.get(o.n)||[]}
+// every talent's in-game description (deepwoken.co), used by hover cards and the Required tab
+for(const l of document.getElementById('dwtdesc').textContent.split('\n')){const i=l.indexOf('|');if(i>0&&!TDESC.has(l.slice(0,i)))TDESC.set(l.slice(0,i),l.slice(i+1))}
 const GBY=new Map(GEAR.map(g=>[g.n,g])),OBY=new Map(OUTFITS.map(o=>[o.n,o]));
 const gearReqOk=(req,final,pwr)=>Object.entries(req).every(([k,v])=>k==='PWR'?pwr>=v:(final[k]||0)>=v);
 const gearReqMiss=(req,final,pwr)=>Object.entries(req).filter(([k,v])=>k==='PWR'?pwr<v:(final[k]||0)<v).map(([k,v])=>(k==='PWR'?'Power':k)+' '+v);
@@ -3417,22 +4134,25 @@ function gearStats(G,final){
   const rp=Math.min(.95,pp/100*(1-PEN.phys/100)),re=Math.min(.95,ep/100*(1-PEN.ele/100));
   return {hp,pp,ep,phys:hp/(1-rp),ele:hp/(1-re),bad};
 }
-// balanced = raise whichever side is weaker (small tie-break on the total)
-const gearScore=(st,focus)=>focus==='phys'?st.phys:focus==='ele'?st.ele:Math.min(st.phys,st.ele)+.01*(st.phys+st.ele);
+// optimizer objective: below the minimum health, only health counts; above it, health x (1/(1-physical resistance))^a
+// a = 0 is pure health, a = 2 leans hard on physical armor. Elemental armor is ignored here.
+function gearScore(st,o){const rp=Math.min(.95,st.pp/100*(1-PEN.phys/100));if(st.hp<o.minhp)return st.hp-1e6;return st.hp*Math.pow(1/(1-rp),o.a)}
+const GEAR_NEVER=new Set(['Transfusion Ring']);
+const optPip=(ty,r)=>pipChoices(ty,r).filter(x=>x!=='E');
 // coordinate ascent over slots: each pass tries every eligible item at max stars with every pip split
-function optimizeGear(final,focus){
+function optimizeGear(final,focus){const o=typeof focus==='object'?focus:{a:1,minhp:500};
   const pwr=20;const G={outfit:'',slots:{}};
   const okO=OUTFITS.filter(o=>gearReqOk(o.req,final,pwr));
-  const opts={};for(const [lab,ty] of GSLOTS){opts[lab]=[null];for(const g of GEAR.filter(g=>g.ty===ty&&gearReqOk(g.req,final,pwr))){
+  const opts={};for(const [lab,ty] of GSLOTS){opts[lab]=[null];for(const g of GEAR.filter(g=>g.ty===ty&&!GEAR_NEVER.has(g.n)&&gearReqOk(g.req,final,pwr))){
       const st=maxStars(ty);const pips=pipsOf(g,st);let combos=[[]];
-      for(const r of pips){const ch=pipChoices(ty,r);if(!ch.length){combos=combos.map(c=>[...c,'']);continue}const nx=[];for(const c of combos)for(const x of ch)nx.push([...c,x]);combos=nx.slice(0,729)}
+      for(const r of pips){const ch=optPip(ty,r);if(!ch.length){combos=combos.map(c=>[...c,'']);continue}const nx=[];for(const c of combos)for(const x of ch)nx.push([...c,x]);combos=nx.slice(0,729)}
       for(const p of combos)opts[lab].push({n:g.n,st,p})}}
-  G.outfit=okO.reduce((b,o)=>!b||o.p+o.e>b.p+b.e?o:b,null)?.n||'';
+  G.outfit=okO.reduce((b,x)=>!b||x.p>b.p?x:b,null)?.n||'';
   for(let pass=0;pass<4;pass++){let changed=false;
-    {let best=G.outfit,bs=gearScore(gearStats(G,final),focus);for(const o of okO){G.outfit=o.n;const s=gearScore(gearStats(G,final),focus);if(s>bs+1e-9){bs=s;best=o.n;changed=true}}G.outfit=best}
-    for(const [lab] of GSLOTS){let best=G.slots[lab]||null,bs=gearScore(gearStats(G,final),focus);
+    {let best=G.outfit,bs=gearScore(gearStats(G,final),o);for(const x of okO){G.outfit=x.n;const s=gearScore(gearStats(G,final),o);if(s>bs+1e-9){bs=s;best=x.n;changed=true}}G.outfit=best}
+    for(const [lab] of GSLOTS){let best=G.slots[lab]||null,bs=gearScore(gearStats(G,final),o);
       const taken=new Set(GSLOTS.filter(([l,ty])=>l!==lab&&ty==='R'&&G.slots[l]).map(([l])=>G.slots[l].n));
-      for(const c of opts[lab]){if(c&&taken.has(c.n))continue;G.slots[lab]=c;const s=gearScore(gearStats(G,final),focus);if(s>bs+1e-9){bs=s;best=c;changed=true}}G.slots[lab]=best}
+      for(const c of opts[lab]){if(c&&taken.has(c.n))continue;G.slots[lab]=c;const s=gearScore(gearStats(G,final),o);if(s>bs+1e-9){bs=s;best=c;changed=true}}G.slots[lab]=best}
     if(!changed)break}
   return G;
 }
@@ -3454,7 +4174,7 @@ function renderInputs(){
   renderWeaponSearch();
   $('atts').innerHTML=Object.entries(ATT).map(([k,[n,c]])=>{const on=k in S.atts;
     return `<label class="${on?'on':''}" style="--c:var(${c})" title="${n}"><input type="checkbox" id="a-${k}" data-a="${k}" ${on?'checked':''}><span class="dot"></span><span class="nm">${n}</span><input type="number" id="av-${k}" data-av="${k}" min="0" max="100" step="5" value="${on?S.atts[k]:80}" ${on?'':'disabled'} aria-label="${n} target"></label>`}).join('');
-  $('presets').innerHTML=PRESETS.map((p,i)=>`<button data-preset="${i}"><b>${esc(p.n)}</b><span>${esc(p.d)}</span><span class="mono" style="font-size:11px">${esc(p.oath)} · ${esc(p.src)}</span></button>`).join('');
+  $('presets').innerHTML=`<button data-ai="1" class="aicard"><b>✨ AI build maker</b><span>Type in what you want for your build and we will make it for you!</span></button>`+PRESETS.map((p,i)=>`<button data-preset="${i}"><b>${esc(p.n)}</b><span>${esc(p.d)}</span><span class="mono" style="font-size:11px">${esc(p.oath)} · ${esc(p.src)}</span></button>`).join('');
   $('floors').innerHTML='<span></span>'+ATTR.map(a=>`<span>${a}</span>`).join('')+
     '<span class="rowlabel">Before shrine</span>'+ATTR.map(a=>`<input type="number" id="pm-${a}" data-pm="${a}" min="0" max="100" step="5" value="${(S.preMin||{})[a]||0}" aria-label="${ANAME[a]} before shrine">`).join('')+
     '<span class="rowlabel">After shrine</span>'+ATTR.map(a=>`<input type="number" id="m-${a}" data-m="${a}" min="0" max="100" step="5" value="${S.mins[a]||0}" aria-label="${ANAME[a]} after shrine">`).join('');
@@ -3463,7 +4183,7 @@ function renderInputs(){
   $('oathinfo').innerHTML=o.n==='None'?'':`<div class="item"><div class="nm">Needs ${esc(o.custom?o.custom.map(fmtAlt).join(' or '):fmtReq(o.req))}<small>Mantra slots +${esc(fmtSlots(o.slots)||'none')}${o.mantras.length?' · '+esc(o.mantras.join(', ')):''}</small></div></div>${OATH_NOTES[o.n]?`<p class="hint">${esc(OATH_NOTES[o.n])}</p>`:''}`;
   $('spend').checked=!!S.spend;
   $('prio').value=S.prio==null?50:S.prio;
-  $('dsplit').value=S.dsplit==null?50:S.dsplit;$('dsplit').disabled=!Object.keys(S.atts).length;
+  $('dsplit').value=S.dsplit==null?50:S.dsplit;$('dsplit').disabled=!Object.keys(S.atts).length;paintRanges();
 }
 function renderWeaponSearch(){
   const q=$('wsearch').value.trim().toLowerCase();
@@ -3472,6 +4192,9 @@ function renderWeaponSearch(){
   $('wresults').innerHTML=hits.map(w=>`<button class="pick" data-wpick="${enc(w.n)}"><span>${esc(w.n)} <span class="hint">${esc(w.ty)}</span></span><small>${esc(fmtReq(w.req))}</small></button>`).join('')||'<p class="hint">No weapons match.</p>';
 }
 let recCache=[];
+// group synergy suggestions under the picked talent they pair with (strongest partner wins)
+function synSections(list,nameOf,synOfItem){const by=new Map();for(const it of list){const sy=synOfItem(it);if(!sy.length)continue;const top=sy.slice().sort((a,b)=>b.w-a.w)[0].o;if(!by.has(top))by.set(top,[]);by.get(top).push(it)}
+  return [...by].sort((a,b)=>b[1].length-a[1].length||a[0].localeCompare(b[0]))}
 // group a talent under the stat it leans on most (highest requirement)
 const GROUP_ORDER=['Strength','Fortitude','Agility','Intelligence','Willpower','Charisma','Body (STR/FTD/AGL)','Mind (INT/WLL/CHA)','Heavy weapon','Medium weapon','Light weapon','Any weapon','Flamecharm','Frostdraw','Thundercall','Galebreathe','Shadowcast','Ironsing','Bloodrend','Any attunement','Combined stats','No stat requirement'];
 const groupRank=g=>{const i=GROUP_ORDER.indexOf(g);return i<0?(g.startsWith('Oath')?-1:50):i};
@@ -3509,7 +4232,8 @@ function renderTalentChips(){
   const closed=new Set(S.tclosed||[]);
   $('tgroup').innerHTML=[['stat','By stat'],['cat','By category']].map(([k,n])=>`<button class="mini" aria-pressed="${(S.tgroup||'stat')===k}" data-tg="${k}">${n}</button>`).join('');
   synList.sort((a,b)=>(a[1].cost-b[1].cost)||(synW(b[2])-synW(a[2])));
-  const synHtml=synList.length?`<details class="grp syngrp" data-gk="__syn" ${closed.has('__syn')?'':'open'}><summary><h3>${SG}<small>${synList.length}</small></h3></summary><div class="chips">${synList.map(([t,st,sy])=>`<button class="chip synergy ${t.r} ${st.k==='close'?'close':''}" aria-pressed="false" data-ttog="${enc(t.n)}" title="${esc(t.n+' — '+fmtReq(t.req)+' — works with '+sy.map(s=>s.o+' ('+s.why+')').join(', ')+(st.k==='close'?' — '+st.label:''))}">⚡ ${esc(t.n)}<small>${st.k==='close'?esc(st.label)+' · ':''}with ${esc(sy.map(s=>s.o).join(', '))}</small></button>`).join('')}</div></details>`:'';
+  const secs=synSections(synList,x=>x[0].n,x=>x[2]);
+  const synHtml=synList.length?`<details class="grp syngrp" data-gk="__syn" ${closed.has('__syn')?'':'open'}><summary><h3>${SG}<small>${synList.length}</small></h3></summary>${secs.map(([p,items])=>`<div class="synsec"><span class="synwith">with <b>${esc(p)}</b></span><div class="chips">${items.map(([t,st])=>`<button class="chip synergy ${t.r} ${st.k==='close'?'close':''}" aria-pressed="false" data-ttog="${enc(t.n)}">⚡ ${esc(t.n)}${st.k==='close'?`<small>${esc(st.label)}</small>`:''}</button>`).join('')}</div></div>`).join('')}</details>`:'';
   $('tchips').innerHTML=synHtml+keys.map(c=>`<details class="grp" data-gk="${esc(c)}" ${closed.has(c)?'':'open'}><summary><h3>${esc(c)}<small>${groups[c].length}</small></h3></summary><div class="chips">${groups[c].map(([t,st])=>{
     const r=recSet.get(t.n);const sub=st.k==='have'?shortReq(t.req):st.k==='fit'?(r?Math.round(r.share*100)+'%':shortReq(t.req)):st.label;
     return `<button class="chip ${t.r} ${st.k==='have'?'':st.k} ${auto(t.n)?'auto':''}" aria-pressed="${st.k==='have'}" ${st.k==='block'||auto(t.n)?'disabled':''} data-ttog="${enc(t.n)}" title="${esc(t.n+' ('+t.c+') — '+fmtReq(t.req)+(isReq(t.n)?' — required':st.k!=='have'?' — '+st.label:''))}">${isReq(t.n)?'🔒 ':''}${esc(t.n)}${sub?`<small>${esc(sub)}</small>`:''}</button>`}).join('')}</div></details>`).join('')||(synHtml?'':`<p class="hint">${S.tfilter==='picked'?'No talents picked yet.':'Nothing matches.'}</p>`);
@@ -3541,7 +4265,7 @@ function renderOathTable(){
 
 function renderGear(){
   const fin=last&&last.best?last.best.final:Object.fromEntries(ALL.map(k=>[k,0]));const pwr=20;const G=S.gear;
-  $('gfocus').value=G.focus||'bal';
+  $('gw').value=G.w==null?50:G.w;$('gminhp').value=G.minhp||500;$('gminhpv').textContent=(G.minhp||500)+' HP';paintRanges();
   $('goutfit').innerHTML='<option value="">No outfit</option>'+OUTFITS.map(o=>{const ok=gearReqOk(o.req,fin,pwr);return `<option value="${esc(o.n)}" ${o.n===G.outfit?'selected':''}>${esc(o.n)} · ${o.p}% phys / ${o.e}% ele${o.tal.length?' · ✦ '+esc(o.tal.join(', ')):''}${ok?'':' (needs '+esc(gearReqMiss(o.req,fin,pwr).join(', '))+')'}</option>`}).join('');
   const o=OBY.get(G.outfit);
   $('goutinfo').innerHTML=o?`<p class="hint">${o.tal.length?`Grants <b class="syn">${o.tal.map(esc).join(', ')}</b> · `:''}${o.p}% physical · ${o.e}% elemental · durability ${o.dur}${Object.keys(o.req).length?' · needs '+esc(fmtStats(o.req)):''}${gearReqOk(o.req,fin,pwr)?'':` <span class="gbad">Missing ${esc(gearReqMiss(o.req,fin,pwr).join(', '))}</span>`}</p>`:'';
@@ -3559,7 +4283,7 @@ function renderGear(){
     return `<div class="gslot"><span class="lb">${esc(lab)}</span>${sel}${extra}${gt}</div>`}).join('');
   const C=last?last.R.C:closure();const gts=gearTalents(G);
   $('gtcount').textContent=gts.length?gts.length+'':'';
-  $('gtal').innerHTML=gts.map(x=>{const dup=C.T.has(x.n);return `<div class="gtal-row ${dup?'dup':''}"><span class="nm">${esc(x.n)}</span> <span class="src">${esc(x.src.join(', '))}</span><small>${esc(TDESC.get(x.n)||'No description on deepwoken.co.')}</small>${dup?'<small style="color:var(--ok)">You also picked this talent. Your gear already gives it, so that pick may be free to swap.</small>':''}</div>`}).join('')||'<p class="hint">None of your equipped items or your outfit grant talents. Items that do are marked ✦ in the lists.</p>';
+  $('gtal').innerHTML=gts.map(x=>{const dup=C.T.has(x.n);return `<div class="gtal-row ${dup?'dup':''}" data-t="${enc(x.n)}"><span class="nm">${esc(x.n)}</span> <span class="src">${esc(x.src.join(', '))}</span><small>${esc(TDESC.get(x.n)||'No description on deepwoken.co.')}</small>${dup?'<small style="color:var(--ok)">You also picked this talent. Your gear already gives it, so that pick may be free to swap.</small>':''}</div>`}).join('')||'<p class="hint">None of your equipped items or your outfit grant talents. Items that do are marked ✦ in the lists.</p>';
   const st=gearStats(G,fin);const base=gearStats({outfit:'',slots:{}},fin);
   $('ehp').innerHTML=`<div class="stat"><b>${Math.round(st.hp)}</b><span>Health</span><small>${Math.round(base.hp)} from Power 20 + Fortitude</small></div>
    <div class="stat"><b>${Math.round(st.phys)}</b><span>EHP vs physical</span><small>${st.pp}% armor, ${PEN.phys}% pen</small></div>
@@ -3608,7 +4332,8 @@ function renderPicked(){
   const grp=(h,a)=>a.length?`<div class="grp"><h3>${h}<small>${a.length}</small></h3><div class="chips">${a.sort().map(chip).join('')}</div></div>`:'';
   $('picked').innerHTML=grp('Before the shrine',pre)+grp('After the shrine',post)+grp('No stat requirement',none)||'<p class="hint">No talents yet. Pick some on the Build tab or press Auto‑pick.</p>';
   const recs=(recCache||[]).filter(r=>r.syn.length).slice(0,6);
-  $('psyn').innerHTML=recs.length?`<div class="grp syngrp"><h3>⚡ Synergies you could add</h3><div class="chips">${recs.map(r=>`<button class="chip synergy ${r.st.k==='close'?'close':''}" data-tadd="${enc(r.t.n)}" title="${esc(r.t.n+' — '+fmtReq(r.t.req))}">+ ${esc(r.t.n)}<small>${r.st.k==='close'?esc(r.st.label)+' · ':''}with ${esc(r.syn.map(s=>s.o).join(', '))}</small></button>`).join('')}</div></div>`:'';
+  const ps=synSections(recs,r=>r.t.n,r=>r.syn);
+  $('psyn').innerHTML=recs.length?`<div class="grp syngrp"><h3>⚡ Synergies you could add</h3>${ps.map(([p,items])=>`<div class="synsec"><span class="synwith">with <b>${esc(p)}</b></span><div class="chips">${items.map(r=>`<button class="chip synergy ${r.st.k==='close'?'close':''}" data-tadd="${enc(r.t.n)}">+ ${esc(r.t.n)}${r.st.k==='close'?`<small>${esc(r.st.label)}</small>`:''}</button>`).join('')}</div></div>`).join('')}</div>`:'';
 }
 // ================= required talents =================
 function reqStatus(n,C,b){
@@ -3624,9 +4349,9 @@ function reqStatus(n,C,b){
 }
 function renderReq(){
   const C=last?last.R.C:closure();const b=last&&last.best;
-  if(!$('reqdl').children.length)$('reqdl').innerHTML=[...DB.T.filter(t=>!t.n.startsWith('Oath:')).map(t=>t.n),...DB.M.filter(m=>m.ty==='N').map(m=>m.n)].map(n=>`<option value="${esc(n)}"></option>`).join('');
+  renderReqBrowse();
   $('reqcount').textContent=S.req.length?S.req.length+'':'';
-  $('reqitems').innerHTML=S.req.map(n=>{const st=reqStatus(n,C,b);const isM=!TBY.has(n);return `<div class="reqrow"><div><span class="nm">🔒 ${esc(n)}</span> <span class="hint">${isM?'mantra · 2 slots':esc((TBY.get(n)||{}).c||'')}</span><small>${esc(fmtReq(reqOf(n)))}</small></div><span class="tag ${st.k}">${esc(st.label)}</span><button class="mini" data-reqdel="${enc(n)}" aria-label="Remove ${esc(n)} from required">×</button></div>`}).join('')||'<p class="hint">Nothing required yet. Add the talents your build is built around (for example Nullifying Clarity or Lose Your Mind).</p>';
+  $('reqitems').innerHTML=S.req.map(n=>{const st=reqStatus(n,C,b);const isM=!TBY.has(n);return `<div class="reqrow" data-t="${enc(n)}"><div><span class="nm">🔒 ${esc(n)}</span> <span class="hint">${isM?'mantra · 2 slots':esc((TBY.get(n)||{}).c||'')}</span><small>${esc(fmtReq(reqOf(n)))}</small>${TDESC.get(n)?`<p class="desc">${esc(TDESC.get(n))}</p>`:''}</div><span class="tag ${st.k}">${esc(st.label)}</span><button class="mini" data-reqdel="${enc(n)}" aria-label="Remove ${esc(n)} from required">×</button></div>`}).join('')||'<p class="hint">Nothing required yet. Add the talents your build is built around (for example Nullifying Clarity or Lose Your Mind).</p>';
   // cheapest stat floors implied by the required set
   const need={};for(const n of S.req){const alts=reqAlts(reqOf(n),false);if(!hasStats(alts))continue;let best=null,bc=Infinity;for(const a of alts){const c=altCost(a,{});if(c<bc){bc=c;best=a}}
     for(const [k,v] of Object.entries(best.min))need[k]=Math.max(need[k]||0,v);for(const [ks,v] of best.sum){const k=ks.includes(S.wtype)?S.wtype:ks[0];need[k]=Math.max(need[k]||0,v)}}
@@ -3638,7 +4363,17 @@ function renderReq(){
   if(b&&b.free<0)warns.push('The build is over budget. Optimize will drop non-required talents until it fits.');
   $('reqwarn').innerHTML=warns.map(w=>`<div class="callout warn">${esc(w)}</div>`).join('');
   const syn=new Map();for(const n of S.req)for(const s of SYN.get(n)||[]){if(C.T.has(s.o)||C.M.has(s.o)||!TBY.has(s.o))continue;const v=syn.get(s.o)||{w:0,with:[]};v.w+=s.w;v.with.push(n);syn.set(s.o,v)}
-  $('reqsyn').innerHTML=[...syn].sort((a,b)=>b[1].w-a[1].w).map(([n,v])=>`<button class="chip synergy" data-tadd="${enc(n)}" title="${esc(fmtReq(TBY.get(n).req))}">+ ${esc(n)}<small>with ${esc(v.with.join(', '))}</small></button>`).join('')||'<p class="hint">No known synergies with the required talents yet.</p>';
+  const rs=new Map();for(const [n,v] of syn){const p=v.with[0];if(!rs.has(p))rs.set(p,[]);rs.get(p).push(n)}
+  $('reqsyn').innerHTML=[...rs].map(([p,ns])=>`<div class="synsec"><span class="synwith">with <b>${esc(p)}</b></span><div class="chips">${ns.map(n=>`<button class="chip synergy" data-tadd="${enc(n)}">+ ${esc(n)}</button>`).join('')}</div></div>`).join('')||'<p class="hint">No known synergies with the required talents yet.</p>';
+}
+let reqOpen=null;
+function renderReqBrowse(){
+  const q=($('reqin').value||'').trim().toLowerCase();
+  let list=DB.T.filter(t=>!t.n.startsWith('Oath:')&&t.k&&(t.r!=='O'||t.c===S.oath));
+  if(q)list=list.filter(t=>(t.n+' '+t.c+' '+fmtReq(t.req)+' '+(TDESC.get(t.n)||'')).toLowerCase().includes(q));
+  list.sort((a,b)=>(q?((b.n.toLowerCase().startsWith(q))-(a.n.toLowerCase().startsWith(q))):0)||(POP.get(b.n)||0)-(POP.get(a.n)||0)||a.n.localeCompare(b.n));
+  $('reqbrcount').textContent=list.length+'';
+  $('reqbrowse').innerHTML=list.slice(0,40).map(t=>{const open=reqOpen===t.n;const rq=isReq(t.n);return `<div class="brow ${open?'open':''}" data-t="${enc(t.n)}"><button class="bname" data-bopen="${enc(t.n)}" aria-expanded="${open}"><b>${esc(t.n)}</b> <span class="hint">${esc(t.c)}${POP.get(t.n)?' · '+Math.round(POP.get(t.n))+'% of builds':''}</span><small>${esc(fmtReq(t.req))}</small></button>${rq?'<span class="tag ok">Required</span>':`<button class="mini" data-reqadd="${enc(t.n)}">Require</button>`}${open?`<p class="desc">${esc(TDESC.get(t.n)||'No description on deepwoken.co.')}</p>`:''}</div>`}).join('')+(list.length>40?`<p class="hint">${list.length-40} more: type to narrow the list.</p>`:'')||'<p class="hint">No talents match.</p>';
 }
 function addReq(raw){
   const q=String(raw||'').trim();if(!q){return}
@@ -3770,7 +4505,7 @@ function renderResults(res){
   // recommendations
   const ctx=ctxNow();recCache=recommendations(ctx,10);
   $('recsub').textContent=`synergies first, then what ${REF.length} top builds like yours take`;
-  $('recs').innerHTML=recCache.map(r=>`<div class="recrow"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Share of similar builds that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds</span></div><button class="mini" data-tadd="${enc(r.t.n)}">Add</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
+  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Share of similar builds that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds</span></div><button class="mini" data-tadd="${enc(r.t.n)}">Add</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
   // oath fits
   const fits=OATHS.filter(o=>o.n!=='None').map(o=>({o,b:evaluate(best.P,R,oathAltsOf(o))})).sort((x,y)=>(y.b&&!y.b.impossible?y.b.free:-999)-(x.b&&!x.b.impossible?x.b.free:-999));
   $('fits').innerHTML=fits.map(({o,b})=>{const ok=b&&b.free>=0&&!b.impossible;return `<button class="chip" data-oathpick="${enc(o.n)}" aria-pressed="${o.n===S.oath}" style="${ok?'':'opacity:.55'}">${esc(o.n)}<small>${b&&!b.impossible?(b.free>=0?b.free+' free':'over '+(-b.free)):'—'}</small></button>`}).join('');
@@ -3792,8 +4527,9 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
   const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});$('results').classList.add('busy');
   setTimeout(()=>{
     try{
-      let res=compute({starts:18,iters:200,seedP:prevP()});let dropped=[];
-      if(res.best&&res.best.free<0&&!res.best.impossible){const tr=trimToBudget(res);dropped=tr.dropped;res=compute({starts:18,iters:200,seedP:tr.res.best&&tr.res.best.P})}
+      let dropped=trimToCap();
+      let res=compute({starts:18,iters:200,seedP:prevP()});
+      if(res.best&&res.best.free<0&&!res.best.impossible){const tr=trimToBudget(res);dropped=dropped.concat(tr.dropped);res=compute({starts:18,iters:200,seedP:tr.res.best&&tr.res.best.P})}
       if(spend&&res.best&&res.best.free>0&&!res.best.impossible){
         // spend where weighted damage per point is highest: weapon -> M1, attunement -> mantras (aiming at 20-point mantra levels)
         let free=res.best.free;const fin={...res.best.final};const names=res.R.names;const ms=Object.keys(S.atts).length?(S.dsplit==null?50:S.dsplit)/100:0;
@@ -3809,7 +4545,7 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
       }
       renderInputs();renderResults(res);
       const still=res.best&&!res.best.impossible&&res.best.free<0?` Still over by ${-res.best.free}: ${S.req.length?'your required talents and stat floors':'your stat floors, weapon and attunement targets'} need more than ${BUDGET} points on their own${Object.keys(S.pin||{}).length?', together with your pinned stats':''}.`:'';
-      say((dropped.length?`Over budget, so I removed ${dropped.join(', ')} (fewest uses per point spent). Re-add any from the Talents tab. `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
+      say((dropped.length?`Removed ${dropped.join(', ')} to fit the talent cap and point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
     }finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
     if(opts&&opts.after)opts.after();
   },30);
@@ -3896,14 +4632,14 @@ function buildSheet(){
 </main></body></html>`;
 }
 function buildText(){if(!last||!last.best)return '';const b=last.best;const C=last.R.C;
-  return [`Meta Builder build (${S.weapon||WEP[S.wtype]+' weapon'}, ${S.oath==='None'?'no oath':S.oath})`,`Pre-shrine: ${ALL.filter(k=>b.P[k]>0).map(k=>`${k} ${b.P[k]}`).join(' / ')}`,`After shrine: ${ALL.filter(k=>b.P[k]>0).map(k=>`${k} ${b.sh.out[k]}`).join(' / ')}`,`Final: ${ALL.filter(k=>b.final[k]).map(k=>`${k} ${b.final[k]}`).join(' / ')}`,`Talents: ${[...C.T.keys()].join(', ')}`,`Mantras: ${[...C.M.keys()].join(', ')||'none'}`,`Free points: ${b.free} of ${BUDGET}`].join('\n')}
+  return [`Meta Builder build (${S.weapon||WEP[S.wtype]+' weapon'}, ${S.oath==='None'?'no oath':S.oath})`,`Pre-shrine: ${ALL.filter(k=>b.P[k]>0).map(k=>`${k} ${b.P[k]}`).join(' / ')}`,`After shrine: ${ALL.filter(k=>b.P[k]>0).map(k=>`${k} ${b.sh.out[k]}`).join(' / ')}`,`Final: ${ALL.filter(k=>b.final[k]).map(k=>`${k} ${b.final[k]}`).join(' / ')}`,`Talents: ${[...C.T.keys()].join(', ')}`,`Mantras: ${[...C.M.keys()].join(', ')||'none'}`,`Free points: ${b.free} of ${BUDGET}`,`Open it: ${buildLink()}`].join('\n')}
 
 // ================= events =================
 // ---- preset questions ----
 let wizP=null;
-// level lists: 1 first, "No stats" (0) last, so the list stays in numerical order
+// level lists: "No stats" (0) first, then 1, 5, 10 … 100 in order
 const STEP5=[1,...[...Array(20)].map((_,i)=>(i+1)*5)];
-const lvlOpts=(list,sel,zero,fmt)=>[...list,0].map(v=>`<option value="${v}" ${+v===+sel||(!sel&&v===0)?'selected':''}>${v===0?zero:esc(fmt?fmt(v):v)}</option>`).join('');
+const lvlOpts=(list,sel,zero,fmt)=>[0,...list].map(v=>`<option value="${v}" ${+v===+sel||(!sel&&v===0)?'selected':''}>${v===0?zero:esc(fmt?fmt(v):v)}</option>`).join('');
 const opts=(list,sel,fmt)=>list.map(v=>`<option value="${esc(v)}" ${String(v)===String(sel)?'selected':''}>${esc(fmt?fmt(v):v)}</option>`).join('');
 const snap5=v=>!v?0:v<=1?1:Math.min(100,Math.round(v/5)*5);
 // what raising one stat unlocks: talents not yet reachable with prof that become reachable at each threshold
@@ -3929,7 +4665,7 @@ function wizHints(){const prof=wizProfile();
   if(wizHSel)showUnlockList(wizHSel)}
 let wizHSel=null;
 function unlockListHtml(name,u){if(!u.length)return `<b>${esc(name)}</b>: nothing new within 25 points.`;let cum=0;
-  return `<b>${esc(name)}</b>`+u.slice(0,3).map(x=>{cum+=x.list.length;return `<div class="hl"><span class="th">${x.th} <small>(+${x.up}) · ${cum} total</small></span> ${x.list.map(t=>`<span class="tn" title="${esc(fmtReq(t.req))}">${esc(t.n)}${t.p?` <small>${Math.round(t.p)}%</small>`:''}</span>`).join('')}</div>`}).join('')}
+  return `<b>${esc(name)}</b>`+u.slice(0,3).map(x=>{cum+=x.list.length;return `<div class="hl"><span class="th">${x.th} <small>(+${x.up}) · ${cum} total</small></span> ${x.list.map(t=>`<span class="tn" data-t="${enc(t.n)}">${esc(t.n)}${t.p?` <small>${Math.round(t.p)}%</small>`:''}</span>`).join('')}</div>`}).join('')}
 function showUnlockList(a){wizHSel=a;const u=unlocks(wizProfile(),a,25);$('wz-hlist').innerHTML=unlockListHtml(ANAME[a],u);document.querySelectorAll('[data-wzh]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.wzh===a))}
 function wizAttRow(k,lv){const attName=x=>x?ATT[x][0]:'Pick…';return `<div class="wzatt"><select aria-label="Attunement">${opts(['',...ATTS],k||'',attName)}</select><select aria-label="Attunement level">${lvlOpts([1,20,40,60,80,100],lv??80,'No points',v=>v+(v>=20?` (level ${Math.min(5,1+Math.floor(v/20))})`:''))}</select><button type="button" class="mini" data-wzattdel="1" aria-label="Remove attunement">×</button></div>`}
 function openWizard(p){
@@ -3952,7 +4688,12 @@ function openWizard(p){
     <label>Weapon type<select id="wz-wt" data-wzstat="1">${opts(WEPS,p.wtype,v=>WEP[v])}</select></label>
     <label>Weapon level<select id="wz-wv" data-wzstat="1">${lvlOpts([1,20,40,50,60,75,80,90,100],p.wtarget,'No weapon points (caster)')}</select></label>
    </div>
-   <label class="hint"><input type="checkbox" id="wz-core" checked> Add the preset's core talents (${p.t.length}) that fit these choices</label>
+   <h3>Damage focus</h3>
+   <div class="wq">
+    <label>Damage from<select id="wz-ds">${opts([0,25,50,75,100],p.dsplit!=null?p.dsplit:(Object.keys(p.atts).length?(p.wtarget>0?50:100):0),v=>({0:'Weapon (M1) only',25:'Mostly weapon',50:'Weapon and mantras evenly',75:'Mostly mantras',100:'Mantras only'})[v])}</select></label>
+    <label>Optimizer favors<select id="wz-pr">${opts([20,50,80],p.prio!=null?p.prio:50,v=>({20:'More damage',50:'Balanced',80:'More talent options'})[v])}</select></label>
+   </div>
+   <label class="hint"><input type="checkbox" id="wz-core" checked> ${p.src==='AI build maker'?`Add the talents I picked from your description (${p.t.length})${p.t.length?': '+esc(p.t.join(', ')):''}`:`Add the preset's core talents (${p.t.length}) that fit these choices`}</label>
    <label class="hint"><input type="checkbox" id="wz-pop" checked> Then auto‑pick up to 20 popular talents these stats already reach</label>
    <label class="hint"><input type="checkbox" id="wz-help" ${S.help?'checked':''}> Help mode: show tips on what stats could be better as I build</label>
    <div class="wizact"><button value="cancel" formnovalidate>Cancel</button><button type="button" id="wz-skip">Use preset as is</button><button type="button" class="primary" id="wz-go">Start build</button></div>`;
@@ -3966,10 +4707,11 @@ function wizardApply(){
   const pre={},post={};ATTR.forEach(a=>{const x=+v('wz-pre-'+a);if(x)pre[a]=x;const y=+v('wz-post-'+a);if(y)post[a]=y});
   const atts={};document.querySelectorAll('#wz-atts .wzatt').forEach(r=>{const s=r.querySelectorAll('select');const k=s[0].value,lv=+s[1].value;if(k&&!(k in atts))atts[k]=lv});
   const autoOath=v('wz-oath')==='__auto';
-  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon='';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
+  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
   const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
-  S.sel=$('wz-core').checked?p.t.filter(n=>{const tt=TBY.get(n);if(!tt)return false;const alts=reqAlts(tt.req,false);return !hasStats(alts)||bestCost(alts,prof)===0}):[];
-  const addPop=$('wz-pop').checked&&!S.manual;const name=p.n;S.help=$('wz-help').checked;
+  // talents the AI build maker was asked for are always kept; preset core talents are kept when these targets reach them
+  S.sel=$('wz-core').checked?p.t.filter(n=>{const tt=TBY.get(n);if(!tt)return false;if(p.src==='AI build maker')return true;const alts=reqAlts(tt.req,false);return !hasStats(alts)||bestCost(alts,prof)===0}):[];
+  const addPop=$('wz-pop').checked&&!S.manual;const name=p.n;S.help=$('wz-help').checked;S.dsplit=+v('wz-ds');S.prio=+v('wz-pr');
   if(S.manual)manualFromTargets();
   closeWizard();renderInputs();
   optimizeAll({noSpend:true,noUndo:true,after:()=>{
@@ -3979,7 +4721,17 @@ function wizardApply(){
       const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless').map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
       if(ranked.length){S.oath=ranked[0].o.n;notes.push(`picked ${S.oath} (fits, and is the most common oath in similar top builds)`)}else notes.push('no oath fits these stats yet, so none is set')}
     run();
-    if(addPop){const picks=autoPickList(ctxNow()).slice(0,20);for(const x of picks){x.pre.forEach(q=>{if(!S.sel.includes(q))S.sel.push(q)});if(!S.sel.includes(x.n))S.sel.push(x.n)}if(picks.length)notes.push(`added ${picks.length} popular talents`);run()}
+    // starting points must fit 330 points: ease the largest floors down 5 at a time until they do
+    {const lowered={};let guard=40;
+      const knobs=()=>[[S.mins,'FTD',50,'Fortitude after'],[S,'wtarget',60,'Weapon'],...ATTR.filter(a=>a!=='FTD').map(a=>[S.preMin,a,a==='AGL'?25:40,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,a==='FTD'?50:25,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,40,ATT[k][0]])];
+      while(last&&last.best&&last.best.free<0&&!last.best.impossible&&guard-->0){
+        const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn).sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));
+        if(!ks.length)break;const [o,k,mn,label]=ks[0];o[k]=Math.max(mn,(+o[k]||0)-5);lowered[label]=o[k];
+        renderResults(compute({starts:4,iters:80,seedP:prevP()}))}
+      const lw=Object.entries(lowered);if(lw.length)notes.push('lowered '+lw.map(([l,v])=>`${l} to ${v}`).join(', ')+' so it fits 330 points');
+      if(last&&last.best&&last.best.free<0)notes.push(`still ${-last.best.free} over; lower a floor or drop a talent`)}
+    if(addPop){const picks=autoPickList(ctxNow()).slice(0,20);for(const x of picks){x.pre.forEach(q=>{if(!S.sel.includes(q))S.sel.push(q)});if(!S.sel.includes(x.n))S.sel.push(x.n)}if(picks.length)notes.push(`added ${picks.length} popular talents`);const dr=trimToCap();if(dr.length)notes.push(`dropped ${dr.length} to fit the talent cap`);run()}
+    else{const dr=trimToCap();if(dr.length){notes.push(`dropped ${dr.length} to fit the talent cap`);run()}}
     renderInputs();
     sayUndo(`Started from ${name}${notes.length?': '+notes.join(', '):''}. Press Optimize build after adding the talents you want.`);
   }});
@@ -4038,6 +4790,81 @@ function loadSnap(ph){const sn=(S.snap||{})[ph];if(!sn)return;pushUndo('Load '+p
   if(S.manual){S.man=S.man||{pre:{},fin:{}};S.man[ph==='pre'?'pre':'fin']=Object.fromEntries(ALL.filter(k=>sn[k]).map(k=>[k,sn[k]]));run();say(`Loaded your saved ${ph}‑shrine stats.`);return}
   if(ph==='pre'){S.pin=Object.fromEntries(ALL.map(k=>[k,sn[k]||0]));run();say('Loaded your saved pre‑shrine stats as pins. Optimize keeps them exactly; Clear pins to release them.')}
   else{S.mins={};ATTR.forEach(a=>{if(sn[a])S.mins[a]=sn[a]});if(sn[S.wtype])S.wtarget=sn[S.wtype];for(const k of ATTS){if(sn[k])S.atts[k]=sn[k]}renderInputs();run();say('Loaded your saved post‑shrine stats as after‑shrine targets.')}}
+
+// ---- share / import / export links ----
+const buildLink=()=>shareBase()+'#'+encodeBuild();
+function openDlg(id){const d=$(id);if(d.showModal)d.showModal();else d.setAttribute('open','')}
+function closeDlg(id){const d=$(id);if(d.close)d.close();else d.removeAttribute('open')}
+function openShare(){$('sharelink').value=buildLink();$('impmsg').textContent='';openDlg('share');setTimeout(()=>{$('sharelink').select()},30)}
+function linkToast(msg){$('copied').innerHTML=`${esc(msg)} <span class="linkline">Build link: <input class="linkbox" readonly value="${esc(buildLink())}" aria-label="Build link"> <button class="mini" data-x="copylink">Copy link</button></span>`}
+function doImport(raw){try{const next=decodeBuild(raw);pushUndo('Import');Object.assign(S,next);renderInputs();run();return true}catch(e){return false}}
+
+// ---- AI build maker (keyword reader; runs in your browser, nothing is sent anywhere) ----
+const AI_EX=['insanity build with flamecharm','tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
+const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
+const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
+const AI_STAT=[['STR',/\b(strength|str)\b/],['FTD',/\b(fortitude|fort|ftd)\b/],['AGL',/\b(agility|agi|agl)\b/],['INT',/\b(intelligence|int)\b/],['WLL',/\b(willpower|will|wll)\b/],['CHA',/\b(charisma|cha)\b/]];
+function aiNumNear(s,re){const m=s.match(new RegExp('(\\d{1,3})\\s*(?:'+re.source.replace(/\\b/g,'')+')'))||s.match(new RegExp('(?:'+re.source.replace(/\\b/g,'')+')\\s*(\\d{1,3})'));return m?Math.max(1,Math.min(100,+m[1])):null}
+function aiParse(txt){
+  const s=' '+String(txt||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' ';const got=[];
+  const has=re=>re.test(s);
+  let base=null;
+  if(has(/\bboss ?raid\w*|\bbosses\b|\bboss\b|\bpve\b/)){base=PRESETS.find(p=>p.n===(has(/\b(mage|caster|no weapon)\b/)?'Bossraid Mage':'Bossraid'));got.push(base.n+' starting point')}
+  else if(has(/\bchime\b|\bpvp\b|\barena\b|\bduel\w*/)){base=PRESETS.find(p=>p.n==='Chime');got.push('Chime starting point')}
+  const p=base?JSON.parse(JSON.stringify(base)):{n:'Your build',d:'',src:'AI build maker',pre:{AGL:40},post:{FTD:50},oath:'__auto',wtype:'MED',wtarget:75,atts:{},t:[]};
+  p.n='Your build';p.src='AI build maker';const T=new Set(p.t);const add=(...ns)=>ns.forEach(n=>{if(TBY.has(n))T.add(n)});
+  const up=(o,k,v)=>{o[k]=Math.max(o[k]||0,v)};
+  // play styles
+  if(has(/\binsan\w*|\blose your mind\b|\blym\b|\bsanity\b|\bmadness\b/)){up(p.pre,'WLL',75);add('Lose Your Mind','Grasp on Reality','Breathing Exercise','Shared Misery');got.push('insanity → high Willpower + Lose Your Mind')}
+  if(has(/\btank\w*|\bbeefy\b|\bsurviv\w*|\bhealth\b|\bhp\b|\bdurable\b/)){up(p.post,'FTD',75);up(p.pre,'WLL',40);add('Exoskeleton','To The Finish','Brassneck','Ready or Not');got.push('tanky → Fortitude 75 after the shrine')}
+  if(has(/\bcharm\w*|\bcharisma\w*|\bcha\b/)){up(p.pre,'CHA',75);add('Charismatic Cast','Tough Love','Lasting Charisma','Manipulator');got.push('charm → Charisma 75')}
+  if(has(/\bspeed\w*|\bfast\b|\bmobil\w*|\bdodg\w*|\bagile\b/)){up(p.pre,'AGL',60);add('Speed Demon','Swift Rebound','Evasive Expert','Ghost');got.push('speed → Agility 60')}
+  if(has(/\bsmart\b|\bint build\b|\bintelligence build\b/)){up(p.pre,'INT',75);add('Neuroplasticity','Eureka','Approaching Singularity');got.push('Intelligence 75')}
+  if(has(/\bbrute\b|\bstrength build\b|\bstr build\b|\bhard hitting\b/)){up(p.pre,'STR',75);add('Unwavering Resolve','Showstopper');got.push('Strength 75')}
+  const caster=has(/\b(mage|caster|mantra build|spellcaster|no weapon)\b/);
+  // stats with or without numbers, and "no <stat>"
+  for(const [k,re] of AI_STAT){if(new RegExp('\\bno\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)){delete p.pre[k];delete p.post[k];got.push('no '+ANAME[k]);continue}
+    if(!re.test(s))continue;const n=aiNumNear(s,re);if(n){if(k==='FTD')p.post.FTD=n;else p.pre[k]=n;got.push(`${ANAME[k]} ${n}`)}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',75);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
+  // attunements in order of mention
+  const at=AI_ATT.map(([k,re])=>{const m=s.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
+  if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){p.atts={};at.forEach((x,i)=>{const n=aiNumNear(s,x.re);p.atts[x.k]=n||(i===0?(caster?100:80):40)});got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + '))}
+  // weapon
+  const nameW=DB.W.filter(w=>w.n.length>4&&s.includes(' '+w.n.toLowerCase()+' ')).sort((a,b)=>b.n.length-a.n.length)[0];
+  if(nameW){p.weapon=nameW.n;const wt=WEPS.find(k=>k in nameW.req.s)||(nameW.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)p.wtype=wt;got.push('weapon '+nameW.n)}
+  const wm=AI_WEP.find(([k,re])=>re.test(s));
+  if(wm&&!nameW){p.wtype=wm[0];const n=aiNumNear(s,wm[1]);p.wtarget=n||(wm[0]==='HVY'?90:80);got.push(`${WEP[wm[0]]} weapon ${p.wtarget}`)}
+  else if(caster&&!nameW){p.wtarget=0;got.push('no weapon points (caster)')}
+  // oath
+  const oath=OATHS.find(o=>o.n!=='None'&&new RegExp('\\b'+o.n.toLowerCase()+'\\b').test(s));
+  if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}
+  else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}
+  else if(!base)p.oath='__auto';
+  // damage focus
+  if(has(/\bm1\b|\bmelee\b|\bweapon damage\b/)){p.dsplit=0;got.push('weapon damage focus')}else if(caster||has(/\bmantra damage\b|\bmantras\b/)){p.dsplit=100;got.push('mantra damage focus')}
+  // talents named directly
+  const named=DB.T.filter(x=>x.n.length>=5&&!x.n.startsWith('Oath:')&&s.includes(' '+x.n.toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' '));
+  named.forEach(x=>T.add(x.n));if(named.length)got.push('talents: '+named.map(x=>x.n).join(', '));
+  p.t=[...T];
+  p.d=got.length?'I read: '+got.join(' · '):'No build words found, so this is a balanced starting point (Agility 40 before, Fortitude 50 after).';
+  return {p,got};
+}
+function openAI(){$('aiex').innerHTML=AI_EX.map(x=>`<button type="button" class="chip" data-aiex="${esc(x)}">${esc(x)}</button>`).join('');$('aimsg').textContent='';openDlg('ai');setTimeout(()=>$('aitext').focus(),30)}
+
+// ---- talent hover card ----
+function tipHtml(n){const t=TBY.get(n);const C=last?last.R.C:closure();const sy=t?synOf(n,C):[];const d=TDESC.get(n);
+  return `<b>${esc(n)}</b>${t?` <span class="hint">${esc(t.c)}</span>`:''}${t?`<div class="mono tipreq">${esc(fmtReq(t.req))}</div>`:''}<div>${esc(d||'No description on deepwoken.co.')}</div>${POP.get(n)?`<div class="hint">${Math.round(POP.get(n))}% of top builds take it</div>`:''}${sy.length?`<div class="syn">⚡ Works with ${esc(sy.map(s=>s.o).join(', '))}</div>`:''}`}
+let tipEl=null;
+function showTip(el){const raw=el.dataset.t||el.dataset.ttog||el.dataset.tadd||el.dataset.tdel||el.dataset.reqadd;if(!raw)return;const n=decodeURIComponent(raw);if(!TBY.has(n)&&!TDESC.has(n))return;
+  if(el.title){el.dataset.tt=el.title;el.removeAttribute('title')}
+  if(!tipEl){tipEl=document.createElement('div');tipEl.className='tipcard';tipEl.setAttribute('role','tooltip');document.body.appendChild(tipEl)}
+  tipEl.innerHTML=tipHtml(n);tipEl.hidden=false;const r=el.getBoundingClientRect();const w=Math.min(320,window.innerWidth-16);tipEl.style.width=w+'px';
+  let x=Math.min(window.innerWidth-w-8,Math.max(8,r.left));let y=r.bottom+6;const h=tipEl.offsetHeight;if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-6);
+  tipEl.style.left=x+'px';tipEl.style.top=y+'px'}
+function hideTip(){if(tipEl)tipEl.hidden=true}
+const TIPSEL='[data-t],[data-ttog],[data-tadd],[data-tdel],[data-reqadd]';
+document.addEventListener('mouseover',e=>{const el=e.target.closest&&e.target.closest(TIPSEL);if(el&&!el.closest('.brow'))showTip(el);else hideTip()});
+document.addEventListener('focusin',e=>{const el=e.target.closest&&e.target.closest(TIPSEL);if(el&&!el.closest('.brow'))showTip(el);else hideTip()});
+document.addEventListener('scroll',hideTip,true);
 
 // ---- undo ----
 const UNDO=[];
@@ -4102,8 +4929,21 @@ document.addEventListener('click',e=>{
   else if(t.id==='wz-go'){wizardApply()}
   else if(t.id==='wz-skip'){const p=wizP;closeWizard();applyPreset(p)}
   else if(d.wzh){showUnlockList(d.wzh)}
+  else if(d.ai){openAI()}
+  else if(d.aiex){$('aitext').value=d.aiex;$('aitext').focus()}
+  else if(t.id==='ai-go'){const txt=$('aitext').value.trim();if(!txt){$('aimsg').textContent='Type a few words about the build first.';return}const r=aiParse(txt);closeDlg('ai');openWizard(r.p)}
+  else if(t.id==='sharebtn'){openShare()}
+  else if(d.x==='copylink'){copyText(buildLink(),'Build link copied. Anyone who opens it gets this build loaded.')}
+  else if(d.x==='img'){closeDlg('share');say('Drawing image…');buildImage().then(blob=>blob?saveFile(`deepwoken-${slug()}.png`,blob,'image/png'):'Nothing to export yet.').then(m=>linkToast(m))}
+  else if(d.x==='sheet'){closeDlg('share');if(!last||!last.best){say('Nothing to export yet.');return}saveFile(`deepwoken-${slug()}.html`,buildSheet(),'text/html').then(m=>linkToast(m))}
+  else if(d.x==='text'){closeDlg('share');copyText(buildText(),'Build copied as text (the link is included).')}
+  else if(d.x==='import'){if(doImport($('imptext').value)){$('imptext').value='';closeDlg('share');sayUndo('Build imported.')}else $('impmsg').textContent='That isn\'t a Meta Builder link or build code. It should contain “#dw1…”.'}
+  else if(d.bopen){const n=decodeURIComponent(d.bopen);reqOpen=reqOpen===n?null:n;renderReqBrowse()}
+  else if(d.reqadd){const n=decodeURIComponent(d.reqadd);if(!S.req.includes(n)){pushUndo('Require '+n);S.req.push(n);reqOpen=n;runSoon();say(`${n} is now required.`)}}
   else if(d.mode){setMode(d.mode==='man')}
   else if(t.id==='orderbtn'){applyOrderNow()}
+  else if(t.id==='tresetbtn'){if(!S.sel.length&&!S.mantras.length){say('No talents to reset.');return}pushUndo('Reset talents');S.sel=[];S.mantras=[];S.when={};run();sayUndo(`Talents and mantras cleared${S.req.length?`; your ${S.req.length} required talent${S.req.length>1?'s':''} stayed`:''}.`)}
+  else if(t.id==='aresetbtn'){if(!Object.keys(S.atts).length){say('No attunements to reset.');return}pushUndo('Reset attunements');S.atts={};renderInputs();run();sayUndo('Attunements cleared.')}
   else if(t.id==='savepre'){saveSnap('pre')}
   else if(t.id==='savepost'){saveSnap('post')}
   else if(t.id==='loadpre'){loadSnap('pre')}
@@ -4136,14 +4976,15 @@ document.addEventListener('click',e=>{
   else if(d.reqdel){const n=decodeURIComponent(d.reqdel);S.req=S.req.filter(x=>x!==n);if(TBY.has(n)){if(!S.sel.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);say(`${n} is no longer required; it stays picked as a normal ${TBY.has(n)?'talent':'mantra'}.`);runSoon()}
   else if(d.wuse){const n=decodeURIComponent(d.wuse);S.weapon=n;const w=WBY.get(n);if(w){const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt}if(S.wcmp===n)S.wcmp='';renderInputs();runSoon();say(`Now using ${n}.`)}
   else if(d.tdel){const n=decodeURIComponent(d.tdel);S.sel=S.sel.filter(x=>x!==n);runSoon()}
-  else if(t.id==='gearopt'){const fin=last&&last.best?last.best.final:null;if(!fin){say('Build the stats first.');return}const f=S.gear.focus||'bal';const b=gearStats(S.gear,fin);S.gear=optimizeGear(fin,f);S.gear.focus=f;const a=gearStats(S.gear,fin);renderGear();save();$('gnote').insertAdjacentHTML('afterbegin',`<b>Optimized:</b> EHP ${Math.round(gearScore(b,f))} → ${Math.round(gearScore(a,f))}. `)}
+  else if(t.id==='gearopt'){const fin=last&&last.best?last.best.final:null;if(!fin){say('Build the stats first.');return}const f={a:(S.gear.w==null?50:S.gear.w)/50,minhp:S.gear.minhp||500};pushUndo('Optimize equipment');const w=S.gear.w,mh=S.gear.minhp;const b=gearStats(S.gear,fin);S.gear=optimizeGear(fin,f);S.gear.w=w;S.gear.minhp=mh;const a=gearStats(S.gear,fin);renderGear();save();$('gnote').insertAdjacentHTML('afterbegin',`<b>Optimized:</b> health ${Math.round(b.hp)} → ${Math.round(a.hp)}, EHP vs physical ${Math.round(b.phys)} → ${Math.round(a.phys)}.${a.hp<f.minhp?` <span class="gbad">Couldn't reach ${f.minhp} health with gear your stats can wear.</span>`:''} `)}
   else if(d.gstar){const s=S.gear.slots[d.gstar];if(s){const v=+d.v;s.st=s.st===v?v-1:v;renderGear();save()}}
   else if(d.gpip){const lab=d.gpip,i=+d.i;const s=S.gear.slots[lab];const g=s&&GBY.get(s.n);if(g){const ty=GSLOTS.find(x=>x[0]===lab)[1];const r=pipsOf(g,s.st)[i];const ch=pipChoices(ty,r);s.p=s.p||[];const cur=ch.includes(s.p[i])?s.p[i]:ch[0];s.p[i]=ch[(ch.indexOf(cur)+1)%ch.length];renderGear();save()}}
   else if(t.id==='copy'){copyText(buildText(),'Build copied as text.')}
+  else if(t.id==='xload'){if(doImport($('ximport').value)){$('ximport').value='';sayUndo('Build imported.')}else say('That isn\'t a Meta Builder link or build code.')}
   else if(t.id==='xlink'){copyText(shareBase()+'#'+encodeBuild(),'Share link copied. Anyone who opens it gets this build loaded.')}
-  else if(t.id==='ximg'){say('Drawing image…');buildImage().then(blob=>blob?saveFile(`deepwoken-${slug()}.png`,blob,'image/png'):'Nothing to export yet.').then(say)}
-  else if(t.id==='xhtml'){if(!last||!last.best){say('Nothing to export yet.');return}saveFile(`deepwoken-${slug()}.html`,buildSheet(),'text/html').then(say)}
-  else if(t.id==='xload'){pushUndo('Import');try{Object.assign(S,decodeBuild($('ximport').value));$('ximport').value='';renderInputs();run();say('Build imported.')}catch(err){say('That isn\'t a build link or code from this planner.')}}
+  else if(t.id==='ximg'){say('Drawing image…');buildImage().then(blob=>blob?saveFile(`deepwoken-${slug()}.png`,blob,'image/png'):'Nothing to export yet.').then(m=>linkToast(m))}
+  else if(t.id==='xhtml'){if(!last||!last.best){say('Nothing to export yet.');return}saveFile(`deepwoken-${slug()}.html`,buildSheet(),'text/html').then(m=>linkToast(m))}
+  else if(t.id==='xload'&&false){try{Object.assign(S,decodeBuild($('ximport').value));$('ximport').value='';renderInputs();run();say('Build imported.')}catch(err){say('That isn\'t a build link or code from this planner.')}}
 });
 document.addEventListener('change',e=>{
   const t=e.target;const d=t.dataset;
@@ -4166,7 +5007,8 @@ document.addEventListener('change',e=>{
   else if(d.pin){const k=d.pin;S.pin=S.pin||{};if(t.value==='')delete S.pin[k];else S.pin[k]=Math.max(0,Math.min(100,Math.round(+t.value||0)));runSoon()}
   else if(d.gslot){const n=t.value;S.gear.slots[d.gslot]=n?{n,st:maxStars(GSLOTS.find(x=>x[0]===d.gslot)[1]),p:[]}:null;renderGear();save()}
   else if(t.id==='goutfit'){S.gear.outfit=t.value;renderGear();save()}
-  else if(t.id==='gfocus'){S.gear.focus=t.value;save()}
+  else if(t.id==='gw'){S.gear.w=+t.value;save()}
+  else if(t.id==='gminhp'){S.gear.minhp=+t.value;$('gminhpv').textContent=t.value+' HP';save()}
   else if(t.id==='enchant'){S.enchant=t.value;runSoon()}
   else if(t.id==='wcmp'){S.wcmp=t.value;renderWeaponPanels();save()}
   else if(t.id==='mview'){S.mview=t.value;renderMantraView();save()}
@@ -4178,6 +5020,9 @@ $('tfind').addEventListener('input',renderTalentChips);
 $('tchips').addEventListener('toggle',e=>{const g=e.target.dataset&&e.target.dataset.gk;if(!g)return;const s=new Set(S.tclosed||[]);if(e.target.open)s.delete(g);else s.add(g);S.tclosed=[...s];save()},true);
 document.addEventListener('focusin',e=>{const ds=e.target&&e.target.dataset;const k=ds&&(ds.pin||ds.mpre||ds.mfin);if(k)statHint(k)});
 $('reqform').addEventListener('submit',e=>{e.preventDefault();addReq($('reqin').value)});
+$('reqin').addEventListener('input',renderReqBrowse);
+$('imptext').addEventListener('input',()=>{const v=$('imptext').value;$('impmsg').textContent=/dw1[A-Za-z0-9_-]{10,}/.test(v)?'Looks like a build link. Press Import build.':''});
+$('aitext').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('ai-go').click()}});
 $('wtop').closest('details').addEventListener('toggle',e=>{if(e.target.open)renderWeaponTop()});
 $('mfind').addEventListener('input',renderMantraChips);
 $('otbl').closest('details').addEventListener('toggle',e=>{if(e.target.open)renderOathTable()});

@@ -6,9 +6,11 @@ A Deepwoken build planner built around the ability to optimize your builds effec
 
 - Optimizer that picks pre-shrine stats and the pre/post order for every talent, or Manual mode where you set every stat
 - Shrine of Order, Shrine of Mastery, and save/load pre- and post-shrine stats
-- Guided starting presets, required talents, talent synergies, auto-pick, help mode
+- AI build maker: describe the build in plain words ("insanity build with flamecharm, tanky") and it fills in the starting questions
+- Guided starting presets (including Bossraid, Bossraid Mage and Chime, averaged from deepwoken.co's top builds with those tags), required talents, talent synergies, auto-pick, help mode
+- Hover any talent to see what it does; the talent cap is enforced when optimizing
 - Weapon, enchant and mantra damage, weapon comparison
-- Armor and equipment with an effective-HP optimizer and gear talents
+- Armor and equipment with a health vs physical armor optimizer (500 HP minimum by default) and gear talents
 - Share links: every build can be copied as a link that opens it here
 
 Data comes from deepwoken.co (October 2026). Race stat bonuses aren't counted.

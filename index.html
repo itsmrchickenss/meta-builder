@@ -113,6 +113,26 @@ table.ratio td:last-child{text-align:left;font-family:var(--f-body);font-size:12
 .status .bad b,.status .bad{color:var(--bad)}
 .toast{margin:-8px 4px 0;min-height:1.2em}
 .tabpane[hidden]{display:none!important}
+.capgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:6px}
+.capbox{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--abyss);border:1px solid var(--line);border-radius:999px;font-size:13px}
+.capbox.on{border-color:var(--warn);background:var(--brass-wash)}
+.capbox span:first-of-type{flex:1}
+.capbox input[type=number]{width:54px!important;min-width:54px;flex:0 0 54px;padding:3px 4px;text-align:center}
+.capbox input[type=checkbox]{flex:0 0 auto}
+.chip.avoid{border-color:var(--bad);color:var(--bone)}
+.chip.block.avoidchip{text-decoration:line-through}
+.linkbtn{background:none;border:0;padding:0;color:var(--brass);text-decoration:underline;font:inherit;cursor:pointer}
+dialog#oathdlg{background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:8px;padding:0;width:min(760px,calc(100% - 24px));max-height:calc(100vh - 24px)}
+dialog#oathdlg::backdrop{background:rgba(0,0,0,.6)}
+.oathcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;max-height:60vh;overflow:auto;padding-right:2px}
+.ocard{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:var(--abyss);border:1px solid var(--line);border-radius:6px;font-size:13px}
+.ocard.cur{border-color:var(--brass)}
+.ohead{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.ohead .tag{white-space:nowrap}
+.ohead b{font-size:15px}
+.oreq{display:flex;flex-wrap:wrap;gap:4px;align-items:baseline}
+.ochip{padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--trench);font-size:12px}
+
 .aicard{border-color:var(--brass)!important;background:linear-gradient(135deg,var(--brass-wash),var(--abyss))!important}
 .aicard b{color:var(--brass)}
 dialog#ai,dialog#share{background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:8px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100vh - 24px)}
@@ -368,7 +388,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <nav class="tabbar" id="tabbar">
   <div class="tabs" role="tablist" aria-label="Sections">
     <button role="tab" id="t-build" data-tab="build" aria-controls="tab-build"><b>1</b> Build</button>
-    <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Required</button>
+    <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Required &amp; avoid</button>
     <button role="tab" id="t-opt" data-tab="opt" aria-controls="tab-opt"><b>3</b> Optimize</button>
     <button role="tab" id="t-sum" data-tab="sum" aria-controls="tab-sum"><b>4</b> Summary</button>
     <button role="tab" id="t-arm" data-tab="arm" aria-controls="tab-arm"><b>5</b> Armor</button>
@@ -450,8 +470,13 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="list" id="reqitems"></div>
   </section>
   <section class="panel">
+    <h2>Avoided talents <small id="avcount2"></small></h2>
+    <p class="hint" style="margin:0">The optimizer, auto‑pick, recommendations and presets never add these.</p>
+    <div class="chips" id="avlist2"></div>
+  </section>
+  <section class="panel">
     <h2>Browse talents <small id="reqbrcount"></small></h2>
-    <p class="hint">Click a talent to read what it does. “Require” locks it into the build.</p>
+    <p class="hint">Click a talent to read what it does. “Require” locks it into the build; “Avoid” keeps it out.</p>
     <div class="list reqbrowse" id="reqbrowse"></div>
   </section>
 </div>
@@ -472,6 +497,18 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <!-- ============ 3 OPTIMIZE ============ -->
 <div class="tabpane grid" id="tab-opt" role="tabpanel" aria-labelledby="t-opt" hidden>
 <div class="col">
+  <section class="panel" id="wishpanel">
+    <h2>What you want</h2>
+    <p class="hint" style="margin:0">Say what you want before you optimize. Try “no willpower, keep intelligence under 20, more damage, no Ghost, must have Speed Demon”.</p>
+    <form class="row" id="wishform" autocomplete="off"><input type="text" id="wishin" placeholder="e.g. low charisma, mantra damage, avoid Fishman" aria-label="What you want" style="flex:1 1 220px"><button class="primary" type="submit">Apply</button></form>
+    <p class="hint" id="wishmsg" aria-live="polite" style="margin:0"></p>
+    <h3>Keep these stats low</h3>
+    <p class="hint" style="margin:0">Tick a stat and the optimizer won't raise it past the number. Talents that need more of it are skipped.</p>
+    <div class="capgrid" id="capgrid"></div>
+    <h3>Talents to avoid <small id="avcount"></small></h3>
+    <div class="chips" id="avlist"></div>
+    <p class="hint" style="margin:0">Add more on the <button class="linkbtn" data-tab="req">Required &amp; avoid</button> tab, or type “no &lt;talent&gt;” above.</p>
+  </section>
   <section class="panel">
     <div class="optbar"><p>Best pre‑shrine stats and pre/post order. Over budget? It drops the talents with the worst value per point.</p><button class="primary" data-optimize="1">Optimize build</button></div>
     <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
@@ -495,7 +532,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <details><summary>Force a talent before or after the shrine</summary><div class="list" id="tsel" style="margin-top:10px;max-height:320px;overflow:auto"></div></details>
   </section>
   <section class="panel">
-    <h2>Oath</h2>
+    <div class="row spread"><h2>Oath</h2><button class="accentbtn mini" data-oathreq="1">Oath requirements</button></div>
     <select id="oath" aria-label="Oath"></select>
     <div id="oathinfo"></div>
     <h3>Oaths that fit these stats</h3>
@@ -601,6 +638,13 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 </div>
 <dialog id="wiz" aria-labelledby="wiz-title"><form method="dialog" id="wizform"></form></dialog>
 <dialog id="som" aria-labelledby="som-title"><form method="dialog" id="somform"></form></dialog>
+<dialog id="oathdlg" aria-labelledby="oath-title"><form method="dialog" class="dlgform">
+  <h2 id="oath-title">Oath requirements</h2>
+  <p class="hint" style="margin:0">What each oath needs and what it gives. “Fits” uses your current build's stats.</p>
+  <div class="row"><input type="search" id="oathq" placeholder="Search oaths" aria-label="Search oaths" style="flex:1 1 160px"><label class="hint"><input type="checkbox" id="oathfit"> Only oaths that fit</label></div>
+  <div class="oathcards" id="oathcards"></div>
+  <div class="wizact"><button value="cancel" formnovalidate>Close</button></div>
+</form></dialog>
 <dialog id="ai" aria-labelledby="ai-title"><form method="dialog" id="aiform" class="dlgform">
   <h2 id="ai-title">✨ AI build maker</h2>
   <p class="hint" style="margin:0">Type in what you want for your build and we will make it for you! Mention attunements, a weapon, stats, an oath, talents or a play style.</p>
@@ -3789,9 +3833,9 @@ function paintRanges(){document.querySelectorAll('input[type=range]').forEach(r=
 document.addEventListener('input',e=>{if(e.target.type==='range')paintRanges()});
 
 // ================= state =================
-let S={prio:50,dsplit:50,wtype:'HVY',wtarget:90,atts:{FLM:80},sel:[],mantras:[],when:{},mins:{},preMin:{},oath:'Oathless',weapon:'',tfilter:'fit',mfilter:'fit',spend:true,gear:{outfit:'',slots:{},focus:'bal'},req:[],pin:{},order:true,mastery:{on:false,pre:{},post:{}},manual:false,man:{pre:{},fin:{}},enchant:'None',wcmp:'',mview:''};
+let S={prio:50,dsplit:50,wtype:'HVY',wtarget:90,atts:{FLM:80},sel:[],mantras:[],when:{},mins:{},preMin:{},oath:'Oathless',weapon:'',tfilter:'fit',mfilter:'fit',spend:true,gear:{outfit:'',slots:{},focus:'bal'},req:[],avoid:[],caps:{},pin:{},order:true,mastery:{on:false,pre:{},post:{}},manual:false,man:{pre:{},fin:{}},enchant:'None',wcmp:'',mview:''};
 try{const s=JSON.parse(localStorage.getItem('meta-builder-v1')||'null');if(s)S=Object.assign(S,s)}catch(e){}
-if(!Array.isArray(S.req))S.req=[];if(!S.mastery||typeof S.mastery!=='object')S.mastery={on:false,pre:{},post:{}};if(!S.man||typeof S.man!=='object')S.man={pre:{},fin:{}};S.order=true;if(!S.pin||typeof S.pin!=='object')S.pin={};
+if(!Array.isArray(S.req))S.req=[];if(!Array.isArray(S.avoid))S.avoid=[];if(!S.caps||typeof S.caps!=='object')S.caps={};if(!S.mastery||typeof S.mastery!=='object')S.mastery={on:false,pre:{},post:{}};if(!S.man||typeof S.man!=='object')S.man={pre:{},fin:{}};S.order=true;if(!S.pin||typeof S.pin!=='object')S.pin={};
 if(!S.gear||typeof S.gear!=='object')S.gear={outfit:'',slots:{},focus:'bal'};S.gear.slots=S.gear.slots||{};
 const save=()=>{try{localStorage.setItem('meta-builder-v1',JSON.stringify(S))}catch(e){}};
 
@@ -3838,7 +3882,7 @@ function shortReq(req){const s=Object.entries(req.s||{}).filter(([k])=>k!=='PWR'
 function oathTalentPrereqs(o){return (o&&o.req&&o.req.t||[]).filter(n=>!n.startsWith('Oath:'))}
 function closure(){
   const T=new Map(),M=new Map();
-  const addT=(n,by)=>{if(T.has(n)||n.startsWith('Oath:'))return;const t=TBY.get(n);if(!t)return;T.set(n,{by});t.req.t.forEach(p=>addT(p,n));t.req.m.forEach(p=>addM(p,n))};
+  const addT=(n,by)=>{if(T.has(n)||n.startsWith('Oath:'))return;if(by===null&&isAvoid(n))return;const t=TBY.get(n);if(!t)return;T.set(n,{by});t.req.t.forEach(p=>addT(p,n));t.req.m.forEach(p=>addM(p,n))};
   const addM=(n,by)=>{if(M.has(n))return;const m=MBY.get(n);if(!m)return;M.set(n,{by});m.req.t.forEach(p=>addT(p,n));m.req.m.forEach(p=>addM(p,n))};
   (S.req||[]).forEach(n=>TBY.has(n)?addT(n,null):addM(n,null));
   S.sel.forEach(n=>addT(n,null));S.mantras.forEach(n=>addM(n,null));
@@ -3848,15 +3892,19 @@ function closure(){
 const reqOf=n=>(TBY.get(n)||MBY.get(n)).req;
 // 'auto' = taken before the shrine if the pre-shrine stats already meet it, otherwise after
 function whenOf(name,alts){const w=S.when[name];if(w==='pre'&&canPre(alts))return 'pre';if(w==='post')return 'post';return canPre(alts)?'auto':'post'}
+// talents the user never wants, and stats the optimizer must keep low (manual mode ignores limits)
+const isAvoid=n=>(S.avoid||[]).includes(n)&&!(S.req||[]).includes(n);
+function capsOf(){if(S.manual)return {};const c={};for(const [k,v] of Object.entries(S.caps||{}))if(v&&v.on)c[k]=Math.max(0,Math.min(100,+v.max||0));return c}
+const altOkCaps=(a,caps)=>Object.entries(a.min).every(([k,v])=>!(k in caps)||v<=caps[k])&&(a.sum||[]).every(([ks,v])=>ks.reduce((s,k)=>s+(k in caps?caps[k]:100),0)>=v);
 function requirements(){
-  const C=closure();
+  const C=closure();const caps=capsOf();const capBlocked=[];
   const pre={};ALL.forEach(k=>pre[k]=0);
   const fixed={};ALL.forEach(k=>fixed[k]=0);
   ATTR.forEach(a=>fixed[a]=+S.mins[a]||0);
   fixed[S.wtype]=Math.max(fixed[S.wtype],+S.wtarget||0);
   for(const [k,v] of Object.entries(S.atts))fixed[k]=Math.max(fixed[k],+v||0);
   const items=[];
-  const add=(name,req,isW)=>{const alts=reqAlts(req,isW);if(!hasStats(alts))return;items.push({name,alts,mode:isW?'post':whenOf(name,alts)})};
+  const add=(name,req,isW)=>{let alts=reqAlts(req,isW);if(!hasStats(alts))return;const ok=alts.filter(a=>altOkCaps(a,caps));if(!ok.length){capBlocked.push(name);return}alts=ok;items.push({name,alts,mode:isW?'post':whenOf(name,alts)})};
   for(const n of C.T.keys())add(n,TBY.get(n).req,false);
   for(const n of C.M.keys())add(n,MBY.get(n).req,false);
   const wp=WBY.get(S.weapon);if(wp)add(wp.n,wp.req,true);
@@ -3864,6 +3912,8 @@ function requirements(){
   ATTR.forEach(a=>pre[a]=Math.max(pre[a],+(S.preMin||{})[a]||0));
   // pinned pre-shrine values (typed on the Build tab) are both the floor and the ceiling
   const max={};ALL.forEach(k=>max[k]=100);for(const [k,v] of Object.entries(S.pin||{}))if(k in max){max[k]=v;pre[k]=v}
+  // a limited stat ignores its pre-shrine floor (any points there get averaged up by the shrine) and its targets are clamped
+  for(const [k,v] of Object.entries(caps)){max[k]=Math.min(max[k],v);pre[k]=Math.min(pre[k],v,(S.pin||{})[k]!=null?v:0);fixed[k]=Math.min(fixed[k],v)}
   for(const it of forced){let best=null,bc=Infinity;for(const a of it.alts){const c=altCost(a,pre);if(c<bc){bc=c;best=a}}for(const [k,v] of Object.entries(best.min))pre[k]=Math.min(max[k],Math.max(pre[k],v))}
   items.sort((a,b)=>a.alts.length-b.alts.length);
   // requirement levels per stat: jump targets for the search
@@ -3872,11 +3922,12 @@ function requirements(){
   const names=[...C.T.keys(),...C.M.keys()];
   const blocked=new Set(names.flatMap(n=>(TBY.get(n)||{req:{x:[]}}).req.x||[]));
   const val=[];const cand=new Set([...POP.keys()]);for(const n of names)for(const s of SYN.get(n)||[])cand.add(s.o);
-  for(const n of cand){if(C.T.has(n)||blocked.has(n))continue;const tt=TBY.get(n);if(!tt||!tt.k||tt.r==='Q'||tt.r==='O'||tt.req.q)continue;
+  for(const n of cand){if(C.T.has(n)||blocked.has(n)||isAvoid(n))continue;const tt=TBY.get(n);if(!tt||!tt.k||tt.r==='Q'||tt.r==='O'||tt.req.q)continue;
     if((tt.req.t||[]).some(x=>x.startsWith('Oath:')&&x!=='Oath: '+S.oath))continue;
     const sy=synW(synOf(n,C));const p=(POP.get(n)||0)+sy*SYN_PTS;if(p<=0)continue;
-    const alts=reqAlts(tt.req,false);if(!hasStats(alts))continue;val.push({n,p,alts,pre:canPre(alts),syn:sy})}
-  return {pre,max,fixed,items,C,thr,names:new Set(names),val,oathAlts:oathAltsOf(findO(S.oath))};
+    const alts=reqAlts(tt.req,false).filter(a=>altOkCaps(a,caps));if(!alts.length||!hasStats(alts))continue;val.push({n,p,alts,pre:canPre(alts),syn:sy})}
+  let oathAlts=oathAltsOf(findO(S.oath));if(oathAlts){const ok=oathAlts.filter(a=>altOkCaps(a,caps));if(ok.length)oathAlts=ok;else{capBlocked.push('Oath: '+S.oath);oathAlts=null}}
+  return {pre,max,fixed,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked};
 }
 function oathAltsOf(o){if(!o||!o.req)return null;return o.custom||reqAlts(o.req,false)}
 
@@ -3906,8 +3957,9 @@ const powerAt=t=>Math.max(0,Math.min(20,Math.floor((t-15)/15)));
 function fillPriority(stats,final){const att=Object.keys(S.atts);return [...stats].sort((a,b)=>{const r=k=>k===S.wtype?0:att.includes(k)?1:WSCALE[S.wtype].includes(k)?2:3;return r(a)-r(b)||(final[b]||0)-(final[a]||0)})}
 function applyAlt(alt,final,adds){
   for(const [k,v] of Object.entries(alt.min)){if((final[k]||0)<v){adds[k]=(adds[k]||0)+v-(final[k]||0);final[k]=v}}
+  const lim=capsOf();
   for(const [ks,v] of alt.sum){let short=v-ks.reduce((s,k)=>s+(final[k]||0),0);
-    for(const k of fillPriority(ks,final)){if(short<=0)break;const d=Math.min(100-(final[k]||0),short);if(d<=0)continue;final[k]=(final[k]||0)+d;adds[k]=(adds[k]||0)+d;short-=d}}
+    for(const k of fillPriority(ks,final)){if(short<=0)break;const d=Math.min((k in lim?lim[k]:100)-(final[k]||0),short);if(d<=0)continue;final[k]=(final[k]||0)+d;adds[k]=(adds[k]||0)+d;short-=d}}
 }
 function evaluate(P,R,oathAlts){
   for(const k of ALL){if(P[k]<R.pre[k]||P[k]>R.max[k])return null}
@@ -3928,11 +3980,12 @@ function evaluate(P,R,oathAlts){
   // Shrine of Mastery after: take talents first, then refund up to 3 points
   let qmSum=0;for(const [k,v] of Object.entries(qm)){const d=Math.min(v,final[k]||0);final[k]-=d;qmSum+=d}
   const used=preSum-pmSum-sh.refund+postSum-Math.max(0,nAtt-1)-qmSum;
+  let capOver=0;for(const [k,v] of Object.entries(R.caps||{}))capOver+=Math.max(0,(final[k]||0)-v);
   const dm=damageOf(final,R.names);const m1Pct=dm.hit/dm.w.d*100;const ms=dm.md?(S.dsplit==null?50:S.dsplit)/100:0;const dmgPct=(1-ms)*m1Pct+ms*(dm.md?dm.md.pct:0);
   let tv=0;for(const v of R.val){if(v.alts.some(a=>altCost(a,final)===0)||(v.pre&&v.alts.some(a=>altCost(a,P)===0)))tv+=v.p}
   const pr=(S.prio==null?50:S.prio)/100;
   const damage=dmgPct;const score=(BUDGET-used)+2*(1-pr)*dmgPct+2*pr*tv/10;
-  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0),impossible,damage,refund:sh.refund,oathAlt:oathPick,preTaken,pmSum,qmSum};
+  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20,impossible,damage,refund:sh.refund,oathAlt:oathPick,preTaken,pmSum,qmSum,capOver};
 }
 // ---- shrines ----
 const MASTERY_LIMIT=3;
@@ -4037,6 +4090,8 @@ function slotUse(C){
 function statusOf(entry,isM,ctx){
   const {C,final,peak}=ctx;
   if(isM?C.M.has(entry.n):C.T.has(entry.n))return {k:'have',label:'In build',cost:0};
+  if(!isM&&isAvoid(entry.n))return {k:'block',label:'Avoided',cost:Infinity};
+  {const caps=capsOf();if(Object.keys(caps).length){const al=reqAlts(entry.req,false);if(hasStats(al)&&!al.some(a=>altOkCaps(a,caps)))return {k:'block',label:'Above your stat limit',cost:Infinity}}}
   const blk=(entry.req.x||[]).find(x=>C.T.has(x));if(blk)return {k:'block',label:'Blocked by '+blk,cost:Infinity};
   const oathNeed=(entry.req.t||[]).find(n=>n.startsWith('Oath:')&&n!=='Oath: '+S.oath);if(oathNeed)return {k:'block',label:'Needs '+oathNeed.slice(6),cost:Infinity};
   const alts=reqAlts(entry.req,false);
@@ -4062,13 +4117,13 @@ function recommendations(ctx,limit){
   }
   const out=[];
   for(const [n,s] of Object.entries(score)){
-    const t=TBY.get(n);if(!t||picked.has(n)||!t.k||t.r==='Q'||t.r==='O')continue;
+    const t=TBY.get(n);if(!t||picked.has(n)||!t.k||t.r==='Q'||t.r==='O'||isAvoid(n))continue;
     const st=statusOf(t,false,ctx);if(st.k==='block'||st.k==='far')continue;
     out.push({t,share:s/W,st,syn:synOf(n,ctx.C)});
   }
   // synergy partners of picked talents, even if few reference builds take them
   const seen=new Set(out.map(r=>r.t.n));
-  for(const n of picked)for(const s of SYN.get(n)||[]){const t=TBY.get(s.o);if(!t||seen.has(s.o)||picked.has(s.o)||!t.k||t.r==='Q'||t.r==='O'||t.req.q)continue;
+  for(const n of picked)for(const s of SYN.get(n)||[]){const t=TBY.get(s.o);if(!t||isAvoid(s.o)||seen.has(s.o)||picked.has(s.o)||!t.k||t.r==='Q'||t.r==='O'||t.req.q)continue;
     const st=statusOf(t,false,ctx);if(st.k==='block'||st.k==='far')continue;seen.add(s.o);out.push({t,share:(score[s.o]||0)/Math.max(W,1),st,syn:synOf(s.o,ctx.C)})}
   const rank=r=>(r.syn.length?10+synW(r.syn):0)+r.share;
   out.sort((a,b)=>rank(b)-rank(a));
@@ -4082,7 +4137,7 @@ function autoPickList(ctx){
   const cn=counts(ctx.C);let room=cn.cap-cn.nTal;if(room<=0)return [];
   const added=new Set();const have=n=>ctx.C.T.has(n)||added.has(n);
   const blockedBy=n=>{const t=TBY.get(n);if((t.req.x||[]).some(have))return true;for(const h of [...ctx.C.T.keys(),...added]){const ht=TBY.get(h);if(ht&&(ht.req.x||[]).includes(n))return true}return false};
-  const pool=DB.T.filter(t=>t.k&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&!t.n.startsWith('Oath:')&&!have(t.n));
+  const pool=DB.T.filter(t=>t.k&&!isAvoid(t.n)&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&!t.n.startsWith('Oath:')&&!have(t.n));
   const ok=new Map();for(const t of pool){const st=statusOf(t,false,ctx);if(st.k==='fit')ok.set(t.n,st)}
   const out=[];
   while(room>0){let best=null;
@@ -4373,7 +4428,7 @@ function renderReqBrowse(){
   if(q)list=list.filter(t=>(t.n+' '+t.c+' '+fmtReq(t.req)+' '+(TDESC.get(t.n)||'')).toLowerCase().includes(q));
   list.sort((a,b)=>(q?((b.n.toLowerCase().startsWith(q))-(a.n.toLowerCase().startsWith(q))):0)||(POP.get(b.n)||0)-(POP.get(a.n)||0)||a.n.localeCompare(b.n));
   $('reqbrcount').textContent=list.length+'';
-  $('reqbrowse').innerHTML=list.slice(0,40).map(t=>{const open=reqOpen===t.n;const rq=isReq(t.n);return `<div class="brow ${open?'open':''}" data-t="${enc(t.n)}"><button class="bname" data-bopen="${enc(t.n)}" aria-expanded="${open}"><b>${esc(t.n)}</b> <span class="hint">${esc(t.c)}${POP.get(t.n)?' · '+Math.round(POP.get(t.n))+'% of builds':''}</span><small>${esc(fmtReq(t.req))}</small></button>${rq?'<span class="tag ok">Required</span>':`<button class="mini" data-reqadd="${enc(t.n)}">Require</button>`}${open?`<p class="desc">${esc(TDESC.get(t.n)||'No description on deepwoken.co.')}</p>`:''}</div>`}).join('')+(list.length>40?`<p class="hint">${list.length-40} more: type to narrow the list.</p>`:'')||'<p class="hint">No talents match.</p>';
+  $('reqbrowse').innerHTML=list.slice(0,40).map(t=>{const open=reqOpen===t.n;const rq=isReq(t.n);return `<div class="brow ${open?'open':''}" data-t="${enc(t.n)}"><button class="bname" data-bopen="${enc(t.n)}" aria-expanded="${open}"><b>${esc(t.n)}</b> <span class="hint">${esc(t.c)}${POP.get(t.n)?' · '+Math.round(POP.get(t.n))+'% of builds':''}</span><small>${esc(fmtReq(t.req))}</small></button><span class="row" style="gap:4px">${rq?'<span class="tag ok">Required</span>':`<button class="mini" data-reqadd="${enc(t.n)}">Require</button>`}${isAvoid(t.n)?`<button class="mini" data-avdel="${enc(t.n)}">Avoided ✕</button>`:`<button class="mini" data-avadd="${enc(t.n)}">Avoid</button>`}</span>${open?`<p class="desc">${esc(TDESC.get(t.n)||'No description on deepwoken.co.')}</p>`:''}</div>`}).join('')+(list.length>40?`<p class="hint">${list.length-40} more: type to narrow the list.</p>`:'')||'<p class="hint">No talents match.</p>';
 }
 function addReq(raw){
   const q=String(raw||'').trim();if(!q){return}
@@ -4464,6 +4519,8 @@ function renderResults(res){
   if(su.over)note+=`<div class="callout warn">${su.over} mantra${su.over>1?'s':''} won't fit in your mantra slots.</div>`;
   const prePwr=powerAt(best.preSum);const latePre=best.preTaken.filter(n=>pwrOf(reqOf(n))>prePwr);
   if(latePre.length)note+=`<div class="callout warn">${esc(latePre.join(', '))} need${latePre.length>1?'':'s'} more Power than you'll have at the shrine (Power ${prePwr}).</div>`;
+  if(R.capBlocked&&R.capBlocked.length)note+=`<div class="callout warn">Skipped because of your stat limits: ${esc(R.capBlocked.join(', '))}. Optimize removes those talents${R.capBlocked.some(n=>n.startsWith('Oath:'))?'; pick another oath (see Oath requirements)':''}, or untick a limit.</div>`;
+  if(best.capOver)note+=`<div class="callout warn">Your floors or targets push a limited stat over its maximum by ${best.capOver}. Lower the floor or raise the limit.</div>`;
   if(best.manual&&best.unmet.length)note+=`<div class="callout warn">Not reached with these stats: ${esc(best.unmet.map(u=>u.n+' (+'+u.c+')').join(', '))}.</div>`;
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
   if(best.free>0&&!best.impossible&&!best.manual)note+=`<div class="callout">${best.free} points left. Optimize with “spend leftover” ticked to pour them into damage, or add a recommended talent.</div>`;
@@ -4518,7 +4575,7 @@ function renderResults(res){
     `<div><b>After the shrine:</b> add ${ALL.filter(k=>best.adds[k]).map(k=>`${nm(k)} +${best.adds[k]}`).join(', ')||'nothing'}.${postT.length?`<details><summary>Then take ${postT.length} talent${postT.length>1?'s':''}</summary>${esc(postT.join(', '))}</details>`:''}${C.M.size?` Learn your mantras as they unlock.`:''}${best.qmSum?` <b>Then the Shrine of Mastery:</b> remove ${esc(Object.entries(masteryOf('post')).map(([k,v])=>nm(k)+' −'+v).join(', '))} and spend the ${best.qmSum} refunded point${best.qmSum>1?'s':''}.`:''}</div>`];
   if(S.oath!=='None')steps.push(`<div><b>Take ${esc(S.oath)}</b> once you have ${esc(best.oathAlt?fmtAlt(best.oathAlt):'its requirements')}. ${esc(OATH_NOTES[S.oath]||'')}</div>`);
   $('steps').innerHTML=steps.map(s=>`<li>${s}</li>`).join('');
-  renderTalentChips();renderMantraChips();renderGear();renderFinal();renderPicked();renderStatus();renderReq();renderWeaponPanels();renderHelp();renderShrines();if($('otbl').closest('details').open)renderOathTable();save();
+  renderTalentChips();renderMantraChips();renderGear();renderFinal();renderPicked();renderStatus();renderReq();renderWeaponPanels();renderHelp();renderShrines();renderWishes();if($('otbl').closest('details').open)renderOathTable();save();
 }
 function run(){renderResults(compute({starts:2,iters:60,seedP:prevP()}))}
 
@@ -4527,7 +4584,8 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
   const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});$('results').classList.add('busy');
   setTimeout(()=>{
     try{
-      let dropped=trimToCap();
+      let dropped=[];{const R0=requirements();const cb=(R0.capBlocked||[]).filter(n=>S.sel.includes(n)&&!isReq(n));if(cb.length){S.sel=S.sel.filter(n=>!cb.includes(n));dropped.push(...cb)}}
+      dropped=dropped.concat(trimToCap());
       let res=compute({starts:18,iters:200,seedP:prevP()});
       if(res.best&&res.best.free<0&&!res.best.impossible){const tr=trimToBudget(res);dropped=dropped.concat(tr.dropped);res=compute({starts:18,iters:200,seedP:tr.res.best&&tr.res.best.P})}
       if(spend&&res.best&&res.best.free>0&&!res.best.impossible){
@@ -4536,7 +4594,7 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
         const val=f=>{const d=damageOf(f,names);return (1-ms)*d.hit/d.w.d*100+ms*(d.md?d.md.pct:0)};
         const keys=[...(S.wtarget>0||!S.weapon?[S.wtype]:[]),...Object.keys(S.atts)];
         while(free>0){let best=null;const v0=val(fin);
-          for(const k of keys){const opts=new Set([1,5,ATT[k]?(Math.floor(fin[k]/20)+1)*20-fin[k]:0].filter(x=>x>0&&x<=free&&fin[k]+x<=100));
+          const lim=capsOf();for(const k of keys){const opts=new Set([1,5,ATT[k]?(Math.floor(fin[k]/20)+1)*20-fin[k]:0].filter(x=>x>0&&x<=free&&fin[k]+x<=(k in lim?lim[k]:100)));
             for(const s of opts){const g=(val({...fin,[k]:fin[k]+s})-v0)/s;if(!best||g>best.g)best={k,s,g}}}
           if(!best||best.g<=0)break;fin[best.k]+=best.s;free-=best.s}
         if(fin[S.wtype]>(+S.wtarget||0))S.wtarget=fin[S.wtype];
@@ -4545,7 +4603,7 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
       }
       renderInputs();renderResults(res);
       const still=res.best&&!res.best.impossible&&res.best.free<0?` Still over by ${-res.best.free}: ${S.req.length?'your required talents and stat floors':'your stat floors, weapon and attunement targets'} need more than ${BUDGET} points on their own${Object.keys(S.pin||{}).length?', together with your pinned stats':''}.`:'';
-      say((dropped.length?`Removed ${dropped.join(', ')} to fit the talent cap and point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
+      say((dropped.length?`Removed ${dropped.join(', ')} to fit your stat limits, the talent cap and the point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
     }finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
     if(opts&&opts.after)opts.after();
   },30);
@@ -4555,7 +4613,7 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
 // share links always point at the public website so anyone can open them
 const ARTIFACT_URL='https://itsmrchickenss.github.io/meta-builder/';
 function shareBase(){const h=location.hostname||'';const inClaude=/claude\.ai|anthropic|usercontent|claude\.site/.test(h)||!/^https?:$/.test(location.protocol);return inClaude?ARTIFACT_URL:location.href.split('#')[0]}
-function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function decodeBuild(raw){
   let code=String(raw||'').trim();const i=code.indexOf('#');if(i>=0)code=code.slice(i+1);
   if(!code.startsWith('dw1'))throw new Error('not a build code');
@@ -4569,7 +4627,7 @@ function decodeBuild(raw){
   next.mins={};for(const [k,v] of Object.entries(o.i||{}))if(ATTR.includes(k))next.mins[k]=num(v,0);
   next.preMin={};for(const [k,v] of Object.entries(o.q||{}))if(ATTR.includes(k))next.preMin[k]=num(v,0);
   next.oath=OATHS.some(x=>x.n===o.o)?o.o:'None';next.weapon=WBY.has(o.p)?o.p:'';
-  next.req=(o.r||[]).filter(n=>TBY.has(n)||MBY.has(n));next.enchant=ENBY.has(o.e)?o.e:'None';if(o.sn&&typeof o.sn==='object'){next.snap={};for(const ph of ['pre','post'])if(o.sn[ph]){next.snap[ph]={};for(const k of ALL)next.snap[ph][k]=num(o.sn[ph][k],0)}}next.pin={};for(const [k,v] of Object.entries(o.x||{}))if(ALL.includes(k))next.pin[k]=num(v,0);
+  next.req=(o.r||[]).filter(n=>TBY.has(n)||MBY.has(n));next.enchant=ENBY.has(o.e)?o.e:'None';if(o.sn&&typeof o.sn==='object'){next.snap={};for(const ph of ['pre','post'])if(o.sn[ph]){next.snap[ph]={};for(const k of ALL)next.snap[ph][k]=num(o.sn[ph][k],0)}}next.avoid=(o.av||[]).filter(n=>TBY.has(n));next.caps={};for(const [k,v] of Object.entries(o.cp||{}))if(ATTR.includes(k)&&v&&typeof v==='object')next.caps[k]={on:!!v.on,max:num(v.max,25)};next.pin={};for(const [k,v] of Object.entries(o.x||{}))if(ALL.includes(k))next.pin[k]=num(v,0);
   if(o.g&&typeof o.g==='object'){const g={outfit:OBY.has(o.g.outfit)?o.g.outfit:'',slots:{},focus:['bal','phys','ele'].includes(o.g.focus)?o.g.focus:'bal'};for(const [lab] of GSLOTS){const s=(o.g.slots||{})[lab];if(s&&GBY.has(s.n))g.slots[lab]={n:s.n,st:Math.max(0,Math.min(3,+s.st||0)),p:Array.isArray(s.p)?s.p.filter(x=>['H','P','E',''].includes(x)).slice(0,8):[]}}next.gear=g}
   return next;
 }
@@ -4684,7 +4742,7 @@ function openWizard(p){
    <div><button type="button" class="mini" id="wz-attadd">+ Add attunement</button></div>
    <h3>Oath and weapon</h3>
    <div class="wq">
-    <label>Oath<select id="wz-oath"><option value="__auto">Best fit for these stats</option>${opts(OATHS.map(o=>o.n),p.oath,v=>v==='None'?'No oath':v)}</select></label>
+    <label>Oath <button type="button" class="linkbtn" data-oathreq="1">see requirements</button><select id="wz-oath"><option value="__auto">Best fit for these stats</option>${opts(OATHS.map(o=>o.n),p.oath,v=>v==='None'?'No oath':v)}</select></label>
     <label>Weapon type<select id="wz-wt" data-wzstat="1">${opts(WEPS,p.wtype,v=>WEP[v])}</select></label>
     <label>Weapon level<select id="wz-wv" data-wzstat="1">${lvlOpts([1,20,40,50,60,75,80,90,100],p.wtarget,'No weapon points (caster)')}</select></label>
    </div>
@@ -4710,7 +4768,7 @@ function wizardApply(){
   S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
   const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
   // talents the AI build maker was asked for are always kept; preset core talents are kept when these targets reach them
-  S.sel=$('wz-core').checked?p.t.filter(n=>{const tt=TBY.get(n);if(!tt)return false;if(p.src==='AI build maker')return true;const alts=reqAlts(tt.req,false);return !hasStats(alts)||bestCost(alts,prof)===0}):[];
+  S.sel=$('wz-core').checked?p.t.filter(n=>{const tt=TBY.get(n);if(!tt||isAvoid(n))return false;if(p.src==='AI build maker')return true;const alts=reqAlts(tt.req,false);return !hasStats(alts)||bestCost(alts,prof)===0}):[];
   const addPop=$('wz-pop').checked&&!S.manual;const name=p.n;S.help=$('wz-help').checked;S.dsplit=+v('wz-ds');S.prio=+v('wz-pr');
   if(S.manual)manualFromTargets();
   closeWizard();renderInputs();
@@ -4790,6 +4848,53 @@ function loadSnap(ph){const sn=(S.snap||{})[ph];if(!sn)return;pushUndo('Load '+p
   if(S.manual){S.man=S.man||{pre:{},fin:{}};S.man[ph==='pre'?'pre':'fin']=Object.fromEntries(ALL.filter(k=>sn[k]).map(k=>[k,sn[k]]));run();say(`Loaded your saved ${ph}‑shrine stats.`);return}
   if(ph==='pre'){S.pin=Object.fromEntries(ALL.map(k=>[k,sn[k]||0]));run();say('Loaded your saved pre‑shrine stats as pins. Optimize keeps them exactly; Clear pins to release them.')}
   else{S.mins={};ATTR.forEach(a=>{if(sn[a])S.mins[a]=sn[a]});if(sn[S.wtype])S.wtarget=sn[S.wtype];for(const k of ATTS){if(sn[k])S.atts[k]=sn[k]}renderInputs();run();say('Loaded your saved post‑shrine stats as after‑shrine targets.')}}
+
+// ---- what you want: stat limits, avoided talents, wish box ----
+function renderWishes(){
+  const caps=S.caps||{};
+  $('capgrid').innerHTML=ATTR.map(a=>{const c=caps[a]||{};return `<label class="capbox ${c.on?'on':''}"><input type="checkbox" data-capon="${a}" ${c.on?'checked':''}> <span>${esc(ANAME[a])}</span><span class="hint">max</span><input type="number" min="0" max="100" step="5" data-capmax="${a}" value="${c.max!=null?c.max:25}" aria-label="${esc(ANAME[a])} maximum"></label>`}).join('');
+  const av=S.avoid||[];const chips=av.length?av.map(n=>`<button class="chip avoid" data-avdel="${enc(n)}" data-t="${enc(n)}">⊘ ${esc(n)} <span class="x" aria-hidden="true">×</span></button>`).join(''):'<span class="hint">None yet.</span>';
+  $('avlist').innerHTML=chips;$('avlist2').innerHTML=chips;$('avcount').textContent=av.length?av.length+'':'';$('avcount2').textContent=av.length?av.length+'':'';
+}
+function avoidTalent(n){if(isAvoid(n))return;S.avoid=[...(S.avoid||[]),n];S.sel=S.sel.filter(x=>x!==n);S.req=S.req.filter(x=>x!==n)}
+const findTalent=q=>{q=q.trim().toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ');if(q.length<3)return null;return DB.T.find(t=>t.n.toLowerCase()===q)||DB.T.filter(t=>!t.n.startsWith('Oath:')&&t.n.toLowerCase().startsWith(q)).sort((a,b)=>a.n.length-b.n.length)[0]||null};
+function applyWish(txt){
+  const s=' '+String(txt||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' ';const did=[];
+  S.caps=S.caps||{};
+  const STATW={STR:'strength|str',FTD:'fortitude|fort|ftd',AGL:'agility|agi|agl',INT:'intelligence|int',WLL:'willpower|will|wll',CHA:'charisma|cha'};
+  for(const [k,w] of Object.entries(STATW)){
+    let m=s.match(new RegExp(` (?:no|zero|skip|dump) (?:${w}) `));if(m){S.caps[k]={on:true,max:0};did.push(`no ${ANAME[k]}`);continue}
+    m=s.match(new RegExp(` (?:${w}) (?:under|below|max|at most|less than|no more than) (\\d{1,3}) `))||s.match(new RegExp(` (?:under|below|max|at most|less than|no more than) (\\d{1,3}) (?:${w}) `))||s.match(new RegExp(` (?:keep|cap|limit) (?:${w}) (?:at |to |under |below )?(\\d{1,3}) `));
+    if(m){S.caps[k]={on:true,max:Math.min(100,+m[1])};did.push(`${ANAME[k]} at most ${m[1]}`);continue}
+    if(new RegExp(` (?:low|little|minimal|less) (?:${w}) | (?:keep|cap|limit) (?:${w}) low `).test(s)){S.caps[k]={on:true,max:25};did.push(`${ANAME[k]} at most 25`);continue}
+    m=s.match(new RegExp(` (?:more|high|max|lots of) (?:${w}) `));if(m){if(S.caps[k])S.caps[k].on=false;if(k==='FTD')S.mins.FTD=Math.max(+S.mins.FTD||0,75);else S.preMin[k]=Math.max(+S.preMin[k]||0,60);did.push(`more ${ANAME[k]}`)}}
+  if(/ more damage | max damage | damage /.test(s)&&!/ mantra damage | weapon damage | m1 /.test(s)){S.prio=20;did.push('favor damage')}
+  if(/ more talents | talent options | options /.test(s)){S.prio=80;did.push('favor talent options')}
+  if(/ mantra damage | mantras /.test(s)){S.dsplit=100;did.push('mantra damage')}
+  if(/ weapon damage | m1 | melee /.test(s)){S.dsplit=0;did.push('weapon damage')}
+  if(/ tank\w* | more health | survive /.test(s)){S.mins.FTD=Math.max(+S.mins.FTD||0,75);did.push('Fortitude 75 after the shrine')}
+  if(/ spend (?:the )?leftover| use (?:all|every) point/.test(s)){S.spend=true;did.push('spend leftover points')}
+  // talents: "no X", "avoid X", "without X" / "must have X", "need X", "require X"
+  for(const m of s.matchAll(/ (?:no|avoid|without|skip|not|don't want|dont want) ([a-z0-9' ]{3,40}?)(?= and | but | or |$| no | avoid | without | must | need | keep | more | less | low )/g)){const tl=findTalent(m[1]);if(tl&&!/^(strength|fortitude|agility|intelligence|willpower|charisma)/.test(tl.n.toLowerCase())){avoidTalent(tl.n);did.push('avoid '+tl.n)}}
+  for(const m of s.matchAll(/ (?:must have|must take|need|require|requires) ([a-z0-9' ]{3,40}?)(?= and | but | or |$| no | avoid | without | must | need | keep | more | less | low )/g)){const tl=findTalent(m[1]);if(tl){if(!S.req.includes(tl.n))S.req.push(tl.n);S.avoid=(S.avoid||[]).filter(x=>x!==tl.n);did.push('require '+tl.n)}}
+  return did;
+}
+
+// ---- oath requirements menu ----
+const prettyAlt=a=>{const p=[];Object.entries(a.min).forEach(([k,v])=>p.push(`${statName(k)||k} ${v}`));(a.sum||[]).forEach(([ks,v])=>p.push(`${v} total ${isWepTrio(ks)?'weapon':ks.map(k=>statName(k)).join(' + ')}`));return p.join(' + ')||'no stats'};
+function renderOathCards(){
+  const q=($('oathq').value||'').trim().toLowerCase();const onlyFit=$('oathfit').checked;const b=last&&last.best;
+  const rows=OATHS.filter(o=>o.n!=='None').map(o=>{const alts=oathAltsOf(o);const e=b&&!S.manual?evaluate(b.P,last.R,alts):null;return {o,alts,e}});
+  const fitOf=r=>r.e&&!r.e.impossible?r.e.free:-999;
+  const list=rows.filter(r=>!q||r.o.n.toLowerCase().includes(q)).filter(r=>!onlyFit||fitOf(r)>=0).sort((a,c)=>fitOf(c)-fitOf(a)||a.o.n.localeCompare(c.o.n));
+  $('oathcards').innerHTML=list.map(({o,alts,e})=>{const tal=oathTalentPrereqs(o);const ok=e&&!e.impossible&&e.free>=0;
+    return `<div class="ocard ${o.n===S.oath?'cur':''}"><div class="ohead"><b>${esc(o.n)}</b>${e&&!e.impossible?`<span class="tag ${ok?'ok':'warn'}">${ok?`fits · ${e.free} free`:`${-e.free} points short`}</span>`:''}</div>
+      <div class="oreq"><span class="hint">Needs</span> ${(alts||[]).map(a=>`<span class="ochip">${esc(prettyAlt(a))}</span>`).join('<span class="hint"> or </span>')||'<span class="ochip">no stats</span>'}</div>
+      ${tal.length?`<div class="oreq"><span class="hint">Talents first</span> ${tal.map(n=>`<span class="ochip" data-t="${enc(n)}">${esc(n)}</span>`).join(' ')}</div>`:''}
+      <div class="oreq"><span class="hint">Gives</span> ${esc(fmtSlots(o.slots)||'no extra mantra slots')}${o.mantras.length?` · ${esc(o.mantras.join(', '))}`:''}</div>
+      ${OATH_NOTES[o.n]?`<p class="hint" style="margin:0">${esc(OATH_NOTES[o.n])}</p>`:''}
+      <div>${o.n===S.oath?'<span class="tag ok">Your oath</span>':`<button type="button" class="mini" data-oathpick="${enc(o.n)}">Choose ${esc(o.n)}</button>`}</div></div>`}).join('')||'<p class="hint">No oaths match.</p>';
+}
 
 // ---- share / import / export links ----
 const buildLink=()=>shareBase()+'#'+encodeBuild();
@@ -4930,6 +5035,9 @@ document.addEventListener('click',e=>{
   else if(t.id==='wz-skip'){const p=wizP;closeWizard();applyPreset(p)}
   else if(d.wzh){showUnlockList(d.wzh)}
   else if(d.ai){openAI()}
+  else if(d.oathreq){renderOathCards();openDlg('oathdlg')}
+  else if(d.avadd){const n=decodeURIComponent(d.avadd);pushUndo('Avoid '+n);avoidTalent(n);runSoon();say(`${n} will be avoided.`)}
+  else if(d.avdel){const n=decodeURIComponent(d.avdel);pushUndo('Stop avoiding '+n);S.avoid=S.avoid.filter(x=>x!==n);runSoon();say(`${n} is no longer avoided.`)}
   else if(d.aiex){$('aitext').value=d.aiex;$('aitext').focus()}
   else if(t.id==='ai-go'){const txt=$('aitext').value.trim();if(!txt){$('aimsg').textContent='Type a few words about the build first.';return}const r=aiParse(txt);closeDlg('ai');openWizard(r.p)}
   else if(t.id==='sharebtn'){openShare()}
@@ -4961,7 +5069,7 @@ document.addEventListener('click',e=>{
   else if(d.wq){S.wtarget=+d.wq;renderInputs();runSoon()}
   else if(d.wpick){const w=WBY.get(decodeURIComponent(d.wpick));S.weapon=w.n;const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt;$('wsearch').value='';renderInputs();runSoon()}
   else if(d.wclear){S.weapon='';renderInputs();runSoon()}
-  else if(d.oathpick){S.oath=decodeURIComponent(d.oathpick);renderInputs();runSoon()}
+  else if(d.oathpick){S.oath=decodeURIComponent(d.oathpick);const wz=$('wz-oath');if(wz&&$('wiz').open)wz.value=S.oath;else{renderInputs();runSoon()}if($('oathdlg').open){closeDlg('oathdlg')}say(`Oath set to ${S.oath}.`)}
   else if(d.ttog&&isReq(decodeURIComponent(d.ttog))){say(`${decodeURIComponent(d.ttog)} is required. Remove it on the Required tab first.`)}
   else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else S.sel.push(n);runSoon()}
   else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n))S.sel.push(n);runSoon()}
@@ -5003,6 +5111,8 @@ document.addEventListener('change',e=>{
   else if(d.wzstat||t.closest&&t.closest('#wz-atts')){wizHints()}
   else if(t.id==='helpon'){S.help=t.checked;save();renderHelp()}
   else if(d.som){somTotal()}
+  else if(d.capon){const k=d.capon;S.caps=S.caps||{};S.caps[k]=S.caps[k]||{max:25};S.caps[k].on=t.checked;runSoon()}
+  else if(d.capmax){const k=d.capmax;S.caps=S.caps||{};S.caps[k]=S.caps[k]||{on:false};S.caps[k].max=Math.max(0,Math.min(100,+t.value||0));if(S.caps[k].on)runSoon();else save()}
   else if(d.mpre||d.mfin){const k=d.mpre||d.mfin,ph=d.mpre?'pre':'fin';S.man[ph]=S.man[ph]||{};const v=t.value===''?0:Math.max(0,Math.min(100,Math.round(+t.value||0)));if(v)S.man[ph][k]=v;else delete S.man[ph][k];runSoon()}
   else if(d.pin){const k=d.pin;S.pin=S.pin||{};if(t.value==='')delete S.pin[k];else S.pin[k]=Math.max(0,Math.min(100,Math.round(+t.value||0)));runSoon()}
   else if(d.gslot){const n=t.value;S.gear.slots[d.gslot]=n?{n,st:maxStars(GSLOTS.find(x=>x[0]===d.gslot)[1]),p:[]}:null;renderGear();save()}
@@ -5021,6 +5131,8 @@ $('tchips').addEventListener('toggle',e=>{const g=e.target.dataset&&e.target.dat
 document.addEventListener('focusin',e=>{const ds=e.target&&e.target.dataset;const k=ds&&(ds.pin||ds.mpre||ds.mfin);if(k)statHint(k)});
 $('reqform').addEventListener('submit',e=>{e.preventDefault();addReq($('reqin').value)});
 $('reqin').addEventListener('input',renderReqBrowse);
+$('wishform').addEventListener('submit',e=>{e.preventDefault();const v=$('wishin').value;if(!v.trim())return;pushUndo('What you want');const did=applyWish(v);$('wishmsg').textContent=did.length?'Got it: '+did.join(' · ')+'. Press Optimize build to apply.':'I didn\'t catch anything. Try “no willpower”, “keep charisma under 30”, “more damage”, “no Ghost”, “must have Speed Demon”.';renderInputs();run()});
+$('oathq').addEventListener('input',renderOathCards);$('oathfit').addEventListener('change',renderOathCards);
 $('imptext').addEventListener('input',()=>{const v=$('imptext').value;$('impmsg').textContent=/dw1[A-Za-z0-9_-]{10,}/.test(v)?'Looks like a build link. Press Import build.':''});
 $('aitext').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('ai-go').click()}});
 $('wtop').closest('details').addEventListener('toggle',e=>{if(e.target.open)renderWeaponTop()});

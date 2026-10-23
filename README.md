@@ -9,6 +9,8 @@ A Deepwoken build planner built around the ability to optimize your builds effec
 - AI build maker: describe the build in plain words ("insanity build with flamecharm, tanky") and it fills in the starting questions
 - Guided starting presets (including Bossraid, Bossraid Mage and Chime, averaged from deepwoken.co's top builds with those tags), required talents, talent synergies, auto-pick, help mode
 - Hover any talent to see what it does; the talent cap is enforced when optimizing
+- "What you want" box and stat limits: tell the optimizer things like "no willpower, keep intelligence under 20, no Ghost" before it builds
+- Avoid list for talents you never want, and an Oath requirements menu showing what every oath needs and whether it fits
 - Weapon, enchant and mantra damage, weapon comparison
 - Armor and equipment with a health vs physical armor optimizer (500 HP minimum by default) and gear talents
 - Share links: every build can be copied as a link that opens it here

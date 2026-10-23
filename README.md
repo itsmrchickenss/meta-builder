@@ -1,6 +1,6 @@
 # Meta Builder
 
-A Deepwoken build planner built around the Shrine of Order and Shrine of Mastery.
+A Deepwoken build planner built around the ability to optimize your builds effectively and help you create.
 
 **Use it:** https://itsmrchickenss.github.io/meta-builder/
 

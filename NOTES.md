@@ -113,3 +113,6 @@ All game data is a snapshot of **deepwoken.co** (October 2026). The fandom wiki 
 - 17 outfits that grant talents are missing from the outfit list (Flame Worshipper Armor, Steel Plate, the Familiar Assassin's, Demon's and Occultist's sets, and others).
 - On phones, hover cards don't appear; the Required tab's Browse talents list is the way to read descriptions there.
 - Refreshing data means pulling from deepwoken.co again with the endpoints above and regenerating `src/data/*.txt` in the same formats.
+
+## Version
+The version shown next to the title is in `src/template.html` (`<small class="ver">`). Bump it with each release (started at v1.12).

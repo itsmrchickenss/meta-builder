@@ -116,3 +116,6 @@ All game data is a snapshot of **deepwoken.co** (October 2026). The fandom wiki 
 
 ## Version
 The version shown next to the title is in `src/template.html` (`<small class="ver">`). Bump it with each release (started at v1.12).
+
+## Tabs (v1.14)
+1 Stats (presets, stat table: Before shrine / Shrine leaves / After shrine at least + final, optimizer, weapon, attunements, oath, wishes) · 2 Talents & mantras (picker, required/avoid, browse, your talents, mantras, combos) · 3 Summary · 4 Armor. Old saved tab `opt` maps to Stats. Pane ids stay `tab-build`, `tab-req`, `tab-sum`, `tab-arm`.

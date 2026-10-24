@@ -265,6 +265,28 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .steps details summary{color:var(--bone)}
 
 .groups.tall{max-height:calc(100vh - 290px);min-height:360px}
+.shrineflow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;counter-reset:f}
+.shrineflow li{border:1px solid var(--line);border-top:3px solid var(--fc);border-radius:4px;padding:6px 8px;background:var(--abyss);display:grid;gap:2px;font-size:12.5px;counter-increment:f}
+.shrineflow li b{font-size:13px;color:var(--fc)}.shrineflow li b::before{content:counter(f) ". "}.shrineflow li span{color:var(--dim)}
+.f-pre,.c-pre,.fbox.pre{--fc:var(--ice)}.f-sh,.c-sh{--fc:var(--dim)}.f-post,.c-post,.fbox.post{--fc:var(--brass)}
+.fbox.pre{border-top:3px solid var(--fc)}.fbox.post{border-top:3px solid var(--fc)}
+.fbox .hd2{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--fc);font-weight:700}
+table.stbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.stbl th,.stbl td{padding:3px 4px;text-align:center;vertical-align:middle;font-family:var(--f-body)}
+.stbl tr.sgrp th,.stbl tr.sub th{text-align:center}
+.stbl th[scope=row]{text-align:left;font-weight:600;white-space:nowrap;text-transform:none;letter-spacing:0;font-size:14px;color:var(--bone)}
+.stbl tr.sgrp th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--fc);border-bottom:2px solid var(--fc);padding-bottom:2px}
+.stbl tr.sgrp th.sk{color:var(--dim);border-bottom:1px solid var(--line);text-align:left;vertical-align:bottom}
+.stbl tr.sub th{font-size:10.5px;color:var(--dim);font-weight:400;text-transform:lowercase}
+.stbl tr.sec th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);padding-top:10px;border-bottom:1px solid var(--line)}
+.stbl td.c-pre{background:color-mix(in srgb,var(--ice) 7%,transparent)}.stbl td.c-post{background:color-mix(in srgb,var(--brass) 7%,transparent)}
+.stbl input.v{width:3.4em;padding:2px 0;font:inherit;font-family:var(--f-mono);text-align:center;color:var(--bone);border:1px solid var(--line);border-radius:4px;background:var(--trench)}
+.stbl input.v.pin{border-color:var(--brass);background:var(--brass-wash)}.stbl input.v:disabled{opacity:.35}.stbl input.v.up{border-color:var(--ok)}
+.stbl .fv{display:inline-block;min-width:2.6em;padding:2px 0;border:1px solid var(--line);border-radius:4px;background:var(--trench)}
+.stbl .fv.up{border-color:var(--ok);color:var(--ok)}.stbl .fv.down{border-color:var(--bad)}
+.stbl tr.zero th[scope=row],.stbl tr.zero td{opacity:.55}
+.stbl small.warn{color:var(--warn);font-weight:400;font-size:10.5px}
+@media (max-width:420px){.shrineflow li span{display:none}.stbl input.v{width:2.9em}.stbl{font-size:12.5px}}
 .fstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 @media (max-width:520px){.fstats{grid-template-columns:minmax(0,1fr)}}
 .fbox{background:var(--abyss);border:1px solid var(--line);border-radius:4px;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto 3.4em;gap:5px 10px;align-items:center;align-content:start}
@@ -389,7 +411,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.13</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.14</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -413,11 +435,10 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 
 <nav class="tabbar" id="tabbar">
   <div class="tabs" role="tablist" aria-label="Sections">
-    <button role="tab" id="t-build" data-tab="build" aria-controls="tab-build"><b>1</b> Build</button>
-    <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Required &amp; avoid</button>
-    <button role="tab" id="t-opt" data-tab="opt" aria-controls="tab-opt"><b>3</b> Optimize</button>
-    <button role="tab" id="t-sum" data-tab="sum" aria-controls="tab-sum"><b>4</b> Summary</button>
-    <button role="tab" id="t-arm" data-tab="arm" aria-controls="tab-arm"><b>5</b> Armor</button>
+    <button role="tab" id="t-build" data-tab="build" aria-controls="tab-build"><b>1</b> Stats</button>
+    <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Talents &amp; mantras</button>
+    <button role="tab" id="t-sum" data-tab="sum" aria-controls="tab-sum"><b>3</b> Summary</button>
+    <button role="tab" id="t-arm" data-tab="arm" aria-controls="tab-arm"><b>4</b> Armor</button>
   </div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="seg modeseg" id="modeseg" role="group" aria-label="Planner mode"><button class="mini" data-mode="opt" title="The optimizer picks pre-shrine stats, raises stats for your talents and spends leftovers">Optimizer</button><button class="mini" data-mode="man" title="You set every stat yourself; nothing is raised or chosen for you">Manual</button></div>
@@ -429,7 +450,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="helpbox" id="help" hidden></div>
 
 <div id="results">
-<!-- ============ 1 BUILD ============ -->
+<!-- ============ 1 STATS ============ -->
 <div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
 <div class="col">
   <section class="panel">
@@ -442,23 +463,42 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="list" id="mypresets"></div>
     <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
   </section>
-
-  <section class="panel">
-    <div class="row spread"><h2>Stats <small>pre‑shrine · final</small></h2><button class="mini" id="pinclear">Clear pins</button></div>
+  <section class="panel" id="statspanel">
+    <div class="row spread"><h2>Stats</h2><button class="mini" id="pinclear">Clear pins</button></div>
+    <ol class="shrineflow" aria-label="How the shrine works">
+      <li class="f-pre"><b>Before shrine</b><span>Level up with these stats first</span></li>
+      <li class="f-sh"><b>Shrine of Order</b><span>Averages your stats (needs Power 8)</span></li>
+      <li class="f-post"><b>After shrine</b><span>Spend the rest; this is your final build</span></li>
+    </ol>
     <div class="row shrinebtns"><button class="shrinebtn" id="orderbtn"></button><button class="shrinebtn" id="masterybtn"></button></div>
-    <div class="row snapbtns"><button class="mini" id="savepre">Save pre‑shrine</button><button class="mini" id="savepost">Save post‑shrine</button><button class="mini" id="loadpre">Load pre‑shrine</button><button class="mini" id="loadpost">Load post‑shrine</button></div>
-    <p class="hint" id="snapinfo"></p>
     <p class="hint" id="statshelp"></p>
-    <div class="fstats" id="bstats"></div>
-    <div class="hlist stathint" id="stathint" aria-live="polite"><span class="hint">Click a stat box to see what raising it unlocks.</span></div>
-    <details><summary>Stat floors (minimums instead of exact values)</summary>
-      <p class="hint">Before shrine: the least each stat should reach before you use the shrine. After shrine: the least it should end at.</p>
+    <div class="fstats" id="fstats"></div>
+    <div id="bstats"></div>
+    <div class="hlist stathint" id="stathint" aria-live="polite"><span class="hint">Click a stat to see what raising it unlocks.</span></div>
+    <details><summary>Before‑shrine floors (minimums instead of exact values)</summary>
+      <p class="hint">Before shrine: the least each stat should reach before you use the shrine. After shrine: the least it should end at (same as the “At least” column).</p>
       <div class="floors" id="floors"></div>
     </details>
+    <details><summary>Shrine breakdown, step by step</summary><div class="scroll" style="margin-top:10px"><table class="ledger" id="tbl"></table></div></details>
+    <details><summary>Save or load stat snapshots</summary>
+      <div class="row snapbtns" style="margin-top:8px"><button class="mini" id="savepre">Save before‑shrine</button><button class="mini" id="savepost">Save after‑shrine</button><button class="mini" id="loadpre">Load before‑shrine</button><button class="mini" id="loadpost">Load after‑shrine</button></div>
+      <p class="hint" id="snapinfo"></p>
+    </details>
   </section>
-
 </div>
 <div class="col">
+  <section class="panel">
+    <h2>Optimizer</h2>
+    <div class="optbar"><p>Best pre‑shrine stats and pre/post order. Over budget? It drops the talents with the worst value per point.</p><button class="primary" data-optimize="1">Optimize build</button></div>
+    <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
+    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: a stat invested before the shrine never ends higher than it started (go high first, shrine down, never back up)</label>
+    <label class="hint split" for="prio">Optimize for <b style="color:var(--bone)">damage</b><input type="range" id="prio" min="0" max="100" step="10"><b style="color:var(--bone)">talent options</b></label>
+    <label class="hint split" for="dsplit">Damage from <b style="color:var(--bone)">M1 (weapon)</b><input type="range" id="dsplit" min="0" max="100" step="10"><b style="color:var(--bone)">mantras (attunement)</b></label>
+    <p class="hint" id="dsplithelp" style="margin:0"></p>
+    <div class="verdict" id="verdict"></div>
+    <div id="caps"></div>
+    <div id="note"></div>
+  </section>
   <section class="panel">
     <h2>Weapon</h2>
     <div class="seg" id="wtype"></div>
@@ -467,12 +507,37 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="results-pop" id="wresults"></div>
     <div id="wpicked"></div>
   </section>
-
   <section class="panel">
     <div class="row spread"><h2>Attunements</h2><button class="mini" id="aresetbtn">Reset attunements</button></div>
     <p class="hint">Tick each attunement and set its final target. 80 gives level‑5 mantras. Every attunement after the first gets its first point free.</p>
     <div class="att" id="atts"></div>
   </section>
+  <section class="panel">
+    <div class="row spread"><h2>Oath</h2><button class="accentbtn mini" data-oathreq="1">Oath requirements</button></div>
+    <select id="oath" aria-label="Oath"></select>
+    <div id="oathinfo"></div>
+    <h3>Oaths that fit these stats</h3>
+    <div class="chips" id="fits"></div>
+    <details><summary>Compare every oath</summary><div class="scroll" style="margin-top:10px"><table class="oathtbl" id="otbl"></table></div></details>
+  </section>
+  <section class="panel" id="wishpanel">
+    <h2>What you want <small>stats and talents</small></h2>
+    <p class="hint" style="margin:0">Say what you want before you optimize. Try “no willpower, keep intelligence under 20, more damage, no Ghost, must have Speed Demon”.</p>
+    <form class="row" id="wishform" autocomplete="off"><input type="text" id="wishin" placeholder="e.g. low charisma, mantra damage, avoid Fishman" aria-label="What you want" style="flex:1 1 220px"><button class="primary" type="submit">Apply</button></form>
+    <p class="hint" id="wishmsg" aria-live="polite" style="margin:0"></p>
+    <h3>Keep these stats low</h3>
+    <p class="hint" style="margin:0">Tick a stat and the optimizer won't raise it past the number. Talents that need more of it are skipped.</p>
+    <div class="capgrid" id="capgrid"></div>
+    <h3>Talents to avoid <small id="avcount"></small></h3>
+    <div class="chips" id="avlist"></div>
+    <p class="hint" style="margin:0">Add more on the <button class="linkbtn" data-tab="req">Talents &amp; mantras</button> tab, or type “no &lt;talent&gt;” above.</p>
+  </section>
+</div>
+</div>
+
+<!-- ============ 2 TALENTS & MANTRAS ============ -->
+<div class="tabpane grid" id="tab-req" role="tabpanel" aria-labelledby="t-req" hidden>
+<div class="col">
   <section class="panel">
     <div class="row spread"><h2>Talents <small id="tcount"></small></h2><span class="row" style="gap:6px"><button class="mini" id="tresetbtn" title="Remove every picked talent (required ones stay)">Reset talents</button><button class="accentbtn" id="autopick" title="Fill free talent slots with the best talents your current stats already reach">Auto‑pick talents</button></span></div>
     <div class="row">
@@ -484,15 +549,9 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="groups tall cols" id="tchips"></div>
     <p class="hint">Gold edge = advanced, blue = rare. Dashed = added as a prerequisite. Grey chips need more points (shown in orange). ⚡ = synergy with something you picked.</p>
   </section>
-</div>
-</div>
-
-<!-- ============ 2 REQUIRED ============ -->
-<div class="tabpane grid" id="tab-req" role="tabpanel" aria-labelledby="t-req" hidden>
-<div class="col">
   <section class="panel">
     <h2>Required talents <small id="reqcount"></small></h2>
-    <p class="hint">Type the talents or mantras the build must have. Optimize treats them as fixed: it never drops them to fit the budget, removes other talents first, and plans stats around them. They stay when you load a preset.</p>
+    <p class="hint">Type the talents or mantras the build must have. Optimize treats them as fixed: it never drops them to fit the budget, removes other talents first, and plans stats around them. </p>
     <form class="row" id="reqform" autocomplete="off">
       <input type="search" id="reqin" placeholder="Search talents by name, stat or what they do (e.g. 'insanity', 'charm')" aria-label="Search talents" style="flex:1 1 220px">
       <button class="primary" type="submit">Add</button>
@@ -515,64 +574,10 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 </div>
 <div class="col">
   <section class="panel">
-    <h2>What they need</h2>
-    <p class="hint">Grey = the least each stat must reach (cheapest option where a talent has a choice). Box = your highest value before or after the shrine, green when it's enough.</p>
-    <div class="fstats" id="reqneed"></div>
-    <div id="reqwarn"></div>
-  </section>
-  <section class="panel">
-    <h2>⚡ Synergies with your required talents</h2>
-    <div class="chips" id="reqsyn"></div>
-  </section>
-</div>
-</div>
-
-<!-- ============ 3 OPTIMIZE ============ -->
-<div class="tabpane grid" id="tab-opt" role="tabpanel" aria-labelledby="t-opt" hidden>
-<div class="col">
-  <section class="panel" id="wishpanel">
-    <h2>What you want</h2>
-    <p class="hint" style="margin:0">Say what you want before you optimize. Try “no willpower, keep intelligence under 20, more damage, no Ghost, must have Speed Demon”.</p>
-    <form class="row" id="wishform" autocomplete="off"><input type="text" id="wishin" placeholder="e.g. low charisma, mantra damage, avoid Fishman" aria-label="What you want" style="flex:1 1 220px"><button class="primary" type="submit">Apply</button></form>
-    <p class="hint" id="wishmsg" aria-live="polite" style="margin:0"></p>
-    <h3>Keep these stats low</h3>
-    <p class="hint" style="margin:0">Tick a stat and the optimizer won't raise it past the number. Talents that need more of it are skipped.</p>
-    <div class="capgrid" id="capgrid"></div>
-    <h3>Talents to avoid <small id="avcount"></small></h3>
-    <div class="chips" id="avlist"></div>
-    <p class="hint" style="margin:0">Add more on the <button class="linkbtn" data-tab="req">Required &amp; avoid</button> tab, or type “no &lt;talent&gt;” above.</p>
-  </section>
-  <section class="panel">
-    <div class="optbar"><p>Best pre‑shrine stats and pre/post order. Over budget? It drops the talents with the worst value per point.</p><button class="primary" data-optimize="1">Optimize build</button></div>
-    <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
-    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: a stat invested before the shrine never ends higher than it started (go high first, shrine down, never back up)</label>
-    <label class="hint split" for="prio">Optimize for <b style="color:var(--bone)">damage</b><input type="range" id="prio" min="0" max="100" step="10"><b style="color:var(--bone)">talent options</b></label>
-    <label class="hint split" for="dsplit">Damage from <b style="color:var(--bone)">M1 (weapon)</b><input type="range" id="dsplit" min="0" max="100" step="10"><b style="color:var(--bone)">mantras (attunement)</b></label>
-    <p class="hint" id="dsplithelp" style="margin:0"></p>
-    <div class="verdict" id="verdict"></div>
-    <div id="caps"></div>
-    <div id="note"></div>
-  </section>
-  <section class="panel">
-    <h2>Final stats <small>grey = before the shrine</small></h2>
-    <div class="fstats" id="fstats"></div>
-    <details><summary>Shrine breakdown: pre, shrine, post</summary><div class="scroll" style="margin-top:10px"><table class="ledger" id="tbl"></table></div></details>
-  </section>
-</div>
-<div class="col">
-  <section class="panel">
     <div class="row spread"><h2>Your talents <small id="pcount"></small></h2><button class="accentbtn mini" id="autopick2">Auto‑pick talents</button></div>
     <div id="psyn"></div>
     <div id="picked" class="picked"></div>
     <details><summary>Force a talent before or after the shrine</summary><div class="list" id="tsel" style="margin-top:10px;max-height:320px;overflow:auto"></div></details>
-  </section>
-  <section class="panel">
-    <div class="row spread"><h2>Oath</h2><button class="accentbtn mini" data-oathreq="1">Oath requirements</button></div>
-    <select id="oath" aria-label="Oath"></select>
-    <div id="oathinfo"></div>
-    <h3>Oaths that fit these stats</h3>
-    <div class="chips" id="fits"></div>
-    <details><summary>Compare every oath</summary><div class="scroll" style="margin-top:10px"><table class="oathtbl" id="otbl"></table></div></details>
   </section>
   <section class="panel">
     <h2>Mantras <small id="mcount"></small></h2>
@@ -589,6 +594,16 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       <div id="mcombos" class="combolist"></div>
       <form class="row" id="mycform" autocomplete="off" style="margin-top:8px"><select id="myc-a" aria-label="Starter mantra" style="flex:1 1 140px"></select><span aria-hidden="true">→</span><select id="myc-b" aria-label="Follow-up mantra" style="flex:1 1 140px"></select><button type="submit" class="mini">Save my combo</button></form>
     </details>
+  </section>
+  <section class="panel">
+    <h2>What they need</h2>
+    <p class="hint">Grey = the least each stat must reach (cheapest option where a talent has a choice). Box = your highest value before or after the shrine, green when it's enough.</p>
+    <div class="fstats" id="reqneed"></div>
+    <div id="reqwarn"></div>
+  </section>
+  <section class="panel">
+    <h2>⚡ Synergies with your required talents</h2>
+    <div class="chips" id="reqsyn"></div>
   </section>
 </div>
 </div>
@@ -3976,7 +3991,7 @@ function requirements(){
   const wp=WBY.get(S.weapon);if(wp)add(wp.n,wp.req,true);
   const forced=items.filter(i=>i.mode==='pre').sort((a,b)=>a.alts.length-b.alts.length);
   ATTR.forEach(a=>pre[a]=Math.max(pre[a],+(S.preMin||{})[a]||0));
-  // pinned pre-shrine values (typed on the Build tab) are both the floor and the ceiling
+  // pinned pre-shrine values (typed on the Stats tab) are both the floor and the ceiling
   const max={};ALL.forEach(k=>max[k]=100);for(const [k,v] of Object.entries(S.pin||{}))if(k in max){max[k]=v;pre[k]=v}
   // a limited stat ignores its pre-shrine floor (any points there get averaged up by the shrine) and its targets are clamped
   for(const [k,v] of Object.entries(caps)){max[k]=Math.min(max[k],v);pre[k]=Math.min(pre[k],v,(S.pin||{})[k]!=null?v:0);fixed[k]=Math.min(fixed[k],v)}
@@ -4267,7 +4282,7 @@ const GEAR=[],OUTFITS=[],OTAL=new Map(),TDESC=new Map();
   else if(sec==='OT')OTAL.set(f[0],(f[1]||'').split(';').filter(Boolean));
   else if(sec==='TD')TDESC.set(f[0],f[1]||'')}
   for(const o of OUTFITS)o.tal=OTAL.get(o.n)||[]}
-// every talent's in-game description (deepwoken.co), used by hover cards and the Required tab
+// every talent's in-game description (deepwoken.co), used by hover cards and the Talents tab
 for(const l of document.getElementById('dwtdesc').textContent.split('\n')){const i=l.indexOf('|');if(i>0&&!TDESC.has(l.slice(0,i)))TDESC.set(l.slice(0,i),l.slice(i+1))}
 const GBY=new Map(GEAR.map(g=>[g.n,g])),OBY=new Map(OUTFITS.map(o=>[o.n,o]));
 const gearReqOk=(req,final,pwr)=>Object.entries(req).every(([k,v])=>k==='PWR'?pwr>=v:(final[k]||0)>=v);
@@ -4419,7 +4434,7 @@ function renderInputs(){
   $('spend').checked=!!S.spend;$('noreup').checked=S.noReup!==false;
   $('prio').value=S.prio==null?50:S.prio;
   $('dsplit').value=S.dsplit==null?50:S.dsplit;$('dsplit').disabled=!Object.keys(S.atts).length;paintRanges();
-  {const v=S.dsplit==null?50:S.dsplit;$('dsplithelp').textContent=!Object.keys(S.atts).length?'Damage from: locked because you have no attunement, so all your damage comes from your weapon (M1). Tick an attunement on the Build tab to use it.':`Damage from tells the optimizer which damage to grow when it spends points: your weapon stat (M1 hits) or your attunement (mantra hits). Slide left for a weapon build, right for a caster. Now: ${v===0?'weapon only':v===100?'mantras only':`${100-v}% weapon, ${v}% mantras`}.`}
+  {const v=S.dsplit==null?50:S.dsplit;$('dsplithelp').textContent=!Object.keys(S.atts).length?'Damage from: locked because you have no attunement, so all your damage comes from your weapon (M1). Tick an attunement on the Stats tab to use it.':`Damage from tells the optimizer which damage to grow when it spends points: your weapon stat (M1 hits) or your attunement (mantra hits). Slide left for a weapon build, right for a caster. Now: ${v===0?'weapon only':v===100?'mantras only':`${100-v}% weapon, ${v}% mantras`}.`}
 }
 function renderWeaponSearch(){
   const q=$('wsearch').value.trim().toLowerCase();
@@ -4580,10 +4595,10 @@ function renderGear(){
   $('gnote').innerHTML=(st.bad.length?`<span class="gbad">Your final stats don't meet ${esc(st.bad.join(', '))}.</span> `:'')+'Effective HP = health ÷ (1 − armor × (1 − attacker penetration)). Assumes Power 20 at the end of the build. Set bonuses and talent health bonuses aren\'t counted.';
 }
 // ================= tabs, status, final stats, condensed talents =================
-const TABS=['build','req','opt','sum','arm'];
-function showTab(id){if(!TABS.includes(id))id='build';S.tab=id;
+const TABS=['build','req','sum','arm'];
+function showTab(id){if(id==='opt')id='build';if(!TABS.includes(id))id='build';S.tab=id;
   for(const k of TABS){$('tab-'+k).hidden=k!==id;$('t-'+(k==='build'?'build':k)).setAttribute('aria-selected',k===id)}
-  save();if(id==='opt'&&$('otbl').closest('details').open)renderOathTable()}
+  save();if(id==='build'&&$('otbl').closest('details').open)renderOathTable()}
 function renderStatus(){
   const b=last&&last.best;const C=last?last.R.C:closure();const cn=counts(C);
   if(!b){$('status').innerHTML='<span class="bad">No valid build</span>';return}
@@ -4593,26 +4608,27 @@ function renderStatus(){
 const FLAVOR=['The shrine hums. Every point finds its place.','Somewhere, Ragoozer is watching your stat sheet.','Even stats, uneven fights.','Fortitude 50. Agility 40. Tradition.','The Depths remember every wasted point.'];
 function renderFinal(){
   const b=last&&last.best;if(!b){$('fstats').innerHTML='';return}
-  const row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0;return `<span class="k">${esc(statName(k).replace(' Weapon',' Wep.'))}</span><span class="p" title="Before the shrine">${pre}</span><span class="v ${fin>pre?'up':''} ${fin?'':'zero'}" title="Final">${fin}</span>`};
   const used=b.used;const pw=powerAt(used);const next=pw>=20?null:15*(pw+2)-used;
-  const pin=S.pin||{};const man=S.manual;
+  const pin=S.pin||{};const man=S.manual;const sho=k=>(b.sh&&b.sh.out?b.sh.out[k]:b.P[k])||0;
   const tgtOf=k=>ATTR.includes(k)?(+S.mins[k]||0):k===S.wtype?(+S.wtarget||0):ATT[k]?(k in S.atts?+S.atts[k]:0):null;
-  const er3=k=>{const pre=b.P[k]||0,fin=b.final[k]||0;const pinned=k in pin;const tg=tgtOf(k);const nm=esc(statName(k).replace(' Weapon',' Wep.'));
-    return `<span class="k">${nm}</span><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine"><input class="v" type="number" min="0" max="100" data-tgt="${k}" value="${tg?tg:''}" placeholder="${tg===null?'—':'any'}" ${tg===null?'disabled title="Switch weapon type on the Build tab to target this"':''} aria-label="${esc(statName(k))} final target"><span class="v ${fin>pre?'up':''} ${fin?'':'zero'}" title="Final">${fin}</span>`};
-  const hd3='<span></span><span class="hd">Pre</span><span class="hd">Target</span><span class="hd">Final</span>';
-  $('fstats').innerHTML=`<div class="fbox pw"><span class="k">Power at shrine</span><b class="mono">${powerAt(b.preSum)}</b><span class="k">Final Power</span><b class="mono">${pw}</b><span class="k">Next Power</span><b class="mono">${next==null?'max':next+' points'}</b><span class="k">Free points</span><b class="mono ${b.free<0?'down':''}">${b.impossible?'—':b.free}</b><span class="flav">${man?esc(FLAVOR[(used+b.preSum)%FLAVOR.length]):'Edit any stat: Pre pins the pre‑shrine value, Target is the least it should end at. Leave a box empty to let the optimizer choose, then press Optimize build.'}</span></div>`+
-   (man?`<div class="fbox">${WEPS.map(row).join('')}</div><div class="fbox">${ATTR.map(row).join('')}</div><div class="fbox">${ATTS.map(row).join('')}</div>`
-       :`<div class="fbox ed3">${hd3}${ATTR.map(er3).join('')}</div><div class="fbox ed3">${hd3}${WEPS.map(er3).join('')}</div><div class="fbox ed3">${hd3}${ATTS.map(er3).join('')}</div>`);
-  if(man){const mp=S.man.pre||{},mf=S.man.fin||{};
-    const mr=k=>{const pre=b.P[k]||0,fin=b.final[k]||0;return `<span class="k">${esc(statName(k).replace(' Weapon',' Wep.'))}</span><input class="v" type="number" min="0" max="100" data-mpre="${k}" value="${pre||''}" placeholder="0" aria-label="${esc(statName(k))} before the shrine"><input class="v ${fin>pre?'up':''}" type="number" min="0" max="100" data-mfin="${k}" value="${fin||''}" placeholder="${b.sh.out[k]||0}" aria-label="${esc(statName(k))} final">`};
-    const hd='<span></span><span class="hd">Pre</span><span class="hd">Final</span>';
-    $('bstats').innerHTML=`<div class="fbox ed">${hd}${ATTR.map(mr).join('')}</div><div class="fbox ed">${hd}${WEPS.map(mr).join('')}</div><div class="fbox ed">${hd}${ATTS.map(mr).join('')}</div>
-     <div class="fbox pw"><span class="k">Power at shrine</span><b class="mono">${powerAt(b.preSum)}</b><span class="k">Final Power</span><b class="mono">${powerAt(b.used)}</b><span class="k">Free points</span><b class="mono ${b.free<0?'down':''}">${b.free}</b><span class="flav">Manual mode: you set every number. Final can't go below what the shrine gives (shown in grey).</span></div>`;
-    return}
-  const er=k=>{const pre=b.P[k]||0,fin=b.final[k]||0;const pinned=k in pin;return `<span class="k">${esc(statName(k).replace(' Weapon',' Wep.'))}</span><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" step="1" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine${pinned?' (pinned)':''}"><span class="v ${fin>pre?'up':''} ${fin?'':'zero'}" title="Final">${fin}</span>`};
-  const hd='<span></span><span class="hd">Pre</span><span class="hd">Final</span>';
-  $('bstats').innerHTML=`<div class="fbox ed">${hd}${ATTR.map(er).join('')}</div><div class="fbox ed">${hd}${WEPS.map(er).join('')}</div><div class="fbox ed">${hd}${ATTS.map(er).join('')}</div>
-   <div class="fbox pw"><span class="k">Power at shrine</span><b class="mono">${powerAt(b.preSum)}</b><span class="k">Pre‑shrine points</span><b class="mono">${b.preSum}</b><span class="k">Free points</span><b class="mono ${b.free<0?'down':''}">${b.impossible?'—':b.free}</b><span class="flav">Grey numbers are what the optimizer picked. Type over one to pin it.</span></div>`;
+  const nm=k=>esc(statName(k).replace(' Weapon',' Wep.'));
+  // power summary: before the shrine | after the shrine
+  $('fstats').innerHTML=`<div class="fbox pw pre"><span class="hd2">Before shrine</span><span class="k">Points spent</span><b class="mono">${b.preSum}</b><span class="k">Power at shrine</span><b class="mono">${powerAt(b.preSum)}</b>${b.noShrine?`<span class="flav">Below Power ${SHRINE_PWR}: no shrine, these stats carry straight through.</span>`:''}</div>
+   <div class="fbox pw post"><span class="hd2">After shrine (final)</span><span class="k">Final Power</span><b class="mono">${pw}</b><span class="k">Next Power</span><b class="mono">${next==null?'max':next+' pts'}</b><span class="k">Points left</span><b class="mono ${b.free<0?'down':''}">${b.impossible?'—':b.free}</b></div>`;
+  const zero=k=>!(b.P[k]||b.final[k]||tgtOf(k)||(k in pin));
+  const secs=[['Attributes',ATTR],['Weapon',WEPS],['Attunements',ATTS]];
+  let head,row;
+  if(man){const mp=S.man.pre||{};
+    head=`<tr class="sgrp"><th rowspan="2" class="sk">Stat</th><th class="c-pre">① Before</th><th class="c-sh">② Shrine</th><th class="c-post">③ After</th></tr><tr class="sub"><th class="c-pre">you set</th><th class="c-sh">leaves</th><th class="c-post">final, you set</th></tr>`;
+    row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0,sh=sho(k);return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}</th><td class="c-pre"><input class="v" type="number" min="0" max="100" data-mpre="${k}" value="${pre||''}" placeholder="0" aria-label="${esc(statName(k))} before the shrine"></td><td class="c-sh mono">${b.noShrine?'—':sh}</td><td class="c-post"><input class="v ${fin>sh?'up':''}" type="number" min="0" max="100" data-mfin="${k}" value="${fin||''}" placeholder="${sh}" aria-label="${esc(statName(k))} final"></td></tr>`}}
+  else{
+    head=`<tr class="sgrp"><th rowspan="2" class="sk">Stat</th><th class="c-pre">① Before</th><th class="c-sh">② Shrine</th><th class="c-post" colspan="2">③ After shrine</th></tr><tr class="sub"><th class="c-pre">level to</th><th class="c-sh">leaves</th><th class="c-post">at least</th><th class="c-post">final</th></tr>`;
+    row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0,sh=sho(k);const pinned=k in pin;const tg=tgtOf(k);
+      const sil=S.oath==='Silentheart'&&ATT[k];
+      return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}${sil&&fin?' <small class="warn" title="Silentheart can\'t use attunement mantras">no use</small>':''}</th><td class="c-pre"><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine${pinned?' (pinned)':''}"></td><td class="c-sh mono" title="What the shrine leaves you with">${b.noShrine?'—':sh}</td><td class="c-post"><input class="v" type="number" min="0" max="100" data-tgt="${k}" value="${tg?tg:''}" placeholder="–" ${tg===null?'disabled title="Switch weapon type to target this"':'title="Empty = any"'} aria-label="${esc(statName(k))} final, at least"></td><td class="c-post"><span class="fv mono ${fin>sh?'up':''} ${fin<sh?'down':''}">${fin}</span></td></tr>`}}
+  const cols=man?4:5;
+  $('bstats').innerHTML=`<div class="scroll"><table class="stbl">${head}${secs.map(([t,ks])=>`<tr class="sec"><th colspan="${cols}">${t}</th></tr>`+ks.map(row).join('')).join('')}</table></div>
+   <p class="hint" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first. <b>At least</b> = the lowest it may end at (empty = any). Green final = raised after the shrine, red = lowered by the shrine.'}</p>`;
 }
 function renderPicked(){
   const C=last?last.R.C:closure();const b=last&&last.best;const cn=counts(C);
@@ -4620,9 +4636,9 @@ function renderPicked(){
   const names=[...C.T.keys()].filter(n=>!n.startsWith('Oath:'));
   const pre=[],post=[],none=[];
   for(const n of names){const alts=reqAlts(reqOf(n),false);if(!hasStats(alts))none.push(n);else if(b&&b.preTaken.includes(n))pre.push(n);else post.push(n)}
-  const chip=n=>{if(isReq(n))return `<button class="chip req ${TBY.get(n)?TBY.get(n).r:''}" aria-pressed="true" data-tab="req" title="Required: edit on the Required tab">🔒 ${esc(n)}</button>`;const auto=!S.sel.includes(n);const sy=synOf(n,C).length;return `<button class="chip ${TBY.get(n)?TBY.get(n).r:''} ${auto?'auto':''}" aria-pressed="true" ${auto?'disabled title="Added as a prerequisite"':`data-tdel="${enc(n)}" title="Remove ${esc(n)}"`}>${sy?'⚡ ':''}${esc(n)}${auto?'':'<span class="x" aria-hidden="true">×</span>'}</button>`};
+  const chip=n=>{if(isReq(n))return `<button class="chip req ${TBY.get(n)?TBY.get(n).r:''}" aria-pressed="true" data-tab="req" title="Required: edit on the Talents tab">🔒 ${esc(n)}</button>`;const auto=!S.sel.includes(n);const sy=synOf(n,C).length;return `<button class="chip ${TBY.get(n)?TBY.get(n).r:''} ${auto?'auto':''}" aria-pressed="true" ${auto?'disabled title="Added as a prerequisite"':`data-tdel="${enc(n)}" title="Remove ${esc(n)}"`}>${sy?'⚡ ':''}${esc(n)}${auto?'':'<span class="x" aria-hidden="true">×</span>'}</button>`};
   const grp=(h,a)=>a.length?`<div class="grp"><h3>${h}<small>${a.length}</small></h3><div class="chips">${a.sort().map(chip).join('')}</div></div>`:'';
-  $('picked').innerHTML=grp('Before the shrine',pre)+grp('After the shrine',post)+grp('No stat requirement',none)||'<p class="hint">No talents yet. Pick some on the Build tab or press Auto‑pick.</p>';
+  $('picked').innerHTML=grp('Before the shrine',pre)+grp('After the shrine',post)+grp('No stat requirement',none)||'<p class="hint">No talents yet. Pick some on the Stats tab or press Auto‑pick.</p>';
   const recs=(recCache||[]).filter(r=>r.syn.length).slice(0,6);
   const ps=synSections(recs,r=>r.t.n,r=>r.syn);
   $('psyn').innerHTML=recs.length?`<div class="grp syngrp"><h3>⚡ Synergies you could add</h3>${ps.map(([p,items])=>`<div class="synsec"><span class="synwith">with <b>${esc(p)}</b></span><div class="chips">${items.map(r=>`<button class="chip synergy ${r.st.k==='close'?'close':''}" data-tadd="${enc(r.t.n)}">+ ${esc(r.t.n)}${r.st.k==='close'?`<small>${esc(r.st.label)}</small>`:''}</button>`).join('')}</div></div>`).join('')}</div>`:'';
@@ -4675,7 +4691,7 @@ function addReq(raw){
   const q=String(raw||'').trim();if(!q){return}
   const all=[...DB.T.map(t=>t.n),...DB.M.map(m=>m.n)];const n=all.find(x=>x.toLowerCase()===q.toLowerCase())||all.find(x=>x.toLowerCase().startsWith(q.toLowerCase()));
   if(!n){$('reqmsg').textContent=`No talent or mantra called “${q}”.`;return}
-  if(n.startsWith('Oath:')){$('reqmsg').textContent='Pick the oath on the Optimize tab instead.';return}
+  if(n.startsWith('Oath:')){$('reqmsg').textContent='Pick the oath on the Stats tab instead.';return}
   if(S.req.includes(n)){$('reqmsg').textContent=`${n} is already required.`;return}
   S.req.push(n);$('reqin').value='';$('reqmsg').textContent=`Added ${n}.`;runSoon();
 }
@@ -4689,7 +4705,7 @@ function renderWeaponPanels(){
   $('winfo').innerHTML=`<p style="margin:0"><b>${esc(w.name)}</b> <span class="hint">${esc(wType(w.name))}</span></p>
     <p class="hint" style="margin:4px 0">Base ${w.d} damage · ${Math.round(w.p*100)}% penetration · ${(dm.scaled/w.d*100-100).toFixed(1)}% from scaling → ${dm.scaled.toFixed(1)} before bonuses</p>
     <div class="scl">${scalingChips(w,fin)||'<span>no stat scaling</span>'}</div>
-    <p class="hint" style="margin:0">Scaled damage = base × (1 + 0.75 × Σ(stat × scaling) / 1000). ${S.weapon?'Requirement '+esc(wReqOk(S.weapon,fin).txt)+'.':'Pick a weapon on the Build tab for exact numbers.'}</p>`;
+    <p class="hint" style="margin:0">Scaled damage = base × (1 + 0.75 × Σ(stat × scaling) / 1000). ${S.weapon?'Requirement '+esc(wReqOk(S.weapon,fin).txt)+'.':'Pick a weapon on the Stats tab for exact numbers.'}</p>`;
   if(!$('enchant').options.length){const dmgE=ENCHANTS.filter(e=>e.n!=='None'&&(e.hit||e.pen||e.cond||e.proc)),oth=ENCHANTS.filter(e=>e.n!=='None'&&!(e.hit||e.pen||e.cond||e.proc));
     $('enchant').innerHTML='<option value="None">No enchant</option>'+`<optgroup label="Affects damage">${dmgE.map(e=>`<option>${esc(e.n)}</option>`).join('')}</optgroup><optgroup label="Other effects">${oth.map(e=>`<option>${esc(e.n)}</option>`).join('')}</optgroup>`}
   $('enchant').value=S.enchant||'None';
@@ -4755,7 +4771,7 @@ function renderResults(res){
   $('caps').innerHTML=`<div class="meter ${cn.nTal>cn.cap?'over':''}" title="Talent slots"><i style="width:${Math.min(100,cn.nTal/cn.cap*100)}%"></i></div><p class="hint" style="margin-top:6px">Talent cap 52 + (12 − mantras) × 2 = ${cn.cap} with ${cn.nMantra} normal mantra${cn.nMantra===1?'':'s'}.</p>`;
   let note='';
   if(best.impossible)note+=`<div class="callout bad">Something here needs a stat above 100. Check your talents or weapon.</div>`;
-  if(best.free<0&&!best.impossible)note+=`<div class="callout bad">Over budget by ${-best.free}. ${S.manual?'Lower some pre‑shrine or final stats on the Build tab.':'Press Optimize, drop a talent or mantra, lower a target, or try another oath.'}</div>`;
+  if(best.free<0&&!best.impossible)note+=`<div class="callout bad">Over budget by ${-best.free}. ${S.manual?'Lower some pre‑shrine or final stats on the Stats tab.':'Press Optimize, drop a talent or mantra, lower a target, or try another oath.'}</div>`;
   if(cn.nTal>cn.cap)note+=`<div class="callout bad">${cn.nTal-cn.cap} talent${cn.nTal-cn.cap>1?'s':''} over the cap.</div>`;
   if(su.over)note+=`<div class="callout warn">${su.over} mantra${su.over>1?'s':''} won't fit in your mantra slots.</div>`;
   const prePwr=powerAt(best.preSum);const latePre=best.preTaken.filter(n=>pwrOf(reqOf(n))>prePwr);
@@ -5026,8 +5042,8 @@ function wizardApply(){
   optimizeAll({noSpend:true,noUndo:true,after:()=>{
     const notes=[];
     if(autoOath&&last&&last.best){
-      const at=Object.keys(S.atts);const pop={};for(const r of REF){const w=1+(r.w===S.wtype?1:0)+(at.length?2*at.filter(a=>r.a.includes(a)).length/at.length:(r.a.length?0:1));pop[r.o]=(pop[r.o]||0)+w}
-      const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless'&&!(o.n==='Silentheart'&&(at.length||S.mantras.some(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])})))).map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
+      const at=Object.keys(S.atts);const pop={};for(const r of REF){const w=1+(r.w===S.wtype?1:0)+(at.length?2*at.filter(a=>r.a.includes(a)).length/at.length:(!S.wtarget&&!S.weapon)?(r.a.length?2:0):(r.a.length?0:1));pop[r.o]=(pop[r.o]||0)+w}
+      const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless'&&!(o.n==='Silentheart'&&(at.length||(!S.wtarget&&!S.weapon)||S.mantras.some(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])})))).map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
       if(ranked.length){S.oath=ranked[0].o.n;notes.push(`picked ${S.oath} (fits, and is the most common oath in similar top builds)`)}else notes.push('no oath fits these stats yet, so none is set')}
     run();
     // starting points must fit 330 points: ease the largest floors down 5 at a time until they do
@@ -5230,10 +5246,11 @@ function aiParse(txt,basePreset){
     if(!re.test(sAtt))continue;const n=aiNumNear(s,re);if(n){if(k==='FTD')p.post.FTD=n;else p.pre[k]=n;got.push(`${ANAME[k]} ${n}`)}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',50);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
   // oath (typos allowed)
   const oathN=by('oath')[0];const oath=oathN?findO(oathN):null;
-  if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base)p.oath='__auto';
+  if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base)p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
   // attunements in order of mention (words that are part of a name don't count)
   const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
-  if(!at.length&&base&&!basePreset&&Object.keys(p.atts).length){if(caster)got.push(Object.entries(p.atts).map(([k,v])=>`${ATT[k][0]} ${v}`).join(' + ')+' from the mage starting point (name an attunement to change it)');else p.atts={}}
+  // attunements only when asked for (a mage too): preset attunements are not carried in
+  if(!at.length&&!basePreset)p.atts={};
   if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){if(!basePreset)p.atts={};at.forEach((x,i)=>{const n=aiNumNear(sAtt,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):40))});got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + '))}
   // weapon, outfit, gear by name
   let wN=by('weapon').sort((a,b)=>b.length-a.length)[0];
@@ -5389,7 +5406,7 @@ function helpTips(){
     if(R.oathAlts&&b.oathAlt&&b.oathAlt.min[k])need=Math.max(need,b.oathAlt.min[k]);
     if(v-need>=5&&!(b.P[k]>0&&b.sh.out[k]===v))tips.push({k:'down',t:`${statName(k)} ends at ${v} but your picks only need ${need}. ${v-need} point${v-need>1?'s':''} there do nothing; drop the floor or add a talent that uses it.`})}
   // 5. leftover points
-  if(b.free>0)tips.push({k:'up',t:`${b.free} free point${b.free>1?'s':''}. Tick "Spend leftover" on the Optimize tab to pour them into damage, or take the cheapest unlock above.`});
+  if(b.free>0)tips.push({k:'up',t:`${b.free} free point${b.free>1?'s':''}. Tick "Spend leftover" on the Stats tab to pour them into damage, or take the cheapest unlock above.`});
   if(b.free<0)tips.push({k:'warn',t:`Over budget by ${-b.free}. Optimize drops the talents with the worst value per point; required ones stay.`});
   // 6. damage bonus past the soft cap
   if(b.dm&&b.dm.mRaw>.4)tips.push({k:'down',t:`Your damage bonus is +${Math.round(b.dm.mRaw*100)}% raw, but past +25% it counts half (max +50%). More damage talents add little; spend picks on utility.`});
@@ -5470,10 +5487,10 @@ document.addEventListener('click',e=>{
   else if(d.wpick){const w=WBY.get(decodeURIComponent(d.wpick));S.weapon=w.n;const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt;$('wsearch').value='';renderInputs();runSoon()}
   else if(d.wclear){S.weapon='';renderInputs();runSoon()}
   else if(d.oathpick){S.oath=decodeURIComponent(d.oathpick);const wz=$('wz-oath');if(wz&&$('wiz').open)wz.value=S.oath;else{renderInputs();runSoon()}if($('oathdlg').open){closeDlg('oathdlg')}say(`Oath set to ${S.oath}.`)}
-  else if(d.ttog&&isReq(decodeURIComponent(d.ttog))){say(`${decodeURIComponent(d.ttog)} is required. Remove it on the Required tab first.`)}
+  else if(d.ttog&&isReq(decodeURIComponent(d.ttog))){say(`${decodeURIComponent(d.ttog)} is required. Remove it on the Talents tab first.`)}
   else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else{if(!roomFor(n)){say(fullMsg());return}S.sel.push(n)}runSoon()}
   else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n)){if(!roomFor(n)){say(fullMsg());return}pushUndo('Take '+n);S.sel.push(n)}runSoon();say(`Took ${n}.`)}
-  else if(d.mtog&&isReq(decodeURIComponent(d.mtog))){say(`${decodeURIComponent(d.mtog)} is required. Remove it on the Required tab first.`)}
+  else if(d.mtog&&isReq(decodeURIComponent(d.mtog))){say(`${decodeURIComponent(d.mtog)} is required. Remove it on the Talents tab first.`)}
   else if(d.mtog){const n=decodeURIComponent(d.mtog);if(S.mantras.includes(n))S.mantras=S.mantras.filter(x=>x!==n);else{S.mantras.push(n);const cn=counts(closure());if(cn.nTal>cn.cap){S.mantras.pop();pushUndo('Add '+n);S.mantras.push(n);fitCap()}}runSoon()}
   else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save()}
   else if(d.tf){S.tfilter=d.tf;renderTalentChips();save()}

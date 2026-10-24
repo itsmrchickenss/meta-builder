@@ -34,6 +34,7 @@ Never edit `index.html` by hand; it is overwritten by the build.
 | `src/data/syn.txt` | Talent synergy pairs (`@@SYN@@`). |
 | `src/data/gear.txt` | `#E` equipment, `#O` outfits, `#OT` outfit talents, `#TD` gear-talent descriptions (`@@GEAR@@`). |
 | `src/data/tdesc.txt` | Descriptions for every talent (`@@TDESC@@`). |
+| `src/data/cond.txt` | Take rate given the stats (`@@COND@@`): `name:k/m`, k of the m top-500 deepwoken.co builds whose stats, oath and prerequisites allow the talent take it. Shown as "% of builds that can take it". |
 | `tests/core-test.js` | Node check of the core logic. |
 
 ### Data line formats
@@ -57,6 +58,7 @@ All game data is a snapshot of **deepwoken.co** (October 2026). The fandom wiki 
 ## Game rules the tool models
 
 - **Budget:** 330 points. Power = `clamp(floor((points − 15) / 15), 0, 20)`. Each attunement after the first gets its first point free.
+- **Shrine of Order needs Power 8** (135 points invested before it). Below that the plan skips the shrine.
 - **Talent cap:** 52 + (12 − normal mantras) × 2.
 - **Shrine of Order** (deepwoken.co's algorithm): average every stat with at least 1 point; a non-attunement stat can't drop more than 25 (it gets pinned and the excess is shared among the rest); floor the results, hand out leftovers +1 to unpinned stats, refund the remainder. Talents you already own stay.
 - **Shrine of Mastery:** remove up to 3 points in total, split between before and after the Order shrine. The points are refunded, and talents already taken stay.

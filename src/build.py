@@ -9,7 +9,7 @@ here=os.path.dirname(os.path.abspath(__file__)); root=os.path.dirname(here)
 r=lambda f:open(os.path.join(here,'data',f),encoding='utf-8').read().strip()
 t=open(os.path.join(here,'template.html'),encoding='utf-8').read()
 m={'@@DATA@@':r('part1.txt')+'\n'+r('part2.txt'),'@@BUILDS@@':r('builds.txt'),'@@WDMG@@':r('wdmg.txt'),'@@POP@@':r('pop.txt'),
-   '@@MDMG@@':r('mdmg.txt'),'@@SYN@@':r('syn.txt'),'@@GEAR@@':r('gear.txt'),'@@TDESC@@':r('tdesc.txt')}
+   '@@MDMG@@':r('mdmg.txt'),'@@SYN@@':r('syn.txt'),'@@GEAR@@':r('gear.txt'),'@@TDESC@@':r('tdesc.txt'),'@@COND@@':r('cond.txt')}
 for k,v in m.items(): t=t.replace(k,v)
 assert '@@' not in t, 'a placeholder was left unfilled'
 os.makedirs(os.path.join(root,'dist'),exist_ok=True)

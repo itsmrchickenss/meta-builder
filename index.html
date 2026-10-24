@@ -389,7 +389,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.12</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.13</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -5009,11 +5009,14 @@ function wizardApply(){
   const atts={};document.querySelectorAll('#wz-atts .wzatt').forEach(r=>{const s=r.querySelectorAll('select');const k=s[0].value,lv=+s[1].value;if(k&&!(k in atts))atts[k]=lv});
   const autoOath=v('wz-oath')==='__auto';
   S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
+  // a new build starts clean: required talents, equipment and enchant from the previous build don't carry over
+  S.req=[];S.caps={};S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
+  if(S.oath==='Silentheart'){const wa=p.weapon&&WBY.get(p.weapon);for(const k of Object.keys(S.atts))if(!(wa&&wa.req.s[k]))delete S.atts[k]}
   const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
   // talents the AI build maker was asked for are always kept; preset core talents are kept when these targets reach them
   S.sel=$('wz-core').checked?p.t.filter(n=>{const tt=TBY.get(n);if(!tt||isAvoid(n))return false;if(p.src==='AI build maker')return true;const alts=reqAlts(tt.req,false);return !hasStats(alts)||bestCost(alts,prof)===0}):[];
   if($('wz-core').checked){S.mantras=(p.m||[]).filter(n=>MBY.has(n)&&MBY.get(n).ty==='N'&&!oathTagOf(n));
-    if(p.req&&p.req.length){S.req=[...new Set([...S.req,...p.req.filter(n=>TBY.has(n))])];S.avoid=(S.avoid||[]).filter(n=>!S.req.includes(n));S.sel=S.sel.filter(n=>!S.req.includes(n))}}
+    if(p.req&&p.req.length){S.req=[...new Set(p.req.filter(n=>TBY.has(n)))];S.avoid=(S.avoid||[]).filter(n=>!S.req.includes(n));S.sel=S.sel.filter(n=>!S.req.includes(n))}}
   if(p.outfit&&OBY.has(p.outfit))S.gear.outfit=p.outfit;
   for(const gn of p.gearItems||[]){const g=GBY.get(gn);if(!g)continue;const labs=GSLOTS.filter(([,ty])=>ty===g.ty).map(([l])=>l);if(labs.some(l=>S.gear.slots[l]&&S.gear.slots[l].n===gn))continue;const lab=labs.find(l=>!S.gear.slots[l])||labs[0];S.gear.slots[lab]={n:gn,st:maxStars(g.ty),p:[]}}
   if(p.gear){S.gear.w=p.gear.w;S.gear.minhp=p.gear.minhp}
@@ -5024,7 +5027,7 @@ function wizardApply(){
     const notes=[];
     if(autoOath&&last&&last.best){
       const at=Object.keys(S.atts);const pop={};for(const r of REF){const w=1+(r.w===S.wtype?1:0)+(at.length?2*at.filter(a=>r.a.includes(a)).length/at.length:(r.a.length?0:1));pop[r.o]=(pop[r.o]||0)+w}
-      const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless').map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
+      const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless'&&!(o.n==='Silentheart'&&(at.length||S.mantras.some(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])})))).map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
       if(ranked.length){S.oath=ranked[0].o.n;notes.push(`picked ${S.oath} (fits, and is the most common oath in similar top builds)`)}else notes.push('no oath fits these stats yet, so none is set')}
     run();
     // starting points must fit 330 points: ease the largest floors down 5 at a time until they do
@@ -5200,7 +5203,8 @@ const cheapAlt=alts=>alts.slice().sort((a,b)=>altCost(a,{})-altCost(b,{}))[0];
 function aiParse(txt,basePreset){
   const s=nrm(txt);const got=[];const has=re=>re.test(s);
   // the attunement words inside names ("flame worshipper", "orbital ice") must not count as attunement picks on their own
-  const found=findNames(s,aiNames());let sAtt=s;for(const h of found)sAtt=sAtt.slice(0,h.at)+' '.repeat(h.end-h.at)+sAtt.slice(h.end);
+  // an attunement word ("flamecharm") is not a typo of a talent ("Flamecharmer")
+  const found=findNames(s,aiNames()).filter(h=>!(h.n.k==='talent'&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+s.slice(h.at,h.end)+' '))));let sAtt=s;for(const h of found)sAtt=sAtt.slice(0,h.at)+' '.repeat(h.end-h.at)+sAtt.slice(h.end);
   const by=k=>found.filter(h=>h.n.k===k).map(h=>h.n.n);
   let base=basePreset||null;const pvp=has(/\bgank\w*|\bpvp\b|\bduel\w*|\barena\b|\bchime\b/);const pve=has(/\bboss ?raid\w*|\bbosses\b|\bboss\b|\bpve\b/);
   if(!base){if(pve){base=PRESETS.find(p=>p.n===(has(/\b(mage|caster|no weapon)\b/)?'Bossraid Mage':'Bossraid'));got.push(base.n+' starting point'+(pvp?' (PvE and ganking)':''))}
@@ -5229,11 +5233,19 @@ function aiParse(txt,basePreset){
   if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base)p.oath='__auto';
   // attunements in order of mention (words that are part of a name don't count)
   const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
+  if(!at.length&&base&&!basePreset&&Object.keys(p.atts).length){if(caster)got.push(Object.entries(p.atts).map(([k,v])=>`${ATT[k][0]} ${v}`).join(' + ')+' from the mage starting point (name an attunement to change it)');else p.atts={}}
   if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){if(!basePreset)p.atts={};at.forEach((x,i)=>{const n=aiNumNear(sAtt,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):40))});got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + '))}
   // weapon, outfit, gear by name
-  const wN=by('weapon').sort((a,b)=>b.length-a.length)[0];
+  let wN=by('weapon').sort((a,b)=>b.length-a.length)[0];
+  // "hero blade" / "heros blade" without the full name: the element comes from the attunement mentioned (Flame if none)
+  if(!wN&&/\bhero'?s? ?blades?\b/.test(s)){const el={FLM:'Flame',ICE:'Frost',LTN:'Lightning',WND:'Wind',SDW:'Shadow'};const k=(at.find(x=>el[x.k])||{}).k||'FLM';const n="Hero's Blade of "+el[k];if(WBY.has(n))wN=n}
   if(wN){const w=WBY.get(wN);p.weapon=w.n;const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k))||({Sword:'MED',Spear:'MED',Rapier:'MED',Dagger:'LHT',Fist:'LHT',Greatsword:'HVY',Greataxe:'HVY',Greathammer:'HVY'})[w.ty];if(wt)p.wtype=wt;
-    const need=w.req.s[p.wtype]||0;if(need)p.wtarget=Math.max(need,Math.min(100,p.wtarget||0));got.push('weapon '+w.n+(need?` (needs ${WEP[p.wtype]} ${need})`:''))}
+    const need=w.req.s[p.wtype]||0;if(need)p.wtarget=Math.max(need,Math.min(100,p.wtarget||0));
+    // weapons that need an attunement instead of a weapon stat (Hero's Blades: 100 attunement): plan the attunement, skip weapon points
+    const wAtt=Object.entries(w.req.s).filter(([k])=>ATT[k]);for(const [k,v] of wAtt)p.atts[k]=Math.max(p.atts[k]||0,v);
+    if(!WEPS.some(k=>k in w.req.s)&&wAtt.length){p.wtarget=0;if(p.dsplit==null)p.dsplit=50}
+    got.push('weapon '+w.n+(need?` (needs ${WEP[p.wtype]} ${need})`:'')+(wAtt.length?` (needs ${wAtt.map(([k,v])=>ATT[k][0]+' '+v).join(', ')}${WEPS.some(k=>k in w.req.s)?'':', no weapon points'})`:''))}
+  if(caster&&!Object.keys(p.atts).length)got.push('no attunement named: add one below (a mage needs one), or say e.g. "mage with flamecharm"');
   const wm=AI_WEP.find(([k,re])=>re.test(sAtt));
   if(wm&&!wN){p.wtype=wm[0];const n=aiNumNear(sAtt,wm[1]);p.wtarget=n||(wm[0]==='HVY'?90:80);got.push(`${WEP[wm[0]]} weapon ${p.wtarget}`)}else if(caster&&!wN){p.wtarget=0;got.push('no weapon points (caster)')}
   const oN=by('outfit')[0];if(oN){p.outfit=oN;got.push('outfit '+oN)}
@@ -5247,6 +5259,13 @@ function aiParse(txt,basePreset){
   const mN=by('mantra').filter(n=>!oathTagOf(n));mN.forEach(n=>M.add(n));if(mN.length)got.push('mantras: '+mN.join(', '));
   // whatever the must-haves need: attunements are raised to their level, oath requirements are planned in
   const needAtt={};for(const n of [...REQ,...M]){const e=TBY.get(n)||MBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])needAtt[k]=Math.max(needAtt[k]||0,v)}
+  // Silentheart can't use attunement mantras, so attunement points do nothing for it except unlock gear
+  if(p.oath==='Silentheart'){const attM=[...M].filter(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])});attM.forEach(n=>M.delete(n));
+    const wa=p.weapon&&WBY.get(p.weapon);const keep=Object.keys(p.atts).filter(k=>wa&&wa.req.s[k]);
+    if(!oath&&(Object.keys(p.atts).length||attM.length||Object.keys(needAtt).length)){p.oath='__auto';got.push('attunements wanted, so not Silentheart (it makes attunement points useless); the oath is picked to fit')}
+    else{if(attM.length)got.push(`dropped ${attM.join(', ')}: Silentheart can't use attunement mantras`);
+      if(keep.length)got.push(`Silentheart warning: the ${keep.map(k=>ATT[k][0]+' '+p.atts[k]).join(', ')} only unlocks ${wa.n}; Silentheart can't use those points for mantras`);
+      for(const k of Object.keys(p.atts))if(!keep.includes(k))delete p.atts[k]}}
   if(p.oath!=='Silentheart')for(const [k,v] of Object.entries(needAtt)){if((p.atts[k]||0)<v){p.atts[k]=v;got.push(`${ATT[k][0]} ${v} for your picks`)}}
   if(mobile&&p.oath!=='Silentheart'){const mob=DB.M.filter(m=>m.c==='M'&&m.ty==='N'&&m.at.length===1&&ATT[m.at[0]]&&m.at[0] in p.atts).sort((a,b)=>bestCost(reqAlts(a.req,false),{})-bestCost(reqAlts(b.req,false),{}))[0];if(mob){M.add(mob.n);got.push('mobility mantra '+mob.n)}}
   if(p.oath&&p.oath!=='__auto'&&p.oath!=='None'){const o=findO(p.oath);const oa=oathAltsOf(o);const a=oa&&cheapAlt(oa);

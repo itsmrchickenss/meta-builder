@@ -367,6 +367,23 @@ Ringing Scholar's Garb|25|30|2400|PWR15 INT5|
 Stratos' Cloak|20|30|2200||
 Warder's Attire|30|35|2750|PWR15|
 Blacksteel Attire|30|0|1000||
+Eager Tradesman|10|5|1000||
+Merchant Robes|0|0|1200||
+Pathfinder Sorcerer|5|10|1000|INT5|
+Scholar|8|10|1000||
+Cutthroat Light Armor|10|0|1000|PWR5|
+Experienced Adventurer|10|0|1000|PWR5|
+Flame Worshipper Armor|10|5|1000|PWR5|
+Pathfinder Thaumaturge|10|15|1000|PWR5 INT10|
+Shadow Hunter|10|5|1500|AGL10|
+Steel Plate|5|0|1000|PWR5 FTD10|
+Summer Company Uniform|10|5|1500|PWR5|
+Grand Pathfinder Cloak|20|20|2000|PWR10|
+Varicosan Finery|20|20|1500|PWR10|
+Veteran Adventurer|15|15|1500|PWR10|
+Familiar Assassin's Armor|25|25|2000|PWR15|
+Familiar Demon's Armor|25|25|2500|PWR15|
+Familiar Occultist's Armor|25|25|2000|PWR15|
 #OT
 Hive Adjudicator|Lowstride
 Corsair Outlaw|Lightweight

@@ -914,7 +914,7 @@ const PRESETS=[
   t:['Perfect Flash','Eureka','Approaching Singularity','Master Craftsman','Neuroplasticity','Keen Recovery','Overflowing Dam','Everchanging Aegis','Exoskeleton','To The Finish']},
  {n:'Reinforced Armor',d:'STR 40 + AGL 40 + WLL 40 before · FTD 90 after',src:'99 builds',pre:{STR:40,AGL:40,WLL:40},post:{FTD:90},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},
   t:['Reinforced Armor','Unwavering Resolve','Showstopper','Ghost','Last Resort','Exoskeleton','To The Finish']},
- {n:'Mage',d:'STR/AGL/WLL 40 + CHA 55 + INT 30 before · FTD 50 after',src:'197 builds',pre:{STR:40,AGL:40,WLL:40,CHA:55,INT:30},post:{FTD:50},oath:'Soulbreaker',wtype:'MED',wtarget:40,atts:{FLM:80,ICE:40},
+ {n:'Mage',d:'STR/AGL/WLL 40 + CHA 55 + INT 30 before · FTD 50 after',src:'197 builds',pre:{STR:40,AGL:40,WLL:40,CHA:55,INT:30},post:{FTD:50},oath:'Soulbreaker',wtype:'MED',wtarget:30,atts:{FLM:80,ICE:40},
   t:['Neuroplasticity','Perfect Flash','Eureka','Everchanging Aegis','Charismatic Cast','Tough Love','Showstopper','Ghost','Exoskeleton','To The Finish']},
  {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after · WLL 0',src:'100 builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'Jetstriker',wtype:'LHT',wtarget:85,atts:{WND:60,LTN:40},
   t:['Charismatic Cast','Tough Love','Ghost','Conditioned Runner','Neuroplasticity','Exoskeleton','To The Finish']},
@@ -1202,6 +1202,11 @@ function trimToCap(){const dropped=[];let guard=80;
     if(!pick)break;S.sel=S.sel.filter(x=>x!==pick.n);dropped.push(pick.n)}
   return dropped}
 const prevP=()=>last&&last.best?last.best.P:null;
+// After a mantra is added (each one takes 2 talent slots), drop the least valuable talents so the cap still holds
+function fitCap(){const d=trimToCap();if(d.length)say(`That mantra takes 2 talent slots, so ${d.length} talent${d.length>1?'s were':' was'} dropped to stay under the cap: ${d.slice(0,5).join(', ')}${d.length>5?'…':''}. Undo brings ${d.length>1?'them':'it'} back.`);return d}
+// Room for one more talent (with its missing prerequisites)?
+function roomFor(n){const keep=S.sel;S.sel=[...keep,n];const cn=counts(closure());S.sel=keep;return cn.nTal<=cn.cap}
+const fullMsg=()=>{const cn=counts(closure());return `No talent slots left (${cn.nTal}/${cn.cap}). Remove a talent or a mantra first.`};
 // Over budget: drop the picked talent that frees the most points per unit of value (popularity + synergy + damage), repeat
 function trimToBudget(res){const dropped=[];let guard=40;
   while(res.best&&res.best.free<0&&!res.best.impossible&&guard-->0){
@@ -1269,7 +1274,7 @@ function statusOf(entry,isM,ctx){
   return {k:'far',label:cost===Infinity?'out of reach':'+'+cost,cost};
 }
 function ctxNow(){
-  const C=last?last.R.C:closure();const b=last&&last.best;
+  const C=closure();const b=last&&last.best;
   // peak = the pre-shrine stats themselves (not a per-stat max of pre and final: no single moment has both)
   const final=b?b.final:Object.fromEntries(ALL.map(k=>[k,0]));const peak=b?{...b.P}:{...final};
   return {C,final,peak};
@@ -1584,7 +1589,7 @@ function renderCombos(){
       return `<button class="chip cf ${both?'have':''}" data-cadd="${enc(r.a)}|${enc(r.b)}" title="${esc(`${r.a} → ${r.b}: ${r.why}. ${r.b} is ${st(r.sb)}.`+(both?' Both are in your build.':' Click to add the missing mantra(s).'))}">→ ${esc(r.b)}<small> ${esc(st(r.sb))}${r.mine?' ★':''}</small></button>`+(r.mine?`<button class="x" data-cdel="${enc(r.a)}|${enc(r.b)}" aria-label="Delete your combo ${esc(r.a)} to ${esc(r.b)}">×</button>`:'')}).join('')}${rs.length>10?`<small class="hint">+${rs.length-10} more</small>`:''}</div></div>`}).join('')+(by.size>lim?`<p class="hint">${by.size-lim} more starters. <button class="mini" data-cmore="1">Show more</button></p>`:'')||`<p class="hint">${f==='build'?'No combos between the mantras in your build yet. Try “Can learn now”.':'No combos fit these stats yet. Pick an attunement or raise one to unlock its mantras.'}</p>`;
   if(!$('myc-a').options.length){const names=DB.M.filter(m=>!m.at[0].startsWith('Origin')).map(m=>m.n).sort();const o=names.map(n=>`<option>${esc(n)}</option>`).join('');$('myc-a').innerHTML='<option value="">Starter…</option>'+o;$('myc-b').innerHTML='<option value="">Follow-up…</option>'+o}
 }
-function addComboMantras(a,b){const added=[];pushUndo('Add combo');for(const n of [a,b]){const m=MBY.get(n);if(!m||oathTagOf(n)||S.mantras.includes(n)||isReq(n))continue;S.mantras.push(n);added.push(n)}
+function addComboMantras(a,b){const added=[];pushUndo('Add combo');for(const n of [a,b]){const m=MBY.get(n);if(!m||oathTagOf(n)||S.mantras.includes(n)||isReq(n))continue;S.mantras.push(n);added.push(n)}if(added.length)fitCap();
   run();say(added.length?`Added ${added.join(' and ')} for the ${a} → ${b} combo. Mantras cost 2 talent slots each; press Optimize build to replan stats.`:`${a} → ${b}: both are already in your build.`)}
 function renderOathTable(){
   if(!last||!last.best){$('otbl').innerHTML='';return}
@@ -1810,7 +1815,7 @@ function autoPick(){
   if(!picks.length){say('No free talent slots, or nothing else fits these stats.');return}
   pushUndo('Auto-pick');
   for(const p of picks){for(const x of p.pre)if(!S.sel.includes(x))S.sel.push(x);if(!S.sel.includes(p.n))S.sel.push(p.n)}
-  run();const syn=picks.filter(p=>p.sy>0).map(p=>p.n);
+  trimToCap();run();const syn=picks.filter(p=>p.sy>0).map(p=>p.n);
   say(`Auto-picked ${picks.length} talent${picks.length>1?'s':''}${syn.length?`, including ${syn.length} synerg${syn.length>1?'ies':'y'} (${syn.slice(0,4).join(', ')}${syn.length>4?'…':''})`:''}. All fit your current stats.`);
 }
 function renderResults(res){
@@ -2522,10 +2527,10 @@ document.addEventListener('click',e=>{
   else if(d.wclear){S.weapon='';renderInputs();runSoon()}
   else if(d.oathpick){S.oath=decodeURIComponent(d.oathpick);const wz=$('wz-oath');if(wz&&$('wiz').open)wz.value=S.oath;else{renderInputs();runSoon()}if($('oathdlg').open){closeDlg('oathdlg')}say(`Oath set to ${S.oath}.`)}
   else if(d.ttog&&isReq(decodeURIComponent(d.ttog))){say(`${decodeURIComponent(d.ttog)} is required. Remove it on the Required tab first.`)}
-  else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else S.sel.push(n);runSoon()}
-  else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n)){pushUndo('Take '+n);S.sel.push(n)}runSoon();say(`Took ${n}.`)}
+  else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else{if(!roomFor(n)){say(fullMsg());return}S.sel.push(n)}runSoon()}
+  else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n)){if(!roomFor(n)){say(fullMsg());return}pushUndo('Take '+n);S.sel.push(n)}runSoon();say(`Took ${n}.`)}
   else if(d.mtog&&isReq(decodeURIComponent(d.mtog))){say(`${decodeURIComponent(d.mtog)} is required. Remove it on the Required tab first.`)}
-  else if(d.mtog){const n=decodeURIComponent(d.mtog);if(S.mantras.includes(n))S.mantras=S.mantras.filter(x=>x!==n);else S.mantras.push(n);runSoon()}
+  else if(d.mtog){const n=decodeURIComponent(d.mtog);if(S.mantras.includes(n))S.mantras=S.mantras.filter(x=>x!==n);else{S.mantras.push(n);const cn=counts(closure());if(cn.nTal>cn.cap){S.mantras.pop();pushUndo('Add '+n);S.mantras.push(n);fitCap()}}runSoon()}
   else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save()}
   else if(d.tf){S.tfilter=d.tf;renderTalentChips();save()}
   else if(d.mf){S.mfilter=d.mf;renderMantraChips();save()}

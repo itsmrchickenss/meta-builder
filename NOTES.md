@@ -130,3 +130,11 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 - Elder / Enmity: Bladeharper Ironsing (Elderdon, elder wr builds): CHA 40 before, INT 90 after (real builds reach 100 but shrine below Power 8), STR 25, Ironsing 80, Shadowcast 20, Medium 90 Shattered Katana, Prophet's Cloak.
 - Brick Wall Dawnwalker: FTD/WLL 100 before -> 75, Frostdraw 80 + Flamecharm 40, steam path (Brick Wall, Flashboil, Boiling Point locked), Heavy 40 Gran Sudaruska.
 - The top-builds list is still readable from a deepwoken.co page: fetch('/api/proxy/builds?sort=top&limit=50&page=N').
+
+## v1.18
+- Stats table: one editable Final column (typing locks it: floor + limit at that value in `S.mins`/`wtarget`/`atts` + `S.caps`).
+- `statusOf` returns `pre:true` when a talent is reachable only with the pre-shrine stats; chips show a PRE badge, suggestions say "take it before the shrine".
+- Optimize fallbacks: `trimToBudget` -> (if required + floors alone are over) `easeFloors` -> `rebuildToBudget` (re-add picks by value while they fit). Stress test: random picks on every preset always end at free >= 0.
+- Damage <-> talent options slider (`S.prio`) weights auto-pick (damage talents vs popular/synergy) and the leftover spend (weapon/attunement vs attribute thresholds that unlock talents). Spend retries with fewer points instead of undoing.
+- Equipment: targets 500 HP and 50% physical armor by default (`S.gear.minpp`), then the health/armor slider; elemental pips never used.
+- deepwoken.co link paste can't import directly: deepwoken.co deliberately refuses other sites; we don't spoof requests to get around that. The bookmark is the supported path.

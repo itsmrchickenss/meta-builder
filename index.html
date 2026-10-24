@@ -267,6 +267,9 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .groups.tall{max-height:calc(100vh - 290px);min-height:360px}
 .bm{display:inline-block;padding:3px 10px;border:1px dashed var(--brass);border-radius:4px;color:var(--brass);text-decoration:none;cursor:grab;font-weight:600}
 .dwcall{display:block;margin-top:6px;font-style:normal;color:var(--bone)}
+.prebadge{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--abyss);background:var(--ice);border-radius:3px;padding:0 4px;margin-right:5px;vertical-align:1px}
+.pretxt{color:var(--ice);font-weight:600}
+.tipacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
 #imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
 .shrineflow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;counter-reset:f}
@@ -285,7 +288,7 @@ table.stbl{width:100%;border-collapse:collapse;font-size:13.5px}
 .stbl tr.sec th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);padding-top:10px;border-bottom:1px solid var(--line)}
 .stbl td.c-pre{background:color-mix(in srgb,var(--ice) 7%,transparent)}.stbl td.c-post{background:color-mix(in srgb,var(--brass) 7%,transparent)}
 .stbl input.v{width:3.4em;padding:2px 0;font:inherit;font-family:var(--f-mono);text-align:center;color:var(--bone);border:1px solid var(--line);border-radius:4px;background:var(--trench)}
-.stbl input.v.pin{border-color:var(--brass);background:var(--brass-wash)}.stbl input.v:disabled{opacity:.35}.stbl input.v.up{border-color:var(--ok)}
+.stbl input.v.pin{border-color:var(--brass);background:var(--brass-wash)}.stbl input.v:disabled{opacity:.35}.stbl input.v.up{border-color:var(--ok)}.stbl input.v.down{border-color:var(--bad)}.stbl input.v.fin::placeholder{color:var(--bone);opacity:.85}
 .stbl .fv{display:inline-block;min-width:2.6em;padding:2px 0;border:1px solid var(--line);border-radius:4px;background:var(--trench)}
 .stbl .fv.up{border-color:var(--ok);color:var(--ok)}.stbl .fv.down{border-color:var(--bad)}
 .stbl tr.zero th[scope=row],.stbl tr.zero td{opacity:.55}
@@ -415,7 +418,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.17</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.18</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -512,6 +515,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
     <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: an attribute (Strength…Charisma) raised before the shrine gets no points after it (either 1 before and the rest after, or high before and the shrine brings it down)</label>
     <label class="hint split" for="prio">Optimize for <b style="color:var(--bone)">damage</b><input type="range" id="prio" min="0" max="100" step="10"><b style="color:var(--bone)">talent options</b></label>
+    <p class="hint" style="margin:0">Toward damage: leftover points go to weapon and attunement and auto‑pick prefers damage talents. Toward talent options: leftover points raise stats to unlock more talents and auto‑pick prefers popular and synergy talents. Press Optimize build after moving it.</p>
     <label class="hint split" for="dsplit">Damage from <b style="color:var(--bone)">M1 (weapon)</b><input type="range" id="dsplit" min="0" max="100" step="10"><b style="color:var(--bone)">mantras (attunement)</b></label>
     <p class="hint" id="dsplithelp" style="margin:0"></p>
     <div class="verdict" id="verdict"></div>
@@ -704,7 +708,8 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="dmg" id="ehp"></div>
     <label class="hint split" for="gw">Favor <b style="color:var(--bone)">Health</b><input type="range" id="gw" min="0" max="100" step="10"><b style="color:var(--bone)">Physical armor</b></label>
     <label class="hint split" for="gminhp">Minimum health<input type="range" id="gminhp" min="300" max="700" step="10"><b class="mono" id="gminhpv" style="color:var(--bone)"></b></label>
-    <p class="hint" style="margin:0">Optimize equipment reaches the minimum health first, then spends pips on health or physical armor by the slider. Elemental armor isn't used, and Transfusion Ring is never picked.</p>
+    <label class="hint split" for="gminpp">Minimum physical armor<input type="range" id="gminpp" min="0" max="80" step="5"><b class="mono" id="gminppv" style="color:var(--bone)"></b></label>
+    <p class="hint" style="margin:0">Optimize equipment reaches the minimum health and minimum physical armor first (500 HP and 50% by default), then spends the rest on health or physical armor by the slider. Elemental armor is never used, and Transfusion Ring is never picked.</p>
     <p class="hint" id="gnote"></p>
   </section>
   <section class="panel">
@@ -4156,6 +4161,25 @@ function trimToCap(){const dropped=[];let guard=80;
     if(!pick)break;S.sel=S.sel.filter(x=>x!==pick.n);dropped.push(pick.n)}
   return dropped}
 const prevP=()=>last&&last.best?last.best.P:null;
+const talentVal=(n,C)=>{const md=DMG_MODS[n];return 1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS+(md?((md.dmg||0)+(md.pen||0))*100:0)};
+// Last resort when dropping one talent at a time can't fix the budget (several picks share a stat):
+// rebuild the picked talents from most to least valuable, keeping each only if the build still fits.
+function rebuildToBudget(){const dropped=[];const C=closure();
+  const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n)).sort((a,b)=>talentVal(b,C)-talentVal(a,C));
+  S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));let r=compute({starts:4,iters:80});
+  if(!r.best||r.best.impossible||r.best.free<0){dropped.push(...cand);return {res:r,dropped}}
+  for(const n of cand){if(S.sel.includes(n))continue;S.sel=[...S.sel,n];const t=compute({starts:1,iters:40,seedP:r.best.P});
+    if(t.best&&!t.best.impossible&&t.best.free>=0)r=t;else{S.sel=S.sel.filter(x=>x!==n);dropped.push(n)}}
+  return {res:r,dropped}}
+// If required talents and floors alone don't fit: lower the floors 5 at a time, biggest first (pins and required stay)
+function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iters:80});
+  const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;
+  const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
+  while(r.best&&!r.best.impossible&&r.best.free<0&&guard-->0){
+    const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin));
+    if(!ks.length)break;ks.sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));const [o,k,mn,label]=ks[0];
+    o[k]=Math.max(mn,(+o[k]||0)-5);if(o!==S&&!o[k])delete o[k];lowered[label]=o[k]||0;r=compute({starts:3,iters:60,seedP:r.best.P})}
+  return {res:r,lowered}}
 // After a mantra is added (each one takes 2 talent slots), drop the least valuable talents so the cap still holds
 function fitCap(){const d=trimToCap();if(d.length)say(`That mantra takes 2 talent slots, so ${d.length} talent${d.length>1?'s were':' was'} dropped to stay under the cap: ${d.slice(0,5).join(', ')}${d.length>5?'…':''}. Undo brings ${d.length>1?'them':'it'} back.`);return d}
 // Room for one more talent (with its missing prerequisites)?
@@ -4221,9 +4245,10 @@ function statusOf(entry,isM,ctx){
   const oathNeed=(entry.req.t||[]).find(n=>n.startsWith('Oath:')&&n!=='Oath: '+S.oath);if(oathNeed)return {k:'block',label:'Needs '+oathNeed.slice(6),cost:Infinity};
   if(!ctx._have)ctx._have=new Set([...C.T.keys(),...C.M.keys()]);if(!ctx._chain)ctx._chain=new Map();
   const alts=chainAlts(entry,ctx._have,ctx._chain);
-  const cost=Math.min(bestCost(alts,final),canPre(alts)?bestCost(alts,peak):Infinity);
+  const cF=bestCost(alts,final),cP=canPre(alts)?bestCost(alts,peak):Infinity;const cost=Math.min(cF,cP);
   const missing=(entry.req.t||[]).filter(n=>!n.startsWith('Oath:')&&!C.T.has(n));
-  if(cost===0)return {k:'fit',label:missing.length?'after '+missing.join(', '):'Fits',cost:0};
+  // reachable with your pre-shrine stats only: take it before the shrine
+  if(cost===0)return {k:'fit',pre:cF>0,label:missing.length?'after '+missing.join(', '):cF>0?'before shrine':'Fits',cost:0};
   if(cost<=15)return {k:'close',label:'+'+cost,cost};
   return {k:'far',label:cost===Infinity?'out of reach':'+'+cost,cost};
 }
@@ -4276,7 +4301,8 @@ function autoPickList(ctx){
         for(const p of tx.req.t||[]){if(p.startsWith('Oath:')||have(p)||pre.includes(p))continue;if(!ok.has(p)||blockedBy(p)){bad=true;return}pre.push(p);walk(p)}};
       walk(n);if(bad)continue;const cost=1+pre.length;if(cost>room)continue;
       const sy=synW(synOf(n,ctx.C,added));const md=DMG_MODS[n];
-      const pop=POP.get(n)||0;const v=((pop>=3?pop:0)+sy*SYN_PTS+(md?((md.dmg||0)+(md.pen||0))*100:0))/cost;
+      const pop=POP.get(n)||0;const pr=(S.prio==null?50:S.prio)/100;const dmgV=md?((md.dmg||0)+(md.pen||0))*100:0;
+      const v=(((pop>=3?pop:0)+sy*SYN_PTS)*(0.4+1.2*pr)+dmgV*(0.2+3.6*(1-pr)))/cost;
       if(v>0&&(!best||v>best.v))best={n,v,pre,sy}}
     if(!best)break;
     for(const p of best.pre){added.add(p)}added.add(best.n);out.push(best);room-=1+best.pre.length}
@@ -4320,11 +4346,13 @@ function gearStats(G,final){
 }
 // optimizer objective: below the minimum health, only health counts; above it, health x (1/(1-physical resistance))^a
 // a = 0 is pure health, a = 2 leans hard on physical armor. Elemental armor is ignored here.
-function gearScore(st,o){const rp=Math.min(.95,st.pp/100*(1-PEN.phys/100));if(st.hp<o.minhp)return st.hp-1e6;return st.hp*Math.pow(1/(1-rp),o.a)}
+// targets first (minimum health and minimum physical armor, default 500 HP and 50%), then the health/armor balance
+function gearScore(st,o){const rp=Math.min(.95,st.pp/100*(1-PEN.phys/100));const dHp=Math.max(0,(o.minhp||0)-st.hp),dPp=Math.max(0,(o.minpp||0)-st.pp);
+  if(dHp||dPp)return -1e6-dHp*10-dPp*40+st.hp/1000;return st.hp*Math.pow(1/(1-rp),o.a)}
 const GEAR_NEVER=new Set(['Transfusion Ring']);
 const optPip=(ty,r)=>pipChoices(ty,r).filter(x=>x!=='E');
 // coordinate ascent over slots: each pass tries every eligible item at max stars with every pip split
-function optimizeGear(final,focus){const o=typeof focus==='object'?focus:{a:1,minhp:500};
+function optimizeGear(final,focus){const o=typeof focus==='object'?focus:{a:1,minhp:500,minpp:50};
   const pwr=20;const G={outfit:'',slots:{}};
   const okO=OUTFITS.filter(o=>gearReqOk(o.req,final,pwr));
   const opts={};for(const [lab,ty] of GSLOTS){opts[lab]=[null];for(const g of GEAR.filter(g=>g.ty===ty&&!GEAR_NEVER.has(g.n)&&gearReqOk(g.req,final,pwr))){
@@ -4475,7 +4503,7 @@ function statGroupOf(t){
   return ANAME[k]||(k==='BOD'?'Body (STR/FTD/AGL)':k==='MND'?'Mind (INT/WLL/CHA)':k==='WPN'?'Any weapon':k==='ATN'?'Any attunement':WEP[k]?WEP[k]+' weapon':ATT[k]?ATT[k][0]:'Combined stats');
 }
 function renderSuggest(ctx){const box=$('tsugg');if(!box)return;const recs=recommendations(ctx,8).slice(0,8);
-  box.innerHTML=recs.length?`<details class="tsugg" ${S.tsuggClosed?'':'open'}><summary><h3>Suggested for this build <small>${recs.length}</small></h3></summary><div class="list">${recs.map(r=>`<div class="sugrow" data-t="${enc(r.t.n)}"><div class="nm"><b>${r.syn.length?'⚡ ':''}${esc(r.t.n)}</b> <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`Synergy with ${esc(r.syn.map(x=>x.o).join(', '))} · `:''}${Math.round(r.share*100)}% of top builds that can take it do${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><button class="mini primary" data-tadd="${enc(r.t.n)}" aria-label="Take ${esc(r.t.n)}">Take</button></div>`).join('')}</div></details>`:''}
+  box.innerHTML=recs.length?`<details class="tsugg" ${S.tsuggClosed?'':'open'}><summary><h3>Suggested for this build <small>${recs.length}</small></h3></summary><div class="list">${recs.map(r=>`<div class="sugrow" data-t="${enc(r.t.n)}"><div class="nm"><b>${r.syn.length?'⚡ ':''}${esc(r.t.n)}</b> <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`Synergy with ${esc(r.syn.map(x=>x.o).join(', '))} · `:''}${Math.round(r.share*100)}% of top builds that can take it do${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><button class="mini primary" data-tadd="${enc(r.t.n)}" aria-label="Take ${esc(r.t.n)}">Take</button></div>`).join('')}</div></details>`:''}
 function renderTalentChips(){
   const ctx=ctxNow();const cn=counts(ctx.C);renderSuggest(ctx);
   $('tcount').textContent=`${cn.nTal}/${cn.cap} slots`;
@@ -4496,7 +4524,7 @@ function renderTalentChips(){
     if(q&&!(t.n+' '+t.c+' '+fmtReq(t.req)).toLowerCase().includes(q))continue;
     const g=S.tgroup==='cat'?t.c:statGroupOf(t);(groups[g]=groups[g]||[]).push([t,st]);
   }
-  const auto=n=>ctx.C.T.has(n)&&!S.sel.includes(n)&&!isReq(n);
+  const auto=n=>ctx.C.T.has(n)&&!S.sel.includes(n)&&!isReq(n);const preSet=new Set(last&&last.best?last.best.preTaken:[]);
   const keys=S.tgroup==='cat'?Object.keys(groups).sort():Object.keys(groups).sort((a,b)=>groupRank(a)-groupRank(b)||a.localeCompare(b));
   if(S.tgroup!=='cat')for(const k of keys)groups[k].sort((a,b)=>(b[1].k==='have')-(a[1].k==='have')||(POP.get(b[0].n)||0)-(POP.get(a[0].n)||0)||a[0].n.localeCompare(b[0].n));
   const closed=new Set(S.tclosed||[]);
@@ -4505,8 +4533,9 @@ function renderTalentChips(){
   const secs=synSections(synList,x=>x[0].n,x=>x[2]);
   const synHtml=synList.length?`<details class="grp syngrp" data-gk="__syn" ${closed.has('__syn')?'':'open'}><summary><h3>${SG}<small>${synList.length}</small></h3></summary>${secs.map(([p,items])=>`<div class="synsec"><span class="synwith">with <b>${esc(p)}</b></span><div class="chips">${items.map(([t,st])=>`<button class="chip synergy ${t.r} ${st.k==='close'?'close':''}" aria-pressed="false" data-ttog="${enc(t.n)}">⚡ ${esc(t.n)}${st.k==='close'?`<small>${esc(st.label)}</small>`:''}</button>`).join('')}</div></div>`).join('')}</details>`:'';
   $('tchips').innerHTML=synHtml+keys.map(c=>`<details class="grp" data-gk="${esc(c)}" ${closed.has(c)?'':'open'}><summary><h3>${esc(c)}<small>${groups[c].length}</small></h3></summary><div class="chips">${groups[c].map(([t,st])=>{
-    const r=recSet.get(t.n);const sub=st.k==='have'?shortReq(t.req):st.k==='fit'?(r?Math.round(r.share*100)+'%':shortReq(t.req)):st.label;
-    return `<button class="chip ${t.r} ${st.k==='have'?'':st.k} ${auto(t.n)?'auto':''}" aria-pressed="${st.k==='have'}" ${st.k==='block'||auto(t.n)?'disabled':''} data-ttog="${enc(t.n)}" title="${esc(t.n+' ('+t.c+') — '+fmtReqFull(t)+(isReq(t.n)?' — required':st.k!=='have'?' — '+st.label:''))}">${isReq(t.n)?'🔒 ':''}${esc(t.n)}${sub?`<small>${esc(sub)}</small>`:''}</button>`}).join('')}</div></details>`).join('')||(synHtml?'':`<p class="hint">${S.tfilter==='picked'?'No talents picked yet.':'Nothing matches.'}</p>`);
+    const r=recSet.get(t.n);const sub=st.k==='have'?shortReq(t.req):st.k==='fit'?(st.pre?'before shrine':r?Math.round(r.share*100)+'%':shortReq(t.req)):st.label;
+    const preB=(st.k==='have'&&preSet.has(t.n))||st.pre?'<i class="prebadge" title="Taken before the shrine">PRE</i>':'';
+    return `<button class="chip ${t.r} ${st.k==='have'?'':st.k} ${auto(t.n)?'auto':''}" aria-pressed="${st.k==='have'}" ${st.k==='block'||auto(t.n)?'disabled':''} data-ttog="${enc(t.n)}" title="${esc(t.n+' ('+t.c+') — '+fmtReqFull(t)+(isReq(t.n)?' — required':st.k!=='have'?' — '+st.label:''))}">${isReq(t.n)?'🔒 ':''}${preB}${esc(t.n)}${sub?`<small>${esc(sub)}</small>`:''}</button>`}).join('')}</div></details>`).join('')||(synHtml?'':`<p class="hint">${S.tfilter==='picked'?'No talents picked yet.':'Nothing matches.'}</p>`);
   // picked list with pre/post
   $('tsel').innerHTML=[...ctx.C.T.entries(),...ctx.C.M.entries()].map(([n,i])=>{const req=reqOf(n);const alts=reqAlts(req,false);if(!hasStats(alts))return '';const w=whenOf(n,alts);const isM=MBY.has(n)&&!TBY.has(n);
     return `<div class="item ${i.by?'auto':''}"><div class="nm">${esc(n)}${isM?' <span class="hint">mantra</span>':''}<small>${esc(fmtReq(req))}${i.by?' · for '+esc(i.by):''}</small></div><div class="acts">${(()=>{const taken=last&&last.best&&last.best.preTaken.includes(n);return `<span class="hint">${w==='auto'?(taken?'pre':'post'):''}</span>`+(canPre(alts)?`<select data-when="${enc(n)}" aria-label="When to take ${esc(n)}"><option value="auto" ${w==='auto'?'selected':''}>Auto</option><option value="pre" ${w==='pre'?'selected':''}>Force pre</option><option value="post" ${w==='post'?'selected':''}>Force post</option></select>`:'<span class="hint">Post</span>')})()}</div></div>`}).join('')||'<p class="hint">Nothing picked needs stats.</p>';
@@ -4584,7 +4613,7 @@ function gearPick(kind,n){
 }
 function renderGear(){
   const fin=last&&last.best?last.best.final:Object.fromEntries(ALL.map(k=>[k,0]));const pwr=20;const G=S.gear;
-  $('gw').value=G.w==null?50:G.w;$('gminhp').value=G.minhp||500;$('gminhpv').textContent=(G.minhp||500)+' HP';paintRanges();
+  $('gw').value=G.w==null?50:G.w;$('gminhp').value=G.minhp||500;$('gminhpv').textContent=(G.minhp||500)+' HP';$('gminpp').value=G.minpp==null?50:G.minpp;$('gminppv').textContent=(G.minpp==null?50:G.minpp)+'%';paintRanges();
   renderGearSearch();
   const o=OBY.get(G.outfit);
   $('goutinfo').innerHTML=`<div class="gslot gout"><span class="lb">Outfit</span><div class="gname">${o?`<b>${esc(o.n)}</b><button class="x" data-gclear="__outfit" aria-label="Remove outfit">×</button>`:'<span class="hint">No outfit. Click the search bar above to pick one.</span>'}</div>${o?`<p class="hint" style="margin:0;grid-column:1/-1">${o.tal.length?`Grants <b class="syn">${o.tal.map(esc).join(', ')}</b> · `:''}${o.p}% physical · ${o.e}% elemental · durability ${o.dur}${Object.keys(o.req).length?' · needs '+esc(fmtStats(o.req)):''}${gearReqOk(o.req,fin,pwr)?'':` <span class="gbad">Missing ${esc(gearReqMiss(o.req,fin,pwr).join(', '))}</span>`}</p>`:''}</div>`;
@@ -4636,13 +4665,13 @@ function renderFinal(){
     head=`<tr class="sgrp"><th rowspan="2" class="sk">Stat</th><th class="c-pre">① Before</th><th class="c-sh">② Shrine</th><th class="c-post">③ After</th></tr><tr class="sub"><th class="c-pre">you set</th><th class="c-sh">leaves</th><th class="c-post">final, you set</th></tr>`;
     row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0,sh=sho(k);return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}</th><td class="c-pre"><input class="v" type="number" min="0" max="100" data-mpre="${k}" value="${pre||''}" placeholder="0" aria-label="${esc(statName(k))} before the shrine"></td><td class="c-sh mono">${b.noShrine?'—':sh}</td><td class="c-post"><input class="v ${fin>sh?'up':''}" type="number" min="0" max="100" data-mfin="${k}" value="${fin||''}" placeholder="${sh}" aria-label="${esc(statName(k))} final"></td></tr>`}}
   else{
-    head=`<tr class="sgrp"><th rowspan="2" class="sk">Stat</th><th class="c-pre">① Before</th><th class="c-sh">② Shrine</th><th class="c-post" colspan="2">③ After shrine</th></tr><tr class="sub"><th class="c-pre">level to</th><th class="c-sh">leaves</th><th class="c-post">at least</th><th class="c-post">final</th></tr>`;
-    row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0,sh=sho(k);const pinned=k in pin;const tg=tgtOf(k);
+    head=`<tr class="sgrp"><th rowspan="2" class="sk">Stat</th><th class="c-pre">① Before</th><th class="c-sh">② Shrine</th><th class="c-post">③ After shrine</th></tr><tr class="sub"><th class="c-pre">level to</th><th class="c-sh">leaves</th><th class="c-post">final</th></tr>`;
+    row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0,sh=sho(k);const pinned=k in pin;const tg=tgtOf(k);const cp=(S.caps||{})[k];const locked=!!(cp&&cp.on&&tg!==null&&+cp.max===+tg);const lv=locked?+cp.max:'';
       const sil=S.oath==='Silentheart'&&ATT[k];
-      return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}${sil&&fin?' <small class="warn" title="Silentheart can\'t use attunement mantras">no use</small>':''}</th><td class="c-pre"><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine${pinned?' (pinned)':''}"></td><td class="c-sh mono" title="What the shrine leaves you with">${b.noShrine?'—':sh}</td><td class="c-post"><input class="v" type="number" min="0" max="100" data-tgt="${k}" value="${tg?tg:''}" placeholder="–" ${tg===null?'disabled title="Switch weapon type to target this"':'title="Empty = any"'} aria-label="${esc(statName(k))} final, at least"></td><td class="c-post"><span class="fv mono ${fin>sh?'up':''} ${fin<sh?'down':''}">${fin}</span></td></tr>`}}
-  const cols=man?4:5;
+      return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}${sil&&fin?' <small class="warn" title="Silentheart can\'t use attunement mantras">no use</small>':''}</th><td class="c-pre"><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine${pinned?' (pinned)':''}"></td><td class="c-sh mono" title="What the shrine leaves you with">${b.noShrine?'—':sh}</td><td class="c-post"><input class="v fin ${locked?'pin':''} ${fin>sh?'up':''} ${fin<pre&&pre>1&&fin<=sh?'down':''}" type="number" min="0" max="100" data-fin="${k}" value="${locked?lv:''}" placeholder="${fin}" ${tg===null?'disabled title="Switch weapon type to use this"':`title="${locked?'Locked at '+lv+'. Clear the box to unlock.':'Type a value to lock the final amount'}"`} aria-label="${esc(statName(k))} final${locked?' (locked)':''}"></td></tr>`}}
+  const cols=4;
   $('bstats').innerHTML=`<div class="scroll"><table class="stbl">${head}${secs.map(([t,ks])=>`<tr class="sec"><th colspan="${cols}">${t}</th></tr>`+ks.map(row).join('')).join('')}</table></div>
-   <p class="hint" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first. <b>At least</b> = the lowest it may end at (empty = any). Green final = raised after the shrine, red = lowered by the shrine.'}</p>`;
+   <p class="hint" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first (type to lock). <b>Final</b> = where it ends (type to lock it exactly; clear the box to let the optimizer choose). Green = raised after the shrine, red = lowered by the shrine.'}</p>`;
 }
 function renderPicked(){
   const C=last?last.R.C:closure();const b=last&&last.best;const cn=counts(C);
@@ -4835,7 +4864,7 @@ function renderResults(res){
   // recommendations
   const ctx=ctxNow();recCache=recommendations(ctx,10);
   $('recsub').textContent=`synergies first; % = top builds whose stats allow it that take it`;
-  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds that can</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
+  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds that can</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
   // oath fits
   const fits=OATHS.filter(o=>o.n!=='None').map(o=>({o,b:evaluate(best.P,R,oathAltsOf(o))})).sort((x,y)=>(y.b&&!y.b.impossible?y.b.free:-999)-(x.b&&!x.b.impossible?x.b.free:-999));
   $('fits').innerHTML=fits.map(({o,b})=>{const ok=b&&b.free>=0&&!b.impossible;return `<button class="chip" data-oathpick="${enc(o.n)}" aria-pressed="${o.n===S.oath}" style="${ok?'':'opacity:.55'}">${esc(o.n)}<small>${b&&!b.impossible?(b.free>=0?b.free+' points left':(-b.free)+' points over'):'—'}</small></button>`}).join('');
@@ -4861,25 +4890,38 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
       dropped=dropped.concat(trimToCap());
       let res=compute({starts:18,iters:200,seedP:prevP()});
       if(res.best&&res.best.free<0&&!res.best.impossible){const tr=trimToBudget(res);dropped=dropped.concat(tr.dropped);res=compute({starts:18,iters:200,seedP:tr.res.best&&tr.res.best.P})}
+      // still over: ease floors if required talents + floors alone don't fit, then rebuild the picks greedily
+      let lowered={};
+      if(res.best&&res.best.free<0&&!res.best.impossible){const keep=S.sel;S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const base=compute({starts:4,iters:80});S.sel=keep;
+        if(base.best&&!base.best.impossible&&base.best.free<0){S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const ef=easeFloors();lowered=ef.lowered;S.sel=keep}
+        const rb=rebuildToBudget();dropped=dropped.concat(rb.dropped);res=compute({starts:18,iters:200,seedP:rb.res.best&&rb.res.best.P})}
+      const lw=Object.entries(lowered);
       if(spend&&res.best&&res.best.free>0&&!res.best.impossible){
         // spend where weighted damage per point is highest: weapon -> M1, attunement -> mantras (aiming at 20-point mantra levels)
-        const prevRes=res,prevW=S.wtarget,prevA={...S.atts};
-        let free=res.best.free;const fin={...res.best.final};const names=res.R.names;const ms=Object.keys(S.atts).length?(S.dsplit==null?50:S.dsplit)/100:0;
-        const val=f=>{const d=damageOf(f,names);return (1-ms)*d.hit/d.w.d*100+ms*(d.md?d.md.pct:0)};
-        const keys=[...(S.wtarget>0||!S.weapon?[S.wtype]:[]),...Object.keys(S.atts)];
+        const prevRes=res,prevW=S.wtarget,prevA={...S.atts},prevM={...S.mins};
+        const spendTry=F=>{S.wtarget=prevW;S.atts={...prevA};S.mins={...prevM};let free=F;const fin={...prevRes.best.final};const names=prevRes.R.names;const ms=Object.keys(S.atts).length?(S.dsplit==null?50:S.dsplit)/100:0;
+        const pr=(S.prio==null?50:S.prio)/100;const RV=prevRes.R.val;
+        const tvOf=f=>{let t=0;for(const v of RV)if(v.alts.some(a=>altCost(a,f)===0))t+=v.p;return t};
+        const val=f=>{const d=damageOf(f,names);return (1-pr)*((1-ms)*d.hit/d.w.d*100+ms*(d.md?d.md.pct:0))+Math.max(pr,0.05)*tvOf(f)/10};
+        // damage end: weapon and attunements; talent-options end: also attributes, aiming at the next talent threshold
+        const keys=[...(S.wtarget>0||!S.weapon?[S.wtype]:[]),...Object.keys(S.atts),...ATTR];
+        const nextTh=(k,f)=>{let m=Infinity;for(const v of RV)for(const a of v.alts){const x=a.min&&a.min[k];if(x>f[k]&&x<m)m=x}return m===Infinity?0:m-f[k]};
         while(free>0){let best=null;const v0=val(fin);
-          const lim=capsOf();for(const k of keys){const opts=new Set([1,5,ATT[k]?(Math.floor(fin[k]/20)+1)*20-fin[k]:0].filter(x=>x>0&&x<=free&&fin[k]+x<=(k in lim?lim[k]:100)));
+          const lim=capsOf();for(const k of keys){const opts=new Set([1,5,ATT[k]?(Math.floor(fin[k]/20)+1)*20-fin[k]:0,nextTh(k,fin)].filter(x=>x>0&&x<=free&&fin[k]+x<=(k in lim?lim[k]:100)));
             for(const s of opts){const g=(val({...fin,[k]:fin[k]+s})-v0)/s;if(!best||g>best.g)best={k,s,g}}}
           if(!best||best.g<=0)break;fin[best.k]+=best.s;free-=best.s}
         if(fin[S.wtype]>(+S.wtarget||0))S.wtarget=fin[S.wtype];
         for(const k of Object.keys(S.atts))if(fin[k]>S.atts[k])S.atts[k]=fin[k];
-        res=compute({starts:18,iters:200,seedP:res.best.P});
+        for(const k of ATTR)if(fin[k]>prevRes.best.final[k]&&fin[k]>(+S.mins[k]||0))S.mins[k]=fin[k];
+        return compute({starts:18,iters:200,seedP:prevRes.best.P})};
         // spending must never push the build over budget: keep the unspent version if it does
-        if(!res.best||res.best.impossible||res.best.free<0){S.wtarget=prevW;S.atts=prevA;res=prevRes}
+        // spending must never push the build over budget: retry with fewer points, else keep the unspent version
+        let F=prevRes.best.free,ok=null;for(let tries=0;tries<4&&F>0;tries++){const r=spendTry(F);if(r.best&&!r.best.impossible&&r.best.free>=0){ok=r;break}F-=Math.max(2,r.best?-r.best.free+2:F)}
+        if(ok)res=ok;else{S.wtarget=prevW;S.atts=prevA;S.mins=prevM;res=prevRes}
       }
       renderInputs();renderResults(res);
       const still=res.best&&!res.best.impossible&&res.best.free<0?` Still over by ${-res.best.free}: ${S.req.length?'your required talents and stat floors':'your stat floors, weapon and attunement targets'} need more than ${BUDGET} points on their own${Object.keys(S.pin||{}).length?', together with your pinned stats':''}.`:'';
-      say((dropped.length?`Removed ${dropped.join(', ')} to fit your stat limits, the talent cap and the point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
+      say((lw.length?`Lowered ${lw.map(([l,v])=>l+' to '+v).join(', ')} so the build fits. `:'')+(dropped.length?`Removed ${dropped.join(', ')} to fit your stat limits, the talent cap and the point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
     }finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
     if(opts&&opts.after)opts.after();
   },30);
@@ -5409,10 +5451,10 @@ function helpTips(){
   const b=last&&last.best;if(!b)return [];const fin=b.final,R=last.R,C=R.C;const tips=[];
   const names=new Set([...C.T.keys(),...C.M.keys()]);
   // 1. cheap unlocks of popular talents
-  const prof={...fin};const skip=new Set(C.T.keys());
+  const prof={...fin};ALL.forEach(x=>prof[x]=Math.max(prof[x]||0,b.P[x]||0));const skip=new Set(C.T.keys());
   const cheap=[];for(const k of [...ATTR,S.wtype,...Object.keys(S.atts)]){const u=unlocks(prof,k,10,skip);if(!u.length)continue;const x=u[0];const pop=x.list.reduce((s,t)=>s+t.p,0);if(pop>=15)cheap.push({k,x,pop})}
   cheap.sort((a,b)=>b.pop/b.x.up-a.pop/a.x.up);
-  for(const c of cheap.slice(0,2))tips.push({k:'up',t:`+${c.x.up} ${statName(c.k)} (to ${c.x.th}) unlocks ${c.x.list.slice(0,3).map(t=>t.n+(t.p?` (${Math.round(t.p)}% of builds)`:'')).join(', ')}${c.x.list.length>3?` and ${c.x.list.length-3} more`:''}.`});
+  for(const c of cheap.slice(0,2))tips.push({k:'up',t:`+${c.x.up} ${statName(c.k)} (to ${c.x.th}) unlocks ${c.x.list.slice(0,3).map(t=>t.n+(t.p?` (${Math.round(t.p)}% of builds)`:'')).join(', ')}${c.x.list.length>3?` and ${c.x.list.length-3} more`:''}.`,take:c.x.list.slice(0,3).map(t=>t.n)});
   // 2. mantra level just out of reach
   for(const k of Object.keys(S.atts)){const v=fin[k]||0;const nx=(Math.floor(v/20)+1)*20;if(v<100&&nx-v<=5&&mLevel(v)<5)tips.push({k:'up',t:`${ATT[k][0]} is ${v}: ${nx-v} more point${nx-v>1?'s':''} reach mantra level ${mLevel(nx)}.`})}
   // 3. the common 50 Fortitude / 40 Agility baseline
@@ -5425,15 +5467,17 @@ function helpTips(){
     if(R.oathAlts&&b.oathAlt&&b.oathAlt.min[k])need=Math.max(need,b.oathAlt.min[k]);
     if(v-need>=5&&!(b.P[k]>0&&b.sh.out[k]===v))tips.push({k:'down',t:`${statName(k)} ends at ${v} but your picks only need ${need}. ${v-need} point${v-need>1?'s':''} there do nothing; drop the floor or add a talent that uses it.`})}
   // 5. leftover points
-  if(b.free>0)tips.push({k:'up',t:`${b.free} free point${b.free>1?'s':''}. Tick "Spend leftover" on the Stats tab to pour them into damage, or take the cheapest unlock above.`});
-  if(b.free<0)tips.push({k:'warn',t:`Over budget by ${-b.free}. Optimize drops the talents with the worst value per point; required ones stay.`});
+  if(b.free>0){const rec=(typeof recommendations==='function'?recommendations(ctxNow(),6):[]).filter(r=>r.st.k==='fit').slice(0,3).map(r=>r.t.n);
+    tips.push({k:'up',t:`${b.free} free point${b.free>1?'s':''}. Spend them on damage, or take a talent your stats already reach.`,spend:1,take:rec})}
+  if(b.free<0)tips.push({k:'warn',t:`Over budget by ${-b.free}. Optimize fixes it: it lowers what isn't needed and drops the talents with the worst value per point; required ones stay.`,opt:1});
   // 6. damage bonus past the soft cap
   if(b.dm&&b.dm.mRaw>.4)tips.push({k:'down',t:`Your damage bonus is +${Math.round(b.dm.mRaw*100)}% raw, but past +25% it counts half (max +50%). More damage talents add little; spend picks on utility.`});
   return tips.slice(0,7);
 }
 function renderHelp(){const on=!!S.help;$('helpon').checked=on;const box=$('help');if(!on){box.hidden=true;return}
   const tips=helpTips();box.hidden=false;
-  box.innerHTML=`<b>Help mode</b> <span class="hint">suggestions for your current build</span><ul>${tips.map(x=>`<li class="${x.k}">${esc(x.t)}</li>`).join('')||'<li>Nothing stands out. Your stats line up with your picks.</li>'}</ul>`}
+  const acts=x=>{const bs=[...(x.take||[]).filter(n=>!S.sel.includes(n)&&!isReq(n)).map(n=>`<button class="mini primary" data-tadd="${enc(n)}">Take ${esc(n)}</button>`),...(x.spend?['<button class="mini" data-spendnow="1">Spend on damage</button>']:[]),...(x.opt?['<button class="mini primary" data-optimize="1">Optimize build</button>']:[])];return bs.length?`<span class="tipacts">${bs.join('')}</span>`:''};
+  box.innerHTML=`<b>Help mode</b> <span class="hint">suggestions for your current build</span><ul>${tips.map(x=>`<li class="${x.k}">${esc(x.t)}${acts(x)}</li>`).join('')||'<li>Nothing stands out. Your stats line up with your picks.</li>'}</ul>`}
 function statHint(k){const b=last&&last.best;if(!b){$('stathint').textContent='';return}
   const prof={...b.final};ALL.forEach(x=>prof[x]=Math.max(prof[x],b.P[x]||0));const u=unlocks(prof,k,25,new Set(last.R.C.T.keys()));
   $('stathint').innerHTML=unlockListHtml(statName(k),u)}
@@ -5517,10 +5561,13 @@ document.addEventListener('click',e=>{
   else if(d.optimize){optimizeAll()}
   else if(t.id==='autopick'||t.id==='autopick2'){autoPick()}
   else if(d.tab){showTab(d.tab)}
+  else if(d.spendnow){S.spend=true;$('spend').checked=true;optimizeAll()}
   else if(d.reqdel){const n=decodeURIComponent(d.reqdel);S.req=S.req.filter(x=>x!==n);if(TBY.has(n)){if(!S.sel.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);say(`${n} is no longer required; it stays picked as a normal ${TBY.has(n)?'talent':'mantra'}.`);runSoon()}
   else if(d.wuse){const n=decodeURIComponent(d.wuse);S.weapon=n;const w=WBY.get(n);if(w){const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt}if(S.wcmp===n)S.wcmp='';renderInputs();runSoon();say(`Now using ${n}.`)}
   else if(d.tdel){const n=decodeURIComponent(d.tdel);S.sel=S.sel.filter(x=>x!==n);runSoon()}
-  else if(t.id==='gearopt'){const fin=last&&last.best?last.best.final:null;if(!fin){say('Build the stats first.');return}const f={a:(S.gear.w==null?50:S.gear.w)/50,minhp:S.gear.minhp||500};pushUndo('Optimize equipment');const w=S.gear.w,mh=S.gear.minhp,keepO=S.gear.outfit;const b=gearStats(S.gear,fin);S.gear=optimizeGear(fin,f);if(keepO)S.gear.outfit=keepO;S.gear.w=w;S.gear.minhp=mh;const a=gearStats(S.gear,fin);renderGear();save();$('gnote').insertAdjacentHTML('afterbegin',`<b>Optimized${keepO?` (kept your ${esc(keepO)})`:''}:</b> health ${Math.round(b.hp)} → ${Math.round(a.hp)}, EHP vs physical ${Math.round(b.phys)} → ${Math.round(a.phys)}.${a.hp<f.minhp?` <span class="gbad">Couldn't reach ${f.minhp} health with gear your stats can wear.</span>`:''} `)}
+  else if(t.id==='gearopt'){const fin=last&&last.best?last.best.final:null;if(!fin){say('Build the stats first.');return}const f={a:(S.gear.w==null?50:S.gear.w)/50,minhp:S.gear.minhp||500,minpp:S.gear.minpp==null?50:S.gear.minpp};pushUndo('Optimize equipment');const w=S.gear.w,mh=S.gear.minhp,mp=S.gear.minpp,keepO=S.gear.outfit;const b=gearStats(S.gear,fin);S.gear=optimizeGear(fin,f);if(keepO)S.gear.outfit=keepO;S.gear.w=w;S.gear.minhp=mh;S.gear.minpp=mp;const a=gearStats(S.gear,fin);renderGear();save();
+    const miss=[a.hp<f.minhp?`${f.minhp} HP (got ${Math.round(a.hp)})`:'',a.pp<f.minpp?`${f.minpp}% physical armor (got ${Math.round(a.pp)}%)`:''].filter(Boolean);
+    $('gnote').insertAdjacentHTML('afterbegin',(miss.length?`<span class="callout warn" style="display:block;margin-bottom:6px">These stats can't reach ${miss.join(' and ')}. More Fortitude adds health; or lower the targets.</span>`:'')+`<b>Optimized${keepO?` (kept your ${esc(keepO)})`:''}:</b> health ${Math.round(b.hp)} → ${Math.round(a.hp)}, EHP vs physical ${Math.round(b.phys)} → ${Math.round(a.phys)}.${a.hp<f.minhp?` <span class="gbad">Couldn't reach ${f.minhp} health with gear your stats can wear.</span>`:''} `)}
   else if(d.gpick){const i=d.gpick.indexOf(':');gearPick(d.gpick.slice(0,i),decodeURIComponent(d.gpick.slice(i+1)))}
   else if(d.gclear){pushUndo('Unequip');if(d.gclear==='__outfit')S.gear.outfit='';else S.gear.slots[d.gclear]=null;renderGear();save()}
   else if(d.gstar){const s=S.gear.slots[d.gstar];if(s){const v=+d.v;s.st=s.st===v?v-1:v;renderGear();save()}}
@@ -5558,11 +5605,16 @@ document.addEventListener('change',e=>{
   else if(d.tgt){const k=d.tgt;const v=t.value===''?0:Math.max(0,Math.min(100,Math.round(+t.value||0)));
     if(ATTR.includes(k)){if(v)S.mins[k]=v;else delete S.mins[k]}else if(k===S.wtype)S.wtarget=v;else if(ATT[k]){if(v)S.atts[k]=v;else delete S.atts[k]}
     renderInputs();runSoon();say(`${statName(k)} target ${v?'set to '+v:'cleared'}. Press Optimize build to replan around it.`)}
+  else if(d.fin){const k=d.fin;const clear=t.value==='';const v=clear?0:Math.max(0,Math.min(100,Math.round(+t.value||0)));S.caps=S.caps||{};pushUndo('Final '+statName(k));
+    if(clear){delete S.caps[k];if(ATTR.includes(k))delete S.mins[k]}
+    else{S.caps[k]={on:true,max:v};if(ATTR.includes(k)){if(v)S.mins[k]=v;else delete S.mins[k]}else if(k===S.wtype)S.wtarget=v;else if(ATT[k]){if(v)S.atts[k]=v;else delete S.atts[k]}}
+    renderInputs();runSoon();say(clear?`${statName(k)} unlocked: the optimizer chooses its final amount.`:`${statName(k)} final locked at ${v}. Press Optimize build to replan around it.`)}
   else if(d.pin){const k=d.pin;S.pin=S.pin||{};if(t.value==='')delete S.pin[k];else S.pin[k]=Math.max(0,Math.min(100,Math.round(+t.value||0)));runSoon()}
   else if(d.gslot){const n=t.value;S.gear.slots[d.gslot]=n?{n,st:maxStars(GSLOTS.find(x=>x[0]===d.gslot)[1]),p:[]}:null;renderGear();save()}
   else if(t.id==='goutfit'){S.gear.outfit=t.value;renderGear();save()}
   else if(t.id==='gw'){S.gear.w=+t.value;save()}
   else if(t.id==='gminhp'){S.gear.minhp=+t.value;$('gminhpv').textContent=t.value+' HP';save()}
+  else if(t.id==='gminpp'){S.gear.minpp=+t.value;$('gminppv').textContent=t.value+'%';save()}
   else if(t.id==='enchant'){S.enchant=t.value;runSoon()}
   else if(t.id==='wcmp'){S.wcmp=t.value;renderWeaponPanels();save()}
   else if(t.id==='mview'){S.mview=t.value;renderMantraView();save()}
@@ -5579,7 +5631,7 @@ $('f-size').addEventListener('input',e=>{LOOK.size=+e.target.value;$('f-size-v')
 $('tfind').addEventListener('input',renderTalentChips);
 document.addEventListener('toggle',e=>{if(e.target.classList&&e.target.classList.contains('tsugg')){S.tsuggClosed=!e.target.open;save()}},true);
 $('tchips').addEventListener('toggle',e=>{const g=e.target.dataset&&e.target.dataset.gk;if(!g)return;const s=new Set(S.tclosed||[]);if(e.target.open)s.delete(g);else s.add(g);S.tclosed=[...s];save()},true);
-document.addEventListener('focusin',e=>{const ds=e.target&&e.target.dataset;const k=ds&&(ds.pin||ds.mpre||ds.mfin);if(k)statHint(k)});
+document.addEventListener('focusin',e=>{const ds=e.target&&e.target.dataset;const k=ds&&(ds.pin||ds.mpre||ds.mfin||ds.fin);if(k)statHint(k)});
 $('mycform').addEventListener('submit',e=>{e.preventDefault();const a=$('myc-a').value,b=$('myc-b').value;if(!a||!b||a===b){say('Pick two different mantras for the combo.');return}const l=myCombos();if(!l.some(x=>x[0]===a&&x[1]===b))l.unshift([a,b]);saveMyCombos(l);S.cfilter='all';renderCombos();say(`Saved your combo ${a} → ${b}. It is listed first and the optimizer weighs it more.`)});
 $('mpform').addEventListener('submit',e=>{e.preventDefault();addMyPreset($('mpname').value);$('mpname').value=''});
 $('reqform').addEventListener('submit',e=>{e.preventDefault();addReq($('reqin').value)});

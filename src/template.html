@@ -252,6 +252,7 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 
 .groups.tall{max-height:calc(100vh - 290px);min-height:360px}
 .bm{display:inline-block;padding:3px 10px;border:1px dashed var(--brass);border-radius:4px;color:var(--brass);text-decoration:none;cursor:grab;font-weight:600}
+.dwcall{display:block;margin-top:6px;font-style:normal;color:var(--bone)}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
 #imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
 .shrineflow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;counter-reset:f}
@@ -400,7 +401,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.16</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.17</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -444,15 +445,15 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="col">
   <section class="panel" id="importpanel">
     <h2>Import a build</h2>
-    <p class="hint" style="margin:0">Paste a Meta Builder link, the build text Deepwoken gives you in game, or a build copied from deepwoken.co.</p>
+    <p class="hint" style="margin:0">Paste a Meta Builder link or the build text Deepwoken gives you in game. For deepwoken.co builds, use the bookmark below.</p>
     <form class="row" id="imp1form" autocomplete="off"><textarea id="imp1" rows="2" placeholder="Paste a build here…" aria-label="Build to import" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit">Import</button></form>
     <p class="hint" id="imp1msg" aria-live="polite" style="margin:0"></p>
-    <details id="dwcohelp"><summary>Importing from deepwoken.co</summary>
-      <p class="hint">deepwoken.co doesn't let other sites read its builds, so a pasted deepwoken.co link can't be opened here. Copy the build itself instead:</p>
+    <details id="dwcohelp" open><summary>Importing from deepwoken.co</summary>
+      <p class="hint">deepwoken.co blocks other sites from reading its builds, so pasting a deepwoken.co link can't work. Use this bookmark instead:</p>
       <ol class="hint bmsteps">
-        <li>Drag this button to your bookmarks bar (only once): <a class="bm" id="bmlink" href="#" title="Drag me to your bookmarks bar">📋 Copy build for Meta Builder</a></li>
-        <li>Open the build on deepwoken.co and click that bookmark. It copies the build.</li>
-        <li>Come back here and paste it in the box above.</li>
+        <li>Drag this button to your bookmarks bar (only once): <a class="bm" id="bmlink" href="#" title="Drag me to your bookmarks bar">📋 Open in Meta Builder</a></li>
+        <li>Open any build on deepwoken.co and click that bookmark.</li>
+        <li>Meta Builder opens in a new tab with the build loaded.</li>
       </ol>
       <p class="hint" style="margin:0">No bookmarks bar? On the deepwoken.co build page open the browser console (F12), paste this code and press Enter: <button type="button" class="mini" id="bmcopy">Copy code</button></p>
     </details>
@@ -2435,8 +2436,11 @@ async function fetchDwco(id){const url='https://deepwoken.co/api/proxy/builds/'+
   return {url,err:'blocked'}}
 // one entry point for every kind of import
 // deepwoken.co only lets its own pages read build data, so this snippet runs there (bookmark or console) and copies the build
-const DWCO_SNIP=`(async()=>{try{const id=new URLSearchParams(location.search).get('id');if(!/(^|\\.)deepwoken\\.co$/.test(location.hostname)||!id){alert('Open a build on deepwoken.co first (its address has ?id=...), then use this again.');return}const t=await(await fetch('/api/proxy/builds/'+encodeURIComponent(id))).text();if(t.indexOf('"talents"')<0){alert('deepwoken.co did not send the build. Reload the page and try again.');return}const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:20px;top:20px;z-index:99999;width:calc(100% - 40px);height:180px';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}if(!ok&&navigator.clipboard){try{await navigator.clipboard.writeText(t);ok=true}catch(e){}}if(ok){a.remove();alert('Build copied. Go back to Meta Builder and paste it into Import a build.')}else alert('Press Ctrl+C (Cmd+C on Mac) to copy the selected build, then paste it into Meta Builder.')}catch(e){alert('Could not read the build: '+e)}})()`;
-const pasteHelp=url=>`deepwoken.co doesn't let other sites read its builds, so the link alone can't be opened here. On the build page, use the <b>📋 Copy build for Meta Builder</b> bookmark (steps under “Importing from deepwoken.co” in <b>Import a build</b> on the Stats tab), then paste what it copies.`;
+const MB_URL='https://itsmrchickenss.github.io/meta-builder/';
+const DWCO_SNIP=`(async()=>{const id=new URLSearchParams(location.search).get('id');if(!/(^|\\.)deepwoken\\.co$/.test(location.hostname)||!id){alert('Open a build on deepwoken.co first (its address has ?id=...), then click this again.');return}let w=null;try{w=window.open('about:blank','_blank')}catch(e){}try{const t=await(await fetch('/api/proxy/builds/'+encodeURIComponent(id))).text();if(t.indexOf('"talents"')<0)throw new Error('deepwoken.co did not send the build, reload and try again');const u='${MB_URL}#dwco='+encodeURIComponent(t);if(w&&!w.closed)w.location.href=u;else location.href=u}catch(e){if(w)w.close();alert('Could not read the build: '+(e&&e.message||e))}})()`;
+const DWCO_BM='javascript:'+encodeURIComponent(DWCO_SNIP);
+const pasteHelp=url=>`<span class="callout warn dwcall">deepwoken.co blocks other sites from reading its builds, so a link can't be imported directly.<br><b>One‑time setup:</b> drag <a class="bm" href="${DWCO_BM}" title="Drag me to your bookmarks bar">📋 Open in Meta Builder</a> to your bookmarks bar.<br><b>Then:</b> open the build on deepwoken.co and click that bookmark. Meta Builder opens with the build loaded.</span>`;
+const dwCoJsonSafe=j=>dwbFromCoJson(j);
 async function smartImport(raw){const txt=String(raw||'').trim();if(!txt)return {ok:false,msg:'Paste something to import first.'};
   if(/dw1[A-Za-z0-9_-]{10,}/.test(txt)){try{const next=decodeBuild(txt.match(/dw1[A-Za-z0-9_-]+/)[0]);pushUndo('Import');Object.assign(S,next);renderInputs();run();return {ok:true,msg:'Meta Builder build imported.'}}catch(e){return {ok:false,msg:'That Meta Builder code is damaged.'}}}
   const j=txt.includes('{')?extractJson(txt):null;if(j&&(j.attributes||j.talents||j.preShrine))return {ok:true,msg:applyDwb(dwbFromCoJson(j))};
@@ -2659,9 +2663,9 @@ $('reqin').addEventListener('input',renderReqBrowse);
 $('reqbq').addEventListener('input',()=>{S.blim=40;renderReqBrowse()});
 $('wishform').addEventListener('submit',e=>{e.preventDefault();const v=$('wishin').value;if(!v.trim())return;pushUndo('What you want');const did=applyWish(v);$('wishmsg').textContent=did.length?'Got it: '+did.join(' · ')+'. Press Optimize build to apply.':'I didn\'t catch anything. Try “no willpower”, “keep charisma under 30”, “more damage”, “no Ghost”, “must have Speed Demon”.';renderInputs();run()});
 $('oathq').addEventListener('input',renderOathCards);$('oathfit').addEventListener('change',renderOathCards);
-$('bmlink').href='javascript:'+encodeURIComponent(DWCO_SNIP);
-$('bmlink').addEventListener('click',e=>{e.preventDefault();say('Drag this button to your bookmarks bar, then click the bookmark on a deepwoken.co build page.')});
-$('bmcopy').addEventListener('click',()=>copyText(DWCO_SNIP,'Code copied. Paste it into the console on the deepwoken.co build page and press Enter.'));
+$('bmlink').href=DWCO_BM;
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a.bm');if(a){e.preventDefault();say('Drag this button to your bookmarks bar, then click the bookmark on a deepwoken.co build page.')}},true);
+$('bmcopy').addEventListener('click',()=>copyText(DWCO_SNIP,'Code copied. Paste it into the console on the deepwoken.co build page and press Enter; Meta Builder opens with the build.'));
 $('imp1form').addEventListener('submit',e=>{e.preventDefault();runImport($('imp1').value,$('imp1msg'),()=>{$('imp1').value=''})});
 // pasting a full build imports it straight away
 $('imp1').addEventListener('paste',()=>setTimeout(()=>{const v=$('imp1').value;if(/dw1[A-Za-z0-9_-]{10,}/.test(v)||/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)||(v.includes('{')&&/"talents"|"attributes"/.test(v)))runImport(v,$('imp1msg'),()=>{$('imp1').value=''});else if(DW_LINK.test(v)){$('imp1msg').innerHTML=pasteHelp('');$('dwcohelp').open=true}},0));
@@ -2672,8 +2676,11 @@ $('mfind').addEventListener('input',renderMantraChips);
 $('otbl').closest('details').addEventListener('toggle',e=>{if(e.target.open)renderOathTable()});
 
 let hashLoaded=false;
-try{if(location.hash.length>4){Object.assign(S,decodeBuild(location.hash));hashLoaded=true}}catch(e){}
+let dwcoIn=null;try{if(location.hash.startsWith('#dwco=')){dwcoIn=JSON.parse(decodeURIComponent(location.hash.slice(6)));hashLoaded=true}}catch(e){}
+try{if(!dwcoIn&&location.hash.length>4){Object.assign(S,decodeBuild(location.hash));hashLoaded=true}}catch(e){}
 renderLook();renderInputs();showTab(S.tab||'build');renderUndo();
-if(!hashLoaded&&!S.sel.length&&!S._init){S._init=1;applyPreset(PRESETS.find(p=>p.n==='High Charisma'))}else run();
+if(!hashLoaded&&!S.sel.length&&!S._init){S._init=1;applyPreset(PRESETS.find(p=>p.n==='High Charisma'))}else if(!dwcoIn)run();
+// a build sent here by the deepwoken.co bookmark
+if(dwcoIn){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}try{if(!(dwcoIn.attributes||dwcoIn.talents))throw 0;sayUndo(applyDwb(dwCoJsonSafe(dwcoIn)))}catch(e){run();say('That deepwoken.co build could not be read.')}}
 </script>
 

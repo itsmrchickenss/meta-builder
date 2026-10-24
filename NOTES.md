@@ -138,3 +138,6 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 - Damage <-> talent options slider (`S.prio`) weights auto-pick (damage talents vs popular/synergy) and the leftover spend (weapon/attunement vs attribute thresholds that unlock talents). Spend retries with fewer points instead of undoing.
 - Equipment: targets 500 HP and 50% physical armor by default (`S.gear.minpp`), then the health/armor slider; elemental pips never used.
 - deepwoken.co link paste can't import directly: deepwoken.co deliberately refuses other sites; we don't spoof requests to get around that. The bookmark is the supported path.
+
+## v1.19
+- `sliderRebalance` in Optimize: the damage <-> talent options slider trades weapon/attunement targets against talents (damage: up toward 100, paid by lowest-value non-damage talents, damage talents fill slots; talent options: targets down toward the weapon requirement / 40, popular+synergy talents fill). Dead zone 35-65. Undone if it cannot be paid for. `talentVal` is slider-aware. Sliders update state on input and Optimize reads them directly.

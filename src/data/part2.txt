@@ -1,0 +1,578 @@
+Audacity|Tyrant|A|CHA100 STR50
+No Survivors|Tyrant|C|CHA80 STR45
+Denial Repulse|Undying Ember|R|WLL40 FLM40|m=Flame of Denial
+Undying Flame|Undying Ember|R|WLL40 FLM40|m=Graceful Flame
+Surge Path: Unstable Capacitor|Unstable Capacitor|C|LTN40
+Battery Sapper|Unstable Capacitor|C|LTN60 SDW25|t=Surge Path: Unstable Capacitor
+Catalytic Strike|Unstable Capacitor|C|LTN50|t=Surge Path: Unstable Capacitor
+Closed Circuit|Unstable Capacitor|C|LTN50|t=Surge Path: Unstable Capacitor
+Human Battery|Unstable Capacitor|C|LTN60|t=Surge Path: Unstable Capacitor
+Flashboil|Vaporborne|C|FLM30 ICE30|x=Eruption Path: Lava Serpent;Glass Path: Crystallization;Wraith Path: Twisted Puppets
+Boiling Point|Vaporborne|C||t=Flashboil
+Action Surge|Vigil Swordsman|C|AGL70
+Bear Trap|Vigil Swordsman|C|STR20 AGL20
+Blade Dancer|Vigil Swordsman|C|AGL25
+Cut to the Chase|Vigil Swordsman|R|AGL60
+Speed Demon|Vigil Swordsman|R|AGL25
+Spinning Swordsman|Vigil Swordsman|C|AGL20
+Oath: Visionshaper|Visionshaper|O0|CHA50|q
+Cheap Trick|Visionshaper|O0||t=Oath: Visionshaper
+Reality Shift|Visionshaper|O0||t=Oath: Visionshaper
+Shared Mimicry|Visionshaper|O0||t=Oath: Visionshaper
+Encore|Vocalist|R|CHA40|m=Sing
+Vow of Mastery|Vow of Mastery|C|CHA20
+Command: Live|Vow of Mastery|C|CHA75|t=Vow of Mastery
+Command: Summon|Vow of Mastery|A|CHA80|t=Vow of Mastery
+Chronostasis|Warrior|R|PWR13
+Conditioned Swimmer|Waterbone|C|
+Brutal Momentum|Weapon Master|C|HVY50|w=Heavy Weapon
+Matador|Weapon Master|C|STR20 AGL5
+Showstopper|Weapon Master|R|STR40
+Switchblade|Weapon Master|A|LHT50|o=MED50/HVY50
+Warrior's Swing|Weapon Master|C|HVY30
+Haunted Gale|Whisper|C|PWR8 WND40
+Agility Unbounded|Boundless Potential|C0|AGL75|q
+Ash Ember|Withered Flame|C|WPN90 FLM90
+Brassneck|Miscellaneous|C|STR30 FTD35
+Careful Handling|Miscellaneous|Q0||q
+Dragon's Song|Miscellaneous|C|
+Full Reset|Miscellaneous|C|PWR16|q
+Gourmand|Miscellaneous|C|PWR5
+Heavy Haul|Miscellaneous|C|STR15
+Martyr|Miscellaneous|C|PWR3
+Polite Awakening|Miscellaneous|C|
+Ready or Not|Miscellaneous|C|FTD20
+Replenishing Knockout|Miscellaneous|C|PWR3
+Treefelling Blow|Miscellaneous|Q0|
+Ether Blade|Ether Conduit|C|AGL20 INT15
+Unyielding Frost|Ice Age|A|ICE100|x=Glass Path: Crystallization
+Unyielding Inferno|Flamecharmer|C|FLM35
+Oath: Saltchemist|Saltchemist|O0|INT75|q
+Swiftkick Prodigy|Justicar|C||t=Jus Karita
+Ankle Cutter|Silentheart|O0||t=Oath: Silentheart
+Piercing Will|Mindbreaker|R|WLL80
+Both Ends|Vanguard Arts|C0|MED30|w=Staff
+Counter Spin|Vanguard Arts|C|MED35|w=Staff
+Stasis Strike|Ice Age|C|WPN90 ICE90|t=Glass Path: Crystallization
+Decisive Blow|Critical Specialist|C||t=Knife's Journey
+Unstoppable Force|Colossus|R|STR25 HVY40|t=Unwavering Resolve|w=Greathammer
+Vacuum Punch|Aeromancer|C|WND20|m=Gale Punch
+Scorchblood|Bloodsong|C|BLD40 FLM40
+Dark Replenishment|Darksiphon|C|SDW50 INT25|t=Dark God
+Strength Unbounded|Boundless Potential|C0|STR75|q
+Beiruul's Vengeance|Quest|Q0||q
+Another Man's Trash|Thief|A|CHA35 AGL10|t=Cap Artist;Pickpocket
+Mantra Permanence|Ether Conduit|C|INT20
+Ironclad Punishment|Ironsinger|C|IRN45
+Ether Proselyte|Saintsworn|O0||t=Oath: Saintsworn
+Hero's Assist|Saintsworn|O0||t=Oath: Saintsworn
+Perpetual Distillery|Saltchemist|O0||t=Oath: Saltchemist
+Unnecessary Theatrics|Showboater|C|CHA75|t=Charismatic Cast
+Bulletproof|Gunslinger|C||o=FTD20/WPN20|q
+Oh The Irony|Ironsinger|C|IRN60 CHA40|m=Taunt
+Taste The Rainbow|Gunslinger|C|LHT50|w=Pistol
+Rule Through Fear|Tyrant|R|CHA85 STR50
+Merciless Blade|Silentheart|O0||t=Oath: Silentheart
+Stratoshock|Thundercaller|C|LTN35
+Apparitions|Specter|C|WND50|t=Haunted Path: Specter
+Donation Drive|Scarlet Donor|C|BLD50 CHA55|t=Manipulator
+Fried Circuits|Unstable Capacitor|C|LTN60|t=Surge Path: Unstable Capacitor
+Enrage|Instigator|C|CHA65|t=Encore|q
+Scorching Decay|Withered Flame|C|WPN100 FLM100|t=Emperor Flame
+Mythic Stability|Human Architecture|R|FTD85
+Stay of Execution|Liberator|C||o=CHA25/WLL25
+Cook's Kit|Survival Kit|C|MND5 FTD5
+Chemistry Kit|Alchemist|C|INT25|q
+To The Finish|Freak of Nature|R|FTD50
+Propagandist|Vocalist|C|CHA75|m=Sing
+Elemental Mentalist|Toxic Personality|C|CHA80 INT40|t=Charismatic Cast|x=Tough Love
+Sclerosteosis|Freak of Nature|A|FTD100
+Needleblade|Rending Needle|R|WPN90 IRN90
+Heavy Cannonball|Big Bertha|C|HVY60|w=Greatcannon
+Sticky Flames|Big Bertha|C|HVY80|w=Greatcannon
+Mortar Mystery|Big Bertha|R|HVY100|q
+Pressure Strike|Vanguard Arts|C|MED90|t=Both Ends|w=Staff
+Rage Bait|Psychopath|C|WLL40 CHA90|t=Manipulator
+Guilt Trip|Psychopath|C|CHA100
+Depressive State|Psychopath|R|WLL90 CHA90|t=Guilt Trip;Rage Bait
+#M
+Burning Servants|FLM|C0|FLM1
+Flame Grab|FLM|C0|FLM1
+Flame Repulsion|FLM|C0|FLM1
+Fire Gun|FLM|C0|FLM1
+Flame of Denial|FLM|S0|FLM1
+Fire Blade|FLM|C0|FLM1
+Flame Blind|FLM|S0|FLM1
+Fire Palm|FLM|C1|FLM20
+Fire Eruption|FLM|C1|FLM20
+Fire Forge|FLM|C1|FLM20
+Graceful Flame|FLM|S1|FLM20
+Searing Snare|FLM|C1|FLM20
+Flame Sentinel|FLM|C2|FLM30
+Flame Wisp|FLM|W2|FLM30
+Flame Leap|FLM|M2|FLM30
+Flare Volley|FLM|C2|FLM30
+Flame Assault|FLM|M2|FLM30
+Rising Flame|FLM|C2|FLM30
+Relentless Flames|FLM|C2|FLM30
+Ash Slam|FLM+STR|C3|FLM50 STR20
+Flame Ballista|FLM|C3|FLM50
+Flaming Scourge|FLM|C3|FLM50
+Lightning Blade|LTN|C0|LTN1
+Jolt Grab|LTN|C0|LTN1
+Lightning Beam|LTN|C0|LTN1
+Lightning Strike|LTN|C1|LTN20
+Fleeting Sparks|LTN|C1|LTN20
+Lightning Stream|LTN|S1|LTN20
+Lightning Impact|LTN|C1|LTN20
+Lightning Clones|LTN|C1|LTN20
+Electro Carve|LTN|C1|LTN20
+Thunder Kick|LTN|C1|LTN20
+Bolt Piercer|LTN|C2|LTN30
+Grand Javelin|LTN|C2|LTN30
+Lightning Assault|LTN|M2|LTN30
+Thunder Wisp|LTN|W2|LTN30
+Storm Blades|LTN|C2|LTN30
+Lightning Cloak|LTN|M3|LTN50
+Rising Thunder|LTN|C3|LTN50
+Emotion Wave|LTN|C3|LTN50
+Spark Swap|LTN|S3|LTN50
+Frozen Servants|ICE|C0|ICE1
+Ice Beam|ICE|C0|ICE1
+Warden Blades|ICE|C0|ICE1
+Ice Spikes|ICE|C0|ICE1
+Ice Daggers|ICE|C1|ICE20
+Ice Blade|ICE|C1|ICE20
+Ice Chains|ICE|C1|ICE20
+Ice Eruption|ICE|C1|ICE20
+Ice Forge|ICE|C1|ICE20
+Ice Smash|ICE|C1|ICE20
+Glacial Arc|ICE|M1|ICE20
+Ice Lance|ICE|C2|ICE30
+Rising Frost|ICE|C2|ICE30
+Ice Flock|ICE|C2|ICE30
+Frost Grab|ICE|C2|ICE30
+Ice Carve|ICE|C2|ICE30
+Frost Wisp|ICE|W2|ICE30
+Crystal Knee|ICE|C2|ICE30|t=Glass Path: Crystallization
+Crystal Impale|ICE|C2|ICE30|t=Glass Path: Crystallization
+Ice Lasers|ICE|C2|ICE30|t=Glass Path: Crystallization
+Iceberg|ICE|S3|ICE50
+Ice Skates|ICE|M3|ICE50
+Ice Cubes|ICE|C3|ICE50
+Ice Fissure|ICE|C3|ICE50
+Wind Blade|WND|C0|WND1
+Air Force|WND|C0|WND1
+Tornado Kick|WND|C0|WND1
+Updraft|WND|C1|WND20
+Wind Forge|WND|C1|WND20
+Gale Lunge|WND|C1|WND20
+Tornado|WND|C1|WND20
+Twister Kicks|WND|C1|WND20
+Heavenly Wind|WND|C1|WND20
+Galetrap|WND|C1|WND20
+Gale Punch|WND|C1|WND20
+Champion's Whirlthrow|WND|C2|WND30
+Rising Wind|WND|C2|WND30
+Wind Gun|WND|C2|WND30
+Wind Carve|WND|C2|WND30
+Gale Wisp|WND|W2|WND30
+Astral Wind|WND|C3|WND50
+Pillars of Erisia|WND|C3|WND50|q
+Wind Passage|WND|M3|WND50
+Dark Blade|SDW|C0|SDW1
+Shadow Gun|SDW|C0|SDW1
+Clutching Shadow|SDW|C0|SDW1
+Shadow Chains|SDW|C1|SDW20
+Shadow Eruption|SDW|C1|SDW20
+Shadow Seekers|SDW|C1|SDW20
+Encircle|SDW|M1|SDW20
+Shade Devour|SDW|S1|SDW20
+Shade Step|SDW|M2|SDW30
+Shadow Roar|SDW|C2|SDW30
+Rising Shadow|SDW|C2|SDW30
+Shadow Meteors|SDW|C2|SDW30
+Devouring Eye|SDW|S2|SDW30
+Shade Wisp|SDW|W2|SDW30
+Shadow Assault|SDW|M2|SDW30
+Umbral Slash|SDW|C2|SDW30
+Eclipse Kick|SDW+STR|C3|SDW50 STR15
+Shade Bringer|SDW|C3|SDW50
+Shadow Vortex|SDW|C3|SDW50
+Metal Eruption|IRN|C0|IRN1
+Needle Barrage|IRN|C0|IRN1
+Metal Rampart|IRN|M0|IRN1
+Metal Kick|IRN|C1|IRN20
+Iron Skin|IRN|S1|IRN20
+Chain Pull|IRN|S1|IRN20
+Metal Turret|IRN|S2|IRN30
+Iron Quills|IRN|C2|IRN30
+Metal Rain|IRN|C2|IRN30
+Caltrops|IRN|C2|IRN30
+Firing Line|IRN|C2|IRN30
+Metal Fakeout|IRN|C2|IRN30
+Oxidizing Rush|IRN|C2|IRN30
+Metal Ball|IRN|M2|IRN30
+Metal Wisp|IRN|W2|IRN30
+Metal Armament|IRN|C3|IRN50
+Metal Gatling|IRN|C3|IRN50
+Iron Slam|IRN|C3|IRN50
+Iron Hug|IRN|C3|IRN50
+Rocket Lance|IRN|C3|IRN50
+Crucifixion|BLD|C0|BLD1
+Blood Orb|BLD|C0|BLD1
+Blood Stakes|BLD|C1|BLD20
+Sanguine Dive|BLD|M1|BLD20
+Vicious Descent|BLD|C1|BLD20
+Bloodedge|BLD|C1|BLD20
+Blood Wisp|BLD|W2|BLD30
+Soulflare Siphon|BLD|C2|BLD30
+Veinbreaker|BLD|C2|BLD30
+Crimson Rain|BLD|C2|BLD30
+Vein Tendrils|BLD|M2|BLD30
+Scarlet Cannon|BLD|C2|BLD30
+Scarlet Cyclone|BLD|C2|BLD30
+Razor Blitz|BLD|C2|BLD30
+Crimson Surge|BLD|C2|BLD30
+Bloodtide Ritual|BLD|C3|BLD50
+Bloodcurdle|BLD|C3|BLD50
+Flashfire Sweep|FLM+LTN|C2|FLM30 LTN30
+Iron Tether|IRN+LTN|C2|IRN30 LTN30
+Permafrost Prison|ICE+SDW|C2|ICE30 SDW30
+Tempest Blitz|WND+LTN|M2|WND30 LTN30
+Table Flip|STR|C0|STR40
+Strong Left|STR|C0|STR20
+Rapid Punches|STR|C0|STR20
+Skyshatter Kick|STR|C0|STR80
+Strong Leap|STR|M0|STR50
+Throw|STR|C2|STR35|q
+Tacet Drop Kick|STR|C0||o=STR5/STR10 ATN1|t=Murmur: Tacet;Jus Karita
+Rally|FTD|S0|FTD10|w=Shield
+Reinforce|FTD|S0|FTD50
+Brace|FTD|S0|FTD75
+Shoulder Bash|FTD|C0|FTD35
+Revenge|AGL|C0||o=AGL5/AGL20 ATN1
+Twinstrikes|STR+AGL|C0|AGL60 STR40
+Adrenaline Surge|AGL|S0|AGL20
+Agile Dash|AGL|M0|AGL40
+Summon Cauldron|INT|S0|INT20
+Ether Barrage|INT|C0|INT30
+Prediction|INT|C0|INT50
+Neural Pathway|INT|M0|INT35
+Gaze|WLL|S0|WLL30
+Glare|CHA+WLL|S0|CHA25|o=WLL5/WLL20 ATN1
+Exhaustion Strike|WLL|C0|WLL40
+Taunt|CHA|S0|CHA25
+Sing|CHA|S0|CHA25
+Dread Whisper|CHA|S0|CHA50
+Disguise|CHA|S0M|CHA20|q
+Rapid Slashes|LHT|C0|LHT30
+Ceaseless Slashes|LHT|C0|LHT50
+Karita Leap|LHT|M0|LHT20|t=Jus Karita
+Karita Divebomb|LHT|C0|LHT20|t=Jus Karita
+Master's Flourish|MED|C0|MED30
+Twincleave|MED|C0|MED50
+Prominence Draw|MED|C0|MED50
+Slice 'n' Dice|MED|C0|MED60
+Flashdraw Strike|MED+AGL|C0|MED60 AGL25
+Pressure Blast|HVY|C0|HVY30
+Punishment|HVY|C0|HVY50
+Onslaught|HVY|C0|HVY50
+Arc Suit|Oath: Arcwarder|S0O||t=Oath: Arcwarder
+Arc Beam|Oath: Arcwarder|C0O||t=Oath: Arcwarder
+Arc Wave|Oath: Arcwarder|C0O||t=Oath: Arcwarder
+Mindsoothe|Oath: Blindseer|S0O||t=Oath: Blindseer
+Tranquil Circle|Oath: Blindseer|S0O||t=Oath: Blindseer
+Sightless Beam|Oath: Blindseer|C0O||t=Oath: Blindseer
+Equalizer|Oath: Contractor|C0O||t=Oath: Contractor
+Lord's Slice|Oath: Contractor|C0O||t=Oath: Contractor
+Judgement|Oath: Contractor|C0O||t=Oath: Contractor
+Radiant Kick|Oath: Dawnwalker|C0O||t=Oath: Dawnwalker
+Blinding Dawn|Oath: Dawnwalker|C0O||t=Oath: Dawnwalker
+Radiant Dawn|Oath: Dawnwalker|C0O||t=Oath: Dawnwalker
+Precision Cuts|Oath: Fadetrimmer|C0O||t=Oath: Fadetrimmer
+Close Shave|Oath: Fadetrimmer|C0O||t=Oath: Fadetrimmer
+Fake Strike|Oath: Jetstriker|C0O||t=Oath: Jetstriker
+Jet Kick|Oath: Jetstriker|M0O||t=Oath: Jetstriker
+Symbiotic Sustain|Oath: Linkstrider|S0O||t=Oath: Linkstrider
+Parasitic Leech|Oath: Linkstrider|S0O||t=Oath: Linkstrider
+Ascension|Oath: Starkindred|C0O||t=Oath: Starkindred
+Sinister Halo|Oath: Starkindred|C0O||t=Oath: Starkindred
+Celestial Assault|Oath: Starkindred|C0O||t=Oath: Starkindred
+Illusory Counter|Oath: Visionshaper|C0O||t=Oath: Visionshaper
+Mirror Illusion|Oath: Visionshaper|S0O||t=Oath: Visionshaper
+Illusory Servants|Oath: Visionshaper|C0O||t=Oath: Visionshaper
+Restrain|Oath: Chainwarden|C0O||t=Oath: Chainwarden
+Rupture|Oath: Chainwarden|C0O||t=Oath: Chainwarden
+Impel|Oath: Chainwarden|C0O||t=Oath: Chainwarden
+Palm Strike|Oath: Bladeharper|C0O||t=Oath: Bladeharper
+Decimate|Oath: Bladeharper|C0O||t=Oath: Bladeharper
+Lethal Injection|Oath: Saltchemist|C0O||t=Oath: Saltchemist
+Blade of Saints|Oath: Saintsworn|C0O||t=Oath: Saintsworn
+Ardour Slicer|Oath: Soulbreaker|C0O||t=Oath: Soulbreaker
+Rhythm Advance|Oath: Soulbreaker|C0O||t=Oath: Soulbreaker
+Tacet Kick|Oath: Soulbreaker|C0O||t=Oath: Soulbreaker
+Sovereign Drive|Oath: Blightsurger|C0O||t=Oath: Blightsurger
+Skycrash|Oath: Blightsurger|C0O||t=Oath: Blightsurger
+Warp Kick|Oath: Blightsurger|C0O||t=Oath: Blightsurger
+Soul Beam|Oath: Oathless|C0||t=Oath: Oathless;Chorus of Souls|q
+Brachial Spear|Monster|C2M||q
+Dread Breath|Monster|C2M||q
+Beast Burrow|Monster|M2M||q
+Enforcer Pull|Monster|S2M||q
+Mecha Gatling|Monster|C2M||q
+Whirling Blade|Monster|C2M||q
+Abyssal Ridge|Monster|C2M||q
+Abyssal Tendrils|Monster|C2M||q
+Coral Burst|Monster|C2M||q
+Bone Wisp|Monster|W2M||q
+#W
+Formless Shard|Dagger|
+Stiletto|Dagger|
+Gilded Knife|Dagger|LHT25
+Silver Dagger|Dagger|LHT35
+Canor Fang|Dagger|LHT40
+Fool's Tankard|Dagger|LHT40
+Whaling Knife|Dagger|LHT40
+Champion's Dagger|Dagger|LHT50
+Central Dirk|Dagger|LHT50
+Tanto|Dagger|LHT50
+Sanguine Transfuser|Dagger|LHT50 BLD75
+Nemit's Sickle|Dagger|LHT60
+Flareblood Kamas|Dagger|LHT60 INT30
+The Flippers of Fate|Dagger|LHT70 MND30
+Krulian Knife|Dagger|LHT75
+Spectral Grasp|Dagger|LHT75
+Moppet|Dagger|LHT75
+Kyrsedge|Dagger|LHT75
+Alloyed Whaling Knife|Dagger|LHT75
+Alloyed Tanto|Dagger|LHT80
+Big Brother|Dagger|LHT80
+Cerulean Thread|Dagger|LHT85 PWR10
+Frostthorn|Dagger|LHT90
+Rangescraper|Dagger|LHT35
+The Golden Fool|Dagger|LHT40
+Iron Cestus|Fist|
+Anklets of Alsin|Fist|LHT25|t=Jus Karita
+Legion Cestus|Fist|LHT30
+Frost Gauntlets|Fist|LHT30
+Light's Final Toll|Fist|LHT35 WLL60
+Wraithclaw|Fist|LHT40 WND75
+Coral Cestus|Fist|LHT50
+Rimebreakers|Fist|LHT50 ICE50 WND50
+Steelscale Dusters|Fist|LHT55
+Flamekeeper Cestus|Fist|LHT65
+Vortex Echo|Fist|LHT65 CHA65
+Withered Death's Knell|Fist|LHT70 BLD40
+Drakemaw Gauntlets|Fist|LHT75
+Gaunts of Enmity|Fist|LHT75 FTD10
+Karita Plating|Fist|AGL80 LHT80|t=Jus Karita
+Broodalloy Cestus|Fist|LHT85
+Worldpiercer Gauntlets|Fist|LHT85 STR30
+Silversix|Pistol|
+Flintlock|Pistol|LHT20
+Dawnshot|Pistol|LHT40
+Duskshot|Pistol|LHT40
+Iron Requiem|Pistol|LHT40 IRN75
+Repeater|Pistol|LHT65
+Dragoon|Pistol|LHT65
+Rosen's Roscoe|Pistol|LHT75
+Alloyed Dawnshot|Pistol|LHT75
+Quickfang|Rapier|
+Apprentice Rapier|Rapier|LHT20
+Inquisitor's Thorn|Rapier|LHT40
+Icepick|Rapier|LHT40
+Deepspindle|Rapier|LHT50 SDW75
+Coldpoint|Rapier|LHT70 ICE25
+Crucible Rapier|Rapier|LHT75
+Golden Swordfish|Rapier|LHT75
+Needle's Eye|Rapier|LHT75
+Skullpiercer|Rapier|LHT75
+Kyrstreza|Rapier|LHT75
+Sword|Sword|
+Dormant Splinter|Sword|MED5
+Messer|Sword|MED10
+Falchion|Sword|MED20
+Scimitar|Sword|MED20
+Katana|Sword|MED25
+Worshipper Longsword|Sword|MED30
+Officer Saber|Sword|MED30
+Vigil Longsword|Sword|MED40
+Champion's Sword|Sword|MED40
+Cavalry Saber|Sword|MED40
+Curved Blade of Winds|Sword|MED40 WND75 PWR10
+Eyes of Ethiron|Sword|MED40 WND40 SDW40 PWR10
+Ignition Deepcrusher|Sword|MED40 IRN75
+Shotel|Sword|MED40
+Warden Ceremonial Sword|Sword|MED50
+Kindred Edict|Sword|MED50 BOD30
+Scoundrel's Saber|Sword|MED55
+Razor Cutlass|Sword|MED60
+Forgotten Gladius|Sword|MED65
+Fondant Splitter|Sword|MED65 PWR10
+Umbrite Witherblade|Sword|MED65 WLL10 PWR10
+Serpent's Edge|Sword|MED75
+Hallowscleave|Sword|MED75
+Alloyed Messer|Sword|MED75
+Alloyed Cavalry Saber|Sword|MED75
+Alloyed Officer Saber|Sword|MED75
+Alloyed Falchion|Sword|MED75
+Alloyed Vigil Longsword|Sword|MED75
+Alloyed Shotel|Sword|MED75
+Alloyed Katana|Sword|MED75
+Kyrsblade|Sword|MED75
+Phantomcleave|Sword|MED75|q
+Rite of Authority|Sword|MED75 LTN40 PWR15
+Eye of Malice|Sword|MED75
+Soulthorn|Sword|MED80 INT40 PWR10
+Palace Tachi|Sword|MED80 PWR10
+Purple Cloud|Sword|MED85 PWR10
+Shattered Katana|Sword|MED90 PWR10
+Nocturne|Sword|MED90 PWR10
+Withered Phantomcleave|Sword|MED100
+Hero's Blade of Flame|Sword|FLM100 PWR10
+Hero's Blade of Frost|Sword|ICE100 PWR10
+Hero's Blade of Lightning|Sword|LTN100 PWR10
+Hero's Blade of Wind|Sword|WND100 PWR10
+Hero's Blade of Shadow|Sword|SDW100 PWR10
+Saintsblade|Sword||t=Oath: Saintsworn
+Wyrmtooth|Sword / Greatsword|MED60 HVY40 PWR15
+Irontusk|Spear|
+Iron Spear|Spear|
+Gremorian Longspear|Spear|MED20
+Red Death|Spear|MED30 MND25 SDW45 BLD35 PWR8
+Black Death|Spear|MED30 MND50 SDW70 PWR10
+Ritual Spear|Spear|MED35
+Ritual Sacrifice|Spear|MED35
+Acheron's Warspear|Spear|MED40
+Trident Spear|Spear|MED50
+Kyrswynter|Spear|MED50 ICE75
+The Weaving Web|Spear|MED60 CHA40
+Serrated Warspear|Spear|MED65
+Bloodtide Trident|Spear|MED75
+Alloyed Longspear|Spear|MED75
+Rifle Spear|Spear / Rifle|MED75
+Weal and Woe|Spear|MED80 SDW65
+Imperator's Edge|Spear|MED80 STR80 FTD80
+True Seraph Spear|Spear|MED80
+Alloyed Trident Spear|Spear|MED85
+Kyrsglaive|Spear|MED90
+Wooden Staff|Staff|
+Duskpole|Staff|MED40
+Imperial Staff|Staff|MED40 STR40
+Sancticar|Staff|MED50|q
+Mace|Club|MED10
+Toothed Club|Club|MED30
+Pleeksty's Inferno|Club|MED40 FLM80
+Morning Star|Club|MED50
+Night Star|Club|MED50
+Sacred Hammer|Club|MED65
+The Pastry Paster|Club|MED70 MND30
+Pernach|Club|MED75
+Summer Rifle|Rifle|MED40
+Winter Rifle|Rifle|MED40
+Rosen's Hellflame|Rifle|MED40 FLM75
+Stormseye|Rifle|MED40 LTN75
+Vapormaw Carbine|Rifle|MED50 FLM30 ICE30
+Rosen's Peacemaker|Rifle|MED75
+Iron Blunderbuss|Rifle|MED75
+Iron Twinblade|Twinblade|MED15
+Scalesplitter|Twinblade|MED40
+Depthsplitter|Twinblade|MED40
+Alloyed Scalesplitter|Twinblade|MED65
+Bellmarrow Reave|Twinblade|MED65
+Death's Reverie|Twinblade|MED75
+Crescendo|Twinblade|MED75
+Hunting Bow|Bow|MED20
+Shadebolt|Bow|MED45 SDW30
+Guiding Star|Bow|MED75 MND25
+Moonseye Scalpel|Exclusive|MED80
+Battleaxe|Greataxe|
+Halberd|Greataxe|HVY25
+Adretian Axe|Greataxe|HVY35
+Canorian Axe|Greataxe|HVY35
+Gran Sudaruska|Greataxe|HVY40 ICE75 PWR10
+Iron Birch|Greataxe|HVY50
+Evanspear Greataxe|Greataxe|HVY70
+Master Hawk's Handaxe|Greataxe|HVY75
+Relic Axe|Greataxe|HVY75
+Quartztone Pickaxe|Greataxe|HVY75
+Skyreap Blade|Greataxe|HVY75
+Enforcer's Axe|Greataxe|HVY75
+Alloyed Canorian Axe|Greataxe|HVY75
+Alloyed Halberd|Greataxe|HVY75
+Alloyed Adretian Axe|Greataxe|HVY75
+Duskguard Axe|Greataxe|HVY75 STR10 PWR10
+Night Axe|Greataxe|HVY80
+Pale Briar|Greataxe|HVY85 PWR10
+Chorus of Agonies|Greataxe|HVY100 STR20 PWR10
+Avenger|Greatsword|
+Ysley's Pyre Keeper|Greatsword|LHT10 HVY25 FLM75
+Zweihander|Greatsword|HVY20 STR10
+Markor's Inheritor|Greatsword|HVY30 STR10
+Darksteel Greatsword|Greatsword|HVY40 STR10
+Inquisitor's Greatsword|Greatsword|HVY40
+Crypt Blade|Greatsword|HVY40 SDW75 PWR10
+Calamity Cinnabar|Greatsword|HVY40 SDW75 PWR10
+Crescent Cleaver|Greatsword|HVY45 STR10
+Bloodfouler|Greatsword|HVY50 BLD75 PWR10
+Kyrsieger|Greatsword|HVY50 CHA15
+Bloodbane|Greatsword|HVY60 STR30
+Hailbreaker|Greatsword|HVY65 ICE55 PWR10
+The Long Tong of the Law|Greatsword|HVY70 MND30
+Wretched Mawblades|Greatsword|HVY75
+First Light|Greatsword|HVY75
+Alloyed Zweihander|Greatsword|HVY75 STR10
+Alloyed Crescent Cleaver|Greatsword|HVY75 STR10
+Darkalloy Greatsword|Greatsword|HVY75 STR10
+Alloyed Inheritor|Greatsword|HVY75 STR10
+Kyrscleave|Greatsword|HVY75
+Railblade|Greatsword|HVY80 PWR10
+Prototype Railblade|Greatsword|HVY80
+Fractine|Greatsword|HVY80 INT40 PWR10
+Enforcer's Blade|Greatsword|HVY80 STR25
+Darksteel Cleaver|Greatsword|HVY100 STR10
+Lumensplitter|Greatsword|HVY100 STR40
+Steel Maul|Greathammer|HVY20 STR10
+Saint Jay's Hammer|Greathammer|HVY20 STR10
+Forge Greathammer|Greathammer|HVY55 STR10
+Rockmaller|Greathammer|HVY55 STR10
+Boltcrusher|Greathammer|HVY55 STR20 LTN80
+Warmonger|Greathammer|HVY60 STR30
+Great Maul|Greathammer|HVY75 STR30
+Putrid Edenstaff|Greathammer|HVY75
+Gale Pale|Greathammer|HVY75|q
+Alloyed Steel Maul|Greathammer|HVY75 STR10
+Alloyed Forge Greathammer|Greathammer|HVY75 STR10
+Pale Morning|Greathammer|HVY75 STR10 PWR10
+Petra's Anchor|Greathammer|HVY75 STR10 PWR10
+Sovereign's Punishment|Greathammer|HVY75 STR20
+Withered Gale Pale|Greathammer|HVY75 WND90
+Stoneheart|Greathammer|HVY80 STR20
+Enforcer's Hammer|Greathammer|HVY80 STR25
+Dissonant Chimecaller|Greathammer|HVY80
+Kanabo|Greathammer|HVY100 STR40
+Hivelord's Hubris|Greathammer|HVY100 STR60
+Summer Hullwrecker|Greatcannon|HVY55 STR25
+The Barrel|Greatcannon|HVY75 STR30
+Smouldering Hallow|Greatcannon|HVY75 STR30
+Edenbrand Hellcoil|Greatcannon|HVY75 STR30
+Unsung Scythern|Exclusive|HVY75 PWR10
+#O
+Oathless|W3|
+Blindseer|C1 S1 W1|Sightless Beam;Mindsoothe;Tranquil Circle
+Visionshaper|C2 S1|Illusory Servants;Illusory Counter;Mirror Illusion
+Starkindred|C2 W1|Ascension;Celestial Assault;Sinister Halo
+Arcwarder|C2 W1|Arc Beam;Arc Wave;Arc Suit
+Jetstriker|M1 W1|Fake Strike;Jet Kick
+Linkstrider|S2 W1|Symbiotic Sustain;Parasitic Leech
+Dawnwalker|C3|Blinding Dawn;Radiant Dawn;Radiant Kick
+Contractor|C2 W1|Equalizer;Judgement;Lord's Slice
+Silentheart||
+Fadetrimmer|C2 W1|Close Shave;Precision Cuts
+Saltchemist|S1 W1|Lethal Injection
+Chainwarden|C2 W1|Impel;Restrain;Rupture
+Bladeharper|C3|Palm Strike;Decimate
+Saintsworn|C2 S2 W1|Blade of Saints
+Soulbreaker|C2 W1|Ardour Slicer;Rhythm Advance;Tacet Kick
+Blightsurger|C1 W2|Sovereign Drive;Skycrash;Warp Kick

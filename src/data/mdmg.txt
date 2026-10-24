@@ -1,0 +1,149 @@
+Burning Servants|44,48.4,52.8,57.2,61.6|FLM2.75
+Flame Grab|15,20,25,30,35|FLM2.75
+Flame Repulsion|16,18.4,20.8,23.2,25.6|FLM2.75
+Fire Gun|6.5,8.5,10.5,12.5,14.5|FLM2.75
+Fire Blade|18,21,24,27,30|FLM2.75
+Fire Palm|26,27.5,29,30.5,32|FLM2.75
+Fire Eruption|48,53,58,63,68|FLM2.75
+Fire Forge|25,28,31,34,37|FLM2.75
+Searing Snare|20,25,30,35,40|FLM2.75
+Flame Sentinel|5,6,7,8,9|FLM2.75
+Flare Volley|18,21,24,27,30|FLM2.75
+Flame Assault|8,16,24,32,40|FLM2.75
+Rising Flame|20,23,26,29,32|FLM2.75
+Relentless Flames|74,81.4,88.8,96.2,103.6|FLM2.75
+Ash Slam|16,22.4,28.8,35.2,41.6|FLM2.75
+Flame Ballista|82,85.5,89,92.5,96|FLM2.75
+Flaming Scourge|30,33,36,39,42|FLM2.75
+Lightning Blade|26.25,30,33.75,37.5,41.25|LTN2.75
+Jolt Grab|20,22,24,26,28|LTN2.75
+Lightning Beam|30,31.5,33,34.5,36|LTN2.75
+Lightning Strike|35,42,49,56,63|LTN2.75
+Fleeting Sparks|15,19.5,24,28.5,33|LTN2.75
+Lightning Impact|23,24.5,26,27.5,29|LTN2.75
+Lightning Clones|12,15,18,21,24|LTN2.75
+Electro Carve|56,59.5,63,66.5,70|LTN2.75
+Thunder Kick|25,28,31,34,37|LTN2.75
+Bolt Piercer|15,16,17,18,19|LTN2.75
+Grand Javelin|10.2,18.7,27.2,35.7,44.2|LTN2.75
+Lightning Assault|15,17.5,20,22.5,25|LTN2.75
+Storm Blades|25,27,29,31,33|LTN2.75
+Rising Thunder|35,41.3,47.6,53.9,60.2|LTN2.75
+Emotion Wave|20.25,22.95,22.65,28.35,31.05|LTN2.75
+Frozen Servants|12,16,20,24,28|ICE2.75
+Ice Beam|28,29.2,30.4,31.6,32.8|ICE2.75
+Warden Blades|51,56.5,62,67.5,73|ICE2.75
+Ice Spikes|25,25,25,25,25|ICE2.75
+Ice Daggers|15,18,21,24,27|ICE2.75
+Ice Blade|28.7,37.4,46.1,54.8,63.5|ICE2.75
+Ice Chains|20,22.5,25,27.5,30|ICE2.75
+Ice Eruption|25,25,25,25,25|ICE2.75
+Ice Forge|18,23.8,30.4,37.8,46|ICE2.75
+Ice Smash|35,38,41,44,47|ICE2.75
+Glacial Arc|37,42.2,47.4,52.6,57.8|ICE2.75
+Ice Lance|25,30,35,40,45|ICE2.75
+Rising Frost|41.5,45.65,49.8,53.95,58.1|ICE2.75
+Ice Flock|48,62.4,76.8,91.2,105.6|ICE2.75
+Frost Grab|12,14.4,16.8,19.2,21.6|ICE2.75
+Ice Carve|45,49.5,54,58.5,63|ICE2.75
+Crystal Knee|35,38,41,44,47|ICE2.75
+Crystal Impale|23.3,28.3,33.3,38.3,43.3|ICE2.75
+Ice Lasers|8,11,14,17,20|ICE2.75
+Iceberg|15,17.5,20,22.5,25|ICE5
+Ice Cubes|24,30,36,42,48|ICE2.75
+Ice Fissure|11.48,13.01,14.54,16.07,17.6|ICE2.75
+Wind Blade|18,20.5,23,25.5,28|WND2.75
+Air Force|22,24.4,26.8,29.2,31.6|WND2.75
+Tornado Kick|72,82,92,102,112|WND2.75
+Updraft|32.4,35.3,38.3,41.2,44.2|WND2.75
+Wind Forge|20,24,28,32,36|WND2.75
+Gale Lunge|12.5,13.75,15,16.25,17.5|WND2.75
+Tornado|126,141.12,156.24,171.36,186.48|WND2.75
+Twister Kicks|28,33.2,38.4,43.6,48.8|WND2.75
+Heavenly Wind|15,22,29,36,43|WND2.75
+Galetrap|31.5,32.38,33.25,34.13,35|WND2.75
+Gale Punch|37.5,41.25,45,48.75,52.5|WND2.75
+Champion's Whirlthrow|41,46,51,56,61|WND2.75
+Rising Wind|30,34.5,39,43.5,48|WND5
+Wind Gun|32,36,40,44,48|WND2.75
+Wind Carve|20.4,26.4,32.4,38.4,44.4|WND2.75
+Astral Wind|21.25,26.75,32.25,37.75,43.25|WND2.75
+Pillars of Erisia|35,38,41,44,47|WND2.75
+Wind Passage|18.5,27.5,36.5,45.5,54.5|WND2.75
+Dark Blade|30,34.5,39,43.5,48|SDW2.75
+Shadow Gun|25,28,31,34,37|SDW2.75
+Clutching Shadow|24,28.2,32.4,36.6,40.8|SDW2.75
+Shadow Chains|31.5,34.44,37.38,40.32,43.26|SDW2.75
+Shadow Eruption|20,21.5,23,24.5,26|SDW2.75
+Shadow Seekers|50,55,60,65,70|SDW2.75
+Encircle|10,15,20,25,30|SDW2.75
+Shade Devour|7,8.65,10.3,11.95,13.6|SDW2.75
+Shade Step|20,21.5,23,24.5,26|SDW2.75
+Shadow Roar|40,48,56,64,72|SDW2.75
+Rising Shadow|15,18,21,24,27|SDW2.75
+Shadow Meteors|20,23,26,29,32|SDW2.75
+Shadow Assault|8,12,24,36,48|SDW2.75
+Umbral Slash|20,24,28,32,36|SDW2.75
+Eclipse Kick|65,77.5,90,102.5,115|SDW2.75
+Shade Bringer|22.5,25.5,28.5,31.5,34.5|SDW2.75
+Shadow Vortex|2,3.6,5.2,6.8,8.4|SDW2.75
+Metal Eruption|32.5,32.5,32.5,32.5,32.5|IRN2.75
+Needle Barrage|26,29,32,35,38|IRN2.75
+Metal Rampart|13,18.2,23.4,28.6,33.8|IRN2.75
+Metal Kick|7.2,13.2,19.2,25.2,31.2|IRN2.75
+Chain Pull|20,22,24,26,28|IRN2.75
+Metal Turret|10,12,14,16,18|IRN2.75
+Iron Quills|26,28.6,31.2,33.8,36.4|IRN2.75
+Metal Rain|1.04,2.34,3.64,4.94,6.24|IRN2.75
+Caltrops|32,29.9,33.8,37.7,41.6|IRN2.75
+Firing Line|5.2,5.85,6.5,7.15,7.8|IRN2.75
+Metal Fakeout|20.8,27.95,35.1,42.25,49.4|IRN2.75
+Oxidizing Rush|26,42.4,58.5,74.9,91|IRN2.75
+Metal Ball|24.39,26,27.64,29.25,30.89|IRN2.75
+Metal Gatling|38.5,45.5,52.5,59.5,66.5|IRN2.75
+Iron Slam|32.5,37.05,41.6,46.15,50.7|IRN2.75
+Iron Hug|29.47,36.82,44.2,51.34,58.93|IRN2.75
+Rocket Lance|19.5,26,32.5,39,45.5|IRN2.75
+Crucifixion|16,22,28,34,40|BLD2.75
+Blood Orb|14.5,19,23.5,28,32.5|BLD2.75
+Blood Stakes|25,36,49,64,81|BLD2.75
+Sanguine Dive|24,28,32,36,40|BLD2.75
+Vicious Descent|18.5,26,33.5,41,48.5|BLD2.75
+Bloodedge|16,20,24,28,32|BLD2.75
+Soulflare Siphon|18.75,25,31.25,37.5,43.75|BLD2.75
+Veinbreaker|90,95,100,105,110|BLD2.75
+Crimson Rain|14.25,16.5,18.75,21,46.5|BLD2.75
+Vein Tendrils|25,29,33,37,41|BLD2.75
+Scarlet Cannon|17,25.5,34,42.5,51|BLD2.75
+Scarlet Cyclone|70,85,100,115,130|BLD2.75
+Razor Blitz|22.5,30,37.5,45,52.5|BLD2.75
+Crimson Surge|24,30,36,42,48|BLD2.75
+Bloodtide Ritual|42,47,52,57,62|BLD2.75
+Bloodcurdle|17.4,23.8,31.2,39.6,49|BLD2.75
+Flashfire Sweep|15,17.5,20,22.5,25|FLM2.75 LTN2.75
+Iron Tether|12.16,13.3,14.44,15.58,16.72|IRN2.75 LTN2.75
+Permafrost Prison|15,15.5,16,16.5,17|ICE2.75 SDW2.75
+Tempest Blitz|10,18,26,34,42|WND2.75 LTN2.75
+Table Flip|20,30,40,50,60|STR1.65
+Strong Left|15,22.5,30,37.5,45|STR1.65
+Rapid Punches|80,82.5,85,87.5,90|STR1.65
+Skyshatter Kick|40,60,80,100,120|STR1.65
+Throw|20,22,24,26,28|STR3
+Tacet Drop Kick|15,18,21,24,27|STR1.65
+Shoulder Bash|9.9,13.05,16.2,19.35,22.5|FTD1.65
+Revenge|12,13,14,15,16|AGL1.65
+Twinstrikes|51.01,57.37,63.75,70.13,76.51|AGL1.65
+Ether Barrage|36,39,42,45,48|INT1.65
+Exhaustion Strike|20,22,24,26,28|WLL1.65
+Dread Whisper|10,12,14,16,18|CHA1.65
+Rapid Slashes|16,18.67,21.33,24,26.67|LHT1.65
+Karita Leap|30,33,36,39,42|LHT1.65
+Karita Divebomb|25,27.75,30.5,33.25,36|LHT1.65
+Master's Flourish|8.4,16.8,25.2,33.6,42|MED1.65
+Twincleave|27.75,31.45,35.15,38.85,42.55|MED1.65
+Prominence Draw|9,17,25,33,41|MED1.65
+Slice 'n' Dice|19.1,24.2,29.3,34.4,39.5|MED1.65
+Flashdraw Strike|20,22,24,26,28|MED1.65
+Pressure Blast|24,31.5,39,46.5,54|HVY1.65
+Punishment|10,15,20,25,30|AGL1.65
+Onslaught|60,64,68,72,76|HVY1.65

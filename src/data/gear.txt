@@ -1,0 +1,618 @@
+#E
+Familiar Heretic's Helm|H|10|0|0|0|0|0|U1R1|PWR8|||
+Familiar Knight's Helm|H|10|0|0|0|0|0|U1R1|PWR8|||
+Familiar Priest's Helm|H|10|0|0|0|0|0|U1R1|PWR8|||
+Aegis of Enmity|H|5|0|0|0|0|0|L2|PWR12|Enmity||
+Chef's Toque|H|10|0|0|0|0|0|L1||||Umami;Gourmand
+Ether Refined Brim|H|5|0|0|0|0|0|L2|PWR16|Ether Refined||Sorcerer's Skill
+Jester's Beret|H|3|0|0|0|0|0|R2L1|PWR10|||Cap Artist;Jester's Ruse
+Kyrsmas Hat|H|10|0|0|0|0|0|L1||||
+Parasol Planter|H|2|0|0|0|0|0|R3|PWR10|||Grotesque Resilience
+Simmerbloom Diadem|H|5|0|0|0|0|0|R1L1|PWR10|||Simmerbloom
+The No-Life King's Crown|H|5|0|0|0|0|0|R1L1|PWR10|||Blood Necrosis;Cauterized Wounds;No Limits
+Tillian's Beret|H|3|0|0|0|0|0|R2L1|PWR10|||Cap Artist
+Warlock's Brim|H|5|0|0|0|0|0|L2|PWR16|Warlock||
+Bloodforged Crown|H|5|0|0|0|0|0|R1L1|PWR10|||Cauterized Wounds
+Deepscorn Casque|H|5|0|0|0|0|0|R1L1|PWR8|||Already Dead
+Grand Fisher Helm|H|5|0|0|0|0|0|R1L1|PWR10|Grand Fisher||Coldseep Reactor
+Aazel's Horns|H|0|0|0|0|0|0|R1||||
+Gale Enhanced Cowl|H|0|0|0|0|0|0|R2|PWR6|Gale Enhanced||Blade Dancer;Footwork Mastery
+Immortal Helm|H|0|0|0|0|0|0|R1L1|PWR5|||Immortality
+Monastery Cowl|H|0|0|0|0|0|0|R2|PWR6|Monastery Champion||Blade Dancer
+Necrotic Demon Horns|H|0|0|0|0|0|0|R1||||Mindspark
+Assassin's Hood|H|0|0|0|0|0|0|R2|PWR6 AGL10|Assassin||Deep Wound
+Authority Helm|H|8|0|0|0|0|0|U1R1||||Strong Hold
+Big Alchemist's Hat|H|0|0|0|0|0|0|R1||||Apothecary
+Big Herbalist's Hat|H|0|0|0|0|0|0|R1||||Herbivore;Iron Gut
+Blackleaf Helm|H|5|0|0|0|0|0|R2|PWR10|||Concussive Force
+Blacksteel Helm|H|10|0|0|0|0|0|U1R1|PWR8|Blacksteel||
+Bloodfeather Cowl|H|0|0|0|0|0|0|R2|PWR8|Bloodfeather||Bloodletter
+Celtor Commander Helm|H|5|0|0|0|0|0|R1L1||Celtor Commander||Grasp on Reality
+Dark Owl Chapeau|H|0|0|0|0|0|0|R1L1|PWR10|Dark Owl||Underdog
+Deepwoken Hood|H|0|0|0|0|0|0|R2L1|PWR6 AGL10|Deepwoken||
+Feathertop Helm|H|3|0|0|0|0|0|U1||||
+Goldleaf Helm|H|5|0|0|0|0|0|R1||||
+Handler's Hood|H|0|0|0|0|0|0|L2|PWR5|||
+High Inquisitor's Hood|H|0|0|0|0|0|0|L2|PWR5|||
+Investigator's Hat|H|4|0|0|0|0|0|U1R1|PWR6|||Diplomat
+Kabuto|H|8|0|0|0|0|0|R1|PWR5|||
+Legion Helmet|H|10|0|0|0|0|0|U1|PWR10|Legion||
+Miner's Hardhat|H|0|0|0|0|0|0|R2|PWR6|||Rock Blaster;Excavator
+Necrotic Cowl|H|0|0|0|0|0|0|R2||Necrotic||Blood Siphon
+Ossified Black Helm|H|10|0|0|0|0|0|U1R1|PWR8|Ossified Black||Sloped Plate
+Phalanx Helm|H|3|0|0|0|0|0|R1|PWR8|Legion Phalanx||Precise Swing
+Seamaster's Cap|H|0|0|0|0|0|0|L1||||Seamaster's Guile
+Shock Trooper Helmet|H|8|0|0|0|0|0|R1|PWR10|Shock Trooper||
+Silver Knight's Helm|H|10|0|0|0|0|0|U1R1|PWR8|Silver Knight||
+Smith's Bandana|H|4|0|0|0|0|0|U1||Smith||
+Specialist Helmet|H|8|0|0|0|0|0||PWR20 LTN30 WND30|Specialist||Volt Draft
+Strapped Hat|H|3|0|0|0|0|0|R2|PWR6|||Exterminator;Eureka
+Ten-Gallon Hat|H|0|0|0|0|0|0|R1|PWR5|Ten-Gallon||
+Tophat|H|4|0|0|0|0|0|U1R1|PWR6|Aristocrat||Give and Take
+Vagabond's Bicorn|H|4|0|0|0|0|0|U1||||
+Vigil Hood|H|0|0|0|0|0|0|R2L1|PWR6 AGL10|||
+Alchemist's Hat|H|0|0|0|0|0|0|U1||||Apothecary
+Brigand's Bicorn|H|3|0|0|0|0|0|R2|PWR6|Brigand||
+Gladiator Helm|H|5|0|0|0|0|0|R1|PWR8|Gladiator||
+Guardian Helmet|H|5|0|0|0|0|0|||Guardian||
+Herbalist's Hat|H|0|0|0|0|0|0|U1||||Herbivore;Iron Gut
+Legate Helm|H|5|0|0|0|0|0|||||
+Ossified Barrel Helm|H|5|0|0|0|0|0|U1||||Tenacity
+Ascended Outlaw Hat|H|0|0|0|0|0|0|L1|PWR20|Ascended Outlaw||Mass Effect
+Evanspear War Helmet|H|4|0|0|0|0|0|L1|PWR10|Evanspear War||
+Gumshoe Hat|H|0|0|0|0|0|0|R1||Gumshoe||
+Reinforced War Helmet|H|4|0|0|0|0|0|L1|PWR20|Reinforced War||Fatal Strike
+Western Outlaw Hat|H|0|0|0|0|0|0|L1|PWR10|Western Outlaw||
+Bastions of Enmity|A|10|0|0|0|0|0|L3|PWR12|Enmity||
+Ether Refined Mantle|A|7|0|0|0|0|0|R1L2|PWR12 INT5|Ether Refined||Sorcerer's Surge;Overflowing Dam
+Champion's Cape|A|0|0|0|0|0|0|R2L1|PWR20|||No Interruptions
+Summer Scarf|A|5|0|0|0|0|0|L1|PWR5|||
+Titus's Cape|A|0|0|0|0|0|0|R2L1|PWR15|||
+Warlock's Mantle|A|7|0|0|0|0|0|R1L2|PWR12 INT5|Warlock||Overflowing Dam
+Abyss Wanderer's Plate|A|5|0|0|0|0|0|L3|PWR10|Abyss Wanderer||Braced Collapse;Kick Off
+Delver's Duster|A|5|0|0|0|0|0|L3|PWR10|||Braced Collapse;Kick Off
+Diver's Light Plate|A|10|0|0|0|0|0|L3|PWR12|||Conquer your Fears
+Grand Fisher Plate|A|10|0|0|0|0|0|L3|PWR12|Grand Fisher||Diver's Resilience
+Ignition Gauntlets|A|8|0|0|0|0|0|R1L2|PWR12|||Force Your Way
+Ironsinger Heavy Plate|A|10|0|0|0|0|0|R1L2|PWR12|||Stay of Execution
+Monastery Champion Robes|A|8|0|0|0|0|0|R1L2|PWR12|Monastery Champion||Temple Guard
+Moonseye Gauntlets|A|7|0|0|0|0|0|R1L1|PWR12|||
+Pathfinder Elite|A|0|0|0|0|0|0|R2L1|PWR8|||
+Providence Coat|A|5|0|0|0|0|0|R2|PWR8|||Braced Collapse
+Star Duster|A|5|0|0|0|0|0|R2L1|PWR10|Star||Star Duster
+Warden Pauldrons|A|10|0|0|0|0|0|L1|PWR12|||
+Adjudicator's Coat|A|0|0|0|0|0|0|R2|PWR8|||Unwavering Resolve
+Adventurer Coat|A|0|0|0|0|0|0|R2|PWR5|||
+Assassin's Cloak|A|6|0|0|0|0|0|R2L1|PWR10|Assassin||Lowstride
+Authority Commander Coat|A|10|0|0|0|0|0|R2|PWR12|||
+Autumn Pauldrons|A|0|0|0|0|0|0|R2|PWR5|Autumn||
+Blacksteel Pauldrons|A|3|0|0|0|0|0|R1|PWR8|Blacksteel||
+Bluesteel Pauldrons|A|5|0|0|0|0|0|R2|PWR5|Bluesteel||
+Brigand's Cloak|A|3|0|0|0|0|0|R2|PWR5|Brigand||
+Celtor Commander Plate|A|8|0|0|0|0|0|R2L1|PWR10|Celtor Commander||Breathing Exercise
+Dark Owl Cloak|A|0|0|0|0|0|0|R1L1|PWR8|Dark Owl||Disbelief
+Deepwoken Cloak|A|5|0|0|0|0|0|R2L1|PWR10|Deepwoken||Blade Dancer
+Etrean Siege Cuirass|A|8|0|0|0|0|0|U1R1L1|PWR10|Etrean Siege||Battle Tendency
+First Ranger Duster|A|10|0|0|0|0|0|R2|PWR10|||
+Fur Pauldrons|A|3|0|0|0|0|0|R1||Fur||
+Grand Authority Plate|A|8|0|0|0|0|0|U1R1L1|PWR10|Grand Authority||Heavy Haul
+Grand Pauldrons|A|0|0|0|0|0|0|R2||Grand||
+Gumshoe Longcoat|A|2|0|0|0|0|0|R1|PWR5|Gumshoe||Hard Read
+Hive Scourge Cuirass|A|5|0|0|0|0|0|U1R1L1|PWR12|||Lowstride
+Imperial Pauldrons|A|7|0|0|0|0|0|R2|PWR8|Imperial||
+Iron Pauldrons|A|0|0|0|0|0|0|R2||Iron||
+Legion Pauldrons|A|3|0|0|0|0|0|R2||Legion||Polite Awakening
+Legion Phalanx Plate|A|6|0|0|0|0|0|R2L1|PWR12|Legion Phalanx||Hoplite
+Megalodaunt Coat|A|0|0|0|0|0|0|R2|PWR5|||
+Mercenary's Garb|A|0|0|0|0|0|0|R1L1||Mercenary||Kick Off
+Ministry Cloak|A|5|0|0|0|0|0|R1L1|PWR8|||
+Ministry Operative Cloak|A|0|0|0|0|0|0|R2L1||||Eureka
+Novice Brace|A|2|0|0|0|0|0|R1||Novice||
+Ossified Black Pauldrons|A|3|0|0|0|0|0|R1||Ossified Blood||Laminated Armor
+Ranger's Brace|A|3|0|0|0|0|0|R2|PWR8|Ranger||
+Redsteel Pauldrons|A|3|0|0|0|0|0|R2||Redsteel||
+Royal Pathfinder|A|6|0|0|0|0|0|R1L1|PWR10|||Ready or Not
+Sandrunner Wraps|A|6|0|0|0|0|0|R1L1|PWR8|Sandrunner||Kick Off
+Silver Pauldrons|A|3|0|0|0|0|0|R2||Silver Knight||
+Smith's Gloves|A|5|0|0|0|0|0|R2|PWR5|Smith||
+Tracker's Brace|A|3|0|0|0|0|0|R2|PWR8|Tracker||
+Vanguard Brace|A|3|0|0|0|0|0|R2|PWR10|Vanguard||Replenishing Knockout
+Winter Corps Parka|A|6|0|0|0|0|0|R2|PWR10|Winter Corps||Winter's Protection
+Woodland Pauldrons|A|2|0|0|0|0|0|R1||Woodland||Polite Awakening
+Aristocrat Coat|A|6|0|0|0|0|0|R2|PWR10|Aristocrat||Art of the Deal
+Enforcer Plate|A|0|0|0|0|0|0|R1L1|PWR8|Enforcer||Berserker
+Gladiator Pauldrons|A|3|0|0|0|0|0|R1|PWR5|Gladiator||
+Glassdancer Wraps|A|2|0|0|0|0|0|R1|PWR8|||Lightweight
+Guardian Pauldrons|A|2|0|0|0|0|0|||Guardian||
+Hardened Enforcer Plate|A|0|0|0|0|0|0|R1L1|PWR8|Hardened Enforcer||Berserker;Enforcer's Strength
+Inquisitor's Duster|A|0|0|0|0|0|0|R2|PWR5|||
+Justicar Defender|A|0|0|0|0|0|0|R4|PWR5|||
+Royal Duelist|A|0|0|0|0|0|0|R2|PWR5|||
+Sailor's Fleece|A|0|0|0|0|0|0|R1||||
+Steel Pauldrons|A|2|0|0|0|0|0|U1||||
+Ascended Outlaw Robes|A|0|0|0|0|0|0|R1L1|PWR20|Ascended Outlaw||Ether Pinpoint
+Bluestone Pauldrons|A|5|0|0|0|0|0|R2|PWR5|Bluestone||Ether Emergency
+Evanspear War Plate|A|6|0|0|0|0|0|R1L1|PWR10 STR25|Evanspear War||
+Flameguard Pauldrons|A|0|0|0|0|0|0|R1||Flameguard||
+Leather Gloves|A|2|0|0|0|0|0|U1||Leather||
+Leather Pauldrons|A|2|0|0|0|0|0|||Leather||
+Ossified Simple Pauldrons|A|3|0|0|0|0|0|R1||||Simple Buff
+Reinforced War Plate|A|6|0|0|0|0|0|R1L1|PWR20 STR25|Reinforced War||Crippling Impact
+Shock Trooper Plate|A|5|0|0|0|0|0|R2|PWR10|Shock Trooper||
+Simple Pauldrons|A|2|0|0|0|0|0|||||
+Specialist Plate|A|5|0|0|0|0|0|R1|PWR20 LTN30 WND30|Specialist||Stormcall
+Western Outlaw Robes|A|0|0|0|0|0|0|R1L1|PWR10|Western Outlaw||
+Wartreads of Enmity|L|5|0|0|0|0|0|L2|PWR15|Emnity||
+Abyss Wanderer's Boots|L|5|0|0|0|0|0|R2L1|PWR10|Abyss Wanderer||
+Marrowmade Boots|L|3|0|0|0|0|0|R2|PWR15|||Osseous Surge;Surestep
+Autumn Boots|L|3|0|0|0|0|0|R1||Autumn||
+Bluesteel Boots|L|3|0|0|0|0|0|R2|PWR5|Bluesteel||
+Brilliant Boots|L|0|0|0|0|0|0|R2||Brilliant||
+Celestial Boots|L|0|0|0|0|0|0|R2L1|PWR10|||Cosmic Connection
+Celtorian Sabatons|L|4|0|0|0|0|0|R2|PWR5|Celtor Commander||
+Delver Boots|L|0|0|0|0|0|0|U1||||Surestep
+Etrean Seige Sabatons|L|4|0|0|0|0|0||PWR5|Etrean Siege||
+Fur Boots|L|3|0|0|0|2|0|R1||Fur||
+Grand Authority Sabatons|L|4|0|0|0|0|0|R2|PWR5|Grand Authority||
+Legion Boots|L|3|0|0|0|0|0|R2|PWR5|Legion||
+Mercenary's Boots|L|2|0|0|0|0|0|R2L1|PWR10|Mercenary||Endurance Runner
+Novice Boots|L|3|0|0|0|0|0|R1||Novice||
+Ossified Phalanx Boots|L|0|0|0|0|0|0|R2L1|PWR5|||Alloyed Soles
+Phalanx Heavy Boots|L|0|0|0|0|0|0|R2L1|PWR5|Legion Phalanx||
+Ranger's Boots|L|0|0|0|0|0|0|R1||Ranger||Survivalist
+Redsteel Boots|L|3|0|0|0|0|0||PWR5|Redsteel||
+Silver Sabatons|L|3|0|0|0|0|0|R2L1|PWR5|Silver Knight||
+Star Boots|L|5|0|0|0|0|0|R2L1|PWR10|Star||
+Tracker's Boots|L|3|0|0|0|0|0|R1||Tracker||Lowstride
+Vanguard Boots|L|3|0|0|0|0|0|R1||Vanguard||Ready or Not
+Winter Corps Boots|L|3|0|0|0|0|0|R2|PWR5|Winter Corps||
+Woodland Boots|L|0|0|0|0|0|0|R1||Woodland||Woodland Terrain
+Hardened Enforcer Boots|L|0|0|0|0|0|0|R2||Hardened Enforcer||Enforcer's Technique
+Imperial Boots|L|5|0|0|0|0|0|R2L1|PWR10|Imperial||
+Bluestone Boots|L|3|0|0|0|0|0|R2|PWR5|Bluestone||I'm Blue
+Enforcer Boots|L|0|0|0|0|0|0|R1||Enforcer||Conquer your Fears
+Evanspear War Boots|L|3|0|0|0|0|0|U1|PWR10|Evanspear War||
+Flameguard Boots|L|3|0|0|0|0|0|R2|PWR5|Flameguard||
+Grand Boots|L|5|0|0|0|0|0||PWR5|Grand||
+Iron Boots|L|0|0|0|0|0|0|R2||Iron||
+Leather Boots|L|4|0|0|0|0|0|C1||Leather||
+Reinforced War Boots|L|3|0|0|0|0|0|U1|PWR20|Reinforced War||Repeated Blows
+Shock Trooper Boots|L|0|0|0|0|0|0|U1|PWR10|Shock Trooper||
+Specialist Boots|L|0|0|0|0|0|0|U1R1|PWR20 LTN30 WND30|Specialist||Flashwind
+Pendant of Order|T|0|0|0|3|0|0|R1L1|PWR5|||
+Crawling Necktie|T|0|0|0|0|0|0|L1|PWR5|||
+Death's-Head Necktie|T|0|0|0|0|0|0|L1|PWR5|||
+Lightkeeper's Medallion|T|0|0|0|0|0|0|L1|PWR5|||Elegy of Light
+Mantle of Enmity|T|0|0|0|0|0|0|R1|PWR12|||Heartwing Beat
+Tiran Pendant|T|2|0|0|0|0|0|L1|PWR5|||Featherfall
+Warmaster's Medallion|T|0|0|0|0|0|0|L1|PWR5|||Actions Speak Louder
+Whistling Periapt|T|1|0|0|0|0|0||PWR5|||Whistleguard
+Fauld of Enmity|T|0|0|0|0|0|0|R1L2|PWR10|Emnity||
+Trickster's Scarf|T|0|0|0|0|0|0|L2|PWR7|||
+Gale Enhanced Beads|T|0|0|0|0|3|0|L1|PWR5|Gale Enhanced||Focused Strikes
+Maljuror Jougs|T|0|0|0|0|0|0|L2|PWR10|||
+Monastery Beads|T|0|0|0|0|3|0|L1|PWR5|Monastery Champion||
+Adventurer's Scarf|T|0|0|0|0|3|0|R1L1|PWR5|||
+Canticlysm Pendant|T|0|0|0|0|3|0|R1L1|PWR5|||
+Confessor's Charm|T|0|0|0|3|0|0|R1L1|PWR5|||
+Curseblood Pendant|T|0|0|0|0|3|0|L1|PWR5|||
+Dark Owl Cape|T|0|0|0|0|2|0|L1|PWR5|Dark Owl||
+Maljuror Choker|T|0|0|0|0|0|0|L1|PWR5|||
+Nomad Pendant|T|0|0|0|0|3|0|L1|PWR5|||
+Red Eye Pendant|T|0|0|0|0|3|0|L1|PWR5|||
+Regenerative Pendant|T|0|0|0|0|3|0|L1|PWR5|Regenerative||Blood Pact
+Revitalizing Pendant|T|0|0|0|0|0|0|R1L1||||Praise The Sun
+Sandrunner Scarf|T|0|0|0|0|0|0|R1L1|PWR5|Sandrunner||
+Seafarer Pendant|T|0|0|0|0|0|0|L1|PWR5|||
+Varicosa Medallion|T|0|0|0|0|0|0|R1L1|PWR5|||
+Whaler Scarf|T|0|0|0|0|3|0|L1|PWR5|||
+Brilliant Cape|T|0|0|0|0|3|0|L1|PWR5|Brilliant||
+Fleet Warden Cape|T|0|0|0|0|3|0|R1L1|PWR8|||
+Pathfinder's Backpack|T|0|0|0|0|0|0|U1||||Robber Baron
+Threadwork Kilt|T|0|0|0|0|0|0|R1|PWR5|||
+Imperator's Fury|T|0|0|0|0|0|0||PWR8|||Brute Strength
+Pathfinder Lantern|T|0|0|0|0|0|0|U1||||Breathing Exercise
+Thrall of Enmity|F|0|0|0|0|0|0|R1|PWR10|Emnity||Lose Your Mind
+Blindfold|F|0|0|0|0|0|0|C1||||Blinded
+Brow Stud|F|1|0|0|0|0|0|||||
+Dermal Stud|F|1|0|0|0|0|0|||||
+Moon Brow Rings|F|1|0|0|0|0|0|||||
+Moon Lip Ring|F|1|0|0|0|0|0|||||
+Moon Septum Ring|F|1|0|0|0|0|0|||||
+Nose Stud|F|1|0|0|0|0|0|||||
+Necrotic Mask|F|0|0|0|0|0|0|R1||Necrotic||Blood Plague
+Snakebite Studs|F|1|0|0|0|0|0|||||
+Ascended Outlaw Mask|F|0|0|0|0|0|0|C1||Ascended Outlaw||Destructive Yell
+Authority Voltspark Mask|F|0|0|0|0|0|0|C1||||Volt Reflex
+Hollow Angel Mask|F|0|0|0|0|0|0|R1||||Angel's Guise
+Sworn Angel Mask|F|0|0|0|0|0|0|R2||||Angel's Guise
+Dark Pearls|E|2|0|0|0|0|0||PWR10 SDW40|||Inky Pearls
+Ember Scorch Earrings|E|0|0|0|0|0|0|C1R1||||Smoldering Touch
+Ether Empowered Earrings|E|0|0|0|0|0|0|R2||||Ether Adeptness
+Ether Imbued Earrings|E|0|0|0|0|0|0|R2||||Ether Tension
+Frost Crystal Earrings|E|0|0|0|0|0|0|R2|PWR5|||Instant Nucleation
+Gale Enhanced Earrings|E|0|0|0|0|0|0|C1R1|PWR5|Gale Enhanced||Way of the Wind
+Ossified Blood Earrings|E|0|0|0|0|0|0|R2||||Sharpened Dagger
+Regenerative Earrings|E|0|0|0|0|0|0|R1|PWR8|Regenerative||Blood Convergence
+Shiva's Pendant Earrings|E|0|0|0|0|0|0|C1R1||Shiva||Skillful Recovery
+Bone Ring|R|0|0|0|0|0|0|U1||||
+Akira's Ring|R|0|0|0|0|0|0|L1||||
+Armorer's Ring|R|0|0|0|0|0|0|U1||||
+Charged Ring|R|0|0|0|0|0|0|R1||||
+Cryptwaker's Ring|R|0|0|0|0|0|0|U1||||
+Dawnfist's Ring|R|0|0|0|0|0|0|L1||||
+Ferryman's Ring|R|0|0|0|0|0|0|L1|PWR6|||
+Maestro's Ring|R|0|0|0|0|0|0|L1||||
+Moon Ring|R|0|0|0|0|0|0|R2||||
+Prophet's Ring|R|0|0|0|0|0|0|L1||||
+Rosen's Ring|R|0|0|0|0|0|0|L1||||
+Saint Jay's Ring|R|0|0|0|0|0|0|R1||||
+Waning Ring|R|0|0|0|0|0|0|R2||||
+Bloodiron Ring|R|0|0|0|2|0|0|||||
+Chained Ring|R|0|0|0|0|0|0|U1||||
+Dazed Band|R|0|0|0|0|0|0|U1||||
+Diver's Ring|R|0|0|0|0|0|0|U1||||
+Freestyler's Band|R|0|0|0|0|0|0|U1||||
+Heavy Hands Ring|R|0|0|0|0|0|0|U1||||
+Light Eater Ring|R|0|0|0|0|2|0|||||
+Purifying Ring|R|0|0|0|0|0|0|U1||||
+Ring of Wisps|R|0|0|0|0|0|0|U1||||
+Transfusion Ring|R|20|0|0|0|0|0|U1|PWR5|||
+Windmill Ring|R|0|0|0|0|2|0|||||
+Blindseer's Ring|R|0|0|0|0|0|0|U1||||
+Gold Ring|R|0|0|0|0|0|0|U1||||
+Poser's Ring|R|0|0|0|0|0|0|R1||||
+Silver Ring|R|0|0|0|0|0|0|U1||||
+Shrouded Cape|T|0|0|0|0|2|0|R1L1|PWR5|||
+Trimmed Overcoat|A|3|0|0|0|0|0|R1||||
+Fur Parka|A|2|0|0|0|0|0|R1||||Steady Footing
+Grand Pathfinder's Backpack|T|0|0|0|0|0|0|R2|PWR5|||Robber Baron
+Ringing Scholar's Raiments|A|4|0|0|0|0|0|L2|PWR12|Ringing Scholar||
+Ringing Scholar's Capeline|H|4|0|0|0|0|0|L2||Ringing Scholar||
+Ringing Scholar's Boots|L|0|0|0|0|0|0|L2||Ringing Scholar||
+Ringing Scholar's Necktie|T|2|0|0|0|0|0|L1||Ringing Scholar||
+Broodplate Helmet|H|2|0|0|0|0|0|U1R1|PWR10|Broodplate||Broodlord's Scream
+Terraplate Pauldrons|A|0|0|0|0|0|0|R2L1|PWR10|||Terrapod Tracer
+Crimson Terraplate Pauldrons|A|0|0|0|0|0|0|L1R2|PWR10|||Cruentare
+Moonseye Pendant|T|0|0|0|0|3|0|L1|PWR5|||
+Amedan Pendant|T|0|0|0|0|3|0|R1L1|PWR5|||
+Inquisitor's Hood|H|0|0|0|0|0|0|L1|PWR5|||
+Suncross Pendant|T|0|0|0|0|3|0|L1|PWR5|||
+Jadeite Megalodaunt|T|0|0|0|0|0|0|L2||||Good Luck Charm
+Geta|L|0|0|0|0|0|0|R2|PWR12|Blademaster||Dancing Steps Of War
+Plain Cape|T|0|0|0|3|0|0|L1|PWR5|||
+Azure Sentinel Pauldrons|A|0|0|0|0|0|0|R2L1||Azure Sentinel||
+Azure Sentinel Boots|L|0|0|0|0|0|0|R2||Azure Sentinel||
+Blademaster's Robe|A|6|0|0|0|0|0|R3||Blademaster||Swift Blade
+Inquisitor's Visor|F|0|0|0|0|0|0|R1|PWR8|||Blind Spot;Blinded
+Thresher Charm|T|0|0|0|0|0|0|R2|PWR5|||Thresher Thrasher
+Grand Authority Sallet|H|3|0|0|0|0|0|R1L1|PWR8|Grand Authority||Strong Hold
+Etrean Sashimono|T|0|0|0|0|0|0|R1L1|PWR12|||Traditional Execution
+Brilliant Pauldrons|A|5|0|0|0|0|0|R2L1||Brilliant||
+Citadel Frames|F|5|0|0|0|0|0|R1||||
+Ascended Outlaw Breeches|L|0|0|0|0|0|0|U1R1|PWR20|Ascended Outlaw||Stronger Under Pressure
+Western Outlaw Breeches|L|5|0|0|0|0|0|R1|PWR10|Western Outlaw||
+Broodplate Sabatons|L|9|0|0|0|0|0|L1||Broodplate||Gut Rot
+Broodplate Cuirass|A|0|0|0|0|0|0|R1L1|PWR10|||Rotten Regeneration
+Wool Beret|H|3|0|0|0|0|0|R2|PWR4|||
+Glassdancer Shinwraps|L|5|0|0|0|0|0|R1|PWR8|Glassdancer||
+Bejeweled Clip|F|1|0|0|0|0|0|||||
+#O
+Hive Adjudicator|25|25|1000|PWR15|
+Corsair Outlaw|15|10|1200||
+Hired Mercenary|15|15|1000||
+Skeptic Pioneer|12|12|1200||
+Whaler Initiate|15|5|1500||
+Authority Peacekeeper Armor|15|10|1600||
+Bounty Hunter|20|10|1500|PWR5|
+Carefree Garments|10|15|2000|PWR6|
+Diver Apprentice Robes|10|15|1000||
+Duelist's Attire|20|0|1200|PWR5|
+Ignition Union Uniform|22|22|2000|PWR6|
+Navaen Nomad Robes|10|10|1800|PWR5|
+Pathfinder Cloak|18|8|1200|PWR5|
+Vigil Initiate|20|0|1200|PWR5|
+Authority Captain Uniform|30|25|2000||
+Cerulean Gown|20|25|1500|PWR8|
+Cloak of Winds|20|30|1200|PWR10|
+Darksteel Plate|25|25|2500|PWR10 FTD20|
+Diver Journeyman Robes|30|20|1000|PWR10|
+Etrean Guard|25|20|2000|PWR10|
+Hive Drone|25|25|1000|PWR10|
+Hive Tactician Armor|30|20|1200|PWR10 AGL25|
+Ignition Trailblazer|25|25|1000|PWR10|
+Ignition Welder|25|25|3000|PWR10 FTD10|
+Martial Artist|30|20|1200|PWR10 STR15|
+Pathfinder Arch-Sorcerer|10|25|1500|PWR10 INT25|
+Seamstress's Attire|25|20|2000|PWR8|
+Troublemaker's Overcoat|25|20|2500|PWR8|
+Verdant Sniper|25|20|1500|PWR10|
+Whaler Coat|25|15|1500|PWR10|
+Arachnid's Weave|25|35|2100|PWR15|
+Black Diver|30|30|2600|PWR15 WLL10|
+Cala-Mariner|25|35|2200|PWR15 WLL5|
+Celtorian Tideknight|30|25|2800|PWR15|
+Darkened Bastion|30|30|2600|PWR15|
+Ignition Deepdelver|30|35|3000|PWR15|
+Justicar's Armor|30|30|2800|PWR15|
+Legion Centurion|30|30|3000|PWR15 FTD10|
+Navaen War Chief|30|30|3000|PWR15|
+Prophet's Cloak|25|25|2600|PWR15|
+Royal Etrean Guard|30|30|3000|PWR15|
+Summer Dragoon|30|30|2800|PWR15|
+Titanslayer's Adornment|25|40|3300|PWR15 STR50|
+Titus's Raiment|25|25|3000|PWR15 STR30|
+Windrunner Robes|25|30|2600|PWR15 AGL10|
+Authority Commander|30|30|2800|PWR15|
+Cindergarb|25|30|3000|PWR15 FLM45|
+Familiar Heretic's Armor|35|35|4000|PWR15|
+Familiar Knight's Armor|30|40|3500|PWR15|
+Ferryman's Coat|25|35|2500|PWR12|
+Heretic's Memento|25|25|2000|PWR15|
+Icebringer's Vestments|25|30|2600|PWR15 ICE45|
+Inquisition Light|30|35|3200|PWR15|
+Jade Vigil's Weave|30|30|3000|PWR15 AGL10|
+Jester's Garb|25|35|2500|PWR12|
+Sanguine Finery|25|30|2600|PWR15 BLD45|
+Shock Corps Light|30|30|3500|PWR15|
+Stormchanter's Raiments|25|30|2600|PWR15 LTN45|
+Tempestmaker's Threads|25|30|2600|PWR15 WND45|
+Trickster's Habit|25|35|2500|PWR12|
+Vigil Sentinel|30|30|2500|PWR10 WLL5|
+Barbarian|25|20|1200||
+Hidden Knife Armor|25|25|2000||
+Unsung|30|0|3000||
+Justicar Neophyte|15|15|1500|PWR1|
+Ringing Scholar's Garb|25|30|2400|PWR15 INT5|
+Stratos' Cloak|20|30|2200||
+Warder's Attire|30|35|2750|PWR15|
+Blacksteel Attire|30|0|1000||
+#OT
+Hive Adjudicator|Lowstride
+Corsair Outlaw|Lightweight
+Eager Tradesman|Knack
+Merchant Robes|Merchant's Accord
+Pathfinder Sorcerer|Lowstride
+Scholar|Scholar's Intuition
+Skeptic Pioneer|Apothecary
+Authority Peacekeeper Armor|Lowstride
+Bounty Hunter|Lightweight
+Carefree Garments|Fleetfoot
+Cutthroat Light Armor|Hunter's Reflexes
+Experienced Adventurer|Looter
+Flame Worshipper Armor|Intrepid Flame;One With Flame
+Navaen Nomad Robes|Fists of Navae
+Pathfinder Cloak|Survivalist
+Pathfinder Thaumaturge|Lowstride
+Shadow Hunter|Lowstride
+Steel Plate|Lowstride
+Summer Company Uniform|Armor Piercing
+Vigil Initiate|Paired Soul
+Cloak of Winds|Paired Soul
+Darksteel Plate|Unbreakable
+Diver Journeyman Robes|Lowstride
+Etrean Guard|Unbreakable
+Grand Pathfinder Cloak|Legendary
+Hive Drone|Lowstride
+Hive Tactician Armor|Brunt
+Ignition Trailblazer|Perseverance;Strong Stern
+Ignition Welder|Master Craftsman
+Martial Artist|Bruiser's Mixup
+Pathfinder Arch-Sorcerer|Devastating Power
+Varicosan Finery|Benefactor
+Veteran Adventurer|Foolish Outburst
+Arachnid's Weave|Corrosive Touch
+Cala-Mariner|Tidal Shock
+Celtorian Tideknight|Tidekeeper
+Darkened Bastion|Withering Soul
+Ignition Deepdelver|Force Your Way
+Justicar's Armor|The Path, Unveiled
+Legion Centurion|Centurion's Resolve
+Navaen War Chief|Chief's Will
+Prophet's Cloak|Crippling Darkness
+Royal Etrean Guard|Paired Soul
+Summer Dragoon|Sunset Ricochet
+Titanslayer's Adornment|Primal Rage
+Titus's Raiment|Overwhelming Might
+Windrunner Robes|Wind Dancer
+Authority Commander|Riot Breaker
+Cindergarb|Repeated Propulsion;Warding Radiance
+Familiar Assassin's Armor|Bane
+Familiar Demon's Armor|Demon Step
+Familiar Heretic's Armor|Soul Rip
+Familiar Knight's Armor|Hyperbody
+Familiar Occultist's Armor|Life Leech
+Ferryman's Coat|Ferryman's Curse
+Heretic's Memento|Overflow
+Icebringer's Vestments|Refreeze;Orbital Ice
+Inquisition Light|Lethal Dose
+Jade Vigil's Weave|Serpent's Dance
+Jester's Garb|Mocking Favor;Not a Scratch
+Sanguine Finery|Focused Hematoma;Sheltered Grasp
+Shock Corps Light|Battle-Hardened
+Stormchanter's Raiments|Circuit Breaker;Kickstart
+Tempestmaker's Threads|Tempest Evolution;Aerogliding
+Trickster's Habit|Mocking Favor;Not a Scratch
+Vigil Sentinel|Vigil's Grace;Action Surge
+Hidden Knife Armor|Bane
+Ringing Scholar's Garb|Lose Your Mind
+Stratos' Cloak|Breeze
+Warder's Attire|Justicar's Gift
+#TD
+Umami|Feast on foes with mighty cutlery. Chef Weapons now steal opponents hunger.
+Gourmand|Your hunger and thirst gain from eating is increased.
+Sorcerer's Skill|Decrease the amount of tempo it takes to vent by 5.
+Cap Artist|Pressing CapArtist while crouching allows you to fake being dead. You also take a bit less damage from PvE while ragdolled as well.
+Jester's Ruse|Anytime you take damage, there's a 10% chance it gets completely nullified. Anytime you deal damage, there's a 10% chance it also gets completely nullified.
+Grotesque Resilience|You take reduced damage from 'Damage over Time' effects.
+Simmerbloom|Basic Attacks on Pleeksty's Inferno are now granted flames.
+Blood Necrosis|Your bloodless gems heal 33% less than usual.
+Cauterized Wounds|Blood loss from all sources is lowered.
+No Limits|Increase the cap on Bloodless Gem healing.
+Already Dead|You take reduced damage from abilities with a health cost.
+Coldseep Reactor|By cultivating the localized chemosynthetic microorganisms within the Depths and utilizing them as a power source, your helm thrums with a protective field of static elec
+Blade Dancer|Landing a Basic Attack removes your roll cooldown.
+Footwork Mastery|Landing a critical gives you an immense speed boost for 10 seconds.
+Immortality|The remnants of the helmet's Mind Veil stir into life when you would be made Unconscious soaking all damage for a brief duration. 30s CD. Viscosity is rejected.
+Mindspark|The damage of your flames scale with how insane you are.
+Deep Wound|Assassinating a target applies anti-heal for 20s and gives you a speed boost for 6s. Assassination damage now scales with level against mobs.
+Strong Hold|[Medium Weapons] When above half health and two-handing, posture damage taken is reduced by 5%.
+Apothecary|Potions you prepare will have amplified positive effects when consumed, and amplified negative effects when thrown.
+Herbivore|You gain more nutrition from eating plants.
+Iron Gut|You have resistance against being poisoned by foods.
+Concussive Force|Enemies you knocked remain downed longer than usual.
+Grasp on Reality|Damage taken from insanity is reduced.
+Underdog|You deal 2.5% more damage to those with higher HP than you, scaling up to 4% at 60 WLL. Additionally, you deal +10% more damage to physically larger foes.
+Rock Blaster|Doubles your ore yields when mining.
+Excavator|Chance to receive two sets of ore when mining, mine ores a lot faster.
+Blood Siphon|Your Critical Attack now siphons a bit of health, healing you 10% of the damage you dealt.
+Sloped Plate|Reduces the amount of damage you take when guardbroken by 10.
+Precise Swing|After landing a critical your next basic attack will gain 25% chip past your opponent's block.
+Seamaster's Guile|While you're at the helm of a ship, it takes 25% less damage
+Volt Draft|Using Inhale will now also make your Basic Attacks apply a storm strike. [20 second CD]
+Eureka|Gain a stack of Inspiration every time you land or parry a Mantra. Whiffing a Mantra removes a stack of Inspiration. Reaching 3 stacks grants +10% Mantra Damage to your n
+Give and Take|Deal less damage to comrades and receive less damage from comrades.
+Tenacity|Greatly shorten the amount of time you are guardbroken for.
+Mass Effect|For every Might Gem you have equipped on your mantras, slightly increase each Might Gem's power.
+Fatal Strike|Landing a guardbreak with a strength mantra that has a Wrath Gem on it devastates your opponent, slowing them down.
+Sorcerer's Surge|Your vent's cooldown is reduced by 2.5 seconds.
+Overflowing Dam|Having full Ether for 2 seconds or more grants an aura to your attacks that grant them 10% more damage.
+No Interruptions|When combat tagged by 2 or more players, render any ranged attack a lot less effective.
+Braced Collapse|After being block broken, the next attack to hit you deals reduced damage.
+Kick Off|You easily brush off shorter falls, taking no damage. Your first wall jump will always send you higher than normal. Gain a speed boost after wall jumping over a wall.
+Conquer your Fears|Killing the beings of the deep replenishes your sanity somewhat. When an Ally grips an enemy nearby to you, you regain Sanity.
+Diver's Resilience|You can parry unparryable attacks from giant monsters, but due to the heft of the plate, you have slightly reduced speed.
+Force Your Way|You can parry unparryable attacks from giant monsters, at the cost of armor durability.
+Stay of Execution|Increases the time taken to execute you by 20%. Saving others from being executed grants you both 10 TempHP (20s CD)
+Temple Guard|For the first 0.3s of your Critical Attack's windup, you take 90% less damage from any attacks that cancel your windup.
+Star Duster|You take 30% less damage from airborne enemies.
+Unwavering Resolve|Getting parried punishes your posture 33% less.
+Lowstride|When crouching, your stealth and roll distance are increased. Your speed while crouching is less slow. You now draw your weapon silently.
+Breathing Exercise|Your sanity recovers more quickly once out of terrifying situations.
+Disbelief|Reduces the duration of illusions cast on you by 30%. Halves the duration of the Charmed status on you.
+Battle Tendency|You can breathe more easily with +20% faster posture regen.
+Heavy Haul|Enemies who carry you move significantly slower. Take slightly less posture damage from large enemies. Takes one to know one.
+Hard Read|Hitting your opponent during a feint will cause them to be Dazed for 3s.
+Polite Awakening|Upon recovering from being Unconscious, your health is restored up to a minimum of 15% of your max health.
+Hoplite|Posture damage is reduced by 15% when wielding a spear and standing still.
+Laminated Armor|Reduces all incoming damage by 2/3 (applied after damage multipliers).
+Ready or Not|The first attack to hit you while out of combat has its damage cut in half.
+Replenishing Knockout|You gain more health and posture from downing enemies.
+Winter's Protection|Your tightly-bound winter gear negates elemental damage buffs from weather on damage against you. Also seems to provide some resistance to the Gale.
+Art of the Deal|Your rapport with merchants gives you lower prices!
+Lightweight|Move faster when your armor runs out of durability.
+Enforcer's Strength|Your enemies recover 20% less posture on parry.
+Ether Pinpoint|Mantras that have Might Gem on them now fully ignore the posture bonus from shields.
+Ether Emergency|When you get hit below 25% health, exhaust all of your ether to gain a flat health boost (healing scales of total max ether). You are briefly unable to cast Mantras.
+Simple Buff|Your light attacks deal 7.5/15% more damage. Pretty simple.
+Crippling Impact|Landing a critical on someone while Wrath Gem is active disables their vent for a few seconds.
+Stormcall|Anytime you land a storm strike apply stormcall shock on your opponent, damaging them if they try to use a mantra while its active.
+Osseous Surge|Flourishing an enemy enhances your boots for 10 seconds, allowing you to spawn a wave of bones in the way you're facing. Right click to activate this.
+Surestep|Your boots secure your footing in all forms of terrain by digging into the ground with metal spikes.
+Cosmic Connection|All celestial and astral related abilities are buffed.
+Endurance Runner|Your speed is decreased less by low health.
+Alloyed Soles|Reduces the duration of Knockdown applied to you.
+Survivalist|Resist the effects of Weather Effects.
+Woodland Terrain|You move slightly faster on grass.
+Enforcer's Technique|Your flourishes deal 35% more damage.
+I'm Blue|Improve the efficiency of your Blue Gems. Blue are the gems you use.
+Repeated Blows|Any strength mantra that has a Wrath Gem on it will reset its cooldown if you land a critical while a Wrath Gem is active.
+Flashwind|Anytime you proc Air Pressure or Overcharge, give yourself the ability to have enhanced dashes again for a few seconds.
+Elegy of Light|The Unspoken Vow of the Waking God resonates through you, if briefly. Protects you from the effects of Deep Gems for 3 minutes and provides you Gem Enhancement.
+Heartwing Beat|Your heart beats a new rhythm, as your aerial attack takes on a new manifestation.
+Featherfall|Prevents falls from damaging you. After sufficient damage has been resisted, the pendant will go inactive and require time to recharge.
+Actions Speak Louder|Your Critical Attack cooldown is 20% shorter, but your Resonance cooldown is 20% longer. In areas where your Resonance is suppressed, reduce your cooldown by 10% instead.
+Whistleguard|The favor of the winds is yours: landing three hits (five for light weapons) without taking damage against your opponent envelops you in a shield of wind.
+Focused Strikes|All criticals deal 15% more posture damage.
+Blood Pact|Gain 50 bonus temporary health whenever you knock/kill an enemy.
+Praise The Sun|When standing in sunlight increase your natural health regen and reduce how long antiheal effects last on you.
+Robber Baron|Halves the number of items you drop on death. You no longer lose Notes on death.
+Brute Strength|Your vent is replaced with a ground slam attack that knocks back enemies.
+Lose Your Mind|Deal more damage the more insane you are. Grants +15% damage at maximum insanity.
+Blinded|Your vision is obscured by something. Somehow, you feel safer.
+Blood Plague|For every light attack you land, add one Blood Plague stack on your opponent. Landing a Critical Attack converts all Blood Plague stacks into…
+Destructive Yell|Your Ardour Screams now break campfires around you and have a larger AoE.
+Volt Reflex|Your dodge window is increased with the power of lightning, but also increase the cooldown of your dodges.
+Angel's Guise|You resemble one of the Sworn Angels.
+Inky Pearls|The ether you eject is coated with inky shadow. Your vent now steals a small amount of ether.
+Smoldering Touch|Guardbreaking your opponent sets them on fire.
+Ether Adeptness|Your mantras now deal extra chip.
+Ether Tension|Deal bonus true damage whenever you guardbreak an opponent with a mantra.
+Instant Nucleation|Take less damage for a few seconds after you are guardbroken.
+Way of the Wind|Being in the air briefly increases the speed of your mantra casts. This effect only lasts while you're in the air.
+Sharpened Dagger|All backstabs deal 1 extra true damage (4 extra damage if done to PvE).
+Blood Convergence|Receive 10% more healing from all healing sources when you have temp health.
+Skillful Recovery|Increases passive Posture regeneration by 20% (or 35% in Vow of Iron). Recover 20% more posture when parrying attacks.
+Broodlord's Scream|Using Sing, Taunt, or Ardour Scream applies anti heal for the duration of the move.
+Terrapod Tracer|Deal 0.5% of your opponent's health to opponents who heal off of you.
+Cruentare|Increase the amount of all bleed damage you deal by 50%. Your Whirling Blade now heals you when landing it.
+Good Luck Charm|Makes you feel a little better, probably.
+Dancing Steps Of War|When landing a flourish, gain a speed boost and massively reduce the cooldown of your dodges for 2 seconds.
+Swift Blade|Proccing Wind Gem now gives you 10% more light attack posture during its duration. Extend the duration of Wind Gems by 2 seconds.
+Blind Spot|[Land Critical Attack or Hidden Blade] Apply Blinded for 5 seconds.
+Thresher Thrasher|Increases how long you can stay underground with Beast Burrow by 30%, and reduces its cooldown by 25%.
+Traditional Execution|Flourishing an opponent turns your next critical attack into the Katana critical attack. Also extends Dancing Steps Of War's effects by 0.5 seconds.
+Stronger Under Pressure|Your mantras with might gem now slow down your opponents, scaling with how many combat tags you currently have.
+Gut Rot|Landing a flourish enhances your next instance of anti-heal, doubling its duration.
+Rotten Regeneration|Heal 20% more off enemies who have anti-heal on them.
+Steady Footing|You're much more resistant to being pushed around.
+Vow of Mastery|The Vow of Mastery grants the Master the power to command their Subject.
+Crippling Darkness|Your non-Basic Attacks have 20% PEN.
+Knack|Trees yield more Wood when felled. Your Repair speed is increased.
+Merchant's Accord|Merchants and Antiquarians will do business with you no matter how poor your reputation is.
+Scholar's Intuition|INT, WILL, and CHA Training Gear is 50% more effective.
+Fleetfoot|Gain an initial speed boost when slide jumping.
+Hunter's Reflexes|You have a slightly larger dodge window.
+Looter|Get extra loot from items you turn in for rewards.
+Intrepid Flame|Flames wear off twice as fast on you. Flames that come from your Flame Within deal much less damage on you.
+One With Flame|With a Worshipper Longsword and Worshipper Shield, you take 25% less damage while on fire and every mantra you use sets enemies on fire.
+Fists of Navae|Double the amount of ether you gain on successful light attacks.
+Armor Piercing|[Guns] Your gun attacks now ignore 10% of an opponent's blunt armor. Applied multiplicatively before PEN is applied.
+Paired Soul|Wielding a katana with this outfit grants extra damage.
+Unbreakable|You have reduced stun duration when block broken.
+Legendary|Parrying and landing hits with your weapon gives you ether back.
+Brunt|While 2-handing, you take less posture damage.
+Perseverance|Reduces the duration you're Ragdolled and Unconscious for by 25%.
+Strong Stern|The duration you are dazed from wall bangs is cut in half. Slightly reduce your guardbreak stun time from PvE enemies as well.
+Master Craftsman|Your skills alone substitute the need for a Craft Station.
+Bruiser's Mixup|Switching your Fist Style mid-fight makes your basic Fist attacks inflict bleed temporarily.
+Devastating Power|Gain extra Ether for every Mantra in your arsenal.
+Benefactor|Gain reputation for selling goods to Antiquarians within faction territories.
+Foolish Outburst|Blocking or parrying a vent will absorb the Tempo cost of the vent.
+Corrosive Touch|Landing a successful Critical Attack or Flourish will corrode a portion of your opponent's Armor.
+Tidal Shock|Landing a successful Critical Attack will temporarily put you in a state where you dodge all mantras, as well as dazing your opponent.
+Tidekeeper|Losing 25% of your health within 3 seconds grants a 15% damage buff, 20% defense buff, and prevents you from being knocked for 10 seconds.
+Withering Soul|Your Basic Attacks proc 12.5% of their damage as Wither (25% with the Deepspindle or Umbrite Witherblade).
+The Path, Unveiled|Your Jus Karita attacks deal 10% more damage.
+Centurion's Resolve|Your Legion Kata/Imperium Kata attacks deal 4% more damage.
+Chief's Will|Way of Navae light attacks have 10% additional penetration.
+Sunset Ricochet|Makes your bullets ricochet to a nearby enemy when hitting an opponent.
+Primal Rage|If you are below 50%, unleash your rage and increase the amount of damage you deal for 25 seconds, and see enemy health…
+Overwhelming Might|Strong Left now guard breaks at level 5.
+Wind Dancer|Roll cancelling twice in quick succession will grant you a speed boost. One of your rolls must dodge a hit.
+Riot Breaker|You receive 15% less posture damage and deal 10% more posture damage when under attack by 3 or more enemies.
+Repeated Propulsion|Reduce the cooldown of Dancing Steps and Graceful Steps to 1 second.
+Warding Radiance|Every fire mantra builds up one halo stack. At 3 stacks a halo appears that allows you to slide further. Hell's Partisan is also triggered…
+Bane|Activate to make your light attacks teleport to the closest enemy nearby.
+Demon Step|Activate to gain brief iframes while moving forward. Costs 50 ether and increases your posture by 20% each use.
+Soul Rip|Kill a player to gain 2 runes. Activate a rune to gain immense physical power, defense, and infinite ether for 25 seconds.
+Hyperbody|Buff allies around you with speed, defense, and regeneration. Weaker the more allies you buff.
+Life Leech|Your summons now heal you each time they deal damage.
+Ferryman's Curse|20% chance to convert incoming elemental damage into Lightning damage.
+Overflow|Double the amount of tempo you receive when landing light attacks.
+Refreeze|Landing any ability that causes bottom freeze reduces the cooldown of your Orbital Ice by 20 seconds.
+Orbital Ice|When landing a parry while standing on ice, form a ring of ice that grants 15% Physical Resistance.
+Lethal Dose|The poison from your hidden blade lasts twice as long.
+Serpent's Dance|Unlocks a devastating Running Critical Attack; feint to cancel momentum.
+Mocking Favor|When taunting, Aelita or Tillian appears, bestowing upon you a random boon of affliction. (30s cooldown)
+Not a Scratch|You don't show any signs of damage.
+Focused Hematoma|Increase the amount of temporary health you receive by 15%.
+Battle-Hardened|Reduce how much damage you take from mantra guardbreaks by 20%.
+Circuit Breaker|Electrify no longer deals self-damage on use.
+Kickstart|Use your lightning to defibrillate your allies on the battlefield.
+Tempest Evolution|Your slide-jumped Wind Blades are stronger and, if landed, grant +20% damage in the air for a few seconds.
+Aerogliding|When falling from a high place, hold space to generate wind currents until you land. More airtime with Gliders.
+Vigil's Grace|Whenever you gain a speed boost, increase your swing speed by 0.02.
+Action Surge|Adrenaline Surge now increases your swing speed by 0.04 for its duration.
+Breeze|Gain a permanent +2 speed at all times.
+Justicar's Gift|Your Justicar support mantras now heal allies for 10 health instead of 5. Karita Aid lasts 15 seconds.

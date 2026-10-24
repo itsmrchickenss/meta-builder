@@ -1,0 +1,635 @@
+Against All Odds|For each combat tag you have on your character, increase your damage by 2% (max of 14%).
+Emergency Reserves|When you get hit below 20% health, gain 20% tempo immediately.
+Unswayed|The effects of Taunt and Encore no longer work on you.
+Kick Off|You easily brush off shorter falls, taking no damage. Your first wall jump will always send you higher than normal.…
+Steady Footing|You're much more resistant to being pushed around.
+Time To Go|Taking a life grants a speed boost for 10 seconds. Taking a player's life doubles the speed boost and the duration.
+An Ironsinger's Instinct|Successfully dodging an attack coats you in metal and reduces the damage of the next attack taken.
+Exposed Durability|Deal 10% more damage to opponents with no armor durability left.
+Phantom Edge|Your weapon M1's have +0.25 range.
+Everchanging Aegis|You take 20% less from attacks the same element as the last element you were hit with, but 10% more damage from…
+Neural Overload|You can input up to 4 copies of each Mantra ingredient instead of being limited to 3.
+Overflowing Dam|Having full Ether for 2 seconds or more grants an aura to your attacks that grant them 10% more damage.
+Perfect Flash|Having over 95% health causes your mantras to do +25% damage. This damage bonus will scale down to 10% if your enemies…
+Wyvern's Claw|You deal 10% more damage while airborne. Mantras receive a 5% damage increase instead.
+Aerogliding|When falling from a high place, hold spacebar to generate wind currents until you hit the floor. Also gives you more…
+Gale Trap|Knocking a player places a wind trap, causing anyone to pick up that body to get sent flying. Gain a speed boost…
+Suffocating Impact|When flourishing enemies into walls they are suffocated and winded for a short duration.
+Stifled Jump|Suffocating now applies Dazed if enemies jump. Suffocated PvE enemies now also get Sluggish when they are suffocated.
+Apothecary|Potions you prepare will have amplified positive effects when consumed, and amplified negative effects when thrown.
+Chain Reaction|When applying a potion effect to someone who already has one, the new effect is amplified. You have a 25% chance not…
+Placebo Effect|Drinking potions near allies will share the potion's effect with them.
+Potion Quaffer|You're accustomed to drinking toxic fluids quickly. You'll get along famously with the other patrons at the tavern.…
+Endurance Runner|Your speed is decreased less by low health.
+Scaredy Cat|When enemies initiate a fight first, gain a speed boost.
+Conditioned Runner|You take 5-15% less damage. The damage reduction amount scales with your agility stat and how long you have been…
+Approaching Singularity|You now gain +1% Mantra PEN for every 10 point of Intelligence.
+Flame Within|An application of Pleeksty's concept of the inner flame, also known as the soul of man. Set yourself ablaze to gain…
+Proficient Baiting|Casting your line excites ocean life, reducing the chances of fishing up trash.
+Hook, Line, and Sinker|Once something's caught your line, it's much harder to get loose.
+Fisher's Lure|Fish are drawn to your line more quickly.
+Collapsed Lung|Block breaking an opponent closes off their ability to Vent for 8s, with this duration scaling with Strength. PvE…
+Carnivore|In return for losing the ability to eat vegetation, satiate your hunger by killing others.
+Grand Feast|Regain tempo, ether, blood and health when gaining hunger from killing.
+Sunken Predator|Enemies you hit in the water or the depths have their speed buffs nullified and are slowed.
+Arc Module: Dash|[In Arc Suit] Your dashes become Jet Dashes, allowing you to attack while dashing.
+Arc Module: Eject|[In Arc Suit] When blockbroken, eject from your suit.
+Arc Module: Enhance|[In Arc Suit] Your Arcwarder Mantras deal increased damage.
+Arc Module: Guard|[In Arc Suit] You can block attacks from any direction and cannot be backstabbed.
+Arc Module: Leap|[In Arc Suit] Holding Spacebar after double jumping propels you up for a short duration.
+Arc Module: Null|[In Arc Suit] Outgoing and incoming enchant effects are nullified. Can be toggled with N.
+Master Craftsman|Your skills alone substitute the need for a Craft Station.
+Deep Wound|Assassinating a target applies anti-heal for 20s and gives you a speed boost for 6s. Assassination damage now scales…
+Lights Out|Assassinations now give you 30% PEN and blind the target for 5s. Those you carry are now blindfolded.
+Lowstride|When crouching, your stealth and roll distance are increased. Your speed while crouching is less slow. You now draw…
+Unseen Threat|You can assassinate those with weapons out provided you're not in combat yourself. Those you assassinate are slowed…
+Authority Intimidation|Lightning moves slow your opponent more.
+Resolve Crusher|Lightning moves now apply stacks of 'Resolve Crusher'. At 4 stacks, you apply 'Electrified' to your opponent. Attacks…
+First Interrogation|Attacks from opponents who are Electrified will give you ether proportional to their initial damage.
+Second Interrogation|Attacks from Electrified opponents deal 50% less damage and 50% less posture damage to you.
+Horn of Authority|Mark escaping prisoners.
+Authority Ensign|You are a member of the Authority deployed to the Eastern Luminant. You may find trouble with the local factions and…
+Battle Tendency|You can breathe more easily with +20% faster posture regen.
+Braced Collapse|After being block broken, the next attack to hit you deals reduced damage.
+Moving Fortress|Blocking no longer slows you down as much.
+Perseverance|Reduces the duration you're Ragdolled and Unconscious for by 25%.
+Reinforced Armor|Incoming PEN is reduced by 30%.
+Armored Plating|Put on extra plating on your armor, giving you 50 temp health whenever you are put in combat. Due to the weight of…
+Crossguard|If you are using a sword, you gain 10% chip against other opponents wielding swords.
+Riot Shield|While you are fighting two or more opponents and are using a shield, reduce the total amount of chip damage you take…
+Oppressive Force|When using a weapon found in the Merit Armory, gain a unique two-hit flourish that does not knock back opponents and…
+Steel Tread|Gain a bit of knockback resistance as well as damage resistance against attacks that ragdoll you.
+All-Seeing Eye|The mystic eye through which you now see the world can perceive the imperceptible. Invisible foes are highlighted.
+Berserk|One with nothing to lose has everything to gain. Succumb to burning rage within and enter Berserk State.
+Float Like a Butterfly|While having True Strength active, cancel your air dash to enter a frenzy of slashes.
+Lithe Step|When Sprinting, roll-cancel and instantly vanish and surge with unmatched speed.
+Reveal|Pour your heart out, and reveal your true strength.
+Soaring Storm|Empower your uppercuts with the way of the blade, after Lithe Stepping, flourishing, or landing an Oath ability.
+Untouchable|By landing consecutive hits on your opponent without taking any damage, reveal your True Strength for a short duration.
+Anchor Shock|Your Blightshock prevents targets from using mobility mantras.
+Blight Pierce|Your Blightshock attacks pierce through your enemies hyperarmor and gain more penetration.
+Blighted Touch|Landing Basic Attacks during Sovereign State now applies Blightshock.
+Blightlash|Your swing range is enhanced during Sovereign State.
+Sovereign State|Landing physical hits builds your Blight Meter. At full gauge, enter a Blight State that changes your critical and…
+Bloodwarden's Sense|Enemies you attack with a mantra above 60% Blood Poisoning are marked with Bloodwarden's Mark for 5s.
+Smell of Blood|Enemies that touch your blood pools or are blockbroken by you are afflicted with Bloodscent for 6s.
+Bloodrend Unbounded|You have gained the ability to surpass your limits and train your Bloodrend to its fullest.
+Bloodrender|Grants you the ability to command Blood as a Bloodrender. Your Bloodrend mantras replenish your blood, steal blood and…
+Adept Bloodrender|You can now obtain 1-star Bloodrender mantras.
+Expert Bloodrender|You can now obtain 2-star Bloodrender mantras.
+Master Bloodrender|You can now obtain 3-star Bloodrender mantras. Your maximum blood capacity is 25% more than a normal individual. You…
+Crimson Fountain|Blockbreaking or flourishing an enemy now spills a pool of blood below them. Blood mantras cast within blood pools…
+First Blood|Your first blood mantra you use in combat has no blood cost and deals additional blood drain.
+Hemorrhaging Blow|Block breaking your opponent with a blood mantra turns your opponent's combat healing into damage for 8 seconds.
+Rush Hour|Stab yourself to become stronger, faster, and deal increased blood bar damage.
+Sanguine Siphon|Landing a critical attack while in a blood pool will consume that pool and empower your next blood mantra.
+Blood and Iron|Pulling rods out of your opponent now replenishes an equivalent amount of blood.
+Brain Death|Enemies that are already suffocated will have their suffocation duration extended when hit by a bloodrend mantra.
+Cold Blooded|Chilled enemies passively build up blood poison, alternatively when crystals explode it'll apply blood poison.
+Electrolyte|Hitting Bloodrend mantras while having temporary health applies Shocked while removing a portion of temporary health.
+Malevolent Sapper|The more blood poisoning your opponent has, the more ether your shadow mantras steal from your opponent.
+Bruiser's Mixup|Switching your Fist Style mid-fight makes your basic Fist attacks inflict bleed temporarily.
+Impairing Blow|[Greataxes] Basic Attacks will slightly slow your enemy for 2 seconds. Running attacks will slow your enemy for 3…
+Brazen Blow|[Greataxes] Attacking an enemy slowed by your Greataxe grants you temporary hyperarmor.
+Heavy Fatigue|[Greataxes] Hitting an enemy slowed by your Greataxe temporarily reduces how far they can roll and applies Sluggish to…
+Rending Impact|[Greataxes] Block breaking an enemy applies knockdown.
+Defensive Reprisal|Being flourished grants you 10% posture resistance for 20s.
+Dancing Guard|Parrying an opponent and then parrying another enemy in quick succession applies slow for 7s.
+Down to your Level|While you have a speed debuff, your Basic Attacks slow your enemies for 5s.
+Knuckle Guard|Hitting Dazed enemies grants you 10% posture resistance for 15s.
+Swift Rebound|Move faster after successfully dodging an attack.
+Evasive Expert|Your speed boost granted from dodging is increased.
+Risky Moves|When you successfully dodge, you'll automatically dodge the next attack.
+Ghost|Dodging a move will briefly make you invisible, ending early if you attack.
+Perpetual Wrath|Unleash the true power of Restrain. Each successive hit will increase its damage.
+Chainlash|On flourish, gain the ability to summon a chain on an enemy for 5 seconds by right clicking. This lets you whip your…
+Champion's Regalia|Flourishing an opponent grants you +50% posture damage on Basic Attacks for 10 seconds.
+Defiance|Negative status effects are half as effective when you are below 35% HP.
+Underdog|You deal 2.5% more damage to those with higher HP than you, scaling up to 4% at 60 WLL. Additionally, you deal +10%…
+Charismatic Cast|Landing a hit with a mantra on an enemy applies Charmed. Allies recover from being knocked twice as quickly when…
+Chaotic Charm|Charm enemies nearby when attacked at low health. Enemies affected by this charm have their damage increased to anyone…
+Lasting Charisma|Enemies charmed by your mantras are charmed longer.
+Tough Love|Deal 10% more damage to enemies Charmed by you. Mantras deal +5% instead. Being hit by someone the same Aspect or Oath…
+Dazing Finisher|Flourishing enemies that are charmed by you cause them to not be knocked back and dazed instead.
+Freezing Wight|Your Haunted Gale now procs Chilled.
+Destructive Recovery|[Greatsword] Enemies recover 20% less Posture when parrying.
+Heavy Hitter|[Heavy Weapons] Your posture damage is increased by 5%.
+Lord's Tithe|Everyone you Reinforce is drained of their Ether while Reinforced. Drain scales with your Shadowcast. Drain health…
+Grand Support|Everyone you buff with Reinforce is healed lightly. You're healed slightly if you heal others.
+Hidden Tendril|Landing any physical mantra places a Hidden Tendril on the opponent.
+String Trick|Pulls together any two opponents you've attached Hidden Tendril to.
+Pressure Detonation|Block breaking an opponent with a Shadow mantra generates a small vacuum that suffocates those hit and steals their Tempo.
+Finishing Touch|[Dagger] Instantly execute enemies finished with the critical attack of your dagger.
+Knife's Journey|[Dagger] Cancelling an enemy's Mantra windup with your Basic Attacks now deals 15% more damage.
+Successive Throw|[Dagger] When you successfully flourish an enemy, you throw out a dagger afterwards.
+Chilling Flourish|When flourishing an enemy, they leave behind a trail of ice in the direction you send them.
+Spike Traps|Press F during the wind up of your Ice Spikes to create traps around you instead of spawning a spike in the normal spot.
+Condensation Drip|Passively collect condensation from the air, greatly reducing your thirst.
+Cool Head|If set on fire while on ice, immediately put it out and gain the Cool Head status for 30s. During Cool Head, you…
+Fragile Freeze|Your Basic Attacks and Criticals now apply Frozen to Chilled opponents on guardbreak.
+Preceding Chill|Enemies hit during the last moments of your ice beam are frozen.
+Golden Age|Your Iron Pull now detonates Crystals and overloads Surges.
+Blood Thirsty|Gain a speed boost after causing an opponent heavy blood loss.
+In a Hurry|You grip faster with a movement speed boost.
+Muffled Screams|You quieten the cries of help of those you execute, reducing the distance at which their allies will hear it and come…
+Blighted Song|Attaching your Shadow Chains to enemies disables yours and the enemy's ability to cast mantras. You take reduced…
+Dark God|If a Shadowcast mantra would drain your opponent's Ether to 0, drain from their Tempo instead and increase your Tempo.…
+Dark Synergy|Engulf your enemy in shadows when flourishing them.
+Dark Waltz|Anytime you guardbreak your opponent with a light attack or critical, steal half of your opponent's current tempo.…
+Dark Hours|Your Shadowcast Mantras deal 15% more damage at night and in realms the Sun does not reach.
+Dark Rift|Enter a rifted state when you successfully dodge, where you can't be damaged until its duration ends. Can be cancelled…
+Night Terror|Your light attacks now proc Fear the Dark.
+Overwhelming Drain|If multiple enemies are hit by your Shadow Eruption, they are Dazed for 0.7s.
+Shadow Overflow|Extra ether stolen with mantras are exerted as dark energy, damaging and absorbing ether from those nearby.
+Absolute Radiance|Dealing damage with Dawnwalker mantras briefly makes you immune to all elemental effects for a short period.
+Protagonist Syndrome|The grasp of shadow is meaningless in the face of your blinding light. Your Dawnwalker mantras are empowered after…
+Luminous Flash|After dealing a certain amount of damage in Absolute Radiance, gain a chance to empower your strikes with pure light.
+Blackhole|Your singularity pulls everyone nearby in.
+Energy Siphon|Your singularity now pulls ether from the extra players affected by Blackhole.
+Spell Shout|You will now shout your mantra name upon cast.
+Frozen Web|Landing a critical with a Static Link on your opponent applies Chilled.
+Buster Call|Radio in the Authority's navy for a buster call, sending out a barrage of bombardment wherever you see fit.
+Officer's Slash|You now gain an additional critical attack with Authority armory weaponry while your regular critical attack is on…
+Officer's Training|While using a Sword or Rapier, take 30% less posture damage from criticals.
+Target Focus|Enemies you charm take more damage from your squadmates in your party.
+Ethiron's Gaze|Your eyes have been opened to the wasteland. You can see through the harsh fog of the storm of the Eternal Gale more…
+Concussion|Enemies you flourish into walls have their vision altered for a short duration and are dazed longer than usual.…
+Concussive Force|Enemies you knocked remain downed longer than usual.
+Precise Swing|After landing a critical your next basic attack will gain 25% chip past your opponent's block.
+Spine Cutter|Hitting an enemy in the back after a roll cancel will initiate a second attack that deals your weapon's raw damage.
+Steady Nerves|You dance from toe to toe - successful dodges restore posture.
+Strong Hold|[Medium Weapons] When above half health and two-handing, posture damage taken is reduced by 5%.
+Strong Stern|The duration you are dazed from wall bangs is cut in half. Slightly reduce your guardbreak stun time from PvE enemies…
+Tap Dancer|Dodging immediately after a roll-cancel no longer puts your Dodge on a longer cooldown.
+Concussive Flash|Your blinding light now concusses foes.
+Charged Return|Being under an elemental status effect causes your Basic Attacks and Criticals to do 10% more damage.
+Nullifying Clarity|Deal 10% more damage to enemies with elemental status effects, but remove the status on hit.
+Cornered Fool|Blockbreaking a Charmed opponent procs Taunted for 5s, making them take and deal more damage.
+Give and Take|Deal less damage to comrades and receive less damage from comrades.
+Off Your Game|You now slow Taunted enemies when you hit them.
+Robber Baron|Halves the number of items you drop on death. You no longer lose Notes on death.
+Ether Absorption|Receive Ether back when inflicted with damage from Mantras.
+Eureka|Gain a stack of Inspiration every time you land or parry a Mantra. Whiffing a Mantra removes a stack of Inspiration.…
+Keen Recovery|Landing a basic attack after feinting a mantra will restore the feinted mantra's ether cost.
+Behind You|Landing a basic attack behind your enemy after feinting a mantra will apply an ether slash, dealing extra damage based…
+Unwavering Focus|When your mantras are parried, receive less posture (scales with intelligence).
+Reverse Leech|Anytime you proc Behind You, steal ether from your opponent too.
+Barber's Skillset|What type of look are we going for today?
+Hair Product|What's in these things?
+Hair Spray|Apply your Hair Products.
+Meteor Impact|Aerial moves you land will follow up into a devastating slam. This is also possible when you yourself gets hit by an…
+Phoenix Impact|If you Meteor Slam an opponent whilst on fire, restore some HP and Ether.
+Fang and Coil|Adopt the path of the serpent.
+Fishman|When your Blood is over 50%, you won't drown when Unconscious in water. Gain additional healing from knocking others…
+Landshark|Killing a Megalodaunt will grant lifesteal on your attacks for 30 seconds.
+Dancing Steps|Fire mantras now move you in the direction you're facing.
+Graceful Steps|Your dancing steps now gives a faster speed boost.
+The Final Act|Landing a fire mantra immediately after flourishing an opponent will cause them to explode.
+Cauterized Wounds|Blood loss from all sources is lowered.
+Warding Radiance|Every fire mantra builds up one halo stack. At 3 stacks a halo appears that allows you to slide further. Hell's…
+Flamewalker|When Warding Radiance is active you leave trails of flame when you slide.
+Hell's Partisan|After landing a flame dagger on an opponent, your next hit against them will impale with a divine spear from above.
+Flamecharm Unbounded|You have gained the ability to surpass your limits and train your Flamecharm to its fullest.
+Flamecharmer|Grants you the ability to command Fire as a Flamecharmer.
+Adept Flamecharmer|You can now obtain 1-Star Leveled Flamecharmer Mantras.
+Expert Flamecharmer|You can now obtain 2-Star Leveled Flamecharmer Mantras.
+Master Flamecharmer|You can now obtain 3-Star Leveled Flamecharmer Mantras.
+Azure Flames|Many of your flames turn blue, signifying their increased intensity.
+Temperature Shock|Your fire mantras now detonate any stacked crystals.
+Exoskeleton|You have a layer of fortified Natural Armor that replenishes when you rest. Your Natural Armor will resist 10%…
+Glacial Mobility|Cast while slide-jumping to perform a running attack with your ice sabers.
+Frostdraw Unbounded|You have gained the ability to surpass your limits and train your Frostdraw to its fullest.
+Frostdrawer|Grants you the ability to command Ice as a Frostdrawer.
+Adept Frostdrawer|You can now obtain 1-Star Leveled Frostdrawer Mantras.
+Expert Frostdrawer|You can now obtain 2-Star Leveled Frostdraw Mantras.
+Master Frostdrawer|You can now obtain 3-Star Leveled Frostdraw Mantras.
+Cold Front|Your vent is imbued with glacial frost.
+Fulgurite Formation|When your Crystals explode, lightning strikes. When your Surge charges Overload on an enemy, your Crystals apply twice…
+Orbital Ice|When landing a parry while standing on ice, automatically form a ring of ice that grants 15% Physical Resistance. The…
+Glacial Coasting|Sliding while Orbital Ice is active leaves trails of ice.
+Frozen Legs|Chilled applied by Mantras prevents your opponents from rolling.
+Imperium Kata|Wield an advanced form of the Legion's martial arts.
+Legion Kata|Gain the ability to use the Legion's martial arts.
+Galebreathe Unbounded|You have gained the ability to surpass your limits and train your Galebreathe to its fullest.
+Galebreather|Grants you the ability to command wind as a Galebreather.
+Adept Galebreather|You can now obtain 1-Star Leveled Galebreathe mantras.
+Expert Galebreather|You can now obtain 2-Star Leveled Galebreathe mantras.
+Master Galebreather|You can now obtain 3-Star Leveled Galebreathe mantras.
+After Cut|If an attack is physical and wind it will apply an after cut that does 5% of the damage you dealt. If an attack was a…
+Breathing Impact|Knocking enemies into objects with wind spells deals additional blunt damage based on how hard they're hit.
+Inhale|Canceling a Wind Mantra stores it for 5 seconds, empowering the next Wind Mantra cast in that time. [7 sec CD, gets…
+Neuroplasticity|Your mind is a pliable, flexible substance. The Ether cost of additional modifications to your Mantras is now reduced…
+Glass Path: Crystallization|Your ice abilities no longer grant a slow effect or the ability to freeze and instead cause ice crystals to grow on…
+Crystal Shrapnel|Your crystal explosions now have an AoE that applies crystals to all hit.
+Reclaimed Glass|Your Crystal Shrapnel explosions now grant you and any allies caught in them 10% Elemental Resistance for 10 seconds.
+Fortitude Unbounded|You have gained the ability to surpass your limits and train your fortitude to its fullest.
+Bodkin Arrow|Your charged shots now do extra armor damage to armored enemies and extra damage to unarmored enemies.
+Hard Stop|Landing a charged shot will knock your opponent back.
+Precision Crusher|Landing a charged shot will knock your opponent down instead of back.
+Armor Piercing|[Guns] Your gun attacks now ignore 10% of an opponent's blunt armor. Applied Multiplicatively before PEN is applied.
+Execution|Your offhand gun attacks now count as flourishes and do a flat 20 extra damage when used with no bullets.
+Gunpowder Blast|Pistol shots without bullets do 2 extra posture. [Dual Guns]
+Hip Shooter|When wielded with a Medium/Heavy weapon, your side gun can now fire a bullet projectile.
+Parting Gift|After you land a flourish, gain the ability to shoot bullets for 5 seconds. [Dual Gun]
+True Ether Bullets|Using Ether Bullets applies elemental damage of your highest investment.
+Prime Ether Bullets|Your bullets take one less hit to proc elemental effects and now have slight intelligence scaling. [Dual Gun]
+Quickdraw|Allows you to fire your offhand gun right after swinging. [Not necessary on dual guns]
+Quick Swap|Massively reduce your bullet swap cooldown. [Dual Gun]
+Brain Rattler|[Clubs] Guardbreaking an opponent with your Critical rattles their brain in its container, causing increased blood…
+Dispatch|[Clubs] Bear Trapped targets deal 20% less posture. Dazed targets deal 20% less posture. This can stack.
+Hammerfall|[Clubs] Aerial attacks do 25% more posture damage when blocked.
+Fan the Flames|Your stored Wind mantras can now empower your Fire mantras.
+All the Dead Gods|Your Basic Attacks now apply anti-heal and 5% Heal Boost against PvE for 8s.
+All Above, Gods Below|Any healing your opponent were to receive while All The Dead Gods is active on them is stolen and given to you,…
+Heretic's Sutra|A chant that steers you into the state of Insanity for 20 seconds.
+Sin Stacker|Your All The Dead Gods' duration is now based on how many stacks of antiheal you already have on your opponent,…
+Brick Wall|You refuse. You cannot be knocked off your feet until you are knocked completely Unconscious. Also reduces the…
+Not a Scratch|You don't show any signs of damage.
+Peripheral Vision|Your glare now ignores if your opponent is facing you.
+Bottom Freeze|Hitting chilled enemies with Ice Projectiles while they are on ice freezes them to the ground.
+Cryonis|All ice spells casted ontop of ice cost less Ether.
+Frost Buster|Greatsword Criticals and Greathammer Criticals now leave a place Ice below the path they carve.
+Frozen Anchor|Apply bottom freeze and chill to your opponent whenever you land a flourish, uppercut, or crit.
+Frostbite|Enemies can no longer heal when Chilled by you. PvE enemies also net you 5% more Heal Boost when Chilled.
+Frozen Pin-Cushion|Your Ice Daggers now apply Frozen.
+Saint Jay|When a Chilled enemy receives a heal, it's nullified and 60% of the healing is redirected to you. While this is active…
+Union Card|A card representing your membership in the Ignition Union. Entitles you to speedier experience gain from Dungeons and…
+Union Pager|Check up on job listings remotely.
+Union Hook|You can now make use of the Ignition Union hooks to ascend or descend.
+Agitating Spark|Applying Burning to enemies spreads it to anyone nearby. Including yourself.
+Immolation|Fire spells cost 70% less while on fire. If you hit someone while on fire, apply fire damage. You take 50% less damage…
+Phoenix Flames|Any time you would burn to death, you instead rise again with 50% of your health restored. Has a 60 second cooldown.
+Corpse Explosion|Bodies that you burn to death immediately explode, dealing massive damage. Your fires will incinerate unconscious…
+Pleeksty's Faith|When on fire, automatically quench flames at the cost of some ether.
+Pleeksty's Will|You gain significantly more ether from consuming elemental ingredients.
+Chitin|You have a layer of Natural Armor that replenishes when you rest.
+Deepfolk|The secrets of the Deep are easier for you to unravel. Your mind is sturdier against its effects, as well as using…
+Feathered Glider|As a show of independence when they come of age, Tirans will strike out on their own with just their hand-crafted…
+Echolocator|Your highly tuned hearing helps you navigate, seeing better in the dark and sensing potential threats.
+Loyalty|Your bond with your allies is strong enough to reduce damage between you.
+Mark of Jurik|Mark of Jurik, the Moonseye. A beacon of calm, those in your presence are resistant to insanity.
+Mark of Ku|Mark of Ku, the Mother. Improves the rest of those in your presence.
+Mark of Nemit|Mark of Nemit, the First Beast. Food consumed in your presence is more nourishing.
+Maudet|Your understanding of your destiny is such that learning new things often comes naturally to you. People appreciate…
+Molt|Ailments and blessings alike fade away more quickly.
+Mothwing Dust|You release Mothwing Dust when others are the first to strike, granting you vision of your attacker. Your antennae…
+Navae's Guidance|Navae's star guides your path, showing you the way forward. Right-clicking on maps sets a Waymarker which can be…
+Nightchild|Relying on your instincts, you are naturally more stealthy. You are more nimble on wooden surfaces.
+Seaborne|You have a keen understanding of ships and their maintenance.
+Teachings of the Edenkite|Find your centre.
+Versatile|You learn how to use new pieces of equipment quicker than others. You can equip things at 3 points lower than the…
+Backstabber|Landing a backhit with a light attack causes you to grab your opponent and stab them again, dealing an extra 15…
+Executioner's Frenzy|Landing a light attack while their posture is paused reduces their assassination cooldown by 5 seconds.
+Fatal Stealth|You deal increased backstab damage to opponents based on how high your stealth stat currently is.
+Flanking Maneuvers|Enemies you assassinate take more PEN from your squadmates in your party.
+Stature Break|Landing a backstab of any kind disables posture for 4 seconds. [8 second CD]
+Tacet Minimization|Focus your Tacet even further, allowing the radius at which you get spotted to become smaller temporarily.
+Critical Engine|You gain the ability to use Deep Gems on your critical attack. Hold out the Deep Gem you wish to apply to your crit…
+Ironsing Unbounded|You have gained the ability to surpass your limits and train your Ironsing to its fullest.
+Ironsinger|Grants you the ability to command Metal as an Ironsinger. Press X to Pull on Metal Rods.
+Adept Ironsinger|You can now obtain 1-star Ironsinger mantras.
+Expert Ironsinger|You can now obtain 2-star Ironsinger mantras.
+Master Ironsinger|You can now obtain 3-star Ironsinger mantras.
+Alloyblood|You don't bleed like others do. Bleed damage reduced by 30%. Blood loss is reduced by 75%.
+Heavy Shoulders|If your opponent has 3 or more rods, their dodges are slower.
+Laced Traps|People hit by your 'Caltrops' cannot jump and are slowed for a small duration, while also applying Sluggish to PvE…
+Metal Shackles|Guardbreaking an opponent prevents them from receiving speed boost for 5 seconds, while PvE opponents will be Sluggish…
+Piercing Metal|Deal additional armor damage to enemies per metal rod affecting them.
+Thornmail|Getting flourished applies a metal rod on your attacker.
+Willpower Unbounded|You have gained the ability to surpass your limits and train your willpower to its fullest.
+Grand Skewer|Your Grand Javelin now carries opponents through the air.
+Acceleration Points|Striking an opponent in the back with mobility mantras or Basic Attacks now steals and grants additional momentum.
+Decisive Winds|When damage below 50% health, don an aura of Decisive Winds for 10s.
+Jetstream Pursuit|Upon a successful flourish, teleport to the opponent when they stop moving. Receive a significant boost of momentum.
+Rush of Ancients|Dashing at maximum sprint momentum makes you one with the wind itself.
+Stratos Step|Holding space while climbing will now let your perform Stratos Steps to get even higher.
+Electrify|Shock yourself and apply Amped for 15s. Can be used while Carried to escape.
+Amplified Reflexes|Amped now grants enhanced speed and parkour.
+Amplified Rage|Amped now grants you an additional +10% weapon damage. Also self-damage and cooldown by 3x.
+Jus Karita|Adopt the kick-based fighting style of the Justicars.
+Justicar's Prowess|Jus Karita gains +30% posture damage against other fist styles.
+Justicar's Renewal|Hitting an opponent with your Jus Karita critical resets the cooldown.
+Flying Swiftkick|Hitting a Jus Karita critical attack while Swiftkick Prodigy is active will greatly slow your enemy, and consume your…
+Kickstart|Play the resurrector. Use your lightning to defibrillate your allies on the battlefield.
+Blade's Edge|[Spears] Damage dealt with the tip of the spear is increased by 10%.
+Defensive Sweep|[Spears] Posture breaking an opponent grants you +50% PEN for 3 seconds.
+Driving Impact|[Spears] The first hit of your Spear's Critical Attack will deal greatly increased posture damage. Subsequent hits…
+Lancer's Impale|[Spears] Hitting an enemy after a perfect dodge makes your next attack deal bleed damage. If that attack would already…
+Hoplite|Posture damage is reduced by 15% when wielding a spear and standing still.
+Eruption Path: Lava Serpent|Your fire abilities no longer proc burn and instead proc an eruption under the enemies feet.
+Empowered Eruption|Your next Eruption after landing a critical is Empowered with +50% range and damage.
+Flash Point|Block breaking an opponent causes your Eruptions to be Empowered for the next 10s. Block breaking an opponent with a…
+The Floor is Lava|Your Eruptions leave lethal pools of lava beneath them. Don't fall in.
+Callout|You can mark objects or enemies by pressing Z, which will mark them for all nearby allies.
+Spotter|Marking enemies while in Rhythm will now indicate their health status to your allies.
+Observation|Dodge frames are larger if you cancel your roll immediately.
+Safety Dance|Your base dodge frames are increased by 0.05s.
+Air Pressure|Dodging an attack or hitting an enemy's block will transform your next dash into a Gale Dash. Gale Dashes carry you…
+Cyclone Blade|After a successful Gale Dash you wrap your weapon in wind, causing your next Light attack to do +15% damage as bleed…
+Pressure Break|Breaking an enemy's posture will cause them to take intense wind pressure, increasing the attack's damage by +15% and…
+Wind Step|Create a step of wind below you when jumping in the air. Jumping while sliding down a slope or off a cliff launches…
+Scorched Peak|Blockbreaking an enemy on fire or with a fire mantra causes them to be struck by lightning.
+Comeback Kid|When waking up from being knocked you are unable to be knocked down for 5 seconds. (120 second cooldown)
+Last Resort|Deal +5% more damage when your health is below 25%.
+The Eleventh Hour|When below 15% health your mantras require no ether to cast for 11 seconds.
+Entropy Link|The world is broken, linked by fragile webs. Traverse the path by stating your destination amidst the flame.
+Symbiotic Link|Press X while hovering over an ally to buff them, or while hovering over an opponent to debuff them. The links you…
+Mark of the Lone Warrior|Progress much faster when progressing alone. Gain a damage boost when facing threats alone and also when outnumbered.
+Silencer's Song|Silencer's Blade now procs on your mantras.
+Old Habits Die Hard|Blocking an attack with your lingering block frames after failing a parry will cause the attack to deal 15% less…
+Thresher Claws|Grants +5% Weapon PEN.
+Leg Shot|[Rifles] Landing your critical slows your enemy for a bit while making PvE enemies Sluggish, and also disables any…
+Stock Bash|[Rifles] Your running attacks now apply a brief amount of daze and Stagger PvE enemies.
+Tactical Reload|[Rifles] Activate to make your rifle shoot bullets for 15 seconds.
+Impervious Slumber|Getting hit while Unconscious no longer resets your time Unconscious.
+Breathing Exercise|Your sanity recovers more quickly once out of terrifying situations.
+Conquer your Fears|Killing the beings of the deep replenishes your sanity somewhat. When an Ally grips an enemy nearby to you, you regain…
+Disbelief|Reduces the duration of illusions cast on you by 30%. Halves the duration of the Charmed status on you.
+Intuitive Repairs|Your 'Iron Skin' repairs armor while it's active.
+Metal Absorption|Your 'Iron Hug' also absorbs armor from the enemy.
+Metal Eater|When you have no ether, consume Armor durability to cast your Ironsing mantras.
+Metal Thief|Pulling an opponent absorbs a portion of their current Armor durability.
+Polished Armor|You receive 5% less damage when your Armor protects you from an attack and has over 90% durability. This 5% will scale…
+Chain of Perfection|You gain stacks of Perfection on hitting mobs with Weapon Attacks or Mantras. Mantras are only worth half a stack.
+Echoing Lunatic|Your Ardour Scream now inflicts insanity.
+Lose Your Mind|Deal more damage the more insane you are. Grants +15% damage at maximum insanity.
+Shared Misery|Using a M1/Critical Attack on an enemy while losing sanity causes them to lose sanity.
+Charisma Unbounded|You have gained the ability to surpass your limits and train your charisma to its fullest.
+Murmur: Ardour|An application of your Soul Murmur that enables one to channel the murmur into raw strength. Press H.
+Ardour Scream|Amplify your shout into a scream using Ardour, dominating weaker foes, Victims take 12.5% more damage and 50% more…
+Murmur: Rhythm|An application of your Soul Murmur that enables the user to perceive the subtle murmur emanating from all things.…
+Murmur: Tacet|An application of your Soul Murmur that enables the user to suppress their own murmur. Press T while crouched.
+Armor Conserver|You lose 15% less armor when hit.
+Lightweight|Move faster when your armor runs out of durability.
+Padded Armor|While your armor is broken (or if you have no armor), you take 5% less damage.
+Steel Scales|You take an additional 5% less damage when your armor is broken.
+Captain Etrea|[Fists] Moving while blocking with a shield no longer slows you down.
+Fists of Fortitude|Every 6 hits with your fists builds up a shield of endurance reducing incoming damage by 15%. 70s CD.
+Way of Navae|Gain the ability to use fist combat against weapons. Including the ability to block weapons with your hands using Ether.
+Defensive Stance|[Rapier] Gain more parry frames the lower your health is.
+Duelist's Lunge|[Rapier] Running attacks deal increased posture damage. Upon landing your Critical, your next running attack will have…
+Frenzied Dance|[Rapier] The more posture you currently have, the more chip and posture damage you deal.
+Pressure Skewer|[Rapier] Flourishing an enemy causes your M1's to deal additional chip damage, blood loss and makes your hits deal 3…
+Fast Blade|Extend the speed boost you get from successfully parrying an attack.
+Lightspeed Reflexes|When you parry an attack after feinting an attack, gain a 5s speed boost.
+Speed Emission|[Land a Vent] Gain a 5s speed boost and apply a 3s slow to your opponent.
+All Knowing|Your prediction now ignores the range requirement to reflect attacks.
+Intelligence Unbounded|You have gained the ability to surpass your limits and train your Intelligence to its fullest.
+Successive Prediction|Predicting an attack will briefly allow you to predict another.
+Twelve Steps Ahead|Landing Prediction will halve the cooldown to a minimum of 2s. Whiffing will double the cooldown to a maximum of 30s.…
+Absolute Force|Evolve the technique of your Oppressive Force, letting both hits of your flourish deal 50% more posture damage.
+Amp Overdrive|Guardbreaking an opponent causes them to take extra thunder damage and applies Electrify for 7 seconds.
+Martial Brutality|The less health your opponent has, the more posture you deal to them.
+Shocking Reverb|Landing enough lightning mantras without getting hit grants you a defensive lightning cloak for 15 seconds, letting…
+Lock n Load|[1H Guns] The first bullet in your gun does more damage when fully loaded. This damage buff scales with the number of…
+Rapid Fire|[1H Guns] When you land a critical shot, gain Rapid Fire for 2s. 12s Cooldown.
+Rapid Reload|[1H Guns] You have 20% faster reload when reloading an empty pistol.
+Sleight of Hands|[1H Guns] When you flourish an opponent you instantly load a bullet.
+Ultrakill|[1H Guns] When under the effects of Rapid Fire you reload 2X as fast.
+Cult of Personality|You gain +3% PEN for each person Charmed, capping at +15% PEN.
+Pardon Me|Crimes you commit in allied territories are often ignored. Who's asking?
+Excavator|Chance to receive two sets of ore when mining, mine ores a lot faster.
+Harvester|Chance to receive two sets of ingredients when harvesting.
+Celebrity|Your base reputation with factions is higher and your reputation caps out higher. Reduces the penalty for committing…
+Under The Radar|The negative reputation threshold for a faction to put out posters of you is now higher.
+You'll Need To Get Past Me|When you're attacked, one of your many allies will leap into action to protect their boss.
+Going Nowhere|When enemies dodge your attacks, their momentum is killed and they're briefly prevented from sprinting.
+Volcanic Glass|Detonating crystals causes an eruption soon after.
+Hungry Flames|When you have no Ether, consume Stomach and Water to instantly cast your next fire mantra [15 second CD].
+Blood Bag|You receive extra blood from knocking an enemy.
+Blood Transfusion|Successfully landing a critical attack while under a negative status effect will transfer the effect plus recover a…
+Open Wound|Guardbreaking enemies leaves enemies more susceptible to blood loss from Bloodrend mantras.
+Kj's Courage|Gain 10% more Knowledge from all sources, rounded down.
+Nanji's Training|Nanji shows you a better way to properly block attacks using a weapon, granting you 1 Posture.
+Supernatural Sense|After dealing with literal ghosts, you feel emboldened.
+Bulldozer|Enemies you flourish into a wall have a chance of breaking the wall and are guard broken on impact.
+Broken Ankles|Blockbreaking an opponent puts their Mobility slot Mantras on CD for 12s.
+Piercing Blow|Attacks that break an opponent's block ignore their Armor resistances.
+Shield Breaker|Blunt damage now fully ignores the posture bonus from shields.
+Unwavering Resolve|Getting parried punishes your posture 33% less.
+Million Ton Piercer|Gain 5% extra PEN and remove the cap on your PEN. Go beyond your limits.
+Jolting Current|Your lightning attacks in water strike others near them with lightning.
+Rending Needle: Conductor|5 metal rods will combine into a conductor rod. If an enemy uses a non-Ironsing elemental mantra, they're dealt with…
+Conductor's Cable|Applying Conductor rods on opponents steals some of their armor to you.
+Rending Needle: Impaler|If an enemy is affected by 5 or more metal rods, your Ironsing Pull instead pulls out all of the rods for massive damage.
+Rending Needle: Jailer|If an enemy has 5 or more rods, your Ironsing Pull will restrain them for 1s instead of pulling them.
+Family Recipe|You can now craft bombs at a crafting bench.
+Incendiary Formula|Bombs will set your enemies on fire upon detonation, as well as launch with more force. Bombs will deal 20% increased…
+Sulphur Surprise|Your cooldown for throwing bombs will be shortened after your first bomb damages an enemy.
+Hot Potato|Gain a large boost of speed after throwing a bomb. Your bombs have a chance to detonate twice.
+Explosive Efficiency|Crafting a bomb will yield two bombs. Chance to make three.
+Pocket Bombs|You have a chance to activate a bomb in your inventory when damaged.
+Chorus of Souls|Alone, the Wisps lack a voice. But surrounded by so many, the frequencies overlap and you hear it true.
+Will o' Wisp|Your mastery over the Wisps of the Song enables you to mediate the innate conflicts between your wisps, allowing any…
+Wisp Convergence|When empowered by the Chorus, your Wisps now grant their elements to your strikes.
+Light Weapons Unbounded|You have gained the ability to surpass your limits and train your Light Weapons attribute to its fullest.
+Medium Weapons Unbounded|You have gained the ability to surpass your limits and train your Medium Weapons attribute to its fullest.
+Heavy Weapons Unbounded|You have gained the ability to surpass your limits and train your Heavy Weapons attribute to its fullest.
+Saint's Negation|Once per stance cycle you can fully block an attack that matches your Saint Stance.
+Saint's Overload|After a full rotation of stances your elemental scaling is increased by 15% and Mantra Modifiers increased by 10%.
+Saint's Synergy|15% of your highest element scaling is applied to other elemental damage.
+Antithetic Salts|Alter your brews to invert their effects. Does not count towards the ingredient limit.
+Aromatic Salts|Alter your brews to create lingering clouds of mist on shattering. Does not count towards the ingredient limit.
+Biotic Salts|Alter your brews to not provide their positive effects to your enemies. Does not count towards the ingredient limit.
+Enhanced Flow|Refine your Rush Hour, allowing you to now also gain temp health whenever you hit a player while using Rush Hour. You…
+Torture Mastery|Landing a critical on opponents applies 15 seconds of Torture Mastery. Heal any chip damage off players who have…
+Dark Receiver|Shadow moves will also steal Ether from those you are Static Linked tethered to.
+Blood Bank|Consuming 'Charm' now gives slight temporary health.
+Sharing is Caring|Charmed on opponents also slightly increases your blood drain against them.
+Windwaker|Call upon a gust of wind to propel your boat even faster.
+Dirty Boxing|Hitting an enemy with a Basic Attack after feinting applies bleed, obscures their vision slightly and makes PvE…
+Pocket Sand|[Fist] Feinting into an uppercut blinds, applies Stagger to PvE enemies and also applies Dazed briefly.
+Gilded Path: Scrapsinger|Flourishing an enemy consumes any rods they have and siphons their armor to you per rod.
+Artisan's Blade|Activating Scrapsinger forges a metal blade behind you for every 2 rods you consume. Metal blades will fire at a…
+Masterwork|Successful hits from Artisan's Blades will proc metal rods and deal 50% more damage.
+Refine and Reuse|Consuming rods with Scrapsinger reduces incoming PEN against you for 14 seconds. Each rod reduces PEN by 5%…
+Songs Unforged|Your weapon criticals will now activate scrapsinger.
+Reshape and Remold|Successful procs of Scrapsinger will increase the amount of armor damage your opponent takes. After hitting 10 stacks,…
+Gruesome Harvest|Landing Bloodrend mantras on opponents with over 70% blood poison will give you slight temporary health.
+Hemolysis|Deal 20% more critical attack damage to opponents with over 25% blood poisoning.
+Hemolytic Transfusion|Guardbreaking an enemy with a Bloodrend mantra increases the amount of blood poison from the attack.
+Juicy Snack|Eliminating enemies returns their amount of blood poison as health to you.
+Panacea|Hitting an enemy with a Bloodrend mantra stops their blood poison from decaying briefly.
+Tainted Ground|Enemies who stand in blood pools will not decay blood poison and gain 15% more blood poisoning.
+Vasculitis|Hitting your opponent while they have over 20% blood poisoning disables their deep gems for a brief duration while…
+Shadowcast Unbounded|You have gained the ability to surpass your limits and train your Shadowcast to its fullest.
+Shadowcaster|Grants you the ability to command shadows as a Shadowcaster.
+Adept Shadowcaster|You can now obtain 1-star Leveled Shadowcaster Mantras.
+Expert Shadowcaster|You can now obtain 2-star Leveled Shadowcaster Mantras.
+Master Shadowcaster|You can now obtain 3-star Leveled Shadowcaster Mantras.
+Blossoming Darkness|The more Ether you drain during Shadow Roar, the bigger it gets.
+Fear the Dark|Enemies that run from you after being hit by your shadows will hang in place briefly.
+Lasting Sorrow|Shadows last longer on your opponent.
+Shadow Travel|Teleport to a location in exchange for Ether cost. Certain ranges will require a health sacrifice. Be careful as this…
+Sightless Still|The more a person is affected by your Shadowcast the more you obscure their vision. Block breaking an opponent…
+Singularity|Enemies will briefly hang in place immediately after being hit by a shadow move.
+Knight's Rally|When using a shield, you ready your block more quickly after taking a hit.
+Turtle Shell|If your shield is on your back, take reduced backstab damage and negate Spine Cutter.
+Grounding Bolt|Anytime you summon a lightning strike on your oppponent, disable their ability to jump. Uppercutting your opponent…
+Silencer's Blade|Meleeing a 'Suffocated' opponent will extend the duration of the Suffocation and grant a speed boost.
+A World Without Song|Every 3 hits with a Wind Mantra now procs Suffocating.
+Dread Fighter|Parrying and getting hit by mantras now give you stacks of Dread. Each stack lasts for 15 seconds.
+Flow State|Enter a moment of extreme focus in which you can change the windup of your special attacks with the correct timing.
+Mayhem|Initiate a special dash attack by pressing M1 during the start of your dodge.
+Relentless Hunt|M1 while doing an Aerial Attack to initiate a special gap closer attack.
+Rising Star|Press CTRL + M2 to activate a special uppercut attack.
+Silent Cascade|Landing physical attacks on an opponent charges up your Silent Cascade, a devastating barrage that can be released…
+True Vantage|Venting makes you invisible briefly, as well as boosting your speed.
+Unmatched Dexterity|Press X to Quick Swap between weapons within your toolbar.
+Vengeful Pursuit|Your running attacks that don't hit send out a special mid-range crescent projectile that slows on hit. Tracks onto…
+Golden Tongue|Typing or using a gesture gives a random buff to you and those around you. (60 second cooldown)
+Snake Oil|Gain 40% more Notes from selling items.
+Absolute Pitch|You can cast Ritual Mantras instantly.
+Ether Overdrive|Gain 5% extra PEN and remove the cap on your PEN. Go beyond your limits.
+Bloodiron Spirit|You regain some Armor upon killing enemies.
+Soul Infusion|Infuse Ardour into your executions. If your execute is interrupted, the opponent remains down for a longer amount of…
+Formless|Teleport to a location within your Tacet bubble. Receive a slight speed boost when activating Tacet.
+Heart Reverb|Those picked up by your Rhythm are marked for 8 seconds. Whenever an opponent dodges your attack, detect their rhythm…
+Haunted Path: Specter|Build up spectral energy by performing successful dodges and landing Wind mantras. Your abilities no longer suffocate…
+Phantom Step|Press X to begin running at high speeds. While in Phantom Step, your dashes transform into Gale Dashes.…
+Vanishing Wraith|Your 'Aerial Attacks' while in Phantom Step will now teleport you behind your target.
+Possession|After an apparition hits an enemy, receive 7.5% posture damage on all Galebreath attacks for 8 seconds. If the…
+Death From Above|Upon cancelling your Air Dash, reveal your wings and strike your enemy.
+Ichor Imbuement|Using a Starkindred mantra while your wings are not out increases the damage they deal by 2 times.
+Static Link|Flourishing or uppercutting an enemy creates a static link between you and your enemy.
+Jumper Cables|Being made Unconscious with an active tether allows you to steal health from a tethered target and not be made…
+Link Conduction|While you have active tethers your lightning mantras cost less ether.
+Static Ace|Using Lightning Stream with an active tether link targets your closest active link.
+Static Allure|Having two active tethers will cause the previous tethered enemy to get magnetized to your newest tethered enemy, also…
+Storm Link|While you have a Static Link on someone, your Wind mantras that hit them are imbued with flashes of Lightning.
+Grasp on Reality|Damage taken from insanity is reduced.
+Magical Resolve|Being hit increases Ether regen for a short duration, the strength of the regen scales off your Willpower.
+Unfazed|You are more resilient to the side effects of going insane. You no longer Shiver and you Panic with less severity.
+Voltaic Conductor|Your Thundercall Mantras deal 30% chip damage against enemies with conductor rods.
+Iron Gut|You have resistance against being poisoned by foods.
+Termite|You can eat things most would consider inedible.
+Dustlunge|You can now assassinate your enemies from much farther, shadestepping to their location if they're too far.…
+None Left Behind|You can now shadestep to pick up Unconscious humanoids far away from you.
+Foolish Outburst|Blocking or parrying a vent will absorb the Tempo cost of the vent. A Tactician steadies the course of battle.
+Hard Read|Hitting your opponent during a feint will cause them to be Dazed for 3s.
+Punishing Blow|[Heavy Weapons] Daze opponents for 3s and Stagger PvE enemies for 2s when you interrupt their Basic Attack / actions…
+Target Switch|Parrying an opponent then hitting someone else makes your next mantra free.
+Water off a Duck's Back|Venting will shift any elemental status effects affecting you onto those hit by your vent.
+Controlled Combustion|Your Agitating Spark no longer spreads to your allies.
+Artisan Chef|The food you cook now becomes Artisan food, increasing its hunger and thirst gained by +25%.
+Master Chef|Buffs applied by food you cook now have their buff effects amplified by +30%.
+Explosive Finish|If an enemy is on fire when you flourish, blast them away with a fire blast.
+Flaming Flourish|Set enemies on fire when you flourish or uppercut them.
+Emperor Flame|Absorb fire produced by you, once you reach 5 stacks your next attack will be an automatic Explosive Finish flourish.…
+Mirage Clone|Successfully dodging leaves behind a heat mirage clone that sets enemies that swung at you on fire.
+Grasp of Eylis|You can temporarily teleport to locations near your bounty target, if one can be found. However, you must stay close,…
+Cap Artist|Pressing CapArtist while crouching allows you to fake being dead. You also take a bit less damage from PvE while…
+Pickpocket|Gain the ability to pickpocket by pressing N. Deal a little more damage the more notes you have against PvE opponents…
+Discharge|[Light Weapons] On 5th successful attack you will discharge static dealing lightning damage to those nearby.
+Rain of Static|After successfully casting lightning impact, strike down countless thunder at those below. In return your Lightning…
+Windup Battery|Landing 3 Thundercall Mantras without whiffing reduces the windup of your next Mantra by 10%.
+Static Blade|Hitting blocks, blocking or parrying hits will now generate an electric charge in your blade, granting a small speed…
+Gathering Electricity|Reaching 5 Static Blade charges will now consume the stacks and apply a lightning buff to your blade. 60 second cooldown.
+Overcharge|Your next dash after activating Static Blade is enhanced by lightning.
+Thundercall Unbounded|You have gained the ability to surpass your limits and train your Thundercall to its fullest.
+Thundercaller|Grants you the ability to command Lightning as a Thundercaller.
+Adept Thundercaller|You can now obtain 1-star Thundercaller mantras.
+Expert Thundercaller|You can now obtain 2-star Thundercaller mantras.
+Master Thundercaller|You can now obtain 3-star Thundercaller mantras.
+Discovery of Fire|Flints and Flamecharm are for simpletons.
+Shocking Finish|Following a flourish up with a lightning beam causes it to be casted instantly.
+Static Fakeout|Roll cancelling immediately after a parry will cause you to teleport behind your opponent.
+Static Flash Clone|When using lightning clones you instead disappear leaving behind a static clone for a short duration.
+Manipulator|Deal 20% more critical attack damage to charmed enemies, but the effect is removed on impact.
+Narcissist|Charming an already Charmed opponent Overcharms you briefly. Guess you really were always that great.
+Sow and Mend|Sacrifice 35% of your blood for temporary health.
+Cyclical Exsanguination|Whenever you deal more than 20 damage to an enemy in an instance, pause your temporary health decay for 3 seconds.
+Embolism|If an enemy is guardbroken while you have temporary health, convert your temporary health into additional damage.
+Hypovolemic Focus|While you have temporary health, your opponent regains far less posture from parrying you.
+Cheap Shot|Your attacks gain 10% PEN multiplicatively when you have an active speed boost.
+Crippling Comeuppance|Landing Revenge puts your opponent's Mobility slot Mantras on CD and applies Sluggish to PvE enemies for 15s.
+Down Comes the Claw|Landing a Critical while you have a speed boost prevents your opponent from being able to dodge twice in a row for 5s.
+Maiming Claws|Down Comes the Claw now disables your opponent's posture regeneration for 6s on proc.
+Pursuit|If you land your Revenge, clear the cooldown immediately. (25s cooldown)
+Face Cutter|Your Spine Cutter now deals an additional hit.
+Turning of the Wheel|After perfect dodging a swing or critical attack, step backwards and ramp up your swingspeed.
+Wraith Path: Twisted Puppets|Your Flamecharm mantras summon puppets of shadow and flame. Your flames are now black.
+Burning Puppets|Your puppets can now inflict burn and fire-based Talents when they explode.
+Burning Sacrifice|Sacrifice puppets who have been alive for half of their lifetime and burn purple for Emperor Flame Stacks, a damage…
+Explosive Rage|Causing explosion will make your puppets go into a frenzy, speeding up and dealing 50% more damage.
+Moths to a Flame|Your Twister Puppets now home towards burning enemies.
+Audacity|Once you've brought down your prey, instill fear into all those who would separate you from claiming it. Charmed or…
+No Survivors|Your allies and yourself execute faster when affected by Overcharm.
+Denial Repulse|You now emit a delayed burst of flames after coming close to death.
+Undying Flame|Your Graceful Flame burns brightly even underwater. Those that gather around it are soothed and regain sanity.
+Surge Path: Unstable Capacitor|Your lightning no longer applies Shock, instead apply Surge. At maximum stacks of Surge, your opponents will Overload,…
+Battery Sapper|If your Human Battery targets have Ether, it will drain their Ether to help pay for your Mantras.
+Catalytic Strike|Posture breaking an enemy will Overload their Surge stack.
+Closed Circuit|Surge Overloads that fail to arc to other opponents will deal additional damage to the Overloaded enemy.
+Human Battery|When you are out of Ether, convert the Surge stacks of nearby enemies into Ether to pay the cost of your Mantras.
+Flashboil|Landing Ice/fire attacks on burning/chilled enemies extinguishes the flame and generates steam.
+Boiling Point|Using a fire mantra near your own steam cloud detonates it.
+Bear Trap|Landing a hit with your critical against an opponent makes your opponent unable to jump for a duration. Also slows…
+Blade Dancer|Landing a Basic Attack removes your roll cooldown.
+Cut to the Chase|Air Counter damage scaling is largely increased. Landing an Air Counter now initiates an uppercut. Deal 5% more damage…
+Speed Demon|Your attacks now inflict a reduced-strength bleed while you have a speed boost. 1s cooldown.
+Spinning Swordsman|Running attacks do +15% extra damage when you have a speed boost.
+Cheap Trick|When hit below half health briefly disappear, leaving behind an illusion clone to keep your enemy occupied for a short…
+Reality Shift|Command the closest conjured servant to attack their hallucinating target, either using a Critical Attack or a Mantra.
+Shared Mimicry|The servants you have conjured will imitate your actions when you Swing/Block/Parry/Jump.
+Encore|Your Sing will stun opponents who are already charmed.
+Vow of Mastery|The Vow of Mastery grants the Master the power to command their Subject. To initiate a vow you must ask the other…
+Command: Live|Once per hour, command a servant to defy all odds and obey your command - live.
+Command: Summon|Command your servant to obey your summons and appear before you no matter the distance.
+Chronostasis|Landing a Basic Attack or Critical puts the target's Resonance on cooldown for a short duration, while also applying…
+Conditioned Swimmer|You lose less hunger and thirst while swimming.
+Brutal Momentum|[Heavy Weapons] Successfully dodging will give you hyperarmour on your next swing.
+Matador|Deal +20% more damage to human enemies with hyperarmor.
+Showstopper|When an enemy would roll through one of your physical attacks, stomp the ground, dazing anyone nearby. Removes speed…
+Switchblade|You can now utilize Dagger Talents when not wielding a dagger.
+Warrior's Swing|[Heavy Weapons] Reduces incoming damage by 5% if hit during Heavy swing hyperarmor.
+Haunted Gale|Landing 3 Galebreathe Mantras without whiffing calls forth a Haunted Phantom. The Phantom will attack alongside you…
+Agility Unbounded|You have gained the ability to surpass your limits and train your agility to its fullest.
+Ash Ember|The more wither your opponent has, the more damage your burn deals.
+Brassneck|Knocking an enemy grants you 20% damage resistance for 15 seconds.
+Careful Handling|Reduce your chances of dropping ingredients on death.
+Dragon's Song|Using a mantra after an uppercut grants ether.
+Full Reset|Knocking an enemy resets your resonance cooldowns. This effect has a 60 second cooldown.
+Gourmand|Your hunger and thirst gain from eating is increased.
+Heavy Haul|Enemies who carry you move significantly slower. Take slightly less posture damage from large enemies.
+Martyr|When you're knocked Unconscious, enemies gain less health and posture, and allies around you are granted Martyrdom for 20s.
+Polite Awakening|Upon recovering from being Unconscious, your health is restored up to a minimum of 15% of your max health.
+Ready or Not|The first attack to hit you while out of combat has its damage cut in half.
+Replenishing Knockout|You gain more health and posture from downing enemies.
+Treefelling Blow|You can collect lumber from the trees you fell with your fists. It's only natural.
+Assassin's Strike|Your Rapid Slashes now deals twice the amount of damage.
+Battle Frenzy|The grip on your weapon tightens, reduce the posture of all mantras you block with this effect scaling with the number…
+Belief|Your medium weapon mantras now deal extra damage based on how much Willpower you have.
+Blitz|Increase how quick you release your Prominence Draw.
+Blood Drinker|Recover health on hit. When landing a critical, deal 30 bleed damage over 5 seconds.
+Bulwark Breaker|Increase the size of your Pressure Blast, with the last hit of it dealing increased posture damage.…
+Careful Stance|Gain a bit more autoparry frames on successful parries.
+Clutch Recovery|When at 30% health or below, every time you land a light attack or critical hit heal 1%.
+Corporeal Dissolution|Applies Wither on any weapon attack that drains Ether, and scales on the amount of Ether drain.
+Cruel Counter|When using your initial charge up on your Krulian Knife, if you interrupt someone's attack with it apply Cruel Counter…
+Curved Edge|Your light weapon mantras now gain 30% more chip.
+Expeditionary Evasiveness|The design of this rapier allows you to much more swiftly attack in tandem with your mantras, giving Agility mantras…
+Expeditious Combo|Landing an uppercut will grant a buff to your Onslaught for 15 seconds, using Onslaught during this time will…
+Extended Trauma|Successful light attacks and criticals on your opponent now also gives them a bit of posture.
+Finishing Slay|If you land a critical attack while also having stacks from the Chain of Perfection talent, consume all those for a…
+Forced Fulfilment|Your Metal Greatsword now has Metal Fakeout as its critical attack.…
+Fortify|Slow down your movement in exchange for fortifying your defenses.
+Phantom|For the next 5 seconds, your next basic attack bypasses block after landing a crit. [45 second CD]
+Pierce Through|Remove the autoparry frames the first hit of your base spear critical has.
+Pugnacious|Become stronger the more you are combat tagged. Gain even more strength whenever you grip a player.
+Punishing Riposte|When parrying a guardbreak, enhance your critical for the next 15 seconds.…
+Rat's Spirit|Each hit of your critical will deal an extra 10 true damage per combat tag whenever you are combat tagged by 2 or more…
+Rosen's Technique|If you use Tactical Reload, Rosen's Peacemaker has 45 seconds less off its cooldown.
+Sable Winds|You can now Inhale Shadowcast mantras. Aftercut effects now drain a small amount of ether based on the damage they deal.
+Sacrificial Boon|Sacrifice 5 knowledge to activate Blessing, giving you a random blessing from Navae.
+Soar|Retain full walkspeed while using your crit.
+Sovereign's Counter|Improve the efficiency of every counter you use.…
+Spinal Splinter|Landing a backstab with your critical deals 15 extra true damage.
+Static Beatdown|Landing a Thundercall mantra electrifies the metal in your Cestus for 8 seconds, extending how long your opponents are…
+Subzero|Landing a running attack inflicts your opponent with a deep freeze. Additional light hits after the opponent thaws out…
+Swift Strike|Land a light attack behind your opponent to enhance your next critical, allowing you to teleport behind your opponent…
+True Seraph Slash|Landing the first hit of your critical attack enhances your next critical, giving you access to the Angels' spear…
+True Shatter|Landing a critical shatters your opponent, ridding them of their speed debuffs and dealing true damage scaling off how…
+Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
+Drop Dead|Take less damage when you are crouching.
+Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…

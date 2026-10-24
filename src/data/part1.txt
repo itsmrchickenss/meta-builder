@@ -1,0 +1,526 @@
+#T
+Against All Odds|Absolute Focus|C|WLL65
+Emergency Reserves|Absolute Focus|C|WLL80
+Unswayed|Absolute Focus|C|WLL75
+Kick Off|Acrobat|C|AGL20
+Steady Footing|Acrobat|C|STR10 AGL10
+Time To Go|Acrobat|C|AGL5
+An Ironsinger's Instinct|Adaptive Arsenal|R|IRN75
+Exposed Durability|Adaptive Arsenal|C|IRN60
+Phantom Edge|Adaptive Arsenal|R|IRN75
+Everchanging Aegis|Adept Caster|R|INT25
+Neural Overload|Adept Caster|A|INT85
+Overflowing Dam|Adept Caster|R|INT40
+Perfect Flash|Adept Caster|R|INT25
+Wyvern's Claw|Aerial Dancer|R|WPN25 STR15
+Aerogliding|Aeromancer|R|WND35 AGL30
+Gale Trap|Aeromancer|C|WND50|t=Wind Step
+Suffocating Impact|Aeromancer|C|STR15 WND35
+Stifled Jump|Aeromancer|R||t=Suffocating Impact
+Apothecary|Alchemist|C|INT10|q
+Chain Reaction|Alchemist|C|INT80|q
+Placebo Effect|Alchemist|R|INT60|q
+Potion Quaffer|Alchemist|R|INT30|o=FTD15/WLL15|q
+Endurance Runner|Alley Cat|C|AGL25 FTD25
+Scaredy Cat|Alley Cat|C|AGL5
+Conditioned Runner|Alley Cat|A|AGL25|t=Endurance Runner;Scaredy Cat
+Approaching Singularity|All-Knowing|C|INT80
+Flame Within|Amoran Seeker|C|FLM25
+Proficient Baiting|Angler|Q0||q
+Hook, Line, and Sinker|Angler|Q0||q
+Fisher's Lure|Angler|Q0||q
+Collapsed Lung|Annihilator|A|STR100
+Carnivore|Apex Predator|R|STR5 WLL5|x=Flaw: Vegetarian
+Grand Feast|Apex Predator|C||t=Carnivore
+Sunken Predator|Apex Predator|C|PWR11
+Oath: Arcwarder|Arcwarder|O0|FTD20 FLM20 LTN20|q
+Arc Module: Dash|Arcwarder|O0||t=Oath: Arcwarder
+Arc Module: Eject|Arcwarder|O0||t=Oath: Arcwarder
+Arc Module: Enhance|Arcwarder|O0||t=Oath: Arcwarder
+Arc Module: Guard|Arcwarder|O0||t=Oath: Arcwarder
+Arc Module: Leap|Arcwarder|O0||t=Oath: Arcwarder
+Arc Module: Null|Arcwarder|O0||t=Oath: Arcwarder
+Master Craftsman|Artisan|C|INT45
+Deep Wound|Assassin|C|AGL35
+Lights Out|Assassin|C|AGL55
+Lowstride|Assassin|C|AGL20
+Unseen Threat|Assassin|C|AGL60|t=Deep Wound
+Authority Intimidation|Authority Interrogator|C|PWR10 LTN60
+Resolve Crusher|Authority Interrogator|C|LTN65
+First Interrogation|Authority Interrogator|C|LTN65|t=Resolve Crusher
+Second Interrogation|Authority Interrogator|C|LTN65|t=First Interrogation
+Battle Tendency|Bastion|C|FTD15 WLL15
+Braced Collapse|Bastion|C|FTD25
+Moving Fortress|Bastion|C|FTD5
+Perseverance|Bastion|C|FTD30 WLL30
+Reinforced Armor|Bastion|A|FTD90|t=Battle Tendency;Braced Collapse;Moving Fortress;Perseverance
+Oath: Blindseer|Blindseer|O0|WLL40|t=Breathing Exercise;Conquer your Fears;Disbelief
+All-Seeing Eye|Blindseer|O0||t=Oath: Blindseer
+Berserk|Berserker|C|STR80
+Oath: Bladeharper|Bladeharper|O0||o=AGL25/STR25/MED75|a=LHT+MED+HVY90
+Float Like a Butterfly|Bladeharper|O0||t=Oath: Bladeharper|q
+Lithe Step|Bladeharper|O0||t=Oath: Bladeharper
+Reveal|Bladeharper|O0||t=Oath: Bladeharper|q
+Soaring Storm|Bladeharper|O0||t=Oath: Bladeharper|q
+Untouchable|Bladeharper|O0||t=Oath: Bladeharper|q
+Oath: Blightsurger|Blightsurger|O0||a=STR+FTD+AGL80,WND+LTN40
+Anchor Shock|Blightsurger|O0||t=Oath: Blightsurger|q
+Blight Pierce|Blightsurger|O0||t=Oath: Blightsurger|q
+Blighted Touch|Blightsurger|O0||t=Oath: Blightsurger|q
+Blightlash|Blightsurger|O0||t=Oath: Blightsurger|q
+Sovereign State|Blightsurger|O0||t=Oath: Blightsurger
+Bloodwarden's Sense|Bloodhound|C|BLD30
+Smell of Blood|Bloodhound|R|BLD65
+Bloodrend Unbounded|Boundless Potential|C0|BLD75|t=Master Bloodrender|q
+Bloodrender|Bloodrender|C0|BLD1
+Adept Bloodrender|Bloodrender|C0|BLD20|t=Bloodrender
+Expert Bloodrender|Bloodrender|C0|BLD30|t=Adept Bloodrender
+Master Bloodrender|Bloodrender|C0|BLD50|t=Expert Bloodrender
+Crimson Fountain|Bloodrender|C|BLD35
+First Blood|Bloodrender|C|BLD10
+Hemorrhaging Blow|Bloodrender|R|BLD95|t=Master Bloodrender
+Rush Hour|Bloodrender|R|BLD50
+Sanguine Siphon|Bloodrender|C|BLD40
+Blood and Iron|Bloodsong|C|BLD40 IRN40
+Brain Death|Bloodsong|C|BLD40 WND40
+Cold Blooded|Bloodsong|C|BLD40 ICE40
+Electrolyte|Bloodsong|C|BLD40 LTN40
+Malevolent Sapper|Bloodsong|C|BLD40 SDW40
+Bruiser's Mixup|Brawler|C||w=Fists
+Impairing Blow|Bruiser|C|HVY30|w=Greataxe
+Brazen Blow|Bruiser|C|HVY30|w=Greataxe
+Heavy Fatigue|Bruiser|R|HVY40|w=Greataxe
+Rending Impact|Bruiser|R|HVY40|w=Greataxe
+Defensive Reprisal|Bulwark|C|FTD65
+Dancing Guard|Bulwark|C|FTD55
+Down to your Level|Bulwark|C|FTD60
+Knuckle Guard|Bulwark|C|FTD55 STR25
+Swift Rebound|Butterfly|C|AGL15
+Evasive Expert|Butterfly|R|AGL15|t=Swift Rebound
+Risky Moves|Butterfly|R|AGL25|x=Observation;Safety Dance
+Ghost|Butterfly|A|AGL40|t=Swift Rebound;Evasive Expert;Risky Moves
+Oath: Chainwarden|Chainwarden|O0||a=STR+FTD+WLL40
+Perpetual Wrath|Chainwarden|O0||t=Oath: Chainwarden
+Chainlash|Chainwarden|O0||t=Oath: Chainwarden
+Champion's Regalia|Champion|R|STR25
+Defiance|Champion|R|WLL70
+Underdog|Champion|C|WLL30
+Charismatic Cast|Charm Caster|C|CHA25
+Chaotic Charm|Charm Caster|C|CHA55|t=Charismatic Cast
+Lasting Charisma|Charm Caster|C|CHA55|t=Charismatic Cast
+Tough Love|Charm Caster|C|CHA25|t=Charismatic Cast|x=Narcissist;Elemental Mentalist
+Dazing Finisher|Charm Caster|A|CHA55|t=Charismatic Cast;Chaotic Charm;Lasting Charisma;Tough Love|x=Bulldozer
+Freezing Wight|Cold Phantom|C|ICE40|t=Haunted Gale
+Destructive Recovery|Colossus|R|STR25 HVY40|w=Greatsword
+Heavy Hitter|Colossus|C|HVY25 STR15
+Lord's Tithe|Comrade|R|SDW40 FTD40|m=Reinforce
+Grand Support|Comrade|R|FTD40|m=Reinforce
+Oath: Contractor|Contractor|O0||t=Oath: Contractor|q
+Hidden Tendril|Contractor|O0||t=Oath: Contractor
+String Trick|Contractor|O0||t=Oath: Contractor
+Pressure Detonation|Cosmic Winds|C|WND60 SDW40
+Finishing Touch|Critical Specialist|C|LHT40 AGL50|w=Dagger
+Knife's Journey|Critical Specialist|R|LHT30
+Successive Throw|Critical Specialist|C|LHT35
+Chilling Flourish|Cryomancer|C|ICE30
+Condensation Drip|Cryomancer|C|ICE15 INT20
+Cool Head|Cryomancer|C|ICE30
+Fragile Freeze|Cryomancer|C|ICE60
+Preceding Chill|Cryomancer|R|ICE60|m=Ice Beam
+Golden Age|Crystalline Gold|C||t=Gilded Path: Scrapsinger;Glass Path: Crystallization;Surge Path: Unstable Capacitor
+Blood Thirsty|Cutthroat|C|AGL45
+In a Hurry|Cutthroat|C|AGL30
+Muffled Screams|Cutthroat|C|AGL50
+Blighted Song|Darksiphon|C|FTD10 SDW1|m=Shadow Chains
+Dark God|Darksiphon|C|SDW20
+Dark Synergy|Darksiphon|C|SDW45|t=Dark God
+Dark Waltz|Darksiphon|C|WPN90 SDW90
+Dark Hours|Darksiphon|C|SDW35
+Dark Rift|Darksiphon|R|SDW60|t=Dark Hours
+Night Terror|Darksiphon|C|WPN100 SDW100|t=Fear the Dark
+Overwhelming Drain|Darksiphon|C|SDW1|m=Shadow Eruption
+Shadow Overflow|Darksiphon|C|SDW55|t=Dark God
+Oath: Dawnwalker|Dawnwalker|O0|PWR10|q
+Absolute Radiance|Dawnwalker|O0||t=Oath: Dawnwalker
+Protagonist Syndrome|Dawnwalker|O0||t=Oath: Dawnwalker
+Luminous Flash|Dawnwalker|O0||t=Oath: Dawnwalker
+Blackhole|Death Speaker|C|PWR13 SDW60|t=Singularity
+Energy Siphon|Death Speaker|C|SDW60|t=Blackhole;Singularity
+Spell Shout|Deepwoken|Q0|
+Frozen Web|Doomsday Engine|C|ICE40 LTN40|t=Static Link
+Ethiron's Gaze|Drowned Secret|Q0||q
+Concussion|Duelist|R|STR20 FTD15
+Concussive Force|Duelist|C|STR15
+Precise Swing|Duelist|C|STR25 AGL15
+Spine Cutter|Duelist|R|STR20 AGL25
+Steady Nerves|Duelist|C|STR15 AGL45
+Strong Hold|Duelist|C|MED30 STR30
+Strong Stern|Duelist|R|STR15 FTD25
+Tap Dancer|Duelist|R|AGL60
+Concussive Flash|Duelist Flame|C|FLM30 STR25|m=Flame Blind
+Charged Return|Elemental Rebound|C|WLL20 STR15
+Nullifying Clarity|Elemental Rebound|C|STR15 INT5
+Cornered Fool|Empath|C|CHA85|m=Taunt
+Give and Take|Empath|C|CHA35
+Off Your Game|Empath|C|CHA90|m=Taunt
+Robber Baron|Escape Artist|C|
+Ether Absorption|Ether Conduit|C|INT15
+Eureka|Ether Conduit|R|INT30
+Keen Recovery|Ether Endeavours|C|INT55
+Behind You|Ether Endeavours|C|INT70 AGL40|t=Keen Recovery
+Unwavering Focus|Ether Endeavours|C|INT60 STR10
+Reverse Leech|Evil Endeavours|C|SDW60|t=Behind You
+Oath: Fadetrimmer|Fadetrimmer|O0|PWR12|q
+Barber's Skillset|Fadetrimmer|O0||t=Oath: Fadetrimmer
+Hair Product|Fadetrimmer|O0||t=Oath: Fadetrimmer
+Hair Spray|Fadetrimmer|O0||t=Oath: Fadetrimmer
+Meteor Impact|Falling Star Guard|C|FLM25|q
+Phoenix Impact|Falling Star Guard|C|FLM40|t=Meteor Impact
+Fang and Coil|Fang and Coil|Q0||o=LHT20|q
+Fishman|Fish|R|
+Landshark|Fish|Q0||q
+Dancing Steps|Flame Dancer|C|PWR8 FLM35
+Graceful Steps|Flame Dancer|R|PWR8 FLM80|t=Dancing Steps
+The Final Act|Flame Dancer|R|PWR13 FLM60|x=Eruption Path: Lava Serpent
+Cauterized Wounds|Flame Warden|C|FLM40 FTD5
+Warding Radiance|Flame Warden|R|FLM30 AGL20
+Flamewalker|Flame Warden|C|FLM40 AGL25|t=Warding Radiance
+Hell's Partisan|Flame Warden|C|FLM35|o=T:Warding Radiance
+Flamecharm Unbounded|Boundless Potential|C0|FLM75|t=Master Flamecharmer|q
+Flamecharmer|Flamecharmer|C0|FLM1
+Adept Flamecharmer|Flamecharmer|C0|FLM20|t=Flamecharmer
+Expert Flamecharmer|Flamecharmer|C0|FLM30|t=Adept Flamecharmer
+Master Flamecharmer|Flamecharmer|C0|FLM50|t=Expert Flamecharmer
+Azure Flames|Flamecharmer|C|FLM70 WLL40|x=Wraith Path: Twisted Puppets
+Temperature Shock|Flashfreeze|C|FLM40 ICE40|t=Glass Path: Crystallization
+Exoskeleton|Freak of Nature|R|FTD40
+Glacial Mobility|Frost Forger|C|ICE20 AGL20|m=Ice Blade
+Frostdraw Unbounded|Boundless Potential|C0|ICE75|t=Master Frostdrawer|q
+Frostdrawer|Frostdrawer|C0|ICE1
+Adept Frostdrawer|Frostdrawer|C0|ICE20|t=Frostdrawer
+Expert Frostdrawer|Frostdrawer|C0|ICE30|t=Adept Frostdrawer
+Master Frostdrawer|Frostdrawer|C0|ICE50|t=Expert Frostdrawer
+Cold Front|Frostdrawer|C|ICE25
+Fulgurite Formation|Frozen Lightning|C|ICE50 LTN50|t=Glass Path: Crystallization;Surge Path: Unstable Capacitor
+Orbital Ice|Frostthorn|C|ICE65|x=Fists of Fortitude
+Glacial Coasting|Frostthorn|C|AGL25 ICE50|t=Orbital Ice
+Frozen Legs|Frozen Warrior|R|ICE60
+Imperium Kata|Gale Kata|Q0||q
+Legion Kata|Gale Kata|Q0||q
+Galebreathe Unbounded|Boundless Potential|C0|WND75|t=Master Galebreather|q
+Galebreather|Galebreather|C0|WND1
+Adept Galebreather|Galebreather|C0|WND20|t=Galebreather
+Expert Galebreather|Galebreather|C0|WND30|t=Adept Galebreather
+Master Galebreather|Galebreather|C0|WND50|t=Expert Galebreather
+After Cut|Galeforce|C|WND40
+Breathing Impact|Galeforce|C|WND30
+Inhale|Galeforce|C|WND60
+Neuroplasticity|Genius Intellect|R|MND35
+Glass Path: Crystallization|Glassdancer|C|ICE40|x=Unyielding Frost;Flashboil
+Crystal Shrapnel|Glassdancer|C|ICE60|t=Glass Path: Crystallization
+Reclaimed Glass|Glassdancer|C|ICE65|t=Crystal Shrapnel
+Fortitude Unbounded|Boundless Potential|C0|FTD75|q
+Bodkin Arrow|Greatarcher|R|STR55|w=Bow
+Hard Stop|Greatarcher|R||t=Bodkin Arrow|w=Bow
+Precision Crusher|Greatarcher|R|STR75|t=Hard Stop|w=Bow
+Armor Piercing|Gunslinger|R|WPN30|q
+Execution|Gunslinger|R|LHT90|o=MED90/HVY90|x=Hip Shooter|w=Pistol
+Gunpowder Blast|Gunslinger|C|LHT45|w=Pistol
+Hip Shooter|Gunslinger|R|LHT25|o=MED50/HVY50|w=Pistol
+Parting Gift|Gunslinger|C|LHT75|w=Pistol
+True Ether Bullets|Gunslinger|R|WPN20 INT30|w=Pistol, Rifle, Greatcannon
+Prime Ether Bullets|Gunslinger|A|LHT90 INT60|t=True Ether Bullets|w=Pistol
+Quickdraw|Gunslinger|C|LHT55|w=Pistol
+Quick Swap|Gunslinger|C|LHT40|w=Pistol
+Brain Rattler|Hammer Rage|C|MED50|w=Club
+Dispatch|Hammer Rage|C|MED55|t=Bear Trap|w=Club
+Hammerfall|Hammer Rage|C|MED35|w=Club
+Fan the Flames|Heat Column|C|FLM40|t=Inhale
+All the Dead Gods|Heretic|R|WLL65 INT40
+All Above, Gods Below|Heretic|A|WLL100 INT100|t=All the Dead Gods
+Heretic's Sutra|Heretic|Q0|WLL80|q
+Sin Stacker|Heretic|R|WLL90|t=All the Dead Gods
+Brick Wall|Human Architecture|A|WLL100 FTD100|t=Perseverance
+Not a Scratch|Human Architecture|A|WLL100 FTD20
+Peripheral Vision|Hunter|R|WLL40|m=Glare
+Bottom Freeze|Ice Age|C|ICE25|m=Ice Daggers
+Cryonis|Ice Age|C|ICE40
+Frost Buster|Ice Age|C|HVY15 ICE45
+Frozen Anchor|Ice Age|C|WPN100 ICE100
+Frostbite|Ice Age|C|ICE25
+Frozen Pin-Cushion|Ice Age|R|ICE60|m=Ice Daggers
+Saint Jay|Ice Age|R||t=Frostbite
+Union Hook|Ignition Union|Q0|
+Agitating Spark|Immolator|C|FLM40
+Immolation|Immolator|C|FLM40|t=Agitating Spark
+Phoenix Flames|Immolator|A||t=Agitating Spark;Immolation
+Corpse Explosion|Inferno|C|FLM60|t=Agitating Spark
+Pleeksty's Faith|Inferno|C|FLM25 WLL15 CHA15
+Pleeksty's Will|Inferno|Q0||o=FLM40/CHA50
+Critical Engine|Intellisense|C|WPN30 INT90
+Ironsing Unbounded|Boundless Potential|C0|IRN75|t=Master Ironsinger|q
+Ironsinger|Ironsinger|C0|IRN1
+Adept Ironsinger|Ironsinger|C0|IRN20|t=Ironsinger
+Expert Ironsinger|Ironsinger|C0|IRN30|t=Adept Ironsinger
+Master Ironsinger|Ironsinger|C0|IRN50|t=Expert Ironsinger
+Alloyblood|Ironsinger|A|IRN100
+Heavy Shoulders|Ironsinger|C|IRN55
+Laced Traps|Ironsinger|C|IRN45|m=Caltrops
+Metal Shackles|Ironsinger|C|IRN40 STR15
+Piercing Metal|Ironsinger|C|PWR13 IRN60
+Thornmail|Ironsinger|C|IRN45
+Willpower Unbounded|Boundless Potential|C0|WLL75|q
+Grand Skewer|Javelin Lord|R|LTN60|m=Grand Javelin
+Oath: Jetstriker|Jetstriker|O0|AGL50|q
+Acceleration Points|Jetstriker|O0||t=Oath: Jetstriker
+Decisive Winds|Jetstriker|O0||t=Oath: Jetstriker
+Jetstream Pursuit|Jetstriker|O0||t=Oath: Jetstriker
+Rush of Ancients|Jetstriker|O0||t=Oath: Jetstriker
+Stratos Step|Jetstriker|O0||t=Oath: Jetstriker
+Electrify|Jumpstarter|C|LTN25
+Amplified Reflexes|Jumpstarter|C|LTN35|t=Electrify|x=Amplified Rage
+Amplified Rage|Jumpstarter|C|LTN35|t=Electrify|x=Amplified Reflexes
+Jus Karita|Justicar|Q0||o=PWR5 LHT40
+Justicar's Prowess|Justicar|C||t=Jus Karita
+Justicar's Renewal|Justicar|C||t=Jus Karita
+Flying Swiftkick|Justicar|C||t=Jus Karita;Swiftkick Prodigy
+Kickstart|Kickstarter|C|LTN50|o=FTD40/CHA40
+Blade's Edge|Lancer|C|MED30|w=Spear
+Defensive Sweep|Lancer|C|MED50|w=Spear
+Driving Impact|Lancer|C|MED30|w=Spear
+Lancer's Impale|Lancer|C|MED30|w=Spear
+Hoplite|Lancer|C|FTD15|w=Spear
+Eruption Path: Lava Serpent|Lava Serpent|C|FLM40|x=Flashboil;The Final Act;Wraith Path: Twisted Puppets
+Empowered Eruption|Lava Serpent|C|FLM50|t=Eruption Path: Lava Serpent
+Flash Point|Lava Serpent|C|FLM55|t=Eruption Path: Lava Serpent
+The Floor is Lava|Lava Serpent|A|FLM100|t=Eruption Path: Lava Serpent
+Callout|Leader|C|CHA20
+Spotter|Leader|C||o=CHA40 T:Murmur: Rhythm/T:Oath: Soulbreaker
+Observation|Leaf in the Wind|R|AGL20|x=Risky Moves
+Safety Dance|Leaf in the Wind|R|AGL20|x=Risky Moves
+Air Pressure|Legion Shock Trooper|C|AGL20 WND50
+Cyclone Blade|Legion Shock Trooper|C|AGL30 WND55|t=Air Pressure
+Pressure Break|Legion Shock Trooper|C|WND65|o=AGL30/STR30|t=Air Pressure
+Wind Step|Legion Shock Trooper|C|WND40
+Scorched Peak|Lichtenberg|C|LTN50 FLM25
+Comeback Kid|Limitbreaker|C|PWR8
+Last Resort|Limitbreaker|C|WLL35
+The Eleventh Hour|Limitbreaker|C|WLL35
+Oath: Linkstrider|Linkstrider|O0||q
+Entropy Link|Linkstrider|O0||t=Oath: Linkstrider|q
+Symbiotic Link|Linkstrider|O0||t=Oath: Linkstrider|q
+Silencer's Song|Maestro's Technique|C|WPN100 WND100|t=Silencer's Blade
+Old Habits Die Hard|Marauder|C|WLL20
+Thresher Claws|Marauder|R|PWR13
+Leg Shot|Marksman|R|MED80|w=Rifle
+Stock Bash|Marksman|C|MED55 STR25|w=Rifle
+Tactical Reload|Marksman|R|MED95|w=Rifle
+Impervious Slumber|Meditative Trance|R|FTD35
+Breathing Exercise|Mental Fortress|C|WLL5
+Conquer your Fears|Mental Fortress|C|WLL10|t=Breathing Exercise
+Disbelief|Mental Fortress|C|WLL25
+Intuitive Repairs|Metallurgist|C|IRN25|m=Iron Skin
+Metal Absorption|Metallurgist|C|IRN30|m=Iron Hug
+Metal Eater|Metallurgist|C|IRN50
+Metal Thief|Metallurgist|C|IRN50
+Polished Armor|Metallurgist|C|IRN75
+Chain of Perfection|Metamancer|Q0|PWR1|q
+Echoing Lunatic|Mindbreaker|C|WLL55|t=Ardour Scream
+Lose Your Mind|Mindbreaker|R|STR30 FTD30
+Shared Misery|Mindbreaker|C|WLL85
+Charisma Unbounded|Boundless Potential|C0|CHA75|q
+Ardour Scream|Murmur|C||o=WLL40 STR15 T:Murmur: Ardour/T:Oath: Soulbreaker
+Armor Conserver|Natural Armor|C|PWR8
+Lightweight|Natural Armor|C|
+Padded Armor|Natural Armor|C|PWR8
+Steel Scales|Natural Armor|C|PWR8|t=Padded Armor
+Captain Etrea|Navaen Nomad|C|STR30 FTD20|t=Moving Fortress|w=Fist
+Fists of Fortitude|Navaen Nomad|R|LHT20 FTD20|x=Orbital Ice|w=Fists
+Way of Navae|Navaen Nomad|Q0||q
+Defensive Stance|Needle|C|LHT50|w=Rapier
+Duelist's Lunge|Needle|C|LHT30|w=Rapier
+Frenzied Dance|Needle|C|LHT50|w=Rapier
+Pressure Skewer|Needle|C|LHT40|w=Rapier
+Fast Blade|Nimble Blade|C|AGL20
+Lightspeed Reflexes|Nimble Blade|R|AGL20 INT20
+Speed Emission|Nimble Blade|C|AGL25
+Oath: Oathless|Oathless|O0||q
+All Knowing|Omniscient|R|INT60|m=Prediction
+Intelligence Unbounded|Boundless Potential|C0|INT75|q
+Successive Prediction|Omniscient|C|INT50|m=Prediction
+Twelve Steps Ahead|Omniscient|C|INT80|m=Prediction
+Lock n Load|Outlaw|C|LHT60|w=Pistol
+Rapid Fire|Outlaw|C|LHT50|w=Pistol
+Rapid Reload|Outlaw|C|LHT50|w=Pistol
+Sleight of Hands|Outlaw|C|LHT50|w=Pistol
+Ultrakill|Outlaw|C|LHT55|t=Rapid Fire|w=Pistol
+Cult of Personality|Politician|C|CHA90
+Pardon Me|Politician|C|CHA85
+Excavator|Prospector|Q0||q
+Harvester|Prospector|Q0||q
+Celebrity|Public Figure|C|CHA40
+Under The Radar|Public Figure|C|CHA60
+You'll Need To Get Past Me|Public Figure|C|CHA75
+Going Nowhere|Pursuer|R|STR25 AGL25
+Volcanic Glass|Pyroclast|A||t=Eruption Path: Lava Serpent;Glass Path: Crystallization
+Hungry Flames|Pyromancer|C|FLM30 FTD15
+Blood Bag|Quark Doctor|C|BLD20
+Blood Transfusion|Quark Doctor|R|BLD60
+Open Wound|Quark Doctor|C|BLD40
+Kj's Courage|Quest|Q0||q
+Nanji's Training|Quest|Q0||q
+Supernatural Sense|Quest|Q0||q
+Bulldozer|Raging Bull|R|STR25|x=Dazing Finisher
+Broken Ankles|Raging Bull|C|STR70
+Piercing Blow|Raging Bull|A|STR100
+Shield Breaker|Rampaging Brute|C|STR60|t=Unwavering Resolve
+Unwavering Resolve|Rampaging Brute|C|STR40
+Million Ton Piercer|Rampaging Brute|A|STR90|t=Unwavering Resolve;Shield Breaker
+Jolting Current|Rampant Static|C|LTN35
+Rending Needle: Conductor|Rending Needle|R|IRN75|t=Master Ironsinger|x=Rending Needle: Jailer;Rending Needle: Impaler
+Conductor's Cable|Rending Needle|C|IRN75|t=Rending Needle: Conductor
+Rending Needle: Impaler|Rending Needle|R|IRN75|t=Master Ironsinger|x=Rending Needle: Jailer;Rending Needle: Conductor
+Rending Needle: Jailer|Rending Needle|R|IRN75|t=Master Ironsinger|x=Rending Needle: Impaler;Rending Needle: Conductor
+Family Recipe|Saboteur|Q0||q
+Incendiary Formula|Saboteur|C||t=Family Recipe
+Sulphur Surprise|Saboteur|C||t=Incendiary Formula
+Hot Potato|Saboteur|C||t=Family Recipe
+Explosive Efficiency|Saboteur|C||t=Hot Potato
+Pocket Bombs|Saboteur|C||t=Family Recipe
+Chorus of Souls|Sage of Wisps|A|BLD30 SDW30 IRN30 WND30 LTN30 FLM30 ICE30|t=Oath: Oathless
+Will o' Wisp|Sage of Wisps|A|ATN25|q
+Wisp Convergence|Sage of Wisps|R||t=Oath: Oathless;Chorus of Souls
+Light Weapons Unbounded|Boundless Potential|C0|LHT75
+Medium Weapons Unbounded|Boundless Potential|C0|MED75
+Heavy Weapons Unbounded|Boundless Potential|C0|HVY75
+Oath: Saintsworn|Saintsworn|O0|FLM15 ICE15 WND15 LTN15 SDW15|q
+Saint's Negation|Saintsworn|O0||t=Oath: Saintsworn
+Saint's Overload|Saintsworn|O0||t=Oath: Saintsworn
+Saint's Synergy|Saintsworn|O0||t=Oath: Saintsworn
+Antithetic Salts|Saltchemist|O0||t=Oath: Saltchemist
+Aromatic Salts|Saltchemist|O0||t=Oath: Saltchemist
+Biotic Salts|Saltchemist|O0||t=Oath: Saltchemist
+Enhanced Flow|Sanguine Wager|C|BLD90 WPN90|t=Rush Hour
+Torture Mastery|Sanguine Wager|C|BLD100 WPN100
+Dark Receiver|Sapper|C|LTN40 SDW40|t=Static Link
+Blood Bank|Scarlet Donor|C|BLD80 CHA40|t=Manipulator
+Sharing is Caring|Scarlet Donor|C|BLD50 CHA30|t=Charismatic Cast
+Windwaker|Scholar of the Cloud|Q0|WND20|q
+Dirty Boxing|Scoundrel|R|AGL25|w=Fists
+Pocket Sand|Scoundrel|C|LHT35 STR20
+Gilded Path: Scrapsinger|Scrapsinger|C|IRN35
+Artisan's Blade|Scrapsinger|C|IRN45|t=Gilded Path: Scrapsinger
+Masterwork|Scrapsinger|R|IRN60|t=Artisan's Blade
+Refine and Reuse|Scrapsinger|C|IRN45|t=Gilded Path: Scrapsinger
+Songs Unforged|Scrapsinger|C|IRN50|t=Gilded Path: Scrapsinger
+Reshape and Remold|Scrapsinger|A|IRN70|t=Gilded Path: Scrapsinger;Artisan's Blade;Masterwork;Refine and Reuse;Songs Unforged
+Gruesome Harvest|Septicemia|A|BLD85
+Hemolysis|Septicemia|C|BLD40 STR25
+Hemolytic Transfusion|Septicemia|C|BLD65
+Juicy Snack|Septicemia|C|BLD60 FTD20
+Panacea|Septicemia|R|BLD65
+Tainted Ground|Septicemia|C|BLD30
+Vasculitis|Septicemia|C|BLD40 INT35
+Shadowcast Unbounded|Boundless Potential|C0|SDW75|t=Master Shadowcaster|q
+Shadowcaster|Shadowcaster|C0|SDW1
+Adept Shadowcaster|Shadowcaster|C0|SDW20|t=Shadowcaster
+Expert Shadowcaster|Shadowcaster|C0|SDW30|t=Adept Shadowcaster
+Master Shadowcaster|Shadowcaster|C0|SDW50|t=Expert Shadowcaster
+Blossoming Darkness|Shadowcaster|C|SDW40|m=Shadow Roar
+Fear the Dark|Shadowcaster|C|SDW50
+Lasting Sorrow|Shadowcaster|C|SDW50
+Shadow Travel|Shadowcaster|R|SDW75|t=Dark God
+Sightless Still|Shadowcaster|C|SDW30|x=Singularity
+Singularity|Shadowcaster|C|SDW40|x=Sightless Still
+Knight's Rally|Shieldmaster|C|FTD30 WLL10|w=Shield
+Turtle Shell|Shieldmaster|C|FTD50|t=Knight's Rally|w=Shield
+Grounding Bolt|Shock Therapy|C|LTN90 WPN90
+Silencer's Blade|Silencer|R|PWR10 WND60
+A World Without Song|Silencer|A|WND75|t=Silencer's Blade
+Oath: Silentheart|Silentheart|O0|STR25|o=AGL25/CHA25|a=LHT+MED+HVY75
+Dread Fighter|Silentheart|O0||t=Oath: Silentheart
+Flow State|Silentheart|O0||t=Oath: Silentheart
+Mayhem|Silentheart|O0||t=Oath: Silentheart
+Relentless Hunt|Silentheart|O0||t=Oath: Silentheart
+Rising Star|Silentheart|O0||t=Oath: Silentheart
+Silent Cascade|Silentheart|O0||t=Oath: Silentheart
+True Vantage|Silentheart|O0||t=Oath: Silentheart
+Unmatched Dexterity|Silentheart|O0||t=Oath: Silentheart
+Vengeful Pursuit|Silentheart|O0||t=Oath: Silentheart
+Golden Tongue|Silvertongue|R|CHA40
+Snake Oil|Silvertongue|C|CHA30
+Absolute Pitch|Songmaster|A|INT100
+Ether Overdrive|Songmaster|A|INT90
+Bloodiron Spirit|Soul Converter|R|
+Oath: Soulbreaker|Soulbreaker|O0||a=WLL+CHA50
+Soul Infusion|Soulbreaker|O0||t=Oath: Soulbreaker|q
+Formless|Soulbreaker|O0||t=Oath: Soulbreaker|q
+Heart Reverb|Soulbreaker|O0||t=Oath: Soulbreaker|q
+Haunted Path: Specter|Specter|C|WND50|t=Haunted Gale
+Phantom Step|Specter|C|WND55|t=Haunted Path: Specter
+Vanishing Wraith|Specter|R|WND60|t=Phantom Step
+Possession|Specter|A|WND75|t=Haunted Path: Specter
+Oath: Starkindred|Starkindred|O0|STR40|q
+Death From Above|Starkindred|O0||t=Oath: Starkindred
+Ichor Imbuement|Starkindred|O0||t=Oath: Starkindred
+Static Link|Static Weaver|C|LTN40 INT15
+Jumper Cables|Static Weaver|C|LTN40 FTD20|t=Static Link
+Link Conduction|Static Weaver|C|LTN65|t=Static Link
+Static Ace|Static Weaver|C|LTN70|t=Static Link
+Static Allure|Static Weaver|C|LTN50 INT15|t=Static Link
+Storm Link|Stormcaller|C|LTN60 WND50|t=Static Link
+Grasp on Reality|Sturdy Resolve|C|FTD25 WLL5
+Magical Resolve|Sturdy Resolve|C|WLL40|t=Battle Tendency
+Unfazed|Sturdy Resolve|C|WLL50 FTD50|t=Grasp on Reality
+Voltaic Conductor|Super Conductor|C|LTN40 IRN75|t=Rending Needle: Conductor
+Iron Gut|Survival Instinct|C||o=FTD20/WLL20|q
+Termite|Survival Instinct|C|FTD20 WLL10
+Dustlunge|Swiftshade|A|AGL90|t=Lowstride;Unseen Threat;Deep Wound;Lights Out
+None Left Behind|Swiftshade|C|AGL100|t=Dustlunge
+Foolish Outburst|Tactician|C|INT50
+Hard Read|Tactician|C|INT20
+Punishing Blow|Tactician|R|HVY20
+Target Switch|Tactician|C|INT20
+Water off a Duck's Back|Tactician|C|INT50
+Controlled Combustion|Tamed Flame|C|CHA40|t=Agitating Spark
+Artisan Chef|Tavernkeep|C|INT25 CHA15|q
+Master Chef|Tavernkeep|C|INT25 CHA15|q
+Explosive Finish|The Demon Blade|C|FLM45
+Flaming Flourish|The Demon Blade|C|FLM30
+Emperor Flame|The Emperor's Blade|C|FLM60|t=Agitating Spark
+Mirage Clone|The Emperor's Blade|R|FLM65
+Cap Artist|Thief|C|AGL25 CHA5
+Pickpocket|Thief|C|AGL5 CHA10
+Discharge|Thunder Brawler|C|LHT20 LTN15
+Rain of Static|Thunder Caster|C|LTN1|m=Lightning Impact
+Windup Battery|Thunder Caster|C|LTN30 INT30
+Static Blade|Thunderblade|C|MED20 LTN40|w=Medium Weapon
+Gathering Electricity|Thunderblade|C|LTN65|o=STR25/AGL25|t=Static Blade|w=Medium Weapon
+Overcharge|Thunderblade|C||t=Gathering Electricity
+Thundercall Unbounded|Boundless Potential|C0|LTN75|t=Master Thundercaller|q
+Thundercaller|Thundercaller|C0|LTN1
+Adept Thundercaller|Thundercaller|C0|LTN20|t=Thundercaller
+Expert Thundercaller|Thundercaller|C0|LTN30|t=Adept Thundercaller
+Master Thundercaller|Thundercaller|C0|LTN50|t=Expert Thundercaller
+Discovery of Fire|Thundercaller|C|LTN50
+Shocking Finish|Thundercaller|C|LTN30|m=Lightning Beam
+Static Fakeout|Thundercaller|R|AGL30 LTN35
+Static Flash Clone|Thundercaller|C|AGL30 LTN35|m=Lightning Clones
+Manipulator|Toxic Personality|C|CHA60|t=Charismatic Cast
+Narcissist|Toxic Personality|C|CHA60|t=Charismatic Cast|x=Tough Love
+Sow and Mend|Transitory Vitality|R|BLD60|t=Master Bloodrender
+Cyclical Exsanguination|Transitory Vitality|C|BLD65|t=Sow and Mend
+Embolism|Transitory Vitality|C|BLD65|t=Sow and Mend
+Hypovolemic Focus|Transitory Vitality|C|BLD65|t=Sow and Mend
+Cheap Shot|Trickster|R|AGL65
+Crippling Comeuppance|Trickster|A|AGL100|m=Revenge
+Down Comes the Claw|Trickster|C|AGL75
+Maiming Claws|Trickster|C|AGL100|t=Down Comes the Claw
+Pursuit|Trickster|C|AGL90|m=Revenge
+Face Cutter|Twinblade|R|MED75|t=Spine Cutter|w=Twinblade
+Turning of the Wheel|Twinblade|R|MED75|w=Twinblade
+Wraith Path: Twisted Puppets|Twisted Puppets|C|FLM40 SDW40|x=Eruption Path: Lava Serpent;Flashboil;Azure Flames
+Burning Puppets|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets
+Burning Sacrifice|Twisted Puppets|R|FLM40 SDW40|t=Wraith Path: Twisted Puppets;Emperor Flame
+Explosive Rage|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets
+Moths to a Flame|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets

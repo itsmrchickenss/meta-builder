@@ -1,0 +1,100 @@
+Nullifying Clarity|Flame Within|c
+Unswayed|Cornered Fool|m
+Unswayed|Encore|m
+Perseverance|Defiance|m
+Berserk|Million Ton Piercer|m
+Defiance|Sightless Still|m
+Freezing Wight|Apparitions|m
+Pressure Detonation|Apparitions|m
+Muffled Screams|Execution|m
+Muffled Screams|Stay of Execution|m
+Frozen Web|Bottom Freeze|m
+Cauterized Wounds|Alloyblood|m
+Warding Radiance|Hell's Partisan|m
+Fulgurite Formation|Grounding Bolt|m
+Inhale|After Cut|m
+Frozen Anchor|Bottom Freeze|m
+Immolation|Flame Within|m
+Phoenix Flames|Flame Within|m
+Kickstart|Cap Artist|m
+Eruption Path: Lava Serpent|Agitating Spark|m
+Eruption Path: Lava Serpent|Immolation|m
+Flash Point|Empowered Eruption|m
+Spotter|Callout|m
+Cyclone Blade|Phantom Step|m
+Scorched Peak|Grounding Bolt|m
+Armor Conserver|Exoskeleton|m
+Lightspeed Reflexes|Fast Blade|m
+Torture Mastery|Rush Hour|m
+Blood Bank|Donation Drive|m
+Lasting Sorrow|Fear the Dark|m
+Turtle Shell|Spine Cutter|m
+Grounding Bolt|Bear Trap|m
+Possession|Phantom Step|m
+Explosive Finish|Emperor Flame|m
+Overcharge|Static Blade|m
+Manipulator|Unnecessary Theatrics|m
+Narcissist|Disbelief|m
+Maiming Claws|Steady Nerves|m
+Explosive Rage|The Final Act|m
+Explosive Rage|Explosive Finish|m
+Explosive Rage|Emperor Flame|m
+Explosive Rage|Scorchblood|m
+Battery Sapper|Human Battery|m
+Haunted Gale|Apparitions|m
+Both Ends|Counter Spin|m
+Apparitions|Phantom Step|m
+Heavy Cannonball|Critical Engine|m
+Grasp on Reality|Lose Your Mind|2.62
+Spinning Swordsman|Matador|1.7
+Precise Swing|Speed Emission|2.15
+Impervious Slumber|Lose Your Mind|2.22
+Impervious Slumber|Strong Stern|2.02
+Fists of Fortitude|Dirty Boxing|2.29
+Speed Emission|Strong Stern|2.05
+Grand Support|Impervious Slumber|2.59
+Spinning Swordsman|Speed Emission|1.73
+Lose Your Mind|Brassneck|2.03
+Blood Thirsty|Speed Emission|2.39
+Matador|Speed Emission|1.81
+Fists of Fortitude|Pocket Sand|2.38
+Impervious Slumber|Grasp on Reality|1.79
+Grand Support|Grasp on Reality|2.2
+Lose Your Mind|Nullifying Clarity|1.9
+Grasp on Reality|Concussive Force|2.19
+Unswayed|Echoing Lunatic|1.93
+Lose Your Mind|Speed Emission|1.97
+Speed Emission|Hard Read|2.13
+Concussion|Speed Emission|1.77
+Mythic Stability|Brassneck|2.12
+Grasp on Reality|Speed Emission|1.89
+Impervious Slumber|Concussion|1.72
+Mythic Stability|Impervious Slumber|1.89
+Mythic Stability|Lose Your Mind|1.87
+Glass Path: Crystallization|Eruption Path: Lava Serpent|2.14
+Lose Your Mind|Strong Stern|1.7
+Knight's Rally|Brazen Blow|1.84
+Impervious Slumber|Lowstride|2.01
+Turtle Shell|Brazen Blow|1.85
+Frozen Legs|Fragile Freeze|1.7
+Grasp on Reality|Brazen Blow|1.83
+Lose Your Mind|Concussive Force|2.05
+Give and Take|Vow of Mastery|2
+Frozen Legs|Frozen Pin-Cushion|1.77
+Frozen Legs|Bottom Freeze|1.79
+Knight's Rally|Impairing Blow|1.76
+Turtle Shell|Impairing Blow|1.78
+Defensive Reprisal|Strong Stern|1.99
+Concussive Force|Matador|1.76
+Grasp on Reality|Hungry Flames|1.99
+Ether Absorption|Heavy Shoulders|1.92
+Fragile Freeze|Bottom Freeze|1.72
+Meteor Impact|Dark God|1.87
+Unswayed|Shared Misery|1.92
+Lose Your Mind|Ready or Not|1.81
+Impervious Slumber|Brassneck|1.75
+Impervious Slumber|Heavy Fatigue|1.84
+Successive Prediction|Nullifying Clarity|1.75
+Blood Thirsty|Precise Swing|1.69
+Impervious Slumber|Give and Take|1.72
+Blood Thirsty|Matador|1.67

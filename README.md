@@ -17,6 +17,10 @@ A Deepwoken build planner built around the ability to optimize your builds effec
 
 Data comes from deepwoken.co (October 2026). Race stat bonuses aren't counted.
 
+## Working on it
+
+Source is in `src/` (`template.html` plus data files). Build with `python3 src/build.py`, test with `node tests/core-test.js`. See [NOTES.md](NOTES.md) for how everything works.
+
 ## Disclaimer
 
 Meta Builder is an unofficial fan tool. It is not affiliated with or endorsed by the developers of Deepwoken or by deepwoken.co. Deepwoken and its game content (talents, mantras, weapons, items and their names and descriptions) belong to their respective owners. The MIT license below covers only the code written for this project.

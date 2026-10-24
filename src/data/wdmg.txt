@@ -1,0 +1,231 @@
+Stiletto|11.5|0|LHT3
+Gilded Knife|14.5|0|LHT8
+Silver Dagger|13.5|0|LHT6
+Canor Fang|11|0.05|LHT10
+Fool's Tankard|12.5|0|LHT12
+Whaling Knife|15.5|0.05|LHT5
+Champion's Dagger|16|0|LHT8
+Central Dirk|16|0.05|LHT7
+Tanto|17|0|LHT5
+Sanguine Transfuser|13.5|0.2|LHT6.5 BLD4
+Nemit's Sickle|11.5|0.3|LHT13
+Flareblood Kamas|14|0.3|LHT8 INT1.5 BLD3
+The Flippers of Fate|13|0.15|LHT8 MND5
+Krulian Knife|12.5|0.2|LHT10.5
+Spectral Grasp|16|0.05|LHT7
+Moppet|15|0|LHT8.5
+Kyrsedge|15|0.3|LHT8.5
+Alloyed Whaling Knife|16|0.1|LHT8
+Alloyed Tanto|17.5|0.05|LHT7
+Big Brother|15|0.15|LHT8
+Cerulean Thread|14.5|0.25|LHT7.5
+Frostthorn|14.5|0.15|LHT8 ICE1
+Iron Cestus|13.5|0|LHT7.5
+Anklets of Alsin|13.5|0.15|LHT9
+Legion Cestus|15|0.05|LHT9
+Light's Final Toll|12|0.1|LHT4 WLL11
+Wraithclaw|15.5|0.1|LHT4 WND5.5
+Coral Cestus|14|0.1|LHT9.5
+Rimebreakers|16.5|0.05|LHT5 ICE3.5 WND3.5
+Flamekeeper Cestus|15.5|0.05|LHT9.5
+Vortex Echo|13.5|0|LHT8 CHA3.5
+Withered Death's Knell|15|0.1|LHT5 BLD5
+Drakemaw Gauntlets|15|0.1|LHT8
+Gaunts of Enmity|15|0|LHT9.5
+Broodalloy Cestus|15.5|0.2|LHT9
+Worldpiercer Gauntlets|16.5|0.15|LHT8
+Silversix|10|0|LHT13
+Flintlock|11|0|LHT12
+Dawnshot|14|0|LHT12
+Iron Requiem|21|0|LHT3 IRN4
+Repeater|14|0|LHT12
+Dragoon|16|0|LHT12
+Rosen's Roscoe|16|0|LHT11
+Alloyed Dawnshot|16|0.05|LHT12
+Quickfang|12|0.05|LHT7
+Apprentice Rapier|13|0|LHT6.5
+Inquisitor's Thorn|14|0.1|LHT7
+Deepspindle|14|0.2|LHT4 SDW9
+Coldpoint|15|0.1|LHT7 ICE4
+Crucible Rapier|15|0.2|LHT8
+Golden Swordfish|15|0.2|LHT8
+Needle's Eye|16.5|0.15|LHT8.5
+Skullpiercer|14|0.1|LHT8
+Kyrstreza|15|0.3|LHT8.5
+Sword|18|0|MED2.5
+Dormant Splinter|5|0.1|MED7
+Messer|20|0|MED5
+Falchion|16|0|MED6
+Scimitar|15|0|MED3
+Katana|18|0|MED6
+Worshipper Longsword|19|0|MED4
+Officer Saber|22|0|MED4.5
+Vigil Longsword|20|0|MED6
+Champion's Sword|19|0|MED6.5
+Cavalry Saber|21|0|MED5
+Curved Blade of Winds|17.5|0.15|MED5 WND5
+Eyes of Ethiron|16.5|0.15|MED4 SDW4.5 WND4.5
+Ignition Deepcrusher|18|0.1|MED3 IRN4
+Shotel|22|0|MED5
+Kindred Edict|17|0.1|MED7 BOD2.5
+Scoundrel's Saber|22|0|MED4.8
+Razor Cutlass|18|0.25|MED8
+Forgotten Gladius|18|0.13|MED7.5
+Fondant Splitter|15|0.05|MED8
+Umbrite Witherblade|13|0|MED12
+Serpent's Edge|22|0.15|MED6
+Hallowscleave|19|0.25|MED7
+Alloyed Messer|21|0.15|MED6
+Alloyed Cavalry Saber|22.5|0.1|MED5.5
+Alloyed Officer Saber|23|0|MED4.8
+Alloyed Falchion|18|0.2|MED7
+Alloyed Vigil Longsword|20|0.2|MED7.5
+Alloyed Shotel|22|0.1|MED6
+Alloyed Katana|20|0.1|MED7
+Kyrsblade|22|0.05|MED6
+Rite of Authority|19.5|0.15|MED4 LTN3
+Eye of Malice|20|0.25|MED7.7
+Soulthorn|17|0.1|MED7 INT3.5
+Purple Cloud|16.5|0.15|MED9
+Shattered Katana|20|0.3|MED7
+Nocturne|19.8|0.1|MED8
+Withered Phantomcleave|17.5|0.1|MED7
+Hero's Blade of Flame|19|0|FLM5.5
+Hero's Blade of Frost|19|0|ICE5.5
+Hero's Blade of Lightning|19|0|LTN5.5
+Hero's Blade of Wind|19|0|WND5.5
+Hero's Blade of Shadow|19|0|SDW5.5
+Saintsblade|28|0.1|
+Irontusk|16.5|0.1|MED3
+Iron Spear|17|0|MED2.5
+Gremorian Longspear|18|0|MED4
+Black Death|16.5|0.15|MED2.5 MND2 SDW3
+Ritual Spear|19|0.25|MED5
+Ritual Sacrifice|25|0.25|MED7
+Acheron's Warspear|18|0.15|MED6
+Imperial Staff|20|0.12|MED5 STR4
+Trident Spear|19|0.25|MED6
+Kyrswynter|17|0.2|MED5 ICE4
+The Weaving Web|20|0|MED5.5 CHA1
+Serrated Warspear|18|0.2|MED6.5
+Bloodtide Trident|18|0.25|MED6
+Alloyed Longspear|20|0.1|MED6.5
+Weal and Woe|17.5|0.15|MED5 SDW6.5
+Imperator's Edge|20|0.2|MED2 STR3 FTD4
+Alloyed Trident Spear|19|0.25|MED7
+Kyrsglaive|19|0.2|MED5
+Mace|20|0.05|MED5
+Toothed Club|16|0.1|MED5
+Pleeksty's Inferno|22|0.1|MED3 FLM4
+Morning Star|16|0.2|MED6
+Sacred Hammer|19.5|0.15|MED7
+The Pastry Paster|18|0|MED5 MND3
+Pernach|19|0.3|MED6
+Summer Rifle|17|0|MED6
+Winter Rifle|16|0|MED5
+Rosen's Hellflame|19|0.1|MED3 FLM4
+Stormseye|19.5|0|MED3 LTN6
+Rosen's Peacemaker|18|0|MED8
+Iron Blunderbuss|20|0.1|MED7
+Iron Twinblade|15|0|MED4
+Scalesplitter|17.5|0.1|MED5
+Alloyed Scalesplitter|20|0.15|MED6
+Death's Reverie|18|0.15|MED5
+Crescendo|22|0.05|MED6
+Hunting Bow|14|0.05|MED7
+Shadebolt|16|0.1|MED8 SDW2
+Guiding Star|14|0.1|MED10 MND3
+Battleaxe|20|0|HVY5
+Halberd|22|0|HVY7
+Adretian Axe|24|0|HVY7
+Canorian Axe|24|0|HVY7
+Gran Sudaruska|24|0|HVY4 ICE6
+Iron Birch|26|0|HVY6
+Evanspear Greataxe|24|0|HVY9.5
+Master Hawk's Handaxe|24|0.05|HVY10
+Relic Axe|25|0.25|HVY9
+Quartztone Pickaxe|22|0.2|HVY7
+Skyreap Blade|23|0.25|HVY7
+Enforcer's Axe|26|0.1|HVY9
+Alloyed Canorian Axe|24|0.2|HVY9
+Alloyed Halberd|24|0.15|HVY8
+Alloyed Adretian Axe|24|0.1|HVY8
+Duskguard Axe|26|0.15|HVY8
+Night Axe|23|0.05|HVY8
+Pale Briar|23|0.25|HVY8.5
+Chorus of Agonies|26|0|HVY11
+Avenger|21|0|HVY6.5
+Zweihander|22|0|HVY7
+Markor's Inheritor|24|0|HVY7
+Darksteel Greatsword|26|0|HVY7
+Inquisitor's Greatsword|23.5|0|HVY8.3
+Crypt Blade|22|0|HVY4 SDW9
+Crescent Cleaver|22|0|HVY8
+Bloodfouler|19|0.2|HVY5 BLD4
+Bloodbane|23|0|HVY7
+Hailbreaker|22|0.15|HVY7.5 ICE4
+Wretched Mawblades|27|0|HVY8
+First Light|23|0.15|HVY8
+Alloyed Zweihander|23|0.1|HVY10
+Alloyed Crescent Cleaver|22|0|HVY10
+Darkalloy Greatsword|26|0.1|HVY8
+Alloyed Inheritor|24|0.15|HVY8
+Kyrscleave|23|0|HVY9
+Railblade|22|0.25|HVY8.3
+Fractine|22|0.25|HVY7 INT4
+Enforcer's Blade|25.5|0.05|HVY10
+Lumensplitter|24|0|HVY9
+Steel Maul|22|0|HVY7
+Forge Greathammer|24|0|HVY8
+Rockmaller|25|0|HVY7.5
+Boltcrusher|23|0.2|HVY4.2 LTN7
+Warmonger|27|0|HVY10
+Great Maul|25|0.05|HVY8.3
+Putrid Edenstaff|25|0.15|HVY8.5
+Alloyed Steel Maul|24|0.1|HVY8
+Alloyed Forge Greathammer|25.5|0|HVY8
+Pale Morning|24|0.15|HVY10
+Petra's Anchor|26|0.15|HVY9
+Sovereign's Punishment|26|0.2|HVY9
+Withered Gale Pale|22|0.15|HVY5 WND8
+Stoneheart|24|0.1|HVY10
+Enforcer's Hammer|25|0.1|HVY9
+Kanabo|25|0|HVY6 STR3
+Hivelord's Hubris|28|0.05|HVY10
+The Barrel|25.5|0.05|HVY8.5
+Smouldering Hallow|25.5|0.1|HVY8.6
+Edenbrand Hellcoil|27|0|HVY8.3
+Rifle Spear|21|0.25|MED7
+Red Death|16|0.25|MED2.5 MND2 BLD3 SDW3
+Wyrmtooth|20|0.25|MED6.5 HVY4.5
+Ysley's Pyre Keeper|21|0.15|HVY5 FLM4
+Calamity Cinnabar|22|0|HVY4 SDW9
+Moonseye Scalpel|18.5|0.25|INT13
+Unsung Scythern|26|0.1|HVY9
+Frost Gauntlets|14|0.05|LHT9
+Duskshot|13|0.05|LHT11
+Icepick|13|0.1|LHT7
+The Golden Fool|12.5|0.1|LHT12
+Phantomcleave|20|0.1|MED7
+Night Star|15|0.2|MED5.5
+Vapormaw Carbine|17|0|MED4 FLM3 ICE3
+Depthsplitter|17|0.05|MED4.5
+Darksteel Cleaver|28.5|0|HVY8
+Prototype Railblade|22|0.25|HVY8.3
+Gale Pale|23|0.15|HVY9
+Saint Jay's Hammer|20|0|HVY7
+Dissonant Chimecaller|26|0.1|HVY8.4
+Wooden Staff|16|0.05|MED5
+Duskpole|17|0.05|MED7 WLL1
+Bellmarrow Reave|21|0.2|MED5.3
+Karita Plating|14|0.25|LHT8 AGL3
+Sancticar|19.5|0.15|MED8
+Ironcry|15|0.1|MED6.5
+Warden Ceremonial Sword|17|0|MED7
+Kyrsieger|24|0.15|HVY7 CHA2
+Summer Hullwrecker|24.5|0.1|HVY8.2
+True Seraph Spear|18.5|0.2|MED7
+Rangescraper|18|0|LHT7.5
+Steelscale Dusters|14|0.2|LHT10
+The Long Tong of the Law|20|0|HVY7 MND3
+Palace Tachi|22.5|0.05|MED6.5

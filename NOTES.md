@@ -119,3 +119,9 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 
 ## Tabs (v1.14)
 1 Stats (presets, stat table: Before shrine / Shrine leaves / After shrine at least + final, optimizer, weapon, attunements, oath, wishes) · 2 Talents & mantras (picker, required/avoid, browse, your talents, mantras, combos) · 3 Summary · 4 Armor. Old saved tab `opt` maps to Stats. Pane ids stay `tab-build`, `tab-req`, `tab-sum`, `tab-arm`.
+
+## v1.15 decisions
+- Presets are starting stats only (no core talents, no auto-picked talents): defining stat floors, oath, weapon type. Fortitude is never equal before and after the shrine: either 1 before and the rest after, or high before and the shrine brings it down.
+- "Pre-shrine is the peak" (on by default): a stat above 1 before the shrine gets no points after it (penalty in `evaluate`, `reup`).
+- deepwoken.co (Oct 2026) refuses its build API to other sites and to direct page loads (403 "Forbidden"); only its own pages can fetch `/api/proxy/builds/<id>`. Import uses a bookmarklet / console snippet (`DWCO_SNIP`) that runs on the build page and copies the JSON, which the user pastes into Import a build. Fixture: `tests/fixtures/dwco-build.json`.
+- Clean Slate clears talents, mantras, required/avoided talents, caps and equipment too.

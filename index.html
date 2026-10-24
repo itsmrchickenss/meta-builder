@@ -265,6 +265,9 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .steps details summary{color:var(--bone)}
 
 .groups.tall{max-height:calc(100vh - 290px);min-height:360px}
+.bm{display:inline-block;padding:3px 10px;border:1px dashed var(--brass);border-radius:4px;color:var(--brass);text-decoration:none;cursor:grab;font-weight:600}
+.bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
+#imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
 .shrineflow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;counter-reset:f}
 .shrineflow li{border:1px solid var(--line);border-top:3px solid var(--fc);border-radius:4px;padding:6px 8px;background:var(--abyss);display:grid;gap:2px;font-size:12.5px;counter-increment:f}
 .shrineflow li b{font-size:13px;color:var(--fc)}.shrineflow li b::before{content:counter(f) ". "}.shrineflow li span{color:var(--dim)}
@@ -411,7 +414,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.14</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.15</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -453,6 +456,21 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <!-- ============ 1 STATS ============ -->
 <div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
 <div class="col">
+  <section class="panel" id="importpanel">
+    <h2>Import a build</h2>
+    <p class="hint" style="margin:0">Paste a Meta Builder link, the build text Deepwoken gives you in game, or a build copied from deepwoken.co.</p>
+    <form class="row" id="imp1form" autocomplete="off"><textarea id="imp1" rows="2" placeholder="Paste a build here…" aria-label="Build to import" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit">Import</button></form>
+    <p class="hint" id="imp1msg" aria-live="polite" style="margin:0"></p>
+    <details id="dwcohelp"><summary>Importing from deepwoken.co</summary>
+      <p class="hint">deepwoken.co doesn't let other sites read its builds, so a pasted deepwoken.co link can't be opened here. Copy the build itself instead:</p>
+      <ol class="hint bmsteps">
+        <li>Drag this button to your bookmarks bar (only once): <a class="bm" id="bmlink" href="#" title="Drag me to your bookmarks bar">📋 Copy build for Meta Builder</a></li>
+        <li>Open the build on deepwoken.co and click that bookmark. It copies the build.</li>
+        <li>Come back here and paste it in the box above.</li>
+      </ol>
+      <p class="hint" style="margin:0">No bookmarks bar? On the deepwoken.co build page open the browser console (F12), paste this code and press Enter: <button type="button" class="mini" id="bmcopy">Copy code</button></p>
+    </details>
+  </section>
   <section class="panel">
     <div class="row spread"><h2>Starting presets</h2><label class="helpchk"><input type="checkbox" id="helpon"> Help mode</label></div>
     <p class="hint">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
@@ -491,7 +509,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <h2>Optimizer</h2>
     <div class="optbar"><p>Best pre‑shrine stats and pre/post order. Over budget? It drops the talents with the worst value per point.</p><button class="primary" data-optimize="1">Optimize build</button></div>
     <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
-    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: a stat invested before the shrine never ends higher than it started (go high first, shrine down, never back up)</label>
+    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: a stat raised before the shrine gets no points after it (either 1 before and the rest after, or high before and the shrine brings it down)</label>
     <label class="hint split" for="prio">Optimize for <b style="color:var(--bone)">damage</b><input type="range" id="prio" min="0" max="100" step="10"><b style="color:var(--bone)">talent options</b></label>
     <label class="hint split" for="dsplit">Damage from <b style="color:var(--bone)">M1 (weapon)</b><input type="range" id="dsplit" min="0" max="100" step="10"><b style="color:var(--bone)">mantras (attunement)</b></label>
     <p class="hint" id="dsplithelp" style="margin:0"></p>
@@ -3834,30 +3852,21 @@ const TEMPLATES=[
 
 
 // Starting presets: medians and most common pre-shrine peaks from 685 normal top-rated + most-viewed deepwoken.co builds
+// Presets are starting stats only (no talents): the defining stat floors, oath and weapon. Fortitude is never the same before
+// and after the shrine: either 1 before and the rest after, or high before and the shrine brings it down.
 const PRESETS=[
- {n:'Clean Slate',d:'0 in everything · no oath, weapon target or attunement',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
- {n:'Bossraid',d:'FTD 50 + WLL 40 before · FTD 50 after · Heavy 90',src:'92 heavy boss-raid builds',pre:{FTD:50,WLL:40},post:{FTD:50},oath:'Silentheart',wtype:'HVY',wtarget:90,atts:{},dsplit:0,prio:30,
-  t:['Thresher Claws','Bloodiron Spirit','Fishman','Carnivore','Underdog','Replenishing Knockout','Exoskeleton','Padded Armor','Steel Scales','Armor Conserver']},
- {n:'Bossraid Mage',d:'FTD 50 + WLL 50 + INT 25 before · Frostdraw 80, no weapon',src:'37 caster boss-raid builds',pre:{FTD:50,WLL:50,INT:25},post:{FTD:50},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:80},dsplit:100,prio:30,
-  t:['Neuroplasticity','Breathing Exercise','Underdog','Exoskeleton','Fishman','Carnivore','Bloodiron Spirit','Charged Return']},
- {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 + CHA 25 before · FTD 50 after · Medium 80',src:'199 Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30,CHA:25},post:{FTD:50},oath:'Bladeharper',wtype:'MED',wtarget:80,atts:{FLM:80},dsplit:50,prio:40,
-  t:['Exoskeleton','Swift Rebound','Speed Demon','Evasive Expert','Battle Tendency','Moving Fortress','Spine Cutter','Showstopper','Unwavering Resolve','Bear Trap']},
- {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after',src:'119 builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'LHT',wtarget:75,atts:{BLD:80},
-  t:['Charismatic Cast','Chaotic Charm','Lasting Charisma','Tough Love','Manipulator','Golden Tongue','Unnecessary Theatrics','Ghost','Exoskeleton','To The Finish']},
- {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after',src:'72 builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},
-  t:['Unwavering Resolve','Shield Breaker','Million Ton Piercer','Showstopper','Piercing Blow','Broken Ankles','Spine Cutter','Ghost','Exoskeleton','To The Finish']},
- {n:'Jetstriker Agility',d:'AGL 75 + STR 40 + WLL 40 before · AGL 50, FTD 50 after',src:'119 builds',pre:{AGL:75,STR:40,WLL:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{WND:80},
-  t:['Ghost','Cheap Shot','Cut to the Chase','Tap Dancer','Speed Demon','Unwavering Resolve','Showstopper','Last Resort','Exoskeleton','To The Finish']},
- {n:'Willpower Tank',d:'WLL 100 + FTD 100 + INT 45 before',src:'181 builds',pre:{WLL:100,FTD:100,INT:45},post:{FTD:75},oath:'Dawnwalker',wtype:'MED',wtarget:60,atts:{FLM:80},
-  t:['Brick Wall','Last Resort','Against All Odds','Piercing Will','Underdog','Magical Resolve','Perfect Flash','Exoskeleton','To The Finish']},
- {n:'High Intelligence',d:'INT 90 + AGL 40 before · FTD 50 after',src:'42 builds',pre:{INT:90,AGL:40},post:{FTD:50},oath:'Saltchemist',wtype:'LHT',wtarget:60,atts:{FLM:80},
-  t:['Perfect Flash','Eureka','Approaching Singularity','Master Craftsman','Neuroplasticity','Keen Recovery','Overflowing Dam','Everchanging Aegis','Exoskeleton','To The Finish']},
- {n:'Reinforced Armor',d:'STR 40 + AGL 40 + WLL 40 before · FTD 90 after',src:'99 builds',pre:{STR:40,AGL:40,WLL:40},post:{FTD:90},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},
-  t:['Reinforced Armor','Unwavering Resolve','Showstopper','Ghost','Last Resort','Exoskeleton','To The Finish']},
- {n:'Mage',d:'STR/AGL/WLL 40 + CHA 55 + INT 30 before · FTD 50 after',src:'197 builds',pre:{STR:40,AGL:40,WLL:40,CHA:55,INT:30},post:{FTD:50},oath:'Soulbreaker',wtype:'MED',wtarget:30,atts:{FLM:80,ICE:40},
-  t:['Neuroplasticity','Perfect Flash','Eureka','Everchanging Aegis','Charismatic Cast','Tough Love','Showstopper','Ghost','Exoskeleton','To The Finish']},
- {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after · WLL 0',src:'100 builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'Jetstriker',wtype:'LHT',wtarget:85,atts:{WND:60,LTN:40},
-  t:['Charismatic Cast','Tough Love','Ghost','Conditioned Runner','Neuroplasticity','Exoskeleton','To The Finish']},
+ {n:'Clean Slate',d:'0 in everything · no oath, weapon, attunement, talents or equipment',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
+ {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · Heavy 90',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'Silentheart',wtype:'HVY',wtarget:90,atts:{},dsplit:0,prio:30,t:[]},
+ {n:'Bossraid Mage',d:'FTD 75 + WLL 50 + INT 40 before the shrine · attunement 100 of your choice, no weapon',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100},dsplit:100,prio:30,t:[]},
+ {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 before · FTD 50 after (1 before)',src:'Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30},post:{FTD:50},oath:'Bladeharper',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[]},
+ {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before)',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'LHT',wtarget:75,atts:{},t:[]},
+ {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before)',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},t:[]},
+ {n:'Jetstriker Agility',d:'AGL 75 + STR 40 before · AGL 50, FTD 50 after',src:'agility builds',pre:{AGL:75,STR:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{},t:[]},
+ {n:'Willpower Tank',d:'WLL 100 + FTD 100 before · the shrine brings FTD down to about 75',src:'willpower tank builds',pre:{WLL:100,FTD:100},post:{FTD:75},oath:'Dawnwalker',wtype:'MED',wtarget:60,atts:{},t:[]},
+ {n:'High Intelligence',d:'INT 90 + AGL 40 before · FTD 50 after (1 before)',src:'intelligence builds',pre:{INT:90,AGL:40},post:{FTD:50},oath:'Saltchemist',wtype:'LHT',wtarget:60,atts:{},t:[]},
+ {n:'Reinforced Armor',d:'STR 40 + AGL 40 before · FTD 90 after (1 before)',src:'Reinforced Armor builds',pre:{STR:40,AGL:40},post:{FTD:90},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},t:[]},
+ {n:'Mage',d:'CHA 55 + INT 30 + WLL 40 before · FTD 50 after (1 before) · attunement 100 of your choice',src:'mage builds',pre:{CHA:55,INT:30,WLL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'MED',wtarget:0,atts:{FLM:100},dsplit:100,t:[]},
+ {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after (1 before) · WLL 0',src:'no-willpower builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'Jetstriker',wtype:'LHT',wtarget:85,atts:{},caps:{WLL:{on:true,max:0}},t:[]},
 ];
 
 // ================= look / themes =================
@@ -4061,8 +4070,9 @@ function evaluate(P,R,oathAlts){
     if(!best||bc===Infinity){impossible=true;continue}applyAlt(best,final,adds);if(it.name==='oath')oathPick=best}
   const postSum=ALL.reduce((s,k)=>s+adds[k],0);
   const nAtt=ATTS.filter(k=>final[k]>0).length;
-  // pre-shrine is the peak: an attribute invested before the shrine may not end above its pre-shrine value
-  let reup=0;const reupK=[];if(S.noReup!==false)for(const k of ATTR){if(P[k]>0&&!(S.pin&&k in S.pin)&&final[k]>P[k]){reup+=final[k]-P[k];reupK.push(k)}}
+  // pre-shrine is the peak: a stat invested before the shrine (more than 1) gets no points after it: either ~1 before and the rest
+  // after, or high before and the shrine brings it down. Never shrink a stat and then raise it again.
+  let reup=0;const reupK=[];if(S.noReup!==false&&!noShrine)for(const k of ALL){if(P[k]>1&&!(S.pin&&k in S.pin)&&adds[k]>0){reup+=adds[k];reupK.push(k)}}
   // Shrine of Mastery after: take talents first, then refund up to 3 points
   let qmSum=0;for(const [k,v] of Object.entries(qm)){const d=Math.min(v,final[k]||0);final[k]-=d;qmSum+=d}
   const used=preSum-pmSum-sh.refund+postSum-Math.max(0,nAtt-1)-qmSum;
@@ -4778,7 +4788,7 @@ function renderResults(res){
   if(latePre.length)note+=`<div class="callout warn">${esc(latePre.join(', '))} need${latePre.length>1?'':'s'} more Power than you'll have at the shrine (Power ${prePwr}).</div>`;
   if(R.capBlocked&&R.capBlocked.length)note+=`<div class="callout warn">Skipped because of your stat limits: ${esc(R.capBlocked.join(', '))}. Optimize removes those talents${R.capBlocked.some(n=>n.startsWith('Oath:'))?'; pick another oath (see Oath requirements)':''}, or untick a limit.</div>`;
   if(best.noShrine&&ALL.some(k=>best.P[k]>0))note+=`<div class="callout warn">The Shrine of Order needs Power ${SHRINE_PWR} (${SHRINE_PTS} points). This plan only reaches Power ${prePwr} (${best.preSum} points) first, so it skips the shrine. ${S.manual?'Raise your pre‑shrine stats to use it.':'Optimize looks for a plan that reaches it when that saves points.'}</div>`;
-  if(best.reup)note+=`<div class="callout warn">${esc(best.reupK.map(k=>`${ANAME[k]} goes ${best.P[k]} before the shrine but ${best.final[k]} at the end`).join('; '))}. Your floors force a stat back above its pre‑shrine value; raise its pre‑shrine value, pin it, or untick “Pre‑shrine is the peak”.</div>`;
+  if(best.reup)note+=`<div class="callout warn">${esc(best.reupK.map(k=>`${statName(k)} is ${best.P[k]} before the shrine, ${best.sh.out[k]||0} after it, then raised again to ${best.final[k]}`).join('; '))}. Your floors force a stat back up after the shrine; set it to 1 before the shrine (all points after) or high enough before it, pin it, or untick “Pre‑shrine is the peak”.</div>`;
   if(best.capOver)note+=`<div class="callout warn">Your floors or targets push a limited stat over its maximum by ${best.capOver}. Lower the floor or raise the limit.</div>`;
   if(best.manual&&best.unmet.length)note+=`<div class="callout warn">Not reached with these stats: ${esc(best.unmet.map(u=>u.n+' (+'+u.c+')').join(', '))}.</div>`;
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
@@ -4849,6 +4859,7 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
       if(res.best&&res.best.free<0&&!res.best.impossible){const tr=trimToBudget(res);dropped=dropped.concat(tr.dropped);res=compute({starts:18,iters:200,seedP:tr.res.best&&tr.res.best.P})}
       if(spend&&res.best&&res.best.free>0&&!res.best.impossible){
         // spend where weighted damage per point is highest: weapon -> M1, attunement -> mantras (aiming at 20-point mantra levels)
+        const prevRes=res,prevW=S.wtarget,prevA={...S.atts};
         let free=res.best.free;const fin={...res.best.final};const names=res.R.names;const ms=Object.keys(S.atts).length?(S.dsplit==null?50:S.dsplit)/100:0;
         const val=f=>{const d=damageOf(f,names);return (1-ms)*d.hit/d.w.d*100+ms*(d.md?d.md.pct:0)};
         const keys=[...(S.wtarget>0||!S.weapon?[S.wtype]:[]),...Object.keys(S.atts)];
@@ -4859,6 +4870,8 @@ function optimizeAll(opts){if(S.manual){if(opts&&opts.after)opts.after();else sa
         if(fin[S.wtype]>(+S.wtarget||0))S.wtarget=fin[S.wtype];
         for(const k of Object.keys(S.atts))if(fin[k]>S.atts[k])S.atts[k]=fin[k];
         res=compute({starts:18,iters:200,seedP:res.best.P});
+        // spending must never push the build over budget: keep the unspent version if it does
+        if(!res.best||res.best.impossible||res.best.free<0){S.wtarget=prevW;S.atts=prevA;res=prevRes}
       }
       renderInputs();renderResults(res);
       const still=res.best&&!res.best.impossible&&res.best.free<0?` Still over by ${-res.best.free}: ${S.req.length?'your required talents and stat floors':'your stat floors, weapon and attunement targets'} need more than ${BUDGET} points on their own${Object.keys(S.pin||{}).length?', together with your pinned stats':''}.`:'';
@@ -5010,8 +5023,8 @@ function openWizard(p){
     <label>Damage from<select id="wz-ds">${opts([0,25,50,75,100],p.dsplit!=null?p.dsplit:(Object.keys(p.atts).length?(p.wtarget>0?50:100):0),v=>({0:'Weapon (M1) only',25:'Mostly weapon',50:'Weapon and mantras evenly',75:'Mostly mantras',100:'Mantras only'})[v])}</select></label>
     <label>Optimizer favors<select id="wz-pr">${opts([20,50,80],p.prio!=null?p.prio:50,v=>({20:'More damage',50:'Balanced',80:'More talent options'})[v])}</select></label>
    </div>
-   <label class="hint"><input type="checkbox" id="wz-core" checked> ${p.src==='AI build maker'?`Add what I picked from your description: ${p.t.length} talent${p.t.length===1?'':'s'}${(p.req||[]).length?` (${p.req.length} locked as required)`:''}${(p.m||[]).length?`, mantras ${esc(p.m.join(', '))}`:''}${p.outfit?`, outfit ${esc(p.outfit)}`:''}${p.t.length?': '+esc(p.t.join(', ')):''}`:`Add the preset's core talents (${p.t.length}) that fit these choices`}</label>
-   <label class="hint"><input type="checkbox" id="wz-pop" checked> Then auto‑pick up to 20 popular talents these stats already reach</label>
+   <label class="hint" ${!p.t.length&&p.src!=='AI build maker'&&!(p.m||[]).length?'hidden':''}><input type="checkbox" id="wz-core" checked> ${p.src==='AI build maker'?`Add what I picked from your description: ${p.t.length} talent${p.t.length===1?'':'s'}${(p.req||[]).length?` (${p.req.length} locked as required)`:''}${(p.m||[]).length?`, mantras ${esc(p.m.join(', '))}`:''}${p.outfit?`, outfit ${esc(p.outfit)}`:''}${p.t.length?': '+esc(p.t.join(', ')):''}`:`Add the preset's core talents (${p.t.length}) that fit these choices`}</label>
+   <label class="hint"><input type="checkbox" id="wz-pop" ${p.src==='AI build maker'||p.t.length?'checked':''}> Then auto‑pick up to 20 popular talents these stats already reach</label>
    <label class="hint"><input type="checkbox" id="wz-help" ${S.help?'checked':''}> Help mode: show tips on what stats could be better as I build</label>
    <div class="wizact"><button value="cancel" formnovalidate>Cancel</button><button type="button" id="wz-skip">Use preset as is</button><button type="button" class="primary" id="wz-go">Start build</button></div>`;
   const d=$('wiz');if(d.showModal)d.showModal();else d.setAttribute('open','');
@@ -5026,7 +5039,7 @@ function wizardApply(){
   const autoOath=v('wz-oath')==='__auto';
   S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
   // a new build starts clean: required talents, equipment and enchant from the previous build don't carry over
-  S.req=[];S.caps={};S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
+  S.req=[];S.caps=JSON.parse(JSON.stringify(p.caps||{}));S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
   if(S.oath==='Silentheart'){const wa=p.weapon&&WBY.get(p.weapon);for(const k of Object.keys(S.atts))if(!(wa&&wa.req.s[k]))delete S.atts[k]}
   const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
   // talents the AI build maker was asked for are always kept; preset core talents are kept when these targets reach them
@@ -5172,7 +5185,7 @@ function openShare(){$('sharelink').value=buildLink();$('impmsg').textContent=''
 function linkToast(msg){$('copied').innerHTML=`${esc(msg)} <span class="linkline">Build link: <input class="linkbox" readonly value="${esc(buildLink())}" aria-label="Build link"> <button class="mini" data-x="copylink">Copy link</button></span>`}
 async function runImport(raw,msgEl,done){const out=m=>{if(msgEl){if(m.html)msgEl.innerHTML=m.html;else msgEl.textContent=m.msg||''}else if(m.html)$('copied').innerHTML=m.html;else say(m.msg||'')};
   out({msg:'Reading…'});let r;try{r=await smartImport(raw)}catch(e){r={ok:false,msg:'That build could not be read.'}}
-  if(r.ok){if(done)done();sayUndo(r.msg);if(msgEl)msgEl.textContent=''}else out(r)}
+  if(r.ok){if(done)done();sayUndo(r.msg);if(msgEl)msgEl.textContent=''}else{out(r);if(DW_LINK.test(String(raw||''))&&$('dwcohelp'))$('dwcohelp').open=true}}
 async function aiGo(){const txt=$('aitext').value.trim();if(!txt){$('aimsg').textContent='Type a few words about the build first.';return}
   let base=null;let words=txt;
   // a linked or pasted build becomes the starting point; the rest of the text says what to change
@@ -5340,12 +5353,11 @@ function presetFromDwb(b){const fin=b.fin||{},pre=b.pre||{};const wt=WEPS.slice(
 // Claude app's browser (desktop app), else ask the person to paste the build data
 async function fetchDwco(id){const url='https://deepwoken.co/api/proxy/builds/'+encodeURIComponent(id);
   try{const r=await fetch(url,{credentials:'omit'});if(r.ok){const j=await r.json();if(j&&(j.attributes||j.talents))return {j,url}}}catch(e){}
-  try{const c=window.claude;const mcp=c&&c.use?await c.use('mcp'):null;
-    if(mcp){await mcp.callTool('host:claude_browser','navigate',{url});const res=await mcp.callTool('host:claude_browser','get_page_text',{});
-      const txt=typeof res.payload==='string'?res.payload:JSON.stringify(res.payload||'')+(res.content||[]).map(b=>b.text||'').join('\n');const j=extractJson(txt);if(j&&(j.attributes||j.talents))return {j,url}}}catch(e){return {url,err:e&&e.code||'error'}}
   return {url,err:'blocked'}}
-const pasteHelp=url=>`This page can't read deepwoken.co by itself here. Open <a href="${esc(url)}" target="_blank" rel="noopener">the build's data</a>, select all (Ctrl+A), copy, and paste it into this box in place of the link, then try again.`;
 // one entry point for every kind of import
+// deepwoken.co only lets its own pages read build data, so this snippet runs there (bookmark or console) and copies the build
+const DWCO_SNIP=`(async()=>{try{const id=new URLSearchParams(location.search).get('id');if(!/(^|\\.)deepwoken\\.co$/.test(location.hostname)||!id){alert('Open a build on deepwoken.co first (its address has ?id=...), then use this again.');return}const t=await(await fetch('/api/proxy/builds/'+encodeURIComponent(id))).text();if(t.indexOf('"talents"')<0){alert('deepwoken.co did not send the build. Reload the page and try again.');return}const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:20px;top:20px;z-index:99999;width:calc(100% - 40px);height:180px';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}if(!ok&&navigator.clipboard){try{await navigator.clipboard.writeText(t);ok=true}catch(e){}}if(ok){a.remove();alert('Build copied. Go back to Meta Builder and paste it into Import a build.')}else alert('Press Ctrl+C (Cmd+C on Mac) to copy the selected build, then paste it into Meta Builder.')}catch(e){alert('Could not read the build: '+e)}})()`;
+const pasteHelp=url=>`deepwoken.co doesn't let other sites read its builds, so the link alone can't be opened here. On the build page, use the <b>📋 Copy build for Meta Builder</b> bookmark (steps under “Importing from deepwoken.co” in <b>Import a build</b> on the Stats tab), then paste what it copies.`;
 async function smartImport(raw){const txt=String(raw||'').trim();if(!txt)return {ok:false,msg:'Paste something to import first.'};
   if(/dw1[A-Za-z0-9_-]{10,}/.test(txt)){try{const next=decodeBuild(txt.match(/dw1[A-Za-z0-9_-]+/)[0]);pushUndo('Import');Object.assign(S,next);renderInputs();run();return {ok:true,msg:'Meta Builder build imported.'}}catch(e){return {ok:false,msg:'That Meta Builder code is damaged.'}}}
   const j=txt.includes('{')?extractJson(txt):null;if(j&&(j.attributes||j.talents||j.preShrine))return {ok:true,msg:applyDwb(dwbFromCoJson(j))};
@@ -5420,10 +5432,10 @@ function statHint(k){const b=last&&last.best;if(!b){$('stathint').textContent=''
   $('stathint').innerHTML=unlockListHtml(statName(k),u)}
 function applyPreset(p){
   pushUndo(p.clean?'Clean Slate':'preset '+p.n);
-  if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';
-    renderInputs();{const R=requirements();const Z=Object.fromEntries(ALL.map(k=>[k,0]));renderResults({R,best:evaluate(Z,R,R.oathAlts)||compute({starts:2,iters:60}).best,baseFree:noShrineFree(R)})}sayUndo(`Clean slate: every stat at 0, no oath or attunement.${S.req.length?` Your ${S.req.length} required talent${S.req.length>1?'s':''} stayed.`:''}`);return}
+  if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
+    renderInputs();{const R=requirements();const Z=Object.fromEntries(ALL.map(k=>[k,0]));renderResults({R,best:evaluate(Z,R,R.oathAlts)||compute({starts:2,iters:60}).best,baseFree:noShrineFree(R)})}sayUndo('Clean slate: every stat at 0, no oath, attunement, talents, mantras or equipment.');return}
   S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.pin={};
-  S.sel=p.t.filter(n=>TBY.has(n));S.mantras=[];S.when={};
+  S.sel=p.t.filter(n=>TBY.has(n));S.mantras=[];S.when={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));
   if(S.manual)manualFromTargets();
   renderInputs();optimizeAll({noSpend:true,noUndo:true});say(`Loaded the ${p.n} preset. ${p.src} on deepwoken.co start like this. Add talents, then press Optimize build.`);
 }
@@ -5568,6 +5580,12 @@ $('reqin').addEventListener('input',renderReqBrowse);
 $('reqbq').addEventListener('input',()=>{S.blim=40;renderReqBrowse()});
 $('wishform').addEventListener('submit',e=>{e.preventDefault();const v=$('wishin').value;if(!v.trim())return;pushUndo('What you want');const did=applyWish(v);$('wishmsg').textContent=did.length?'Got it: '+did.join(' · ')+'. Press Optimize build to apply.':'I didn\'t catch anything. Try “no willpower”, “keep charisma under 30”, “more damage”, “no Ghost”, “must have Speed Demon”.';renderInputs();run()});
 $('oathq').addEventListener('input',renderOathCards);$('oathfit').addEventListener('change',renderOathCards);
+$('bmlink').href='javascript:'+encodeURIComponent(DWCO_SNIP);
+$('bmlink').addEventListener('click',e=>{e.preventDefault();say('Drag this button to your bookmarks bar, then click the bookmark on a deepwoken.co build page.')});
+$('bmcopy').addEventListener('click',()=>copyText(DWCO_SNIP,'Code copied. Paste it into the console on the deepwoken.co build page and press Enter.'));
+$('imp1form').addEventListener('submit',e=>{e.preventDefault();runImport($('imp1').value,$('imp1msg'),()=>{$('imp1').value=''})});
+// pasting a full build imports it straight away
+$('imp1').addEventListener('paste',()=>setTimeout(()=>{const v=$('imp1').value;if(/dw1[A-Za-z0-9_-]{10,}/.test(v)||/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)||(v.includes('{')&&/"talents"|"attributes"/.test(v)))runImport(v,$('imp1msg'),()=>{$('imp1').value=''});else if(DW_LINK.test(v)){$('imp1msg').innerHTML=pasteHelp('');$('dwcohelp').open=true}},0));
 $('imptext').addEventListener('input',()=>{const v=$('imptext').value;$('impmsg').textContent=/dw1[A-Za-z0-9_-]{10,}/.test(v)?'Looks like a Meta Builder link. Press Import build.':DW_LINK.test(v)?'Looks like a deepwoken.co build. Press Import build.':/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)?'Looks like Deepwoken build text. Press Import build.':''});
 $('aitext').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('ai-go').click()}});
 $('wtop').closest('details').addEventListener('toggle',e=>{if(e.target.open)renderWeaponTop()});

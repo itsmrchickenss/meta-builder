@@ -122,6 +122,11 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 
 ## v1.15 decisions
 - Presets are starting stats only (no core talents, no auto-picked talents): defining stat floors, oath, weapon type. Fortitude is never equal before and after the shrine: either 1 before and the rest after, or high before and the shrine brings it down.
-- "Pre-shrine is the peak" (on by default): a stat above 1 before the shrine gets no points after it (penalty in `evaluate`, `reup`).
+- "Pre-shrine is the peak" (on by default): an attribute (STR..CHA) above 1 before the shrine gets no points after it (penalty in `evaluate`, `reup`). Weapon and attunement stats may be re-raised (top builds do Ironsing 60 before -> 80 after).
 - deepwoken.co (Oct 2026) refuses its build API to other sites and to direct page loads (403 "Forbidden"); only its own pages can fetch `/api/proxy/builds/<id>`. Import uses a bookmarklet / console snippet (`DWCO_SNIP`) that runs on the build page and copies the JSON, which the user pastes into Import a build. Fixture: `tests/fixtures/dwco-build.json`.
 - Clean Slate clears talents, mantras, required/avoided talents, caps and equipment too.
+
+## v1.16 presets from deepwoken.co top 1000 (Oct 2026)
+- Elder / Enmity: Bladeharper Ironsing (Elderdon, elder wr builds): CHA 40 before, INT 90 after (real builds reach 100 but shrine below Power 8), STR 25, Ironsing 80, Shadowcast 20, Medium 90 Shattered Katana, Prophet's Cloak.
+- Brick Wall Dawnwalker: FTD/WLL 100 before -> 75, Frostdraw 80 + Flamecharm 40, steam path (Brick Wall, Flashboil, Boiling Point locked), Heavy 40 Gran Sudaruska.
+- The top-builds list is still readable from a deepwoken.co page: fetch('/api/proxy/builds?sort=top&limit=50&page=N').

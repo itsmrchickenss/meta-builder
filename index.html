@@ -414,7 +414,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.15</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.16</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -509,7 +509,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <h2>Optimizer</h2>
     <div class="optbar"><p>Best pre‑shrine stats and pre/post order. Over budget? It drops the talents with the worst value per point.</p><button class="primary" data-optimize="1">Optimize build</button></div>
     <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
-    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: a stat raised before the shrine gets no points after it (either 1 before and the rest after, or high before and the shrine brings it down)</label>
+    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: an attribute (Strength…Charisma) raised before the shrine gets no points after it (either 1 before and the rest after, or high before and the shrine brings it down)</label>
     <label class="hint split" for="prio">Optimize for <b style="color:var(--bone)">damage</b><input type="range" id="prio" min="0" max="100" step="10"><b style="color:var(--bone)">talent options</b></label>
     <label class="hint split" for="dsplit">Damage from <b style="color:var(--bone)">M1 (weapon)</b><input type="range" id="dsplit" min="0" max="100" step="10"><b style="color:var(--bone)">mantras (attunement)</b></label>
     <p class="hint" id="dsplithelp" style="margin:0"></p>
@@ -3858,6 +3858,8 @@ const PRESETS=[
  {n:'Clean Slate',d:'0 in everything · no oath, weapon, attunement, talents or equipment',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
  {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · Heavy 90',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'Silentheart',wtype:'HVY',wtarget:90,atts:{},dsplit:0,prio:30,t:[]},
  {n:'Bossraid Mage',d:'FTD 75 + WLL 50 + INT 40 before the shrine · attunement 100 of your choice, no weapon',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100},dsplit:100,prio:30,t:[]},
+ {n:'Elder / Enmity',d:'Bladeharper Ironsing: CHA 40 before (shrinks down) · INT 1 before, 90 after · STR 25 · Ironsing 80, Shadowcast 20 · Shattered Katana',src:'top Elder / Enmity boss builds on deepwoken.co (Elderdon, elder wr)',pre:{CHA:40},post:{INT:90,STR:25},oath:'Bladeharper',wtype:'MED',wtarget:90,weapon:'Shattered Katana',outfit:"Prophet's Cloak",atts:{IRN:80,SDW:20},dsplit:25,prio:30,t:[]},
+ {n:'Brick Wall Dawnwalker',d:'FTD 100 + WLL 100 before (Brick Wall), shrine brings them to 75 · Frostdraw 80 + Flamecharm 40, steam path · Gran Sudaruska',src:'top Brick Wall Dawnwalker PvE builds on deepwoken.co (Kratos, Gran Sudaruska Steam)',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},oath:'Dawnwalker',wtype:'HVY',wtarget:40,weapon:'Gran Sudaruska',atts:{ICE:80,FLM:40},dsplit:50,prio:30,req:['Brick Wall','Flashboil','Boiling Point'],t:['Brick Wall','Flashboil','Boiling Point']},
  {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 before · FTD 50 after (1 before)',src:'Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30},post:{FTD:50},oath:'Bladeharper',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[]},
  {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before)',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'LHT',wtarget:75,atts:{},t:[]},
  {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before)',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},t:[]},
@@ -4070,9 +4072,10 @@ function evaluate(P,R,oathAlts){
     if(!best||bc===Infinity){impossible=true;continue}applyAlt(best,final,adds);if(it.name==='oath')oathPick=best}
   const postSum=ALL.reduce((s,k)=>s+adds[k],0);
   const nAtt=ATTS.filter(k=>final[k]>0).length;
-  // pre-shrine is the peak: a stat invested before the shrine (more than 1) gets no points after it: either ~1 before and the rest
+  // pre-shrine is the peak: an attribute (STR..CHA) invested before the shrine (more than 1) gets no points after it (weapon and
+  // attunement stats may be re-raised, as top builds do with e.g. Ironsing 60 before -> 80 after): either ~1 before and the rest
   // after, or high before and the shrine brings it down. Never shrink a stat and then raise it again.
-  let reup=0;const reupK=[];if(S.noReup!==false&&!noShrine)for(const k of ALL){if(P[k]>1&&!(S.pin&&k in S.pin)&&adds[k]>0){reup+=adds[k];reupK.push(k)}}
+  let reup=0;const reupK=[];if(S.noReup!==false&&!noShrine)for(const k of ATTR){if(P[k]>1&&!(S.pin&&k in S.pin)&&adds[k]>0){reup+=adds[k];reupK.push(k)}}
   // Shrine of Mastery after: take talents first, then refund up to 3 points
   let qmSum=0;for(const [k,v] of Object.entries(qm)){const d=Math.min(v,final[k]||0);final[k]-=d;qmSum+=d}
   const used=preSum-pmSum-sh.refund+postSum-Math.max(0,nAtt-1)-qmSum;
@@ -5023,8 +5026,8 @@ function openWizard(p){
     <label>Damage from<select id="wz-ds">${opts([0,25,50,75,100],p.dsplit!=null?p.dsplit:(Object.keys(p.atts).length?(p.wtarget>0?50:100):0),v=>({0:'Weapon (M1) only',25:'Mostly weapon',50:'Weapon and mantras evenly',75:'Mostly mantras',100:'Mantras only'})[v])}</select></label>
     <label>Optimizer favors<select id="wz-pr">${opts([20,50,80],p.prio!=null?p.prio:50,v=>({20:'More damage',50:'Balanced',80:'More talent options'})[v])}</select></label>
    </div>
-   <label class="hint" ${!p.t.length&&p.src!=='AI build maker'&&!(p.m||[]).length?'hidden':''}><input type="checkbox" id="wz-core" checked> ${p.src==='AI build maker'?`Add what I picked from your description: ${p.t.length} talent${p.t.length===1?'':'s'}${(p.req||[]).length?` (${p.req.length} locked as required)`:''}${(p.m||[]).length?`, mantras ${esc(p.m.join(', '))}`:''}${p.outfit?`, outfit ${esc(p.outfit)}`:''}${p.t.length?': '+esc(p.t.join(', ')):''}`:`Add the preset's core talents (${p.t.length}) that fit these choices`}</label>
-   <label class="hint"><input type="checkbox" id="wz-pop" ${p.src==='AI build maker'||p.t.length?'checked':''}> Then auto‑pick up to 20 popular talents these stats already reach</label>
+   <label class="hint" ${!p.t.length&&p.src!=='AI build maker'&&!(p.m||[]).length&&!(p.req||[]).length?'hidden':''}><input type="checkbox" id="wz-core" checked> ${p.src==='AI build maker'?`Add what I picked from your description: ${p.t.length} talent${p.t.length===1?'':'s'}${(p.req||[]).length?` (${p.req.length} locked as required)`:''}${(p.m||[]).length?`, mantras ${esc(p.m.join(', '))}`:''}${p.outfit?`, outfit ${esc(p.outfit)}`:''}${p.t.length?': '+esc(p.t.join(', ')):''}`:((p.req||[]).length?`Lock in this preset's key talents: ${esc(p.req.join(', '))}`:`Add the preset's core talents (${p.t.length}) that fit these choices`)}</label>
+   <label class="hint"><input type="checkbox" id="wz-pop" ${p.src==='AI build maker'?'checked':''}> Then auto‑pick up to 20 popular talents these stats already reach</label>
    <label class="hint"><input type="checkbox" id="wz-help" ${S.help?'checked':''}> Help mode: show tips on what stats could be better as I build</label>
    <div class="wizact"><button value="cancel" formnovalidate>Cancel</button><button type="button" id="wz-skip">Use preset as is</button><button type="button" class="primary" id="wz-go">Start build</button></div>`;
   const d=$('wiz');if(d.showModal)d.showModal();else d.setAttribute('open','');

@@ -255,6 +255,14 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .dwcall{display:block;margin-top:6px;font-style:normal;color:var(--bone)}
 .prebadge{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--abyss);background:var(--ice);border-radius:3px;padding:0 4px;margin-right:5px;vertical-align:1px}
 .pretxt{color:var(--ice);font-weight:600}
+.shotdrop{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1.5px dashed var(--line);border-radius:6px;padding:14px;background:var(--abyss)}
+.shotdrop.over{border-color:var(--brass);background:var(--brass-wash)}
+.shotprev{max-width:100%;max-height:320px;object-fit:contain;border:1px solid var(--line);border-radius:4px;background:var(--abyss)}
+.shotgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.shotbox{grid-template-columns:minmax(0,1fr) 4.2em 4.2em}
+.likely{display:grid;gap:2px;max-height:620px;overflow:auto}
+.lrow{display:flex;gap:8px;align-items:flex-start;padding:5px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.lrow input{margin-top:3px}.lrow .nm{min-width:0}.lrow small{display:block;color:var(--dim);font-size:11.5px}
 .tipacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
 #imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
@@ -404,7 +412,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.19</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.20</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -428,6 +436,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 
 <nav class="tabbar" id="tabbar">
   <div class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="t-imp" data-tab="imp" aria-controls="tab-imp"><b>⇩</b> Import</button>
     <button role="tab" id="t-build" data-tab="build" aria-controls="tab-build"><b>1</b> Stats</button>
     <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Talents &amp; mantras</button>
     <button role="tab" id="t-sum" data-tab="sum" aria-controls="tab-sum"><b>3</b> Summary</button>
@@ -443,8 +452,8 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="helpbox" id="help" hidden></div>
 
 <div id="results">
-<!-- ============ 1 STATS ============ -->
-<div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
+<!-- ============ IMPORT ============ -->
+<div class="tabpane grid" id="tab-imp" role="tabpanel" aria-labelledby="t-imp" hidden>
 <div class="col">
   <section class="panel" id="importpanel">
     <h2>Import a build</h2>
@@ -461,6 +470,48 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       <p class="hint" style="margin:0">No bookmarks bar? On the deepwoken.co build page open the browser console (F12), paste this code and press Enter: <button type="button" class="mini" id="bmcopy">Copy code</button></p>
     </details>
   </section>
+  <section class="panel" id="shotpanel">
+    <h2>Build from a screenshot</h2>
+    <p class="hint" style="margin:0">Got a picture of a build, like a frame from a YouTube video, the in‑game stat menu or a deepwoken.co page? Add it here. The stats are read from it, then the talents that build most likely has are filled in from top deepwoken.co builds with the same stats.</p>
+    <div class="shotdrop" id="shotdrop" tabindex="0" aria-label="Drop, paste or choose a screenshot">
+      <input type="file" id="shotfile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+      <button class="primary" type="button" id="shotpick">Choose image</button>
+      <span class="hint">or drop it here, or paste it (Ctrl+V)</span>
+    </div>
+    <img id="shotprev" class="shotprev" alt="Your screenshot" hidden>
+    <p class="hint" id="shotmsg" aria-live="polite" style="margin:0"></p>
+    <h3>Stats in the picture</h3>
+    <p class="hint" style="margin:0">Check what was read and fix anything that's wrong. Leave “before shrine” empty if the picture only shows one set of stats.</p>
+    <div id="shotstats"></div>
+    <div class="wq">
+      <label>Oath<select id="shotoath"></select></label>
+      <label>Weapon<input type="search" id="shotweapon" list="shotwlist" placeholder="If you know it" aria-label="Weapon"></label>
+    </div>
+    <datalist id="shotwlist"></datalist>
+    <button class="primary" type="button" id="shotguess">Find likely talents</button>
+  </section>
+</div>
+<div class="col">
+  <section class="panel" id="likelypanel">
+    <h2>Likely talents <small id="likelycount"></small></h2>
+    <p class="hint" style="margin:0">Ticked = most likely in this build: talents these stats allow, ranked by how often top deepwoken.co builds with the same stats take them, plus how often they go with the talents you saw. Untick any that are wrong.</p>
+    <div id="likely" class="likely"><p class="hint">Add a screenshot or type the stats, then press Find likely talents.</p></div>
+  </section>
+  <section class="panel" id="seenpanel">
+    <h2>Talents you see in the video <small id="seencount"></small></h2>
+    <p class="hint" style="margin:0">Add every talent you can spot. They're always kept, and the likely list re‑ranks around them.</p>
+    <form class="row" id="seenform" autocomplete="off"><input type="search" id="seenin" list="seenlist" placeholder="Type a talent or mantra name" aria-label="Talent you saw" style="flex:1 1 200px"><button class="primary" type="submit">Add</button></form>
+    <datalist id="seenlist"></datalist>
+    <p class="hint" id="seenmsg" aria-live="polite" style="margin:0"></p>
+    <div class="chips" id="seenchips"></div>
+    <div class="row" style="margin-top:8px"><button class="primary" type="button" id="shotload">Load this build into the planner</button></div>
+  </section>
+</div>
+</div>
+
+<!-- ============ 1 STATS ============ -->
+<div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
+<div class="col">
   <section class="panel">
     <div class="row spread"><h2>Starting presets</h2><label class="helpchk"><input type="checkbox" id="helpon"> Help mode</label></div>
     <p class="hint">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
@@ -1739,7 +1790,7 @@ function renderGear(){
   $('gnote').innerHTML=(st.bad.length?`<span class="gbad">Your final stats don't meet ${esc(st.bad.join(', '))}.</span> `:'')+'Effective HP = health ÷ (1 − armor × (1 − attacker penetration)). Assumes Power 20 at the end of the build. Set bonuses and talent health bonuses aren\'t counted.';
 }
 // ================= tabs, status, final stats, condensed talents =================
-const TABS=['build','req','sum','arm'];
+const TABS=['imp','build','req','sum','arm'];
 function showTab(id){if(id==='opt')id='build';if(!TABS.includes(id))id='build';S.tab=id;
   for(const k of TABS){$('tab-'+k).hidden=k!==id;$('t-'+(k==='build'?'build':k)).setAttribute('aria-selected',k===id)}
   save();if(id==='build'&&$('otbl').closest('details').open)renderOathTable()}
@@ -2526,6 +2577,108 @@ function buildGameText(){if(!last||!last.best)return '';const b=last.best,C=last
   return [name,`LVL ${powerAt(b.used)} None, Castaway, ${S.oath==='None'?'None':S.oath}`,'== ATTRIBUTES ==',line(ATTR,b.final),line(WEPS,b.final),line(ATTS,b.final),'== MANTRAS ==',...[...C.M.keys()],'== TALENTS ==',...tal.map(dwTalentName),
     ...(S.weapon?['== WEAPON ==',S.weapon]:[]),...(S.gear.outfit?['== OUTFIT ==',S.gear.outfit]:[]),'== PRE-SHRINE ==',line(ATTR,b.P),line(WEPS,b.P),line(ATTS,b.P)].join('\n')}
 
+
+// ================= build from a screenshot =================
+// Reading: in the Claude app Claude reads the picture (sample capability with images); elsewhere (GitHub Pages)
+// Tesseract text recognition runs in the browser. Likely talents: talents the stats allow, ranked by how often
+// top deepwoken.co builds whose stats allow them take them (CONDD), plus co-occurrence with the talents you saw.
+const SHOT={fin:{},pre:{},oath:'',weapon:'',seen:[],likely:[],off:new Set(),on:new Set(),guessed:false};
+const SHOT_ALIAS={STR:['strength','str'],FTD:['fortitude','fort','ftd'],AGL:['agility','agl','agi'],INT:['intelligence','int'],WLL:['willpower','will','wll'],CHA:['charisma','cha'],
+ HVY:['heavy wep','heavy weapon','heavy','hvy'],MED:['medium wep','medium weapon','medium','med'],LHT:['light wep','light weapon','light','lht'],
+ FLM:['flamecharm','flame charm','fir','flm'],ICE:['frostdraw','frost draw','ice'],LTN:['thundercall','thunder call','ltn'],WND:['galebreathe','gale breathe','wnd'],SDW:['shadowcast','shadow cast','sdw'],IRN:['ironsing','iron sing','mtl','irn'],BLD:['bloodrend','blood rend','bld']};
+const shotKey=name=>{const n=String(name||'').toLowerCase().replace(/[^a-z ]+/g,' ').replace(/\s+/g,' ').trim();if(!n)return null;for(const [k,al] of Object.entries(SHOT_ALIAS))if(al.includes(n))return k;
+  for(const [k,al] of Object.entries(SHOT_ALIAS))if(al.some(a=>a.length>=5&&n.startsWith(a)))return k;return null};
+const clamp100=v=>Math.max(0,Math.min(100,Math.round(+v||0)));
+// text recognition output -> stats ("Strength 25", "STR: 25", "25 STR", "Strength 40 -> 25")
+// common text-recognition slips inside words: 1/l/I and 0/o ("Wil1power", "F0rtitude")
+const ocrFix=t=>String(t||'').replace(/([A-Za-z])[1|!]([A-Za-z])/g,'$1l$2').replace(/([A-Za-z])0([A-Za-z])/g,'$1o$2').replace(/([A-Za-z])[1|!]([A-Za-z])/g,'$1l$2');
+function shotFromText(txt){txt=ocrFix(txt);const fin={},pre={};const lines=String(txt||'').split(/\n/);
+  for(const raw of lines){const l=' '+raw.toLowerCase().replace(/[|]/g,' ')+' ';
+    for(const [k,al] of Object.entries(SHOT_ALIAS)){if(k in fin)continue;
+      for(const a of al.slice().sort((x,y)=>y.length-x.length)){const ae=a.replace(/ /g,'\\s*');
+        let m=l.match(new RegExp('[^a-z]'+ae+'\\.?\\s*[:=]?\\s*(\\d{1,3})(?:\\s*(?:->|→|>|/|to)?\\s*(\\d{1,3}))?(?!\\d)'));
+        if(m){const a1=+m[1],a2=m[2]!=null?+m[2]:null;if(a1<=100){if(a2!=null&&a2<=100){pre[k]=a1;fin[k]=a2}else fin[k]=a1;break}}
+        m=l.match(new RegExp('(?:^|[^\\d])(\\d{1,3})\\s+'+ae+'(?![a-z])'));if(m&&+m[1]<=100){fin[k]=+m[1];break}}}}
+  // attunement words ("Galebreathe") are stat names here, not typos of talents ("Galebreather")
+  const names=findNames(nrm(txt),aiNames()).filter(h=>!(h.n.k==='talent'&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+nrm(txt).slice(h.at,h.end)+' '))));
+  return {fin,pre,talents:names.filter(h=>h.n.k==='talent').map(h=>h.n.n),mantras:names.filter(h=>h.n.k==='mantra').map(h=>h.n.n),oath:(names.find(h=>h.n.k==='oath')||{n:{}}).n.n||'',weapon:(names.find(h=>h.n.k==='weapon')||{n:{}}).n.n||''}}
+const SHOT_PROMPT=`This picture shows a character build from the Roblox game Deepwoken: maybe a frame from a YouTube video, the in-game stat menu, or a deepwoken.co builder page. Read only what you can actually see.
+Reply with only a JSON object like:
+{"final":{"Strength":25,"Fortitude":50,"Agility":25,"Intelligence":0,"Willpower":40,"Charisma":0,"Heavy Wep.":0,"Medium Wep.":90,"Light Wep.":0,"Flamecharm":80,"Frostdraw":0,"Thundercall":0,"Galebreathe":0,"Shadowcast":0,"Ironsing":0,"Bloodrend":0},"preShrine":null,"oath":null,"weapon":null,"talents":[],"mantras":[]}
+"final" = the stats shown (the build's final or post-shrine stats). "preShrine" = a second set only if the picture clearly shows pre-shrine stats too, else null. Leave out stats you can't read. "talents" and "mantras" = names you can read in the picture (no guesses). "oath" and "weapon" = names if shown, else null.`;
+function shotFromJson(j){if(!j||typeof j!=='object')return null;const fin={},pre={};
+  for(const [n,v] of Object.entries(j.final||{})){const k=shotKey(n);if(k&&v!=null)fin[k]=clamp100(v)}
+  for(const [n,v] of Object.entries(j.preShrine||{})){const k=shotKey(n);if(k&&v!=null)pre[k]=clamp100(v)}
+  const pick=(list,by)=>(Array.isArray(list)?list:[]).map(x=>{const h=findNames(nrm(String(x)),aiNames()).find(h=>h.n.k===by);return h?h.n.n:null}).filter(Boolean);
+  const o=j.oath?findNames(nrm(String(j.oath)),aiNames()).find(h=>h.n.k==='oath'):null;const w=j.weapon?findNames(nrm(String(j.weapon)),aiNames()).find(h=>h.n.k==='weapon'):null;
+  return {fin,pre,talents:pick(j.talents,'talent'),mantras:pick(j.mantras,'mantra'),oath:o?o.n.n:'',weapon:w?w.n.n:''}}
+let tessP=null;
+function loadTesseract(){if(window.Tesseract)return Promise.resolve(window.Tesseract);if(tessP)return tessP;
+  tessP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';sc.onload=()=>window.Tesseract?ok(window.Tesseract):no(new Error('no Tesseract'));sc.onerror=()=>{tessP=null;no(new Error('blocked'))};document.head.appendChild(sc)});return tessP}
+// enlarge and boost contrast before text recognition (video frames are small and soft)
+function shotCanvas(img){const sc=Math.max(1,Math.min(3,1800/img.naturalWidth));const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*sc);c.height=Math.round(img.naturalHeight*sc);
+  const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(img,0,0,c.width,c.height);const d=x.getImageData(0,0,c.width,c.height),a=d.data;let sum=0;
+  for(let i=0;i<a.length;i+=4){const g=.299*a[i]+.587*a[i+1]+.114*a[i+2];a[i]=a[i+1]=a[i+2]=g;sum+=g}
+  const mean=sum/(a.length/4);const inv=mean<128;for(let i=0;i<a.length;i+=4){let g=a[i];if(inv)g=255-g;g=Math.max(0,Math.min(255,(g-128)*1.6+128));a[i]=a[i+1]=a[i+2]=g}x.putImageData(d,0,0);return c}
+async function readShot(file){if(!file||!/^image\//.test(file.type)){$('shotmsg').textContent='That isn\'t an image. Use a PNG, JPEG, WebP or GIF.';return}
+  const url=URL.createObjectURL(file);const img=$('shotprev');img.src=url;img.hidden=false;await new Promise(r=>{if(img.complete&&img.naturalWidth)r();else{img.onload=r;img.onerror=r}});
+  const msg=$('shotmsg');msg.textContent='Reading the picture…';let got=null,how='';
+  try{const c=window.claude;const sample=c&&c.use?await c.use('sample'):null;
+    if(sample){const lim=await sample.limits().catch(()=>null);
+      if(lim&&lim.images){msg.textContent='Claude is reading the picture… (the first time, it asks you to allow this)';got=shotFromJson(await sample.json(SHOT_PROMPT,{images:[file]}));how='Claude read the picture'}}}
+  catch(e){const code=e&&e.code;msg.textContent=code==='rate_limited'?'Claude is busy right now; trying the built‑in reader…':'Trying the built‑in reader…'}
+  if(!got){try{msg.textContent='Reading text from the picture… (the first time downloads the reader, about 10 MB)';const T=await loadTesseract();const r=await T.recognize(shotCanvas(img),'eng');got=shotFromText(r.data.text);how='Read with text recognition'}catch(e){got=null}}
+  if(!got||!Object.keys(got.fin).length&&!got.talents.length){msg.textContent=got?'No stats could be read from this picture. Type them into the table below (a sharper, closer screenshot of the stat list reads best).':'The picture can\'t be read here. Type the stats into the table below.';renderShot();return}
+  SHOT.fin={...got.fin};SHOT.pre={...got.pre};if(got.oath)SHOT.oath=got.oath;if(got.weapon)SHOT.weapon=got.weapon;
+  for(const n of [...got.talents,...got.mantras])if(!SHOT.seen.includes(n))SHOT.seen.push(n);
+  const nS=Object.keys(got.fin).length,nT=got.talents.length+got.mantras.length;
+  msg.textContent=`${how}: ${nS} stat${nS===1?'':'s'}${nT?`, ${nT} talent${nT===1?'':'s'} or mantra${nT===1?'':'s'}`:''}${got.oath?', '+got.oath:''}. Check them below; text recognition can misread numbers.`;
+  renderShot();renderSeen();if(nS>=3)guessLikely()}
+function renderShot(){
+  const row=k=>`<span class="k">${esc(statName(k).replace(' Weapon',' Wep.'))}</span><input type="number" min="0" max="100" class="v" data-shot="pre:${k}" value="${SHOT.pre[k]!=null?SHOT.pre[k]:''}" aria-label="${esc(statName(k))} before shrine"><input type="number" min="0" max="100" class="v" data-shot="fin:${k}" value="${SHOT.fin[k]!=null?SHOT.fin[k]:''}" aria-label="${esc(statName(k))} final">`;
+  const hd='<span></span><span class="hd">before shrine</span><span class="hd">final</span>';
+  $('shotstats').innerHTML=`<div class="shotgrid">${[ATTR,WEPS,ATTS].map(ks=>`<div class="fbox ed shotbox">${hd}${ks.map(row).join('')}</div>`).join('')}</div>`;
+  $('shotoath').innerHTML=`<option value="">Unknown</option>`+OATHS.filter(o=>o.n!=='None').map(o=>`<option ${SHOT.oath===o.n?'selected':''}>${esc(o.n)}</option>`).join('');
+  $('shotweapon').value=SHOT.weapon||''}
+function shotCap(){const nM=SHOT.seen.filter(n=>MBY.has(n)&&!TBY.has(n)&&MBY.get(n).ty==='N').length;return 52+(12-Math.max(nM,6))*2}
+function likelyTalents(){const fin={...Object.fromEntries(ALL.map(k=>[k,0])),...SHOT.fin};const hasPre=Object.keys(SHOT.pre).length>=2;const pre=hasPre?{...Object.fromEntries(ALL.map(k=>[k,0])),...SHOT.pre}:null;
+  const oath=SHOT.oath;const seen=SHOT.seen.filter(n=>TBY.has(n));const seenSet=new Set(seen);const seenM=new Set(SHOT.seen.filter(n=>MBY.has(n)));
+  const C={T:new Map(seen.map(n=>[n,{}])),M:new Map([...seenM].map(n=>[n,{}]))};
+  // reference builds that share the talents you saw (and the oath) say what usually goes with them
+  let W=0;const co=new Map();for(const b of REF){let ov=0;for(const n of seen)if(b.t.has(n))ov++;const w=(seen.length?3*ov/seen.length:0)+(oath&&b.o===oath?1:0)+0.15;W+=w;for(const n of b.t)co.set(n,(co.get(n)||0)+w)}
+  const out=[];
+  for(const t of DB.T){if(!t.k||t.r==='Q'||t.req.q||t.n.startsWith('Oath:')||seenSet.has(t.n))continue;if(t.r==='O'&&t.c!==oath)continue;
+    if((t.req.t||[]).some(n=>n.startsWith('Oath:')&&n!=='Oath: '+oath))continue;if((t.req.m||[]).some(m=>!seenM.has(m)))continue;if((t.req.x||[]).some(x=>seenSet.has(x)))continue;
+    const alts=chainStatic(t);const cF=bestCost(alts,fin),cP=pre&&canPre(alts)?bestCost(alts,pre):Infinity;if(cF>0&&cP>0)continue;
+    const cr=condRate(t.n);const base=cr.m>=5?cr.pct/100:(POP.get(t.n)||0)/100;const c=(co.get(t.n)||0)/Math.max(W,1);const sy=synW(synOf(t.n,C));
+    out.push({n:t.n,score:base*0.55+c*0.9+sy*0.12,pct:Math.round(base*100),m:cr.m,co:Math.round(c*100),pre:cF>0,syn:synOf(t.n,C).map(x=>x.o)})}
+  out.sort((a,b)=>b.score-a.score);
+  const chosen=[];const has=new Set(seen);for(const r of out){const t=TBY.get(r.n);if((t.req.x||[]).some(x=>has.has(x)))continue;if([...has].some(h=>{const ht=TBY.get(h);return ht&&(ht.req.x||[]).includes(r.n)}))continue;chosen.push(r);has.add(r.n)}
+  return chosen}
+function guessLikely(){SHOT.likely=likelyTalents();SHOT.guessed=true;renderLikely()}
+function shotPicked(){const room=Math.max(0,shotCap()-SHOT.seen.filter(n=>TBY.has(n)).length);const auto=new Set(SHOT.likely.filter(r=>!SHOT.off.has(r.n)).slice(0,room).map(r=>r.n));
+  return SHOT.likely.filter(r=>(auto.has(r.n)||SHOT.on.has(r.n))&&!SHOT.off.has(r.n)).map(r=>r.n)}
+function renderLikely(){if(!SHOT.guessed){return}const room=Math.max(0,shotCap()-SHOT.seen.filter(n=>TBY.has(n)).length);const picked=new Set(shotPicked());
+  const show=SHOT.likely.slice(0,room+30);
+  $('likelycount').textContent=`${picked.size} ticked · room for about ${room}`;
+  $('likely').innerHTML=show.length?show.map(r=>`<label class="lrow"><input type="checkbox" data-likely="${enc(r.n)}" ${picked.has(r.n)?'checked':''}><span class="nm">${r.pre?'<i class="prebadge">PRE</i>':''}${esc(r.n)} <span class="hint">${esc(TBY.get(r.n).c)}</span><small>${r.m>=5?`${r.pct}% of top builds with these stats take it`:'popular in top builds'}${r.co>=20&&SHOT.seen.length?` · ${r.co}% match with what you saw`:''}${r.syn.length?` · ⚡ with ${esc(r.syn.slice(0,2).join(', '))}`:''}</small></span></label>`).join(''):'<p class="hint">No talents fit these stats yet. Check the numbers on the left.</p>'}
+function renderSeen(){$('seencount').textContent=SHOT.seen.length?String(SHOT.seen.length):'';
+  $('seenchips').innerHTML=SHOT.seen.map(n=>`<button type="button" class="chip have" data-seendel="${enc(n)}" title="Remove">${esc(n)}${MBY.has(n)&&!TBY.has(n)?' <small>mantra</small>':''} ✕</button>`).join('')||'<p class="hint" style="margin:0">None yet.</p>'}
+function addSeen(raw){const q=String(raw||'').trim();if(!q)return;const low=q.toLowerCase();
+  let n=DB.T.find(t=>t.n.toLowerCase()===low)?.n||DB.M.find(m=>m.n.toLowerCase()===low)?.n;
+  if(!n){const h=findNames(nrm(q),aiNames()).find(h=>h.n.k==='talent'||h.n.k==='mantra');n=h&&h.n.n}
+  if(!n){const part=DB.T.find(t=>t.n.toLowerCase().includes(low))||DB.M.find(m=>m.n.toLowerCase().includes(low));n=part&&part.n}
+  if(!n){$('seenmsg').textContent=`No talent or mantra called “${q}”.`;return}
+  if(SHOT.seen.includes(n)){$('seenmsg').textContent=`${n} is already in the list.`;return}
+  SHOT.seen.push(n);SHOT.off.delete(n);$('seenmsg').textContent=`Added ${n}.`;$('seenin').value='';renderSeen();if(SHOT.guessed)guessLikely()}
+function loadShot(){const fin=SHOT.fin;if(Object.keys(fin).length<2){say('Add the stats from the picture first (at least a couple).');return}
+  const talents=[...SHOT.seen.filter(n=>TBY.has(n)),...shotPicked()];const mantras=SHOT.seen.filter(n=>MBY.has(n)&&!TBY.has(n));
+  const pre=Object.keys(SHOT.pre).length>=3?{...SHOT.pre}:null;const w=SHOT.weapon&&WBY.has(SHOT.weapon)?SHOT.weapon:'';
+  // what you saw in the video is locked in as required, so fitting the budget never drops it
+  S.req=[...new Set(SHOT.seen.filter(n=>TBY.has(n)||MBY.has(n)))];S.avoid=(S.avoid||[]).filter(n=>!S.req.includes(n));
+  const msg=applyDwb({name:'Screenshot build',src:'your screenshot',fin:{...fin},pre,oath:SHOT.oath||'None',weapon:w,talents,mantras,unknown:[]});
+  showTab('build');sayUndo(msg)}
+
 // ---- talent hover card ----
 function tipHtml(n){const t=TBY.get(n);const C=last?last.R.C:closure();const sy=t?synOf(n,C):[];const d=TDESC.get(n);
   return `<b>${esc(n)}</b>${t?` <span class="hint">${esc(t.c)}</span>`:''}${t?`<div class="mono tipreq">${esc(fmtReqFull(t))}</div>`:''}<div>${esc(d||'No description on deepwoken.co.')}</div>${rateTxt(n)?`<div class="hint">Taken by ${esc(rateTxt(n))}</div>`:''}${sy.length?`<div class="syn">⚡ Works with ${esc(sy.map(s=>s.o).join(', '))}</div>`:''}`}
@@ -2751,6 +2904,25 @@ $('bmcopy').addEventListener('click',()=>copyText(DWCO_SNIP,'Code copied. Paste 
 $('imp1form').addEventListener('submit',e=>{e.preventDefault();runImport($('imp1').value,$('imp1msg'),()=>{$('imp1').value=''})});
 // pasting a full build imports it straight away
 $('imp1').addEventListener('paste',()=>setTimeout(()=>{const v=$('imp1').value;if(/dw1[A-Za-z0-9_-]{10,}/.test(v)||/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)||(v.includes('{')&&/"talents"|"attributes"/.test(v)))runImport(v,$('imp1msg'),()=>{$('imp1').value=''});else if(DW_LINK.test(v)){$('imp1msg').innerHTML=pasteHelp('');$('dwcohelp').open=true}},0));
+
+// screenshot import
+$('shotpick').addEventListener('click',()=>$('shotfile').click());
+$('shotfile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)readShot(f);e.target.value=''});
+$('shotdrop').addEventListener('dragover',e=>{e.preventDefault();$('shotdrop').classList.add('over')});
+$('shotdrop').addEventListener('dragleave',()=>$('shotdrop').classList.remove('over'));
+$('shotdrop').addEventListener('drop',e=>{e.preventDefault();$('shotdrop').classList.remove('over');const f=[...(e.dataTransfer.files||[])].find(f=>/^image\//.test(f.type));if(f)readShot(f)});
+document.addEventListener('paste',e=>{if(S.tab!=='imp')return;const it=[...((e.clipboardData&&e.clipboardData.items)||[])].find(i=>/^image\//.test(i.type));if(it){e.preventDefault();readShot(it.getAsFile())}});
+$('shotstats').addEventListener('change',e=>{const d=e.target.dataset.shot;if(!d)return;const [ph,k]=d.split(':');const o=ph==='pre'?SHOT.pre:SHOT.fin;if(e.target.value==='')delete o[k];else o[k]=clamp100(e.target.value);if(SHOT.guessed)guessLikely()});
+$('shotoath').addEventListener('change',e=>{SHOT.oath=e.target.value;if(SHOT.guessed)guessLikely()});
+$('shotweapon').addEventListener('change',e=>{const v=e.target.value.trim();const h=v?findNames(nrm(v),aiNames()).find(h=>h.n.k==='weapon'):null;SHOT.weapon=WBY.has(v)?v:h?h.n.n:'';e.target.value=SHOT.weapon||v});
+$('shotguess').addEventListener('click',()=>{if(Object.keys(SHOT.fin).length<2){$('shotmsg').textContent='Type at least a couple of the stats first.';return}guessLikely()});
+$('likely').addEventListener('change',e=>{const n=e.target.dataset.likely&&decodeURIComponent(e.target.dataset.likely);if(!n)return;if(e.target.checked){SHOT.off.delete(n);SHOT.on.add(n)}else{SHOT.off.add(n);SHOT.on.delete(n)}renderLikely()});
+$('seenform').addEventListener('submit',e=>{e.preventDefault();addSeen($('seenin').value)});
+$('seenchips').addEventListener('click',e=>{const b=e.target.closest('[data-seendel]');if(!b)return;const n=decodeURIComponent(b.dataset.seendel);SHOT.seen=SHOT.seen.filter(x=>x!==n);renderSeen();if(SHOT.guessed)guessLikely()});
+$('shotload').addEventListener('click',loadShot);
+$('seenlist').innerHTML=[...DB.T.filter(t=>!t.n.startsWith('Oath:')).map(t=>t.n),...DB.M.map(m=>m.n)].sort().map(n=>`<option value="${esc(n)}">`).join('');
+$('shotwlist').innerHTML=DB.W.map(w=>`<option value="${esc(w.n)}">`).join('');
+renderShot();renderSeen();
 $('imptext').addEventListener('input',()=>{const v=$('imptext').value;$('impmsg').textContent=/dw1[A-Za-z0-9_-]{10,}/.test(v)?'Looks like a Meta Builder link. Press Import build.':DW_LINK.test(v)?'Looks like a deepwoken.co build. Press Import build.':/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)?'Looks like Deepwoken build text. Press Import build.':''});
 $('aitext').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('ai-go').click()}});
 $('wtop').closest('details').addEventListener('toggle',e=>{if(e.target.open)renderWeaponTop()});

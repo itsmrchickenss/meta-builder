@@ -141,3 +141,9 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 
 ## v1.19
 - `sliderRebalance` in Optimize: the damage <-> talent options slider trades weapon/attunement targets against talents (damage: up toward 100, paid by lowest-value non-damage talents, damage talents fill slots; talent options: targets down toward the weapon requirement / 40, popular+synergy talents fill). Dead zone 35-65. Undone if it cannot be paid for. `talentVal` is slider-aware. Sliders update state on input and Optimize reads them directly.
+
+## v1.20 Import tab + screenshot builds
+- New first tab "Import" (`tab-imp`): paste import + deepwoken.co bookmark, "Build from a screenshot", "Likely talents", "Talents you see in the video".
+- Reading: Claude artifact uses `sample.json` with the image (capability `sample:{images:true}`); GitHub Pages loads Tesseract.js 5.1.1 from jsdelivr on demand (`loadTesseract`, `shotCanvas` upscales + contrast, `ocrFix`, `shotFromText`).
+- `likelyTalents`: talents the stats allow (final, or pre-shrine if >=2 pre stats given), score = 0.55*conditional take rate (CONDD, else POP) + 0.9*co-occurrence with seen talents in REF builds (+oath) + synergy; exclusives respected; ticks the top (cap - seen) where cap assumes >=6 mantras.
+- Loading: seen talents/mantras become required (`S.req`), then `applyDwb`.

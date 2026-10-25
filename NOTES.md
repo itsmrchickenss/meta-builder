@@ -115,7 +115,7 @@ All game data is a snapshot of **deepwoken.co** (October 2026). The fandom wiki 
 - Refreshing data means pulling from deepwoken.co again with the endpoints above and regenerating `src/data/*.txt` in the same formats.
 
 ## Version
-The version shown next to the title is in `src/template.html` (`<small class="ver">`). Bump it with each release (started at v1.12).
+The version shown next to the title is in `src/template.html` (`<small class="ver">`). Pre-release numbering is v0.x (v0.23 now); the owner sets v1.0 at release. Bump it with each release.
 
 ## Tabs (v1.14)
 1 Stats (presets, stat table: Before shrine / Shrine leaves / After shrine at least + final, optimizer, weapon, attunements, oath, wishes) · 2 Talents & mantras (picker, required/avoid, browse, your talents, mantras, combos) · 3 Summary · 4 Armor. Old saved tab `opt` maps to Stats. Pane ids stay `tab-build`, `tab-req`, `tab-sum`, `tab-arm`.
@@ -158,3 +158,8 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 
 ## v1.23 Adjustments
 - `#adjpanel` under the stats table, shown after an AI build (`S.aiAdj`, Hide button). `applyAdjust` understands exact values ("int to 30"), relative ("lower cha by 10", "more agility" = +15 from the current final), attunement swaps/adds/removes, weapon type/level, named oath/weapon/outfit, add/remove talents and mantras, tankier/glass cannon/more mobile, then falls through to `applyWish`. Values it sets go in `S.keep` so `easeFloors` lowers other targets first. `runAdjust` re-optimizes; if the build still cannot fit it undoes the change and says how many points were missing.
+
+## v0.23
+- Version renamed to v0.23 (owner sets v1.0 at release).
+- Sticky bar compacted (grid: tabs row scrolls sideways, status + actions row; phone: Share/Undo as icons, status on a third line): 90px desktop/tablet, 114px phone (was 109/200/176). Tall bar covered the Talents tab filters and searches after scrolling.
+- Talent picker search (`#tfind`) matches name, category, stats and description across all talents regardless of filter. Filter buttons scroll their panel back into view (`keepInView`).

@@ -90,13 +90,18 @@ table.ratio td:last-child{text-align:left;font-family:var(--f-body);font-size:12
 .mins label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--dim)}
 .mins input{width:100%}
 .hint{font-size:13px;color:var(--dim);margin:0}
-.tabbar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:10px 12px;background:var(--trench);border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
-.tabs{display:flex;gap:4px;flex-wrap:wrap}
-.tabs button{background:transparent;border:1px solid transparent;color:var(--dim);font-weight:600;padding:7px 12px}
+/* compact sticky bar: tabs on one scrollable row, status + actions on one row below, so it covers little of the page */
+.tabbar{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:minmax(0,1fr) auto auto auto auto;gap:6px 8px;align-items:center;padding:6px 10px;background:var(--trench);border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.tabs{grid-column:1/-1;display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+.tabs button{background:transparent;border:1px solid transparent;color:var(--dim);font-weight:600;padding:5px 10px;white-space:nowrap}
+.tabbar>button,.tabbar .modeseg button{padding:5px 10px;font-size:13px;white-space:nowrap}
+html{scroll-padding-top:100px}
+.tabbar .modeseg{display:flex;flex-wrap:nowrap}
+@media (max-width:1000px){.status>span:nth-child(3){display:none}}
 .tabs button b{font-family:var(--f-mono);font-size:11px;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid currentColor;margin-right:6px}
 .tabs button[aria-selected=true]{color:var(--bone);background:var(--brass-wash);border-color:var(--brass)}
 .tabs button:hover{color:var(--bone)}
-.status{flex:1 1 200px;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--dim);justify-content:flex-end}
+.status{min-width:0;display:flex;flex-wrap:nowrap;overflow:hidden;gap:6px 14px;font-size:13px;color:var(--dim);justify-content:flex-start;white-space:nowrap}
 .status b{font-family:var(--f-mono);color:var(--bone);font-size:14px}
 .status .bad b,.status .bad{color:var(--bad)}
 .toast{margin:-8px 4px 0;min-height:1.2em}
@@ -241,7 +246,7 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .tag.ok{color:var(--ok);border-color:var(--ok)} .tag.warn{color:var(--warn);border-color:var(--warn)} .tag.bad{color:var(--bad);border-color:var(--bad)}
 .chip.req{border-color:var(--brass);border-width:2px}
 
-@media (max-width:640px){.tabbar{padding:8px;gap:8px}.tabs{flex-wrap:nowrap;overflow-x:auto;width:100%}.tabs button{padding:6px 9px;white-space:nowrap}.status{justify-content:flex-start;flex:1 1 auto;font-size:12px}.tabbar>.primary{padding:6px 10px;font-size:13px}.groups.tall{max-height:60vh}}
+@media (max-width:640px){.tabbar{padding:6px;gap:5px 4px;grid-template-columns:auto auto auto auto;justify-content:space-between}.tabbar .status{grid-column:1/-1;grid-row:3;font-size:12px}.tabbar .lbl{display:none}.tabs button{padding:5px 8px}.tabbar>button,.tabbar .modeseg button{padding:5px 7px;font-size:12px}html{scroll-padding-top:120px}.groups.tall{max-height:60vh}}
 .gslot{grid-template-columns:minmax(0,1fr)!important}
 .gslot .lb{margin-bottom:-2px}
 .gslot .pips{grid-column:1!important}
@@ -417,7 +422,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.23</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.23</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -450,8 +455,8 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="seg modeseg" id="modeseg" role="group" aria-label="Planner mode"><button class="mini" data-mode="opt" title="The optimizer picks pre-shrine stats, raises stats for your talents and spends leftovers">Optimizer</button><button class="mini" data-mode="man" title="You set every stat yourself; nothing is raised or chosen for you">Manual</button></div>
-  <button id="sharebtn" title="Get a link to this build, export it, or import someone else's">⇪ Share / Import</button>
-  <button id="undo" disabled title="Nothing to undo">↶ Undo</button>
+  <button id="sharebtn" title="Get a link to this build, export it, or import someone else's" aria-label="Share / Import">⇪<span class="lbl"> Share / Import</span></button>
+  <button id="undo" disabled title="Nothing to undo" aria-label="Undo">↶<span class="lbl"> Undo</span></button>
   <button class="primary" data-optimize="1">Optimize build</button>
 </nav>
 <p class="hint toast" id="copied" aria-live="polite"></p>
@@ -616,7 +621,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="row">
       <div class="seg" id="tfilter"></div>
       <div class="seg" id="tgroup"></div>
-      <input type="search" id="tfind" placeholder="Search talents or stats" aria-label="Search talents" style="flex:1 1 160px">
+      <input type="search" id="tfind" placeholder="Search all talents: name, stat or what it does" aria-label="Search talents" style="flex:1 1 160px">
     </div>
     <div id="capline"></div>
     <div id="tsugg"></div>
@@ -1381,6 +1386,8 @@ function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iter
 function fitCap(){const d=trimToCap();if(d.length)say(`That mantra takes 2 talent slots, so ${d.length} talent${d.length>1?'s were':' was'} dropped to stay under the cap: ${d.slice(0,5).join(', ')}${d.length>5?'…':''}. Undo brings ${d.length>1?'them':'it'} back.`);return d}
 // Room for one more talent (with its missing prerequisites)?
 function roomFor(n){if(S.allowOver)return true;const keep=S.sel;S.sel=[...keep,n];const cn=counts(closure());S.sel=keep;return cn.nTal<=cn.cap}
+// after a filter re-renders a list, keep its controls visible below the sticky bar (the list can shrink under you)
+function keepInView(el){const panel=el&&el.closest&&el.closest('.panel');if(!panel)return;const bar=$('tabbar').getBoundingClientRect().bottom;const r=panel.getBoundingClientRect();if(r.top<bar+4)window.scrollBy(0,r.top-bar-8)}
 let pendingTal=null;
 // shown when a talent is added with every slot used: tick the box to allow going over (adds the talent right away)
 function capWarn(n){pendingTal=n||null;const cn=counts(closure());
@@ -1716,7 +1723,8 @@ function renderTalentChips(){
     if(t.n.startsWith('Oath:'))continue;if(t.r==='O'&&t.c!==S.oath)continue;
     const st=statusOf(t,false,ctx);
     const sy=st.k!=='have'&&st.k!=='block'&&S.tfilter!=='picked'?synOf(t.n,ctx.C):[];
-    if(sy.length&&(st.k==='fit'||st.k==='close')&&t.k&&t.r!=='Q'&&!t.req.q&&(!q||(t.n+' '+t.c).toLowerCase().includes(q))){synList.push([t,st,sy]);continue}
+    if(q){const hay=(t.n+' '+t.c+' '+fmtReqFull(t)+' '+(TDESC.get(t.n)||'')).toLowerCase();if(!q.split(/\s+/).every(x=>hay.includes(x)))continue;const g=S.tgroup==='cat'?t.c:statGroupOf(t);(groups[g]=groups[g]||[]).push([t,st]);continue}
+    if(sy.length&&(st.k==='fit'||st.k==='close')&&t.k&&t.r!=='Q'&&!t.req.q){synList.push([t,st,sy]);continue}
     if(S.tfilter==='fit'&&st.k!=='fit'&&st.k!=='have'&&st.k!=='close')continue;
     if(S.tfilter==='fit'&&st.k==='close'&&!q)continue;
     if(S.tfilter==='rec'&&!recSet.has(t.n))continue;
@@ -2919,7 +2927,7 @@ document.addEventListener('click',e=>{
   else if(d.cmore){S.climit=(S.climit||12)+12;renderCombos()}
   else if(d.cadd){const [a,b]=d.cadd.split('|').map(decodeURIComponent);addComboMantras(a,b)}
   else if(d.cdel){const [a,b]=d.cdel.split('|').map(decodeURIComponent);saveMyCombos(myCombos().filter(x=>!(x[0]===a&&x[1]===b)));renderCombos();say(`Removed your combo ${a} → ${b}.`)}
-  else if(d.bf){S.bfilter=d.bf;S.blim=40;renderReqBrowse();save()}
+  else if(d.bf){S.bfilter=d.bf;S.blim=40;renderReqBrowse();save();keepInView(t)}
   else if(d.bmore){S.blim=(S.blim||40)+40;renderReqBrowse()}
   else if(d.bopen){const n=decodeURIComponent(d.bopen);reqOpen=reqOpen===n?null:n;renderReqBrowse()}
   else if(d.reqadd){const n=decodeURIComponent(d.reqadd);if(!S.req.includes(n)){pushUndo('Require '+n);S.req.push(n);reqOpen=n;runSoon();say(`${n} is now required.`)}}
@@ -2950,8 +2958,8 @@ document.addEventListener('click',e=>{
   else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n)){if(!roomFor(n)){capWarn(n);return}pushUndo('Take '+n);S.sel.push(n)}runSoon();say(`Took ${n}.`)}
   else if(d.mtog&&isReq(decodeURIComponent(d.mtog))){say(`${decodeURIComponent(d.mtog)} is required. Remove it on the Talents tab first.`)}
   else if(d.mtog){const n=decodeURIComponent(d.mtog);if(S.mantras.includes(n))S.mantras=S.mantras.filter(x=>x!==n);else{S.mantras.push(n);const cn=counts(closure());if(cn.nTal>cn.cap){S.mantras.pop();pushUndo('Add '+n);S.mantras.push(n);fitCap()}}runSoon()}
-  else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save()}
-  else if(d.tf){S.tfilter=d.tf;renderTalentChips();save()}
+  else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save();keepInView(t)}
+  else if(d.tf){S.tfilter=d.tf;renderTalentChips();save();keepInView(t)}
   else if(d.mf){S.mfilter=d.mf;renderMantraChips();save()}
   else if(d.optimize){optimizeAll()}
   else if(t.id==='autopick'||t.id==='autopick2'){autoPick()}

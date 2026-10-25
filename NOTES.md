@@ -147,3 +147,7 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 - Reading: Claude artifact uses `sample.json` with the image (capability `sample:{images:true}`); GitHub Pages loads Tesseract.js 5.1.1 from jsdelivr on demand (`loadTesseract`, `shotCanvas` upscales + contrast, `ocrFix`, `shotFromText`).
 - `likelyTalents`: talents the stats allow (final, or pre-shrine if >=2 pre stats given), score = 0.55*conditional take rate (CONDD, else POP) + 0.9*co-occurrence with seen talents in REF builds (+oath) + synergy; exclusives respected; ticks the top (cap - seen) where cap assumes >=6 mantras.
 - Loading: seen talents/mantras become required (`S.req`), then `applyDwb`.
+
+## v1.21
+- AI maker attunements: first named = main (80, mage 100); two = 80/40 with `p.attUp` raised to 80 in `wizardApply` when >=40 points are free (80/80 straight away for mages or "dual/double/both"); three+ = main + 40s.
+- Report a bug tab (`tab-bug`): sends through Web3Forms (`BUG_KEY`, emailed to the owner only). The artifact db cannot take reports: public-link visitors hold `view` and can never write. Empty key = "not switched on yet" + Copy report.

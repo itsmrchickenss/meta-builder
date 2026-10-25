@@ -263,6 +263,9 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .likely{display:grid;gap:2px;max-height:620px;overflow:auto}
 .lrow{display:flex;gap:8px;align-items:flex-start;padding:5px 4px;border-bottom:1px solid var(--line);cursor:pointer}
 .lrow input{margin-top:3px}.lrow .nm{min-width:0}.lrow small{display:block;color:var(--dim);font-size:11.5px}
+.bugform{display:grid;gap:10px}.bugform label{display:grid;gap:4px;font-size:14px}.bugform textarea,.bugform input[type=text]{font:inherit;font-size:14px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px;resize:vertical}
+.bugform label.hint{display:block}.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.bugtips{margin:0;padding-left:18px;display:grid;gap:4px}
 .tipacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
 #imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
@@ -412,7 +415,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.20</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.21</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -441,6 +444,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Talents &amp; mantras</button>
     <button role="tab" id="t-sum" data-tab="sum" aria-controls="tab-sum"><b>3</b> Summary</button>
     <button role="tab" id="t-arm" data-tab="arm" aria-controls="tab-arm"><b>4</b> Armor</button>
+    <button role="tab" id="t-bug" data-tab="bug" aria-controls="tab-bug"><b>!</b> Report a bug</button>
   </div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="seg modeseg" id="modeseg" role="group" aria-label="Planner mode"><button class="mini" data-mode="opt" title="The optimizer picks pre-shrine stats, raises stats for your talents and spends leftovers">Optimizer</button><button class="mini" data-mode="man" title="You set every stat yourself; nothing is raised or chosen for you">Manual</button></div>
@@ -722,6 +726,36 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       <input type="text" id="ximport" placeholder="Paste a share link, deepwoken.co link, or Deepwoken build text" aria-label="Import build" style="flex:1 1 200px">
       <button id="xload">Import</button>
     </div>
+  </section>
+</div>
+</div>
+
+<!-- ============ REPORT A BUG ============ -->
+<div class="tabpane grid" id="tab-bug" role="tabpanel" aria-labelledby="t-bug" hidden>
+<div class="col">
+  <section class="panel">
+    <h2>Report a bug</h2>
+    <p class="hint" style="margin:0">Something wrong or confusing? Tell us here. Reports go privately to the developer; nobody else can see them.</p>
+    <form id="bugform" class="bugform" autocomplete="off">
+      <label>What went wrong?<textarea id="bugwhat" rows="4" required maxlength="3000" placeholder="e.g. I pressed Optimize build and it went over budget"></textarea></label>
+      <label>What did you expect instead? <span class="hint">(optional)</span><textarea id="bugexp" rows="2" maxlength="1500"></textarea></label>
+      <label>How to reach you if you want a reply <span class="hint">(optional: Discord name or email)</span><input type="text" id="bugcontact" maxlength="120"></label>
+      <label class="hint"><input type="checkbox" id="bugbuild" checked> Include my current build (a link to it), the version and my browser, so the bug can be reproduced</label>
+      <input type="checkbox" name="botcheck" id="bugbot" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="row"><button class="primary" type="submit" id="bugsend">Send report</button></div>
+      <p class="hint" id="bugmsg" aria-live="polite" style="margin:0"></p>
+    </form>
+  </section>
+</div>
+<div class="col">
+  <section class="panel">
+    <h2>Good reports</h2>
+    <ul class="hint bugtips">
+      <li>Say which tab and which button you used.</li>
+      <li>Say what you typed or picked right before it happened.</li>
+      <li>Keep “Include my current build” ticked, so the exact build can be opened again.</li>
+      <li>One problem per report.</li>
+    </ul>
   </section>
 </div>
 </div>
@@ -1790,7 +1824,7 @@ function renderGear(){
   $('gnote').innerHTML=(st.bad.length?`<span class="gbad">Your final stats don't meet ${esc(st.bad.join(', '))}.</span> `:'')+'Effective HP = health ÷ (1 − armor × (1 − attacker penetration)). Assumes Power 20 at the end of the build. Set bonuses and talent health bonuses aren\'t counted.';
 }
 // ================= tabs, status, final stats, condensed talents =================
-const TABS=['imp','build','req','sum','arm'];
+const TABS=['imp','build','req','sum','arm','bug'];
 function showTab(id){if(id==='opt')id='build';if(!TABS.includes(id))id='build';S.tab=id;
   for(const k of TABS){$('tab-'+k).hidden=k!==id;$('t-'+(k==='build'?'build':k)).setAttribute('aria-selected',k===id)}
   save();if(id==='build'&&$('otbl').closest('details').open)renderOathTable()}
@@ -2269,6 +2303,9 @@ function wizardApply(){
         renderResults(compute({starts:4,iters:80,seedP:prevP()}))}
       const lw=Object.entries(lowered);if(lw.length)notes.push('lowered '+lw.map(([l,v])=>`${l} to ${v}`).join(', ')+' so it fits 330 points');
       if(last&&last.best&&last.best.free<0)notes.push(`still ${-last.best.free} over; lower a floor or drop a talent`)}
+    // two attunements: try 80/80 when the points allow, else keep 80/40
+    if(p.attUp&&S.atts[p.attUp]===40&&last&&last.best&&last.best.free>=40){S.atts[p.attUp]=80;const r=compute({starts:6,iters:100,seedP:prevP()});
+      if(r.best&&!r.best.impossible&&r.best.free>=0){renderResults(r);notes.push(`${ATT[p.attUp][0]} raised to 80 (the points allow 80/80)`)}else S.atts[p.attUp]=40}
     if(addPop){const picks=autoPickList(ctxNow()).slice(0,20);for(const x of picks){x.pre.forEach(q=>{if(!S.sel.includes(q))S.sel.push(q)});if(!S.sel.includes(x.n))S.sel.push(x.n)}if(picks.length)notes.push(`added ${picks.length} popular talents`);const dr=trimToCap();if(dr.length)notes.push(`dropped ${dr.length} to fit the talent cap`);run()}
     else{const dr=trimToCap();if(dr.length){notes.push(`dropped ${dr.length} to fit the talent cap`);run()}}
     renderInputs();
@@ -2465,7 +2502,12 @@ function aiParse(txt,basePreset){
   const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
   // attunements only when asked for (a mage too): preset attunements are not carried in
   if(!at.length&&!basePreset)p.atts={};
-  if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){if(!basePreset)p.atts={};at.forEach((x,i)=>{const n=aiNumNear(sAtt,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):40))});got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + '))}
+  // one main attunement (the first named): 80, or 100 for a mage. Two: 80/80 for a mage or when asked ("dual",
+  // "both 80"), else 80/40 and the second goes to 80 if the points allow. Three or more: the main one high, the rest 40.
+  if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){if(!basePreset)p.atts={};const dual=at.length===2&&(caster||has(/\bdual\b|\bdouble\b|\bboth\b|\b80 ?\/ ?80\b|\bequal\b/));
+    at.forEach((x,i)=>{const n=aiNumNear(sAtt,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):at.length===2&&dual?80:40))});
+    if(at.length===2&&!dual&&!aiNumNear(sAtt,at[1].re))p.attUp=at[1].k;
+    got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + ')+(at.length>=3?` (main ${ATT[at[0].k][0]}, the others 40)`:p.attUp?` (${ATT[p.attUp][0]} goes to 80 if the points allow)`:''))}
   // weapon, outfit, gear by name
   let wN=by('weapon').sort((a,b)=>b.length-a.length)[0];
   // "hero blade" / "heros blade" without the full name: the element comes from the attunement mentioned (Flame if none)
@@ -2678,6 +2720,24 @@ function loadShot(){const fin=SHOT.fin;if(Object.keys(fin).length<2){say('Add th
   S.req=[...new Set(SHOT.seen.filter(n=>TBY.has(n)||MBY.has(n)))];S.avoid=(S.avoid||[]).filter(n=>!S.req.includes(n));
   const msg=applyDwb({name:'Screenshot build',src:'your screenshot',fin:{...fin},pre,oath:SHOT.oath||'None',weapon:w,talents,mantras,unknown:[]});
   showTab('build');sayUndo(msg)}
+
+
+// ================= bug reports =================
+// Sent through Web3Forms, which emails each report to the developer only. BUG_KEY is the public access key Web3Forms
+// gives for that inbox (it can only send to it). Empty = not set up yet.
+const BUG_KEY='';
+const MB_VERSION=(document.querySelector('header h1 .ver')||{}).textContent||'';
+async function sendBug(){const what=$('bugwhat').value.trim();const msg=$('bugmsg');if(what.length<5){msg.textContent='Describe what went wrong first.';return}
+  if($('bugbot').checked)return;
+  const extra=$('bugbuild').checked?`\n\nVersion: ${MB_VERSION}\nBuild: ${(()=>{try{return buildLink()}catch(e){return '-'}})()}\nTab: ${S.tab}\nBrowser: ${navigator.userAgent}`:'';
+  const body=`What went wrong:\n${what}\n\nExpected:\n${$('bugexp').value.trim()||'-'}\n\nContact: ${$('bugcontact').value.trim()||'-'}${extra}`;
+  if(!BUG_KEY){msg.innerHTML='Bug reports aren\'t switched on yet. <button type="button" class="mini" id="bugcopy">Copy report</button>';$('bugcopy').onclick=()=>copyText(body,'Report copied.');return}
+  $('bugsend').disabled=true;msg.textContent='Sending…';
+  try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:BUG_KEY,subject:`Meta Builder bug report ${MB_VERSION}`,from_name:'Meta Builder',message:body,botcheck:false})});
+    const j=await r.json().catch(()=>({}));if(!r.ok||j.success===false)throw new Error(j.message||('HTTP '+r.status));
+    msg.textContent='Thanks! Your report was sent.';$('bugwhat').value='';$('bugexp').value=''}
+  catch(e){msg.innerHTML=`The report couldn't be sent from here${location.hostname.endsWith('github.io')?'':` (this page may block it; the <a href="${MB_URL}" target="_blank" rel="noopener">website version</a> can send it)`}. <button type="button" class="mini" id="bugcopy">Copy report</button>`;$('bugcopy').onclick=()=>copyText(body,'Report copied.')}
+  finally{$('bugsend').disabled=false}}
 
 // ---- talent hover card ----
 function tipHtml(n){const t=TBY.get(n);const C=last?last.R.C:closure();const sy=t?synOf(n,C):[];const d=TDESC.get(n);
@@ -2905,6 +2965,7 @@ $('imp1form').addEventListener('submit',e=>{e.preventDefault();runImport($('imp1
 // pasting a full build imports it straight away
 $('imp1').addEventListener('paste',()=>setTimeout(()=>{const v=$('imp1').value;if(/dw1[A-Za-z0-9_-]{10,}/.test(v)||/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)||(v.includes('{')&&/"talents"|"attributes"/.test(v)))runImport(v,$('imp1msg'),()=>{$('imp1').value=''});else if(DW_LINK.test(v)){$('imp1msg').innerHTML=pasteHelp('');$('dwcohelp').open=true}},0));
 
+$('bugform').addEventListener('submit',e=>{e.preventDefault();sendBug()});
 // screenshot import
 $('shotpick').addEventListener('click',()=>$('shotfile').click());
 $('shotfile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)readShot(f);e.target.value=''});

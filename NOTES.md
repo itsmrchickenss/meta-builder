@@ -1,173 +1,152 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 23, 2026.
+Everything needed to pick this project back up. Last updated October 24, 2026 (v0.25).
+The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Links
 
-- **Website (public):** https://itsmrchickenss.github.io/meta-builder/ (GitHub Pages, deploys automatically from `main`, root folder)
-- **This repo (public, MIT):** https://github.com/itsmrchickenss/meta-builder
-- **Older copy:** private repo `itsmrchickenss/Projects`, folder `deepwoken-shrine-planner/` (kept in sync so far; the website repo is now the main one)
-- **Claude artifact (private to the owner):** https://claude.ai/artifact/BoupUctZcdQwYCUpkDoyFn
-- Share links made in the tool always point at the website: `https://itsmrchickenss.github.io/meta-builder/#dw1…`
+- **Website (public):** https://itsmrchickenss.github.io/meta-builder/ (GitHub Pages, deploys from `main`, root folder, 1–2 minutes after a push)
+- **Repo (public, MIT):** https://github.com/itsmrchickenss/meta-builder
+- **Claude artifact (private to the owner):** https://claude.ai/artifact/BoupUctZcdQwYCUpkDoyFn. Publish `dist/meta-builder.html` to it with capabilities `{downloads: true, sample: {images: true}}` (sample = Claude reads screenshots).
+- **Older copy:** private repo `itsmrchickenss/Projects`, `deepwoken-shrine-planner/`. Only update it if the owner asks.
+- Share links always point at the website: `https://itsmrchickenss.github.io/meta-builder/#dw1…`
+- Bug reports / suggestions are emailed to the owner by Web3Forms (key `BUG_KEY` in the template, registered to the GitHub Pages URL).
 
 ## How to change the site
 
-1. Edit `src/template.html` (all HTML, CSS and JavaScript live in this one file).
-2. Run `python3 src/build.py`. It fills the `@@PLACEHOLDERS@@` with `src/data/*.txt`, wraps the page in `src/head.html`, and writes `index.html` (served by Pages) and `dist/meta-builder.html` (the bare page for the Claude artifact; `dist/` is git-ignored).
-3. Run `node tests/core-test.js`. It optimizes every preset; any `FAIL` line means a broken build.
-4. Commit and push to `main`. Pages updates in a minute or two.
+1. Edit `src/template.html` (all HTML, CSS and JS) or `src/data/*.txt`. Never edit `index.html`.
+2. `python3 src/build.py` → writes `index.html` (website) and `dist/meta-builder.html` (artifact).
+3. `node tests/core-test.js` → every preset, with and without 6 mantras, must say `ok` (fits budget and talent cap).
+4. Browser checks (Playwright + Chromium are preinstalled): `python3 tests/browser/layout.py` (no sideways scroll at 1280/390, no console errors) plus the others in `tests/browser/` that touch what changed.
+5. Bump the version (`<small class="ver">` in the template), commit with the `Co-Authored-By` / `Claude-Session` trailers, push, publish the artifact.
+6. If formulas or data changed: `node tools/formulas/dump.js && python3 tools/formulas/build.py`, then recalc the workbook (xlsx skill `recalc.py`), commit `docs/Meta Builder formulas.xlsx`.
 
-Never edit `index.html` by hand; it is overwritten by the build.
+## Version
+
+Pre-release numbering is **v0.x** (v0.25 now). The owner sets **v1.0 at release**. Bump with every shipped change. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+
+## Owner's rules and preferences (keep these)
+
+**Shrine and stats**
+- The Shrine of Order can only be used at **Power 8+** (135 points before it).
+- **Pre-shrine is the peak:** never raise an attribute before the shrine and then raise it again after. Either about 1 before and the rest after, or high before and the shrine brings it down. Fortitude is **never the same** before and after (no "50 → 50"). Weapon and attunement stats may be re-raised (top builds do Ironsing 60 → 80).
+- Never change Fortitude just because "favor health" is chosen for equipment.
+
+**Presets**
+- Presets are **starting stats only**: defining stat floors, oath, weapon type. No core talents, no auto-picked talents. Bossraid = FTD + WLL; Bossraid Mage = FTD + WLL + INT + 100 in an attunement of choice.
+
+**AI build maker**
+- Keep the oath the person names; otherwise use the starting point's default.
+- A mage gets **no attunement unless asked**.
+- Attunements: one → 80 (mage 100); two → 80/40, or 80/80 when the points allow (mage or "dual" → 80/80); three+ → one main at 80 (mage 100), the rest 40.
+- Silentheart makes attunement points useless: never auto-pick it for attunement or mage builds; warn when a weapon (Hero's Blade) still needs attunement.
+- A new build must not inherit anything from the previous one (required talents, equipment, enchant, caps).
+- Saintsworn requirements, talent paths (steam = Vaporborne…), gank = mobile, semi-tanky are understood.
+- After an AI build, the Adjustments box takes plain-language changes and re-optimizes.
+
+**Talents**
+- Prioritize talents tied to your **weapon type and attunements** (`kitOf`).
+- Talent cap = 52 + (12 − normal mantras) × 2. Adding past it shows "Max talent limit reached!" with an opt-in box to allow going over.
+- Show which talents are taken **before the shrine** (PRE badge) and count pre-shrine stats as reachable in suggestions.
+
+**Equipment**
+- Default targets: **500 HP and 50% physical armor**, then the Health ↔ Armor slider. **Never elemental armor** pips. Never Transfusion Ring.
+
+**Optimizer**
+- Optimize must always end within the budget (drop talents, then lower floors, then rebuild picks), and the damage ↔ talent options slider must visibly change the result.
+
+**Layout and wording**
+- Tabs: ⇩ Import · 1 Stats · 2 Talents & mantras · 3 Summary · 4 Armor · ! Report bug/suggestions.
+- Stats tab: Import is its own tab; stats table shows Before shrine → Shrine leaves → After shrine (Final, editable). Weapon, Attunements, Traits, Oath on the right.
+- Talents tab: picker and Required on the left; Browse talents and Avoided talents at the top of the right column.
+- Plain wording ("X points left", not "free"). The AI builder says "(the more specific you are the better!)".
+- Keep the sticky top bar compact (it once covered the Talents filters).
+
+**Data and import**
+- deepwoken.co blocks other sites from reading its builds (403 for direct loads and other origins). A pasted link can't import. **Don't spoof requests or use proxies to get around it.** The supported path is the bookmark/console snippet (`DWCO_SNIP`): it runs on the deepwoken.co build page, fetches `/api/proxy/builds/<id>` there and opens the website with `#dwco=<json>`, which imports on load.
+- Game data is credited to deepwoken.co.
 
 ## Files
 
 | Path | What it is |
 |---|---|
-| `src/template.html` | The whole app. Sections are marked `// ================= name =================`. Everything above `// ================= UI =================` is game logic with no DOM use, which is what `tests/core-test.js` loads. |
-| `src/head.html` | `<head>` for the website: title, description, link-preview tags, icon. |
-| `src/build.py` | Build script (see above). |
-| `src/data/part1.txt`, `part2.txt` | `#T` talents, `#M` mantras, `#W` weapons, `#O` oath mantra slots (placeholder `@@DATA@@`). |
-| `src/data/builds.txt` | 60 reference builds for recommendations (`@@BUILDS@@`). |
-| `src/data/pop.txt` | Talent popularity in % across 802 top builds (`@@POP@@`). |
-| `src/data/wdmg.txt` | Weapon damage, penetration, scaling (`@@WDMG@@`). |
-| `src/data/mdmg.txt` | Mantra damage per level 1–5 and scaling (`@@MDMG@@`). |
-| `src/data/syn.txt` | Talent synergy pairs (`@@SYN@@`). |
-| `src/data/gear.txt` | `#E` equipment, `#O` outfits, `#OT` outfit talents, `#TD` gear-talent descriptions (`@@GEAR@@`). |
-| `src/data/tdesc.txt` | Descriptions for every talent (`@@TDESC@@`). |
-| `src/data/cond.txt` | Take rate given the stats (`@@COND@@`): `name:k/m`, k of the m top-500 deepwoken.co builds whose stats, oath and prerequisites allow the talent take it. Shown as "% of builds that can take it". |
-| `tests/core-test.js` | Node check of the core logic. |
+| `src/template.html` | The whole app. Sections marked `// ================= name =================`. Everything above `// ================= UI =================` is DOM-free game logic (what `tests/core-test.js` and `tools/formulas/dump.js` load). |
+| `src/head.html` | `<head>` for the website. |
+| `src/build.py` | Fills `@@PLACEHOLDERS@@` from `src/data/*.txt`. |
+| `src/data/part1.txt`, `part2.txt` | `#T` talents, `#M` mantras, `#W` weapons, `#O` oath mantra slots. |
+| `src/data/builds.txt` | Reference builds (REF) for recommendations. |
+| `src/data/pop.txt` | Talent popularity % across 802 top builds. |
+| `src/data/cond.txt` | Take rate given stats: `name:k/m`, k of the m top-500 builds whose stats allow it take it. |
+| `src/data/wdmg.txt`, `mdmg.txt` | Weapon damage/PEN/scaling; mantra damage per level and scaling. |
+| `src/data/syn.txt` | Synergy pairs (`A|B|kind`: c = curated weight 3, m = description mention weight 2, or a lift number). |
+| `src/data/gear.txt` | `#E` equipment, `#O` outfits (incl. non-master outfits with talents), `#OT`, `#TD`. |
+| `src/data/tdesc.txt` | Talent descriptions. |
+| `tests/core-test.js` | Node check: every preset optimizes within budget and cap, with and without mantras. |
+| `tests/browser/*.py` | Playwright checks: layout, stress_optimize (random over-budget builds), presets_import, ai_maker, traits, screenshot_parse, talents_tab, adjustments, talent_cap, bug_report. |
+| `tests/fixtures/dwco-build.json` | A real deepwoken.co build (with traits) for import tests. |
+| `tools/formulas/` | `dump.js` (exports data from index.html) + `build.py` (writes the workbook). |
+| `docs/Meta Builder formulas.xlsx` | The formulas workbook. |
 
-### Data line formats
+Data line formats: talent `name|category|rarity(+0 = not counted)|stats|o=alts|a=combined|t=talents|m=mantras|x=exclusive|w=weapon|q`; mantra `name|attunement|category+stars+type|req…` (type N = normal, costs 2 talent slots); equipment `name|slot|hp|physFlat|eleFlat|phys%|ele%|hp%|pips|req|set|flag|talents`; outfit `name|phys%|ele%|durability|req|`.
 
-- Talent: `name|category|rarity+countFlag|stats|o=alts|a=combined|t=talents|m=mantras|x=exclusive|w=weapon|q`. Rarity letter C/R/A/Q/O; a `0` after it means it doesn't count toward the talent total. Stats look like `STR25 AGL20`, `PWR` is Power.
-- Mantra: `name|attunement|category+stars+type|requirements…` (type N = normal and costs 2 talent slots; oath, monster and event mantras are free).
-- Equipment: `name|type(H/A/L/T/F/E/R)|hp|physFlat|eleFlat|physPct|elePct|hpPct|pips(U1R1…)|req|set|flag|talents;…`
-- Outfit: `name|phys%|ele%|durability|req|`
-- Synergy: `A|B|kind` where kind is `c` (curated, weight 3), `m` (one description names the other, weight 2) or a lift number from build data.
-- Stat codes: STR FTD AGL INT WLL CHA, weapons HVY MED LHT, attunements FLM ICE LTN WND SDW IRN BLD.
+## Game rules and formulas (full detail in the workbook's Formulas sheet)
 
-## Where the data came from
-
-All game data is a snapshot of **deepwoken.co** (October 2026). The fandom wiki blocks automated fetches. deepwoken.co's API worked from the Claude desktop app's built-in browser, run as JavaScript on deepwoken.co; the cloud shell can't reach it.
-
-- `/api/proxy/get?type=all`: talents (with descriptions), mantras, weapons, outfits, enchants
-- `/api/proxy/db/equipment`, `/api/proxy/db/enchantments`, `/api/proxy/db/oaths`
-- `/api/proxy/builds?sort=top&limit=50&page=N&tags=PvE%3A%20Boss` (tag filters: `PvE: Boss`, `PvP: Chime`, `PvP: Gank`, `PvE: Mob`, oath names, attunements…), `/api/proxy/builds/tags`, `/api/proxy/builds/<id>`
-- deepwoken.co's builder JavaScript bundle was read to copy its Shrine of Order, Shrine of Mastery, damage and EHP formulas.
-
-## Game rules the tool models
-
-- **Budget:** 330 points. Power = `clamp(floor((points − 15) / 15), 0, 20)`. Each attunement after the first gets its first point free.
-- **Shrine of Order needs Power 8** (135 points invested before it). Below that the plan skips the shrine.
-- **Talent cap:** 52 + (12 − normal mantras) × 2.
-- **Shrine of Order** (deepwoken.co's algorithm): average every stat with at least 1 point; a non-attunement stat can't drop more than 25 (it gets pinned and the excess is shared among the rest); floor the results, hand out leftovers +1 to unpinned stats, refund the remainder. Talents you already own stay.
-- **Shrine of Mastery:** remove up to 3 points in total, split between before and after the Order shrine. The points are refunded, and talents already taken stay.
-- **Weapon (M1) damage:** base × (1 + 0.75 × Σ(stat × scaling) / 1000) × (1 + bonus) × (1 − (1 − pen) × 0.30 armor).
-  - **Damage bonus:** talent bonuses add up; past +25% each extra % counts half, capped at +50%. Unique bonuses such as After Cut bypass this.
-  - **Penetration:** weapon pen + STR/10 % + talents, capped at 50% (100% with Million Ton Piercer or Ether Overdrive). Cheap Shot multiplies it by 1.1.
-- **Mantra damage:** level = clamp(1 + floor(attunement / 20), 1, 5). Damage = level damage × (1 + Σ scaling/10 × stat/100) × (1 + bonus) × 0.7.
-- **Health:** 220 + Power × 4 + min(FTD, 50) × 0.5 + max(FTD − 50, 0) × 0.25, plus gear.
-- **EHP:** health ÷ (1 − armor% × (1 − attacker pen)), with physical pen 35 and mantra pen 20. Stars add pips (1★ R, 2★ R R, 3★ R R L; Head/Arms/Legs up to 3★ and +1 HP per star). The pip values table is `PIPV` in the template.
-- **Not modelled:** race stat bonuses, gear set bonuses, talent HP bonuses.
+- **Budget** 330. Power = clamp(floor((points − 15)/15), 0, 20). Attunements after the first get their first point free. Points used = pre − shrine refund + added after − free attunement points − Mastery refunds.
+- **Shrine of Order** (deepwoken.co algorithm, `shrine()`): average the invested stats; attributes can't end more than 25 below pre (pinned, excess shared); floor; hand out leftovers; refund the rest. Needs Power 8.
+- **Shrine of Mastery:** up to 3 points refunded before or after the Order shrine.
+- **Requirements:** alternatives from stats, one-of groups, combined sums; prerequisites merged (`chainAlts`); cost = sum of shortfalls; taken pre-shrine if every alternative is plain minimums and pre stats meet it. Silentheart: weapon reqs −25.
+- **Weapon hit:** scaled = base × (1 + 0.75 × Σ(coef × stat) × (1 + 0.065 × Proficiency)/1000); bonus = talents (+2.5% Soulbreaker), full to 25%, half past, max 50%, unique outside; PEN = weapon + STR/10 % + talents + enchant + 2.5% × Proficiency, cap 50% (100% if uncapped); hit = scaled × (1 + bonus) × enchant × (1 − (1 − PEN) × 0.3).
+- **Mantra hit:** level = clamp(1 + floor(att/20), 1, 5); hit = lv × (1 + Σ coef/10 × stat/100 × (1 + 0.065 × Songchant)) × (1 + bonus) × (1 − (1 − min(0.5, 0.025 × Songchant)) × 0.3).
+- **Health:** 220 + 4 × 20 + 0.5 × min(FTD, 50) + 0.25 × max(FTD − 50, 0) + 10 × Vitality + gear. Resistance = min(0.95, armor% × (1 − pen)), pen 35 physical / 20 elemental. EHP = hp/(1 − res).
+- **Traits:** separate 12-point pool, max 6 each. Vitality +10 HP; Erudition +30 ether, +5 tempo, +5% tempo gain (shown only); Proficiency ×(1+6.5%) weapon scaling, +2.5% weapon PEN; Songchant same for mantras (oath/monster mantras +2% dmg, shown only). Source: deepwoken.fandom.com/wiki/Traits.
+- **Not modelled:** race bonuses, gear set bonuses, talent HP bonuses, ether use.
 
 ## How the optimizer works
 
-- **Search:** it picks pre-shrine stats `P` by local search over requirement thresholds, starting from several points, including the stats currently on screen so re-optimizing never does worse. A talent is taken before the shrine if `P` already meets it, otherwise after.
-- **Score:** free points + 2·(1 − prio)·damage% + 2·prio·talentValue/10.
-  - **damage%** blends M1 and mantra damage using the "Damage from" slider.
-  - **talentValue** sums the popularity of unpicked talents the stats unlock, plus 15 per synergy weight unit.
-- **When you press Optimize**, in order:
-  1. Drop talents your stat limits rule out.
-  2. Enforce the talent cap (`trimToCap`).
-  3. Search.
-  4. If still over budget, drop the talents that free the most points for the least value (`trimToBudget`). Required talents are never dropped.
-  5. Optionally spend leftovers on weapon and attunements.
-- **Stat limits ("Keep these stats low"):** a limited stat gets no pre-shrine points (the shrine would average them up), its targets are clamped, and talents or oaths that need more are flagged. Combined requirements such as Soulbreaker's WLL+CHA 50 count too.
-- **Manual mode** skips all of this; the user types every pre-shrine and final value.
-- **Equipment optimizer:** it reaches the minimum health (default 500) first, then maximizes health × (1/(1 − physical resistance))^a, where a comes from the Health ↔ Physical armor slider. It never uses elemental pips and never picks Transfusion Ring.
-- **Presets** are averages of deepwoken.co's top builds; Bossraid uses 92 heavy builds tagged PvE: Boss, Bossraid Mage 37 caster builds, Chime 199 builds tagged PvP: Chime. The preset questions lower floors 5 at a time until a new build fits 330 points.
-- **AI build maker** is a keyword reader that runs in the browser (`aiParse`), not a language model. The "What you want" box uses `applyWish`.
+- **Score:** (330 − used) + 2(1 − slider) × damage% + 2 × slider × talent options/10; penalties 20/pt over a stat limit or breaking the pre-shrine rule.
+- **Optimize** (`optimizeAll`): drop limit-blocked talents → trim to cap (`trimToCap`) → search (`compute`) → `trimToBudget` → if required + floors alone are over, `easeFloors` (never values set in Adjustments, `S.keep`) → `rebuildToBudget` → `sliderRebalance` (damage end raises weapon/attunements toward 100 paid by low-value non-damage talents; talent end lowers them and fills with popular/synergy talents; 35–65 does nothing) → optional leftover spend (retries with fewer points).
+- **Talent value** (`talentVal`): 90 × kit + (1 + popularity + 15 × synergy)(0.4 + 1.2 × slider) + 100 × (damage + PEN)(0.2 + 3.6 × (1 − slider)).
+- **Auto-pick** fills open slots with talents that already fit, best value per slot (prerequisites count as slots).
+- **Recommendations:** synergies first (10 + weight), then take rate given stats, +0.8 × kit.
+- **Equipment optimizer:** meet min HP and min physical armor, then hp × (1/(1−res))^a.
+- **AI build maker** (`aiParse`) is a keyword reader that runs in the browser, not a language model. Wishes: `applyWish`; Adjustments: `applyAdjust`.
+
+## Features (where to find them)
+
+- **Import tab:** paste box (Meta Builder link, Deepwoken in-game text, deepwoken.co JSON), deepwoken.co bookmark, Build from a screenshot (Claude reads it in the artifact; Tesseract.js 5.1.1 from jsdelivr on the website) → Likely talents → Talents you see in the video (become required) → Load.
+- **Stats tab:** presets + AI build maker + My presets (localStorage), stats table (pins, editable finals = floor + limit), Adjustments (after AI builds), optimizer settings and sliders, weapon, attunements, traits, oath, "What you want".
+- **Talents & mantras tab:** picker (filters, by stat/category, search over names and descriptions, PRE badges, kit labels, max-talent warning), required, browse, avoided, your talents (pre/post), mantras, true combos.
+- **Summary:** damage, weapon & enchant, compare weapons, mantra damage, levelling steps, recommended talents (Take), share & export.
+- **Armor:** equipment search, slots and pips, health/EHP, optimize equipment.
+- **Report bug/suggestions:** emailed to the owner via Web3Forms; the artifact can't send outside (points to the website).
+- **Help mode:** tips with Take / Spend / Optimize buttons.
 
 ## Saved state and share links
 
-- **Browser storage:** `meta-builder-v1` holds the build and settings, `meta-builder-look` the theme.
-- **Share code:** `dw1` + base64url of a JSON object with keys `v w t a s m n i q o p g r e x sn av cp`:
-  - `w` weapon type, `t` weapon target, `a` attunements, `s` talents, `m` mantras, `n` pre/post overrides
-  - `i` after-shrine floors, `q` pre-shrine floors, `o` oath, `p` weapon, `g` gear, `r` required, `e` enchant
-  - `x` pins, `sn` saved pre/post snapshots, `av` avoided talents, `cp` stat limits
-- `decodeBuild` validates every field. Keep old keys working when adding new ones so existing links don't break.
+- localStorage `meta-builder-v1` (build + settings), `meta-builder-look` (theme), `meta-builder-presets`, `meta-builder-combos`.
+- Share code: `dw1` + base64url JSON, keys `v w t a s m n i q o p g r e x sn av cp tr` (tr = traits). `decodeBuild` validates every field; keep old keys working.
+- deepwoken.co JSON: `stats.meta.{Oath,Outfit}`, `stats.traits`, `attributes|preShrine|postShrine.{base,weapon,attunement}`, `talents` (some with `[HVY]`-style tags), `mantras`, `weapons`.
+- Our Deepwoken-text export adds `== WEAPON ==`, `== OUTFIT ==`, `== PRE-SHRINE ==`, `== TRAITS ==` sections, read back on import.
 
-## Decisions and preferences so far
+## Where the data came from
 
-- **Name and layout:** the tool is "Meta Builder". The default theme is Abyss (dark teal and brass). Tabs follow the build order: Build → Required & avoid → Optimize → Summary → Armor.
-- **Accessibility:** colorblind support is a set of themes (red‑green, blue‑yellow, high contrast), not a separate toggle. Help mode lives in Starting presets and in the preset questions.
-- **Level dropdowns:** they start with "No stats" (0), then 1, 5, 10 … 100.
-- **Talents:** they're grouped by the stat they need most. Synergies are grouped under the talent they pair with, and hovering any talent shows its description.
-- **Equipment:** never use Transfusion Ring; aim for at least 500 HP; physical armor only.
-- **Licensing:** MIT license, with a README note that this is an unofficial fan tool.
-- **Commits:** commits made with Claude end with the `Co-Authored-By` / `Claude-Session` trailer.
+deepwoken.co snapshot (October 2026), read in the Claude desktop app's built-in browser as JavaScript on a deepwoken.co page (same-origin fetches work there): `/api/proxy/get?type=all`, `/api/proxy/db/equipment|enchantments|oaths`, `/api/proxy/builds?sort=top&limit=50&page=N[&tags=…]`, `/api/proxy/builds/<id>`. Its builder bundle supplied the shrine, damage and EHP formulas. The fandom wiki blocks automated fetches except through WebFetch.
+
+## Presets (stats only)
+
+Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 + INT 40, attunement 100) · Elder / Enmity (Bladeharper Ironsing: CHA 40 pre, INT 90 + STR 25 post, Ironsing 80, Shadowcast 20, Shattered Katana, Prophet's Cloak; real builds hit INT 100 but shrine below Power 8) · Brick Wall Dawnwalker (FTD/WLL 100 → 75, Frostdraw 80 + Flamecharm 40, steam talents locked, Gran Sudaruska) · Chime · High Charisma · High Strength · Jetstriker Agility · Willpower Tank · High Intelligence · Reinforced Armor · Mage · No Willpower.
 
 ## Ideas not done yet
 
-- Race and aspect stat bonuses, gear set bonuses, and talent health bonuses.
-- 17 outfits that grant talents are missing from the outfit list (Flame Worshipper Armor, Steel Plate, the Familiar Assassin's, Demon's and Occultist's sets, and others).
-- On phones, hover cards don't appear; the Required tab's Browse talents list is the way to read descriptions there.
-- Refreshing data means pulling from deepwoken.co again with the endpoints above and regenerating `src/data/*.txt` in the same formats.
+- Race and aspect stat bonuses, gear set bonuses, talent health bonuses, ether modelling.
+- Hover cards don't show on phones (Browse talents shows descriptions).
+- Refreshing data: pull again from deepwoken.co with the endpoints above (from a deepwoken.co page) and regenerate `src/data/*.txt` in the same formats.
 
-## Version
-The version shown next to the title is in `src/template.html` (`<small class="ver">`). Pre-release numbering is v0.x (v0.23 now); the owner sets v1.0 at release. Bump it with each release.
+## Version history (short)
 
-## Tabs (v1.14)
-1 Stats (presets, stat table: Before shrine / Shrine leaves / After shrine at least + final, optimizer, weapon, attunements, oath, wishes) · 2 Talents & mantras (picker, required/avoid, browse, your talents, mantras, combos) · 3 Summary · 4 Armor. Old saved tab `opt` maps to Stats. Pane ids stay `tab-build`, `tab-req`, `tab-sum`, `tab-arm`.
-
-## v1.15 decisions
-- Presets are starting stats only (no core talents, no auto-picked talents): defining stat floors, oath, weapon type. Fortitude is never equal before and after the shrine: either 1 before and the rest after, or high before and the shrine brings it down.
-- "Pre-shrine is the peak" (on by default): an attribute (STR..CHA) above 1 before the shrine gets no points after it (penalty in `evaluate`, `reup`). Weapon and attunement stats may be re-raised (top builds do Ironsing 60 before -> 80 after).
-- deepwoken.co (Oct 2026) refuses its build API to other sites and to direct page loads (403 "Forbidden"); only its own pages can fetch `/api/proxy/builds/<id>`. Import uses a bookmarklet / console snippet (`DWCO_SNIP`) that runs on the build page and copies the JSON, which the user pastes into Import a build. Fixture: `tests/fixtures/dwco-build.json`.
-- Clean Slate clears talents, mantras, required/avoided talents, caps and equipment too.
-
-## v1.16 presets from deepwoken.co top 1000 (Oct 2026)
-- Elder / Enmity: Bladeharper Ironsing (Elderdon, elder wr builds): CHA 40 before, INT 90 after (real builds reach 100 but shrine below Power 8), STR 25, Ironsing 80, Shadowcast 20, Medium 90 Shattered Katana, Prophet's Cloak.
-- Brick Wall Dawnwalker: FTD/WLL 100 before -> 75, Frostdraw 80 + Flamecharm 40, steam path (Brick Wall, Flashboil, Boiling Point locked), Heavy 40 Gran Sudaruska.
-- The top-builds list is still readable from a deepwoken.co page: fetch('/api/proxy/builds?sort=top&limit=50&page=N').
-
-## v1.18
-- Stats table: one editable Final column (typing locks it: floor + limit at that value in `S.mins`/`wtarget`/`atts` + `S.caps`).
-- `statusOf` returns `pre:true` when a talent is reachable only with the pre-shrine stats; chips show a PRE badge, suggestions say "take it before the shrine".
-- Optimize fallbacks: `trimToBudget` -> (if required + floors alone are over) `easeFloors` -> `rebuildToBudget` (re-add picks by value while they fit). Stress test: random picks on every preset always end at free >= 0.
-- Damage <-> talent options slider (`S.prio`) weights auto-pick (damage talents vs popular/synergy) and the leftover spend (weapon/attunement vs attribute thresholds that unlock talents). Spend retries with fewer points instead of undoing.
-- Equipment: targets 500 HP and 50% physical armor by default (`S.gear.minpp`), then the health/armor slider; elemental pips never used.
-- deepwoken.co link paste can't import directly: deepwoken.co deliberately refuses other sites; we don't spoof requests to get around that. The bookmark is the supported path.
-
-## v1.19
-- `sliderRebalance` in Optimize: the damage <-> talent options slider trades weapon/attunement targets against talents (damage: up toward 100, paid by lowest-value non-damage talents, damage talents fill slots; talent options: targets down toward the weapon requirement / 40, popular+synergy talents fill). Dead zone 35-65. Undone if it cannot be paid for. `talentVal` is slider-aware. Sliders update state on input and Optimize reads them directly.
-
-## v1.20 Import tab + screenshot builds
-- New first tab "Import" (`tab-imp`): paste import + deepwoken.co bookmark, "Build from a screenshot", "Likely talents", "Talents you see in the video".
-- Reading: Claude artifact uses `sample.json` with the image (capability `sample:{images:true}`); GitHub Pages loads Tesseract.js 5.1.1 from jsdelivr on demand (`loadTesseract`, `shotCanvas` upscales + contrast, `ocrFix`, `shotFromText`).
-- `likelyTalents`: talents the stats allow (final, or pre-shrine if >=2 pre stats given), score = 0.55*conditional take rate (CONDD, else POP) + 0.9*co-occurrence with seen talents in REF builds (+oath) + synergy; exclusives respected; ticks the top (cap - seen) where cap assumes >=6 mantras.
-- Loading: seen talents/mantras become required (`S.req`), then `applyDwb`.
-
-## v1.21
-- AI maker attunements: first named = main (80, mage 100); two = 80/40 with `p.attUp` raised to 80 in `wizardApply` when >=40 points are free (80/80 straight away for mages or "dual/double/both"); three+ = main + 40s.
-- Report a bug tab (`tab-bug`): sends through Web3Forms (`BUG_KEY`, emailed to the owner only). The artifact db cannot take reports: public-link visitors hold `view` and can never write. Empty key = "not switched on yet" + Copy report.
-
-## v1.22
-- Web3Forms key set (`BUG_KEY`), tab renamed "Report bug/suggestions".
-- `S.allowOver`: adding a talent with no slots left shows "Max talent limit reached!" with a checkbox (`capWarn`); ticking it adds the talent and stops `roomFor`/`trimToCap` enforcing the cap. Also shown in the Talents tab (`#capline`) and the over-cap note.
-
-## v1.23 Adjustments
-- `#adjpanel` under the stats table, shown after an AI build (`S.aiAdj`, Hide button). `applyAdjust` understands exact values ("int to 30"), relative ("lower cha by 10", "more agility" = +15 from the current final), attunement swaps/adds/removes, weapon type/level, named oath/weapon/outfit, add/remove talents and mantras, tankier/glass cannon/more mobile, then falls through to `applyWish`. Values it sets go in `S.keep` so `easeFloors` lowers other targets first. `runAdjust` re-optimizes; if the build still cannot fit it undoes the change and says how many points were missing.
-
-## v0.23
-- Version renamed to v0.23 (owner sets v1.0 at release).
-- Sticky bar compacted (grid: tabs row scrolls sideways, status + actions row; phone: Share/Undo as icons, status on a third line): 90px desktop/tablet, 114px phone (was 109/200/176). Tall bar covered the Talents tab filters and searches after scrolling.
-- Talent picker search (`#tfind`) matches name, category, stats and description across all talents regardless of filter. Filter buttons scroll their panel back into view (`keepInView`).
-
-## v0.24
-- `kitOf(n,wt,atts)`: 1 when a talent (with its prerequisites) needs your weapon-type stat or one of your attunements, or its category names them. Weighted in `talentVal` (+90), auto-pick (+90), recommendations (+0.8), likely talents from screenshots (+0.35). Shown as "your weapon / attunement" in suggestion lists.
-- Talents tab: Browse talents and Avoided talents moved to the top of the right column.
-
-## v0.25 Traits
-- `S.traits` {VIT,ERU,PRO,SNG}: separate pool, 12 total, max 6 each (deepwoken.fandom.com/wiki/Traits). Vitality +10 HP/pt (`gearStats`); Erudition +30 ether, +5 tempo, +5% tempo gain/pt (shown only); Proficiency multiplies weapon stat scaling by 1+6.5%/pt and +2.5% weapon PEN/pt (`damageOf`); Songchant multiplies mantra stat scaling by 1+6.5%/pt and +2.5% mantra PEN/pt (`mantraDamage`; oath/monster mantras +2%/pt shown only).
-- Panel on the Stats tab after Attunements; `suggestTraits` (weapon: PRO6 VIT6; mantra: SNG6 ERU3 VIT3; hybrid 4/4/4) runs for every new preset/AI build. Share links (`tr`), deepwoken.co import (`stats.traits`), our game-text `== TRAITS ==` section and screenshots carry them. Clean Slate clears them.
+- v1.12–v1.16: version badge; AI builder carry-over/Silentheart/Hero's Blade fixes; four tabs with one before/after stats table; Import box, stats-only presets, Fortitude rule; Elder/Enmity and Brick Wall presets.
+- v1.17–v1.19: deepwoken.co bookmark opens the site with the build; editable finals, PRE badges, help-mode Take buttons, Optimize always fits, equipment 500 HP / 50% armor; slider trades stats for talents.
+- v1.20–v1.23: Import tab with screenshot builds; attunement focus rules; bug/suggestion reports; max-talent opt-in; Adjustments.
+- v0.23: renamed to v0.x; compact sticky bar; search over descriptions.
+- v0.24: weapon/attunement talent priority; Browse/Avoided on the right.
+- v0.25: traits (Vitality, Erudition, Proficiency, Songchant); formulas workbook.

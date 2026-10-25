@@ -1,0 +1,25 @@
+const fs=require('fs');const h=fs.readFileSync(require('path').join(__dirname,'..','..','index.html'),'utf8');
+const blocks={};h.replace(/<script type="text\/plain" id="(\w+)">([\s\S]*?)<\/script>/g,(m,id,c)=>{blocks[id]=c});
+global.document={getElementById:id=>({textContent:blocks[id]||'',style:{setProperty(){}}}),documentElement:{style:{setProperty(){}},dataset:{}},querySelectorAll:()=>[],querySelector:()=>null,addEventListener(){}};
+global.localStorage={getItem:()=>null,setItem(){}};
+let js=h.slice(h.lastIndexOf('<script>')+8,h.lastIndexOf('</script>')).split('// ================= UI =================')[0];
+eval('var last=null;'+js+`
+const out={};
+const w0=DB.W[0];const wo=weaponOf(w0.n);
+out.sampleWeapon={keys:Object.keys(w0),wo:{d:wo.d,sc:wo.sc,p:wo.p,ty:wo.ty}};
+out.talents=DB.T.filter(t=>!t.n.startsWith('Oath:')||true).map(t=>{const cr=condRate(t.n);const md=DMG_MODS[t.n]||null;const ch=chainStatic(t);const best=ch.slice().sort((a,b)=>altCost(a,{})-altCost(b,{}))[0];
+  return {n:t.n,c:t.c,r:t.r,pick:!!t.k,quest:!!t.req.q,req:fmtReq(t.req),full:fmtReqFull(t),cheap:best?fmtAlt(best):'none',cheapCost:best?altCost(best,{}):0,pre:canPre(ch),pop:POP.get(t.n)||0,k:cr.k,m:cr.m,pct:cr.pct,dmg:md?md.dmg||0:0,pen:md?md.pen||0:0,uniq:!!(md&&md.unique),mult:!!(md&&md.mult),uncap:!!(md&&md.uncap),syn:(SYN.get(t.n)||[]).map(s=>s.o+' ('+s.w+')').join(', '),excl:(t.req.x||[]).join(', '),desc:TDESC.get(t.n)||''}});
+out.mantras=DB.M.map(m=>{const md=MDMG.get(m.n);return {n:m.n,at:m.at.join(' + '),c:m.c,st:m.st,ty:m.ty,req:fmtReq(m.req),sc:md?Object.entries(md.sc).map(([k,v])=>k+' '+v).join(', '):'',lv:md?md.lv:null}});
+out.weapons=DB.W.map(w=>{const o=weaponOf(w.n);return {n:w.n,ty:w.ty,req:fmtReq(w.req),d:o.d,p:o.p,sc:Object.entries(o.sc||{}).map(([k,v])=>k+' '+v).join(', ')}});
+out.outfits=OUTFITS.map(o=>({n:o.n,p:o.p,e:o.e,dur:o.dur||'',req:Object.entries(o.req||{}).map(([k,v])=>k+' '+v).join(', '),tal:(o.tal||[]).join(', ')}));
+out.gear=GEAR.map(g=>({n:g.n,ty:g.ty,hp:g.hp,pp:g.pp,ep:g.ep,pips:(g.pips||[]).join(' '),req:Object.entries(g.req||{}).map(([k,v])=>k+' '+v).join(', '),set:g.set||'',tal:(g.tal||[]).join(', ')}));
+out.gearSample=GEAR[0];out.outfitSample=OUTFITS[0];
+out.enchants=ENCHANTS.map(e=>({n:e.n,hit:e.hit||'',pen:e.pen||'',cond:e.cond||'',pt:e.pt||'',d:e.d||''}));
+out.oaths=OATHS.map(o=>({n:o.n,req:o.req?fmtReq(o.req):'',note:OATH_NOTES[o.n]||'',alts:(oathAltsOf(o)||[]).map(fmtAlt).join(' OR ')}));
+out.presets=PRESETS.map(p=>({n:p.n,d:p.d,oath:p.oath,w:p.wtype+' '+p.wtarget,atts:JSON.stringify(p.atts),pre:JSON.stringify(p.pre),post:JSON.stringify(p.post)}));
+out.pipv=PIPV;out.pen=PEN;out.armor=ARMOR;
+fs.writeFileSync(require('path').join(__dirname,'data.json'),JSON.stringify(out));
+console.log('talents',out.talents.length,'mantras',out.mantras.length,'weapons',out.weapons.length,'outfits',out.outfits.length,'gear',out.gear.length,'enchants',out.enchants.length,'oaths',out.oaths.length);
+console.log(JSON.stringify(out.sampleWeapon),JSON.stringify(out.gearSample).slice(0,300),JSON.stringify(out.outfitSample).slice(0,300));
+console.log(JSON.stringify(out.mantras.find(m=>m.lv)).slice(0,300));
+`);

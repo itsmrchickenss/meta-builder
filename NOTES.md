@@ -163,3 +163,7 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 - Version renamed to v0.23 (owner sets v1.0 at release).
 - Sticky bar compacted (grid: tabs row scrolls sideways, status + actions row; phone: Share/Undo as icons, status on a third line): 90px desktop/tablet, 114px phone (was 109/200/176). Tall bar covered the Talents tab filters and searches after scrolling.
 - Talent picker search (`#tfind`) matches name, category, stats and description across all talents regardless of filter. Filter buttons scroll their panel back into view (`keepInView`).
+
+## v0.24
+- `kitOf(n,wt,atts)`: 1 when a talent (with its prerequisites) needs your weapon-type stat or one of your attunements, or its category names them. Weighted in `talentVal` (+90), auto-pick (+90), recommendations (+0.8), likely talents from screenshots (+0.35). Shown as "your weapon / attunement" in suggestion lists.
+- Talents tab: Browse talents and Avoided talents moved to the top of the right column.

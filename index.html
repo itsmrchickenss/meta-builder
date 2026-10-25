@@ -272,6 +272,7 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .groups.tall{max-height:calc(100vh - 290px);min-height:360px}
 .bm{display:inline-block;padding:3px 10px;border:1px dashed var(--brass);border-radius:4px;color:var(--brass);text-decoration:none;cursor:grab;font-weight:600}
 .dwcall{display:block;margin-top:6px;font-style:normal;color:var(--bone)}
+.kittxt{color:var(--brass);font-weight:600}
 .prebadge{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--abyss);background:var(--ice);border-radius:3px;padding:0 4px;margin-right:5px;vertical-align:1px}
 .pretxt{color:var(--ice);font-weight:600}
 .shotdrop{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1.5px dashed var(--line);border-radius:6px;padding:14px;background:var(--abyss)}
@@ -436,7 +437,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.23</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.24</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -652,11 +653,8 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <p class="hint" id="reqmsg" aria-live="polite"></p>
     <div class="list" id="reqitems"></div>
   </section>
-  <section class="panel">
-    <h2>Avoided talents <small id="avcount2"></small></h2>
-    <p class="hint" style="margin:0">The optimizer, auto‑pick, recommendations and presets never add these.</p>
-    <div class="chips" id="avlist2"></div>
-  </section>
+</div>
+<div class="col">
   <section class="panel">
     <h2>Browse talents <small id="reqbrcount"></small></h2>
     <p class="hint">Click a talent to read what it does. “Require” locks it into the build; “Avoid” keeps it out.</p>
@@ -664,8 +662,11 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="seg" id="reqbf"></div>
     <div class="list reqbrowse" id="reqbrowse"></div>
   </section>
-</div>
-<div class="col">
+  <section class="panel">
+    <h2>Avoided talents <small id="avcount2"></small></h2>
+    <p class="hint" style="margin:0">The optimizer, auto‑pick, recommendations and presets never add these.</p>
+    <div class="chips" id="avlist2"></div>
+  </section>
   <section class="panel">
     <div class="row spread"><h2>Your talents <small id="pcount"></small></h2><button class="accentbtn mini" id="autopick2">Auto‑pick talents</button></div>
     <div id="psyn"></div>
@@ -4258,11 +4259,17 @@ function trimToCap(){const dropped=[];if(S.allowOver)return dropped;let guard=80
   while(guard-->0){const C=closure();const cn=counts(C);if(cn.nTal<=cn.cap)break;
     const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n));if(!cand.length)break;
     let pick=null;for(const n of cand){const keep=S.sel;S.sel=keep.filter(x=>x!==n);const c2=counts(closure()).nTal;S.sel=keep;const freed=cn.nTal-c2;if(freed<=0)continue;
-      const md=DMG_MODS[n];const val=1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS+(md?((md.dmg||0)+(md.pen||0))*100:0);const r=val/freed;if(!pick||r<pick.r)pick={n,r}}
+      const val=talentVal(n,C);const r=val/freed;if(!pick||r<pick.r)pick={n,r}}
     if(!pick)break;S.sel=S.sel.filter(x=>x!==pick.n);dropped.push(pick.n)}
   return dropped}
 const prevP=()=>last&&last.best?last.best.P:null;
-const talentVal=(n,C)=>{const md=DMG_MODS[n];const pr=(S.prio==null?50:S.prio)/100;return (1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS)*(0.4+1.2*pr)+(md?((md.dmg||0)+(md.pen||0))*100:0)*(0.2+3.6*(1-pr))};
+// talents tied to your weapon type or your attunements (they need that stat, or belong to that attunement's family)
+// count for more everywhere talents are ranked
+const KIT_W={HVY:'heavy',MED:'medium',LHT:'light'};
+function kitOf(n,wt,atts){const t=TBY.get(n);if(!t)return 0;wt=wt===undefined?S.wtype:wt;atts=atts||Object.keys(S.atts);
+  const keys=new Set();for(const a of chainStatic(t))for(const k of Object.keys(a.min||{}))keys.add(k);const c=(t.c||'').toLowerCase();
+  if(wt&&(keys.has(wt)||c.includes(KIT_W[wt])))return 1;for(const k of atts)if(keys.has(k)||(ATT[k]&&c.includes(ATT[k][0].toLowerCase().slice(0,5))))return 1;return 0}
+const talentVal=(n,C)=>{const md=DMG_MODS[n];const pr=(S.prio==null?50:S.prio)/100;return 90*kitOf(n)+(1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS)*(0.4+1.2*pr)+(md?((md.dmg||0)+(md.pen||0))*100:0)*(0.2+3.6*(1-pr))};
 // Last resort when dropping one talent at a time can't fix the budget (several picks share a stat):
 // rebuild the picked talents from most to least valuable, keeping each only if the build still fits.
 // The damage <-> talent options slider trades between the two when you press Optimize (the middle keeps the build as it is).
@@ -4411,7 +4418,7 @@ function recommendations(ctx,limit){
   const seen=new Set(out.map(r=>r.t.n));
   for(const n of picked)for(const s of SYN.get(n)||[]){const t=TBY.get(s.o);if(!t||isAvoid(s.o)||seen.has(s.o)||picked.has(s.o)||!t.k||t.r==='Q'||t.r==='O'||t.req.q)continue;
     const st=statusOf(t,false,ctx);if(st.k==='block'||st.k==='far')continue;seen.add(s.o);out.push({t,share:shareOf(s.o),st,syn:synOf(s.o,ctx.C)})}
-  const rank=r=>(r.syn.length?10+synW(r.syn):0)+r.share;
+  const rank=r=>(r.syn.length?10+synW(r.syn):0)+r.share+0.8*kitOf(r.t.n);
   out.sort((a,b)=>rank(b)-rank(a));
   const top=out.filter(r=>r.syn.length);return [...top,...out.filter(r=>!r.syn.length).slice(0,Math.max(0,(limit||12)-Math.min(top.length,limit||12)))].slice(0,Math.max(limit||12,top.length));
 }
@@ -4434,7 +4441,7 @@ function autoPickList(ctx){
       walk(n);if(bad)continue;const cost=1+pre.length;if(cost>room)continue;
       const sy=synW(synOf(n,ctx.C,added));const md=DMG_MODS[n];
       const pop=POP.get(n)||0;const pr=(S.prio==null?50:S.prio)/100;const dmgV=md?((md.dmg||0)+(md.pen||0))*100:0;
-      const v=(((pop>=3?pop:0)+sy*SYN_PTS)*(0.4+1.2*pr)+dmgV*(0.2+3.6*(1-pr)))/cost;
+      const v=(((pop>=3?pop:0)+sy*SYN_PTS)*(0.4+1.2*pr)+dmgV*(0.2+3.6*(1-pr))+90*kitOf(n))/cost;
       if(v>0&&(!best||v>best.v))best={n,v,pre,sy}}
     if(!best)break;
     for(const p of best.pre){added.add(p)}added.add(best.n);out.push(best);room-=1+best.pre.length}
@@ -4635,7 +4642,7 @@ function statGroupOf(t){
   return ANAME[k]||(k==='BOD'?'Body (STR/FTD/AGL)':k==='MND'?'Mind (INT/WLL/CHA)':k==='WPN'?'Any weapon':k==='ATN'?'Any attunement':WEP[k]?WEP[k]+' weapon':ATT[k]?ATT[k][0]:'Combined stats');
 }
 function renderSuggest(ctx){const box=$('tsugg');if(!box)return;const recs=recommendations(ctx,8).slice(0,8);
-  box.innerHTML=recs.length?`<details class="tsugg" ${S.tsuggClosed?'':'open'}><summary><h3>Suggested for this build <small>${recs.length}</small></h3></summary><div class="list">${recs.map(r=>`<div class="sugrow" data-t="${enc(r.t.n)}"><div class="nm"><b>${r.syn.length?'⚡ ':''}${esc(r.t.n)}</b> <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`Synergy with ${esc(r.syn.map(x=>x.o).join(', '))} · `:''}${Math.round(r.share*100)}% of top builds that can take it do${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><button class="mini primary" data-tadd="${enc(r.t.n)}" aria-label="Take ${esc(r.t.n)}">Take</button></div>`).join('')}</div></details>`:''}
+  box.innerHTML=recs.length?`<details class="tsugg" ${S.tsuggClosed?'':'open'}><summary><h3>Suggested for this build <small>${recs.length}</small></h3></summary><div class="list">${recs.map(r=>`<div class="sugrow" data-t="${enc(r.t.n)}"><div class="nm"><b>${r.syn.length?'⚡ ':''}${esc(r.t.n)}</b> <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`Synergy with ${esc(r.syn.map(x=>x.o).join(', '))} · `:''}${Math.round(r.share*100)}% of top builds that can take it do${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><button class="mini primary" data-tadd="${enc(r.t.n)}" aria-label="Take ${esc(r.t.n)}">Take</button></div>`).join('')}</div></details>`:''}
 function renderTalentChips(){
   const ctx=ctxNow();const cn=counts(ctx.C);renderSuggest(ctx);
   $('tcount').textContent=`${cn.nTal}/${cn.cap} slots`;
@@ -4998,7 +5005,7 @@ function renderResults(res){
   // recommendations
   const ctx=ctxNow();recCache=recommendations(ctx,10);
   $('recsub').textContent=`synergies first; % = top builds whose stats allow it that take it`;
-  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds that can</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
+  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds that can</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
   // oath fits
   const fits=OATHS.filter(o=>o.n!=='None').map(o=>({o,b:evaluate(best.P,R,oathAltsOf(o))})).sort((x,y)=>(y.b&&!y.b.impossible?y.b.free:-999)-(x.b&&!x.b.impossible?x.b.free:-999));
   $('fits').innerHTML=fits.map(({o,b})=>{const ok=b&&b.free>=0&&!b.impossible;return `<button class="chip" data-oathpick="${enc(o.n)}" aria-pressed="${o.n===S.oath}" style="${ok?'':'opacity:.55'}">${esc(o.n)}<small>${b&&!b.impossible?(b.free>=0?b.free+' points left':(-b.free)+' points over'):'—'}</small></button>`}).join('');
@@ -5637,12 +5644,12 @@ function likelyTalents(){const fin={...Object.fromEntries(ALL.map(k=>[k,0])),...
   const C={T:new Map(seen.map(n=>[n,{}])),M:new Map([...seenM].map(n=>[n,{}]))};
   // reference builds that share the talents you saw (and the oath) say what usually goes with them
   let W=0;const co=new Map();for(const b of REF){let ov=0;for(const n of seen)if(b.t.has(n))ov++;const w=(seen.length?3*ov/seen.length:0)+(oath&&b.o===oath?1:0)+0.15;W+=w;for(const n of b.t)co.set(n,(co.get(n)||0)+w)}
-  const out=[];
+  const out=[];const shotWt=WEPS.slice().sort((a,b)=>(fin[b]||0)-(fin[a]||0)).find(k=>fin[k]>0)||null;const shotAtts=ATTS.filter(k=>fin[k]>0);
   for(const t of DB.T){if(!t.k||t.r==='Q'||t.req.q||t.n.startsWith('Oath:')||seenSet.has(t.n))continue;if(t.r==='O'&&t.c!==oath)continue;
     if((t.req.t||[]).some(n=>n.startsWith('Oath:')&&n!=='Oath: '+oath))continue;if((t.req.m||[]).some(m=>!seenM.has(m)))continue;if((t.req.x||[]).some(x=>seenSet.has(x)))continue;
     const alts=chainStatic(t);const cF=bestCost(alts,fin),cP=pre&&canPre(alts)?bestCost(alts,pre):Infinity;if(cF>0&&cP>0)continue;
     const cr=condRate(t.n);const base=cr.m>=5?cr.pct/100:(POP.get(t.n)||0)/100;const c=(co.get(t.n)||0)/Math.max(W,1);const sy=synW(synOf(t.n,C));
-    out.push({n:t.n,score:base*0.55+c*0.9+sy*0.12,pct:Math.round(base*100),m:cr.m,co:Math.round(c*100),pre:cF>0,syn:synOf(t.n,C).map(x=>x.o)})}
+    out.push({n:t.n,score:base*0.55+c*0.9+sy*0.12+0.35*kitOf(t.n,shotWt,shotAtts),kit:kitOf(t.n,shotWt,shotAtts),pct:Math.round(base*100),m:cr.m,co:Math.round(c*100),pre:cF>0,syn:synOf(t.n,C).map(x=>x.o)})}
   out.sort((a,b)=>b.score-a.score);
   const chosen=[];const has=new Set(seen);for(const r of out){const t=TBY.get(r.n);if((t.req.x||[]).some(x=>has.has(x)))continue;if([...has].some(h=>{const ht=TBY.get(h);return ht&&(ht.req.x||[]).includes(r.n)}))continue;chosen.push(r);has.add(r.n)}
   return chosen}
@@ -5652,7 +5659,7 @@ function shotPicked(){const room=Math.max(0,shotCap()-SHOT.seen.filter(n=>TBY.ha
 function renderLikely(){if(!SHOT.guessed){return}const room=Math.max(0,shotCap()-SHOT.seen.filter(n=>TBY.has(n)).length);const picked=new Set(shotPicked());
   const show=SHOT.likely.slice(0,room+30);
   $('likelycount').textContent=`${picked.size} ticked · room for about ${room}`;
-  $('likely').innerHTML=show.length?show.map(r=>`<label class="lrow"><input type="checkbox" data-likely="${enc(r.n)}" ${picked.has(r.n)?'checked':''}><span class="nm">${r.pre?'<i class="prebadge">PRE</i>':''}${esc(r.n)} <span class="hint">${esc(TBY.get(r.n).c)}</span><small>${r.m>=5?`${r.pct}% of top builds with these stats take it`:'popular in top builds'}${r.co>=20&&SHOT.seen.length?` · ${r.co}% match with what you saw`:''}${r.syn.length?` · ⚡ with ${esc(r.syn.slice(0,2).join(', '))}`:''}</small></span></label>`).join(''):'<p class="hint">No talents fit these stats yet. Check the numbers on the left.</p>'}
+  $('likely').innerHTML=show.length?show.map(r=>`<label class="lrow"><input type="checkbox" data-likely="${enc(r.n)}" ${picked.has(r.n)?'checked':''}><span class="nm">${r.pre?'<i class="prebadge">PRE</i>':''}${esc(r.n)} <span class="hint">${esc(TBY.get(r.n).c)}</span><small>${r.m>=5?`${r.pct}% of top builds with these stats take it`:'popular in top builds'}${r.co>=20&&SHOT.seen.length?` · ${r.co}% match with what you saw`:''}${r.kit?' · fits the weapon / attunement':''}${r.syn.length?` · ⚡ with ${esc(r.syn.slice(0,2).join(', '))}`:''}</small></span></label>`).join(''):'<p class="hint">No talents fit these stats yet. Check the numbers on the left.</p>'}
 function renderSeen(){$('seencount').textContent=SHOT.seen.length?String(SHOT.seen.length):'';
   $('seenchips').innerHTML=SHOT.seen.map(n=>`<button type="button" class="chip have" data-seendel="${enc(n)}" title="Remove">${esc(n)}${MBY.has(n)&&!TBY.has(n)?' <small>mantra</small>':''} ✕</button>`).join('')||'<p class="hint" style="margin:0">None yet.</p>'}
 function addSeen(raw){const q=String(raw||'').trim();if(!q)return;const low=q.toLowerCase();

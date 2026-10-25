@@ -167,3 +167,7 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 ## v0.24
 - `kitOf(n,wt,atts)`: 1 when a talent (with its prerequisites) needs your weapon-type stat or one of your attunements, or its category names them. Weighted in `talentVal` (+90), auto-pick (+90), recommendations (+0.8), likely talents from screenshots (+0.35). Shown as "your weapon / attunement" in suggestion lists.
 - Talents tab: Browse talents and Avoided talents moved to the top of the right column.
+
+## v0.25 Traits
+- `S.traits` {VIT,ERU,PRO,SNG}: separate pool, 12 total, max 6 each (deepwoken.fandom.com/wiki/Traits). Vitality +10 HP/pt (`gearStats`); Erudition +30 ether, +5 tempo, +5% tempo gain/pt (shown only); Proficiency multiplies weapon stat scaling by 1+6.5%/pt and +2.5% weapon PEN/pt (`damageOf`); Songchant multiplies mantra stat scaling by 1+6.5%/pt and +2.5% mantra PEN/pt (`mantraDamage`; oath/monster mantras +2%/pt shown only).
+- Panel on the Stats tab after Attunements; `suggestTraits` (weapon: PRO6 VIT6; mantra: SNG6 ERU3 VIT3; hybrid 4/4/4) runs for every new preset/AI build. Share links (`tr`), deepwoken.co import (`stats.traits`), our game-text `== TRAITS ==` section and screenshots carry them. Clean Slate clears them.

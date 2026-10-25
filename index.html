@@ -273,6 +273,9 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .bm{display:inline-block;padding:3px 10px;border:1px dashed var(--brass);border-radius:4px;color:var(--brass);text-decoration:none;cursor:grab;font-weight:600}
 .dwcall{display:block;margin-top:6px;font-style:normal;color:var(--bone)}
 .kittxt{color:var(--brass);font-weight:600}
+.traits{display:grid;gap:6px}.trait{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--abyss)}
+.trait .tn{min-width:0}.trait .tn small{display:block;color:var(--dim);font-size:12px}.tstep{display:flex;align-items:center;gap:6px}.tstep span{min-width:1.2em;text-align:center;font-size:15px}
+.tpips{grid-column:1/-1;display:flex;gap:3px}.tpips i{flex:1;height:4px;border-radius:2px;background:var(--line)}.tpips i.on{background:var(--brass)}
 .prebadge{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--abyss);background:var(--ice);border-radius:3px;padding:0 4px;margin-right:5px;vertical-align:1px}
 .pretxt{color:var(--ice);font-weight:600}
 .shotdrop{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1.5px dashed var(--line);border-radius:6px;padding:14px;background:var(--abyss)}
@@ -437,7 +440,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.24</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.25</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -604,6 +607,11 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="row spread"><h2>Attunements</h2><button class="mini" id="aresetbtn">Reset attunements</button></div>
     <p class="hint">Tick each attunement and set its final target. 80 gives level‑5 mantras. Every attunement after the first gets its first point free.</p>
     <div class="att" id="atts"></div>
+  </section>
+  <section class="panel" id="traitpanel">
+    <div class="row spread"><h2>Traits <small id="traitleft"></small></h2><button class="mini" type="button" id="traitsugg">Suggest for this build</button></div>
+    <p class="hint" style="margin:0">A separate pool from your stat points: 12 trait points in total (one at most even Power levels), up to 6 in each. They don't use any of your 330 stat points.</p>
+    <div class="traits" id="traits"></div>
   </section>
   <section class="panel">
     <div class="row spread"><h2>Oath</h2><button class="accentbtn mini" data-oathreq="1">Oath requirements</button></div>
@@ -3838,6 +3846,13 @@ const MDMG=new Map();
 for(const l of document.getElementById('dwmdmg').textContent.split('\n')){if(!l.trim())continue;const [n,lv,sc]=l.split('|');const s={};(sc||'').split(' ').filter(Boolean).forEach(x=>{const m=x.match(/^([A-Z]{3})([\d.]+)$/);if(m)s[m[1]]=+m[2]});MDMG.set(n,{lv:lv.split(',').map(Number),sc:s})}
 // mantra level = 1 + floor(attunement/20), max 5; damage = level damage x (1 + sum(scaling/10 x stat/100)) (deepwoken.co)
 const mLevel=v=>Math.max(1,Math.min(5,1+Math.floor((v||0)/20)));
+// ================= traits (a separate pool: 12 points, at most 6 each; deepwoken.fandom.com/wiki/Traits) =================
+const TRAIT_FROM=n=>({vitality:'VIT',erudition:'ERU',proficiency:'PRO',songchant:'SNG',vit:'VIT',eru:'ERU',pro:'PRO',sng:'SNG'})[String(n||'').toLowerCase().trim()];
+const TRAITS=[['VIT','Vitality'],['ERU','Erudition'],['PRO','Proficiency'],['SNG','Songchant']];const TRAIT_MAX=6,TRAIT_TOTAL=12;
+const tr=k=>Math.max(0,Math.min(TRAIT_MAX,+((S.traits||{})[k])||0));const traitSum=()=>TRAITS.reduce((a,[k])=>a+tr(k),0);
+const traitFx=(k,v)=>({VIT:`+${10*v} health`,ERU:`+${30*v} ether, +${5*v} tempo, +${5*v}% tempo gain`,PRO:`+${(6.5*v).toFixed(1).replace('.0','')}% weapon stat scaling, +${(2.5*v).toFixed(1).replace('.0','')}% weapon PEN`,SNG:`+${(6.5*v).toFixed(1).replace('.0','')}% mantra stat scaling, +${(2.5*v).toFixed(1).replace('.0','')}% mantra PEN (oath and monster mantras: +${2*v}% damage)`})[k];
+function suggestTraits(){const ms=Object.keys(S.atts).length?(S.dsplit==null?50:S.dsplit)/100:0;const hero=S.weapon&&/^Hero's Blade/.test(S.weapon);
+  if(ms>=0.75||hero)return {SNG:6,ERU:3,VIT:3};if(ms<=0.25)return {PRO:6,VIT:6};return {PRO:4,SNG:4,VIT:4}}
 function mantraDamage(final,picked,bonus){
   const res=[];
   for(const k of Object.keys(S.atts)){
@@ -3845,7 +3860,7 @@ function mantraDamage(final,picked,bonus){
     const ref=!set.length;if(ref)set=[...MDMG.keys()].filter(n=>{const mm=MBY.get(n);return k in MDMG.get(n).sc&&mm&&mm.c==='C'&&mm.ty==='N'});
     if(!set.length)continue;
     const L=mLevel(final[k]);let hit=0,pct=0;
-    for(const n of set){const md=MDMG.get(n);let s=0;for(const [st,c] of Object.entries(md.sc))s+=c/10*(final[st]||0)/100;const h=md.lv[L-1]*(1+s)*(1+bonus)*(1-ARMOR);hit+=h;pct+=h/md.lv[0]*100}
+    const sg=tr('SNG');for(const n of set){const md=MDMG.get(n);let s=0;for(const [st,c] of Object.entries(md.sc))s+=c/10*(final[st]||0)/100;s*=1+.065*sg;const h=md.lv[L-1]*(1+s)*(1+bonus)*(1-(1-Math.min(.5,.025*sg))*ARMOR);hit+=h;pct+=h/md.lv[0]*100}
     res.push({k,L,hit:hit/set.length,pct:pct/set.length,n:set.length,ref});
   }
   if(!res.length)return null;
@@ -3900,12 +3915,12 @@ function weaponOf(name){const n=name===undefined?S.weapon:name;const w=WDMG.get(
 function damageOf(final,names,wname){
   const w=weaponOf(wname);let h=0;const en=ENBY.get(S.enchant)||ENCHANTS[0];
   for(const [k,c] of Object.entries(w.sc)){const v=k==='MND'?Math.max(final.INT,final.WLL,final.CHA):k==='BOD'?Math.max(final.STR,final.FTD,final.AGL):(final[k]||0);h+=v*c}
-  const scaled=w.d*(1+.75*h/1000);
+  const pf=tr('PRO');const scaled=w.d*(1+.75*h*(1+.065*pf)/1000);
   let m=0,uniq=0,pen=0,mult=1,uncap=false;const used=[];
   for(const n of names){const md=DMG_MODS[n];if(!md)continue;used.push(n);if(md.unique){uniq+=md.dmg||0;continue}m+=md.dmg||0;if(md.pen){if(md.mult)mult+=md.pen;else pen+=md.pen}if(md.uncap)uncap=true}
   if(S.oath==='Soulbreaker')m+=.025;
   const mRaw=m;if(m>.25){m=.25+(m-.25)/2;if(m>.5)m=.5}
-  const penRaw=w.p+(final.STR||0)/10*.01+pen+(en.pen||0);const cap=uncap?1:.5;const pe=Math.min(cap,Math.min(penRaw,1)*mult);
+  const penRaw=w.p+(final.STR||0)/10*.01+pen+(en.pen||0)+.025*pf;const cap=uncap?1:.5;const pe=Math.min(cap,Math.min(penRaw,1)*mult);
   const hit=scaled*(1+m+uniq)*(en.hit||1)*(1-(1-pe)*ARMOR);
   const md=mantraDamage(final,[...names].filter(n=>MBY.has(n)),m);
   return {w,scaled,mRaw,m:m+uniq,capped:mRaw>.25,penRaw,pen:pe,penCap:cap,hit,used,md,en,h};
@@ -4474,7 +4489,7 @@ function gearTalents(G){const out=[];const o=OBY.get(G.outfit);if(o)for(const n 
   const m=new Map();for(const x of out){if(m.has(x.n))m.get(x.n).push(x.src);else m.set(x.n,[x.src])}return [...m].map(([n,src])=>({n,src}))}
 function gearStats(G,final){
   const pwr=20;const ftd=final.FTD||0;
-  let hp=220+pwr*4+Math.min(ftd,50)*.5+Math.max(ftd-50,0)*.25,pp=0,ep=0,bad=[];
+  let hp=220+pwr*4+Math.min(ftd,50)*.5+Math.max(ftd-50,0)*.25+10*tr('VIT'),pp=0,ep=0,bad=[];
   const o=OBY.get(G.outfit);if(o){pp+=o.p;ep+=o.e;if(!gearReqOk(o.req,final,pwr))bad.push(o.n)}
   for(const [lab,ty] of GSLOTS){const s=G.slots[lab];if(!s||!s.n)continue;const g=GBY.get(s.n);if(!g)continue;
     if(!gearReqOk(g.req,final,pwr))bad.push(g.n);
@@ -4594,7 +4609,7 @@ function addMyPreset(name){name=String(name||'').trim().slice(0,60);if(!name){sa
   const l=myPresets();const d=`${S.oath==='None'?'No oath':S.oath} · ${S.weapon||WEP[S.wtype]+' '+(S.wtarget||0)} · ${Object.keys(S.atts).map(k=>ATT[k][0]+' '+S.atts[k]).join(' + ')||'no attunement'} · ${S.sel.length} talents`;
   const i=l.findIndex(x=>x.n.toLowerCase()===name.toLowerCase());const item={n:name,d,code:encodeBuild(),at:Date.now()};if(i>=0)l[i]=item;else l.unshift(item);
   if(saveMyPresets(l.slice(0,50))){renderMyPresets();say(i>=0?`Updated your preset “${name}”.`:`Saved “${name}” to your presets on this computer.`)}else say('This browser blocked saving. Use Share → Copy link to keep the build instead.')}
-function renderInputs(){
+function renderInputs(){renderTraits();
   renderMyPresets();
   $('tpls').innerHTML=TEMPLATES.map((t,i)=>`<button data-tpl="${i}"><b>${esc(t.n)}</b><span>${esc(t.d)}</span></button>`).join('');
   $('wtype').innerHTML=Object.entries(WEP).map(([k,n])=>`<button aria-pressed="${S.wtype===k}" data-w="${k}">${n}</button>`).join('');
@@ -5075,7 +5090,7 @@ function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
 // share links always point at the public website so anyone can open them
 const ARTIFACT_URL='https://itsmrchickenss.github.io/meta-builder/';
 function shareBase(){const h=location.hostname||'';const inClaude=/claude\.ai|anthropic|usercontent|claude\.site/.test(h)||!/^https?:$/.test(location.protocol);return inClaude?ARTIFACT_URL:location.href.split('#')[0]}
-function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function decodeBuild(raw){
   let code=String(raw||'').trim();const i=code.indexOf('#');if(i>=0)code=code.slice(i+1);
   if(!code.startsWith('dw1'))throw new Error('not a build code');
@@ -5090,6 +5105,7 @@ function decodeBuild(raw){
   next.preMin={};for(const [k,v] of Object.entries(o.q||{}))if(ATTR.includes(k))next.preMin[k]=num(v,0);
   next.oath=OATHS.some(x=>x.n===o.o)?o.o:'None';next.weapon=WBY.has(o.p)?o.p:'';
   next.req=(o.r||[]).filter(n=>TBY.has(n)||MBY.has(n));next.enchant=ENBY.has(o.e)?o.e:'None';if(o.sn&&typeof o.sn==='object'){next.snap={};for(const ph of ['pre','post'])if(o.sn[ph]){next.snap[ph]={};for(const k of ALL)next.snap[ph][k]=num(o.sn[ph][k],0)}}next.avoid=(o.av||[]).filter(n=>TBY.has(n));next.caps={};for(const [k,v] of Object.entries(o.cp||{}))if(ATTR.includes(k)&&v&&typeof v==='object')next.caps[k]={on:!!v.on,max:num(v.max,25)};next.pin={};for(const [k,v] of Object.entries(o.x||{}))if(ALL.includes(k))next.pin[k]=num(v,0);
+  next.traits={};{let left=TRAIT_TOTAL;for(const [k] of TRAITS){const v=Math.max(0,Math.min(TRAIT_MAX,Math.round(+((o.tr||{})[k])||0),left));if(v){next.traits[k]=v;left-=v}}}
   if(o.g&&typeof o.g==='object'){const g={outfit:OBY.has(o.g.outfit)?o.g.outfit:'',slots:{},focus:['bal','phys','ele'].includes(o.g.focus)?o.g.focus:'bal'};for(const [lab] of GSLOTS){const s=(o.g.slots||{})[lab];if(s&&GBY.has(s.n))g.slots[lab]={n:s.n,st:Math.max(0,Math.min(3,+s.st||0)),p:Array.isArray(s.p)?s.p.filter(x=>['H','P','E',''].includes(x)).slice(0,8):[]}}next.gear=g}
   return next;
 }
@@ -5241,6 +5257,8 @@ function wizardApply(){
   if(p.gear){S.gear.w=p.gear.w;S.gear.minhp=p.gear.minhp}
   if(p.src==='AI build maker')showAdj(true);
   const addPop=$('wz-pop').checked&&!S.manual;const name=p.n;S.help=$('wz-help').checked;S.dsplit=+v('wz-ds');S.prio=+v('wz-pr');
+  // a new build gets traits that suit it (weapon: Proficiency + Vitality; mantras: Songchant + Erudition + Vitality)
+  S.traits=suggestTraits();
   if(S.manual)manualFromTargets();
   closeWizard();renderInputs();
   optimizeAll({noSpend:true,noUndo:true,after:()=>{
@@ -5525,7 +5543,8 @@ function dwbFromCoJson(j){
   const mantras=[];for(const n of j.mantras||[]){const m=matchName(n,LOWER_M);if(m)mantras.push(m);else unknown.push(cleanName(n))}
   const wraw=Array.isArray(j.weapons)?j.weapons[0]:j.weapons;const weapon=wraw?matchName(wraw,LOWER_W):null;if(wraw&&!weapon)unknown.push(cleanName(wraw));
   const pre=j.preShrine?st(j.preShrine):null;const fin=st(j.attributes||j.postShrine);
-  return {src:'deepwoken.co',name:(j.stats&&j.stats.buildName)||'deepwoken.co build',pre:pre&&ALL.some(k=>pre[k])?pre:null,fin,talents,mantras,weapon,oath:meta.Oath&&OATHS.some(o=>o.n===meta.Oath)?meta.Oath:'None',outfit:meta.Outfit&&OBY.has(meta.Outfit)?meta.Outfit:'',unknown}}
+  const traits={};for(const [n,v] of Object.entries((j.stats&&j.stats.traits)||{})){const k=TRAIT_FROM(n);if(k)traits[k]=Math.max(0,Math.min(6,+v||0))}
+  return {traits,src:'deepwoken.co',name:(j.stats&&j.stats.buildName)||'deepwoken.co build',pre:pre&&ALL.some(k=>pre[k])?pre:null,fin,talents,mantras,weapon,oath:meta.Oath&&OATHS.some(o=>o.n===meta.Oath)?meta.Oath:'None',outfit:meta.Outfit&&OBY.has(meta.Outfit)?meta.Outfit:'',unknown}}
 function dwbFromGameText(txt){
   const lines=txt.split('\n').map(l=>l.trim()).filter(l=>l&&!/^=+$/.test(l));const sec=h=>{const i=lines.findIndex(l=>l.replace(/\s+/g,' ').toUpperCase()==='== '+h+' ==');if(i<0)return [];const e=lines.findIndex((l,k)=>k>i&&/^==/.test(l));return lines.slice(i+1,e<0?undefined:e)};
   const stats=ls=>{const o={};for(const l of ls)for(const m of l.matchAll(/(?:^|[;,])\s*(\d+)\s+([A-Z]{3})\s*(?=[;,]|$)/gi)){const k=GAME_BACK[m[2].toUpperCase()];if(k)o[k]=Math.min(100,+m[1])}return o};
@@ -5534,13 +5553,13 @@ function dwbFromGameText(txt){
   for(const n of sec('MANTRAS')){const m=matchName(n,LOWER_M);if(m)mantras.push(m);else unknown.push(cleanName(n))}
   let oath='None';const lv=lines.find(l=>/^LVL\s/i.test(l));if(lv){const rest=lv.replace(/^LVL\s+\d+\s+/i,'');const parts=rest.includes(',')?rest.split(',').map(x=>x.trim()):rest.split(/\s+/);const cand=parts.slice(2).join(' ');const o=OATHS.find(x=>x.n.toLowerCase()===cand.toLowerCase())||OATHS.find(x=>x.n!=='None'&&new RegExp('\\b'+x.n+'\\b','i').test(rest));if(o)oath=o.n}
   const wl=sec('WEAPON')[0];const weapon=wl?matchName(wl,LOWER_W):null;const ol=sec('OUTFIT')[0];
-  const pre=stats(sec('PRE-SHRINE'));
-  return {src:'Deepwoken',name:lines[0]&&!/^(LVL|==)/i.test(lines[0])?lines[0]:'Deepwoken build',pre:ALL.some(k=>pre[k])?pre:null,fin:stats(sec('ATTRIBUTES')),talents,mantras,weapon,oath,outfit:ol&&OBY.has(ol)?ol:'',unknown}}
+  const pre=stats(sec('PRE-SHRINE'));const traits={};for(const l of sec('TRAITS'))for(const m of l.matchAll(/(\d+)\s+([A-Za-z]+)/g)){const k=TRAIT_FROM(m[2]);if(k)traits[k]=Math.min(6,+m[1])}
+  return {traits,src:'Deepwoken',name:lines[0]&&!/^(LVL|==)/i.test(lines[0])?lines[0]:'Deepwoken build',pre:ALL.some(k=>pre[k])?pre:null,fin:stats(sec('ATTRIBUTES')),talents,mantras,weapon,oath,outfit:ol&&OBY.has(ol)?ol:'',unknown}}
 function applyDwb(b){
   pushUndo('Import '+b.name);const fin=b.fin||{};
   const wt=WEPS.slice().sort((x,y)=>(fin[y]||0)-(fin[x]||0))[0];S.wtype=b.weapon&&wType(b.weapon)?(WEPS.find(k=>k in (WBY.get(b.weapon).req.s||{}))||wt):wt;S.wtarget=fin[S.wtype]||0;
   S.atts={};for(const k of ATTS)if(fin[k]>0)S.atts[k]=fin[k];S.mins={};for(const k of ATTR)if(fin[k])S.mins[k]=fin[k];S.preMin={};S.pin={};S.when={};
-  S.oath=b.oath||'None';S.weapon=b.weapon||'';if(b.outfit)S.gear.outfit=b.outfit;
+  S.oath=b.oath||'None';S.weapon=b.weapon||'';if(b.outfit)S.gear.outfit=b.outfit;if(b.traits&&Object.values(b.traits).some(v=>v>0))S.traits={...b.traits};
   const otal=new Set(OATHS.flatMap(o=>[...(o.mantras||[])]));
   S.sel=[...new Set(b.talents)].filter(n=>TBY.has(n)&&!n.startsWith('Oath:')&&TBY.get(n).r!=='O');S.mantras=[...new Set(b.mantras)].filter(n=>MBY.has(n)&&!oathTagOf(n)&&!otal.has(n));
   if(b.pre){S.manual=true;S.man={pre:{},fin:{}};for(const k of ALL){if(b.pre[k])S.man.pre[k]=b.pre[k];if(fin[k])S.man.fin[k]=fin[k]}}else S.manual=false;
@@ -5573,7 +5592,7 @@ function buildGameText(){if(!last||!last.best)return '';const b=last.best,C=last
   const tal=[...C.T.keys()].filter(n=>!n.startsWith('Oath:'));if(S.oath!=='None'&&TBY.has('Oath: '+S.oath))tal.push('Oath: '+S.oath);
   const name=`${S.weapon||WEP[S.wtype]+' weapon'} ${S.oath==='None'?'':S.oath+' '}build`.trim();
   return [name,`LVL ${powerAt(b.used)} None, Castaway, ${S.oath==='None'?'None':S.oath}`,'== ATTRIBUTES ==',line(ATTR,b.final),line(WEPS,b.final),line(ATTS,b.final),'== MANTRAS ==',...[...C.M.keys()],'== TALENTS ==',...tal.map(dwTalentName),
-    ...(S.weapon?['== WEAPON ==',S.weapon]:[]),...(S.gear.outfit?['== OUTFIT ==',S.gear.outfit]:[]),'== PRE-SHRINE ==',line(ATTR,b.P),line(WEPS,b.P),line(ATTS,b.P)].join('\n')}
+    ...(S.weapon?['== WEAPON ==',S.weapon]:[]),...(S.gear.outfit?['== OUTFIT ==',S.gear.outfit]:[]),'== PRE-SHRINE ==',line(ATTR,b.P),line(WEPS,b.P),line(ATTS,b.P),...(traitSum()?['== TRAITS ==',TRAITS.map(([k])=>`${tr(k)} ${k}`).join('; ')]:[])].join('\n')}
 
 
 // ================= build from a screenshot =================
@@ -5590,7 +5609,7 @@ const clamp100=v=>Math.max(0,Math.min(100,Math.round(+v||0)));
 // text recognition output -> stats ("Strength 25", "STR: 25", "25 STR", "Strength 40 -> 25")
 // common text-recognition slips inside words: 1/l/I and 0/o ("Wil1power", "F0rtitude")
 const ocrFix=t=>String(t||'').replace(/([A-Za-z])[1|!]([A-Za-z])/g,'$1l$2').replace(/([A-Za-z])0([A-Za-z])/g,'$1o$2').replace(/([A-Za-z])[1|!]([A-Za-z])/g,'$1l$2');
-function shotFromText(txt){txt=ocrFix(txt);const fin={},pre={};const lines=String(txt||'').split(/\n/);
+function shotFromText(txt){txt=ocrFix(txt);const fin={},pre={},traits={};{const m=[...String(txt).matchAll(/\b(vitality|erudition|proficiency|songchant)\b\W{0,3}(\d)\b/gi)];for(const x of m)traits[TRAIT_FROM(x[1])]=Math.min(6,+x[2])}const lines=String(txt||'').split(/\n/);
   for(const raw of lines){const l=' '+raw.toLowerCase().replace(/[|]/g,' ')+' ';
     for(const [k,al] of Object.entries(SHOT_ALIAS)){if(k in fin)continue;
       for(const a of al.slice().sort((x,y)=>y.length-x.length)){const ae=a.replace(/ /g,'\\s*');
@@ -5599,17 +5618,18 @@ function shotFromText(txt){txt=ocrFix(txt);const fin={},pre={};const lines=Strin
         m=l.match(new RegExp('(?:^|[^\\d])(\\d{1,3})\\s+'+ae+'(?![a-z])'));if(m&&+m[1]<=100){fin[k]=+m[1];break}}}}
   // attunement words ("Galebreathe") are stat names here, not typos of talents ("Galebreather")
   const names=findNames(nrm(txt),aiNames()).filter(h=>!(h.n.k==='talent'&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+nrm(txt).slice(h.at,h.end)+' '))));
-  return {fin,pre,talents:names.filter(h=>h.n.k==='talent').map(h=>h.n.n),mantras:names.filter(h=>h.n.k==='mantra').map(h=>h.n.n),oath:(names.find(h=>h.n.k==='oath')||{n:{}}).n.n||'',weapon:(names.find(h=>h.n.k==='weapon')||{n:{}}).n.n||''}}
+  return {traits,fin,pre,talents:names.filter(h=>h.n.k==='talent').map(h=>h.n.n),mantras:names.filter(h=>h.n.k==='mantra').map(h=>h.n.n),oath:(names.find(h=>h.n.k==='oath')||{n:{}}).n.n||'',weapon:(names.find(h=>h.n.k==='weapon')||{n:{}}).n.n||''}}
 const SHOT_PROMPT=`This picture shows a character build from the Roblox game Deepwoken: maybe a frame from a YouTube video, the in-game stat menu, or a deepwoken.co builder page. Read only what you can actually see.
 Reply with only a JSON object like:
-{"final":{"Strength":25,"Fortitude":50,"Agility":25,"Intelligence":0,"Willpower":40,"Charisma":0,"Heavy Wep.":0,"Medium Wep.":90,"Light Wep.":0,"Flamecharm":80,"Frostdraw":0,"Thundercall":0,"Galebreathe":0,"Shadowcast":0,"Ironsing":0,"Bloodrend":0},"preShrine":null,"oath":null,"weapon":null,"talents":[],"mantras":[]}
-"final" = the stats shown (the build's final or post-shrine stats). "preShrine" = a second set only if the picture clearly shows pre-shrine stats too, else null. Leave out stats you can't read. "talents" and "mantras" = names you can read in the picture (no guesses). "oath" and "weapon" = names if shown, else null.`;
+{"final":{"Strength":25,"Fortitude":50,"Agility":25,"Intelligence":0,"Willpower":40,"Charisma":0,"Heavy Wep.":0,"Medium Wep.":90,"Light Wep.":0,"Flamecharm":80,"Frostdraw":0,"Thundercall":0,"Galebreathe":0,"Shadowcast":0,"Ironsing":0,"Bloodrend":0},"preShrine":null,"traits":{"Vitality":0,"Erudition":0,"Proficiency":0,"Songchant":0},"oath":null,"weapon":null,"talents":[],"mantras":[]}
+"final" = the stats shown (the build's final or post-shrine stats). "preShrine" = a second set only if the picture clearly shows pre-shrine stats too, else null. Leave out stats you can't read. "traits" = Vitality / Erudition / Proficiency / Songchant points (0-6) if shown, else leave them out. "talents" and "mantras" = names you can read in the picture (no guesses). "oath" and "weapon" = names if shown, else null.`;
 function shotFromJson(j){if(!j||typeof j!=='object')return null;const fin={},pre={};
   for(const [n,v] of Object.entries(j.final||{})){const k=shotKey(n);if(k&&v!=null)fin[k]=clamp100(v)}
   for(const [n,v] of Object.entries(j.preShrine||{})){const k=shotKey(n);if(k&&v!=null)pre[k]=clamp100(v)}
   const pick=(list,by)=>(Array.isArray(list)?list:[]).map(x=>{const h=findNames(nrm(String(x)),aiNames()).find(h=>h.n.k===by);return h?h.n.n:null}).filter(Boolean);
   const o=j.oath?findNames(nrm(String(j.oath)),aiNames()).find(h=>h.n.k==='oath'):null;const w=j.weapon?findNames(nrm(String(j.weapon)),aiNames()).find(h=>h.n.k==='weapon'):null;
-  return {fin,pre,talents:pick(j.talents,'talent'),mantras:pick(j.mantras,'mantra'),oath:o?o.n.n:'',weapon:w?w.n.n:''}}
+  const traits={};for(const [n,v] of Object.entries(j.traits||{})){const k=TRAIT_FROM(n);if(k&&v!=null)traits[k]=Math.max(0,Math.min(6,Math.round(+v)||0))}
+  return {traits,fin,pre,talents:pick(j.talents,'talent'),mantras:pick(j.mantras,'mantra'),oath:o?o.n.n:'',weapon:w?w.n.n:''}}
 let tessP=null;
 function loadTesseract(){if(window.Tesseract)return Promise.resolve(window.Tesseract);if(tessP)return tessP;
   tessP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';sc.onload=()=>window.Tesseract?ok(window.Tesseract):no(new Error('no Tesseract'));sc.onerror=()=>{tessP=null;no(new Error('blocked'))};document.head.appendChild(sc)});return tessP}
@@ -5627,7 +5647,7 @@ async function readShot(file){if(!file||!/^image\//.test(file.type)){$('shotmsg'
   catch(e){const code=e&&e.code;msg.textContent=code==='rate_limited'?'Claude is busy right now; trying the built‑in reader…':'Trying the built‑in reader…'}
   if(!got){try{msg.textContent='Reading text from the picture… (the first time downloads the reader, about 10 MB)';const T=await loadTesseract();const r=await T.recognize(shotCanvas(img),'eng');got=shotFromText(r.data.text);how='Read with text recognition'}catch(e){got=null}}
   if(!got||!Object.keys(got.fin).length&&!got.talents.length){msg.textContent=got?'No stats could be read from this picture. Type them into the table below (a sharper, closer screenshot of the stat list reads best).':'The picture can\'t be read here. Type the stats into the table below.';renderShot();return}
-  SHOT.fin={...got.fin};SHOT.pre={...got.pre};if(got.oath)SHOT.oath=got.oath;if(got.weapon)SHOT.weapon=got.weapon;
+  SHOT.fin={...got.fin};SHOT.pre={...got.pre};SHOT.traits={...(got.traits||{})};if(got.oath)SHOT.oath=got.oath;if(got.weapon)SHOT.weapon=got.weapon;
   for(const n of [...got.talents,...got.mantras])if(!SHOT.seen.includes(n))SHOT.seen.push(n);
   const nS=Object.keys(got.fin).length,nT=got.talents.length+got.mantras.length;
   msg.textContent=`${how}: ${nS} stat${nS===1?'':'s'}${nT?`, ${nT} talent${nT===1?'':'s'} or mantra${nT===1?'':'s'}`:''}${got.oath?', '+got.oath:''}. Check them below; text recognition can misread numbers.`;
@@ -5674,7 +5694,7 @@ function loadShot(){const fin=SHOT.fin;if(Object.keys(fin).length<2){say('Add th
   const pre=Object.keys(SHOT.pre).length>=3?{...SHOT.pre}:null;const w=SHOT.weapon&&WBY.has(SHOT.weapon)?SHOT.weapon:'';
   // what you saw in the video is locked in as required, so fitting the budget never drops it
   S.req=[...new Set(SHOT.seen.filter(n=>TBY.has(n)||MBY.has(n)))];S.avoid=(S.avoid||[]).filter(n=>!S.req.includes(n));
-  const msg=applyDwb({name:'Screenshot build',src:'your screenshot',fin:{...fin},pre,oath:SHOT.oath||'None',weapon:w,talents,mantras,unknown:[]});
+  const msg=applyDwb({name:'Screenshot build',src:'your screenshot',traits:SHOT.traits||{},fin:{...fin},pre,oath:SHOT.oath||'None',weapon:w,talents,mantras,unknown:[]});
   showTab('build');sayUndo(msg)}
 
 
@@ -5756,6 +5776,11 @@ function runAdjust(){const txt=$('adjtext').value.trim();const msg=$('adjmsg');i
     msg.textContent='Changes: '+did.join(' · ')+'.'+(gone.length?` To make room, ${gone.length} talent${gone.length>1?'s were':' was'} removed: ${gone.slice(0,6).join(', ')}${gone.length>6?'…':''}.`:'')+` ${bb.free} points left. Undo reverses it.`}})}
 function showAdj(on){S.aiAdj=!!on;$('adjpanel').hidden=!S.aiAdj;save()}
 
+
+function renderTraits(){const el=$('traits');if(!el)return;const left=TRAIT_TOTAL-traitSum();$('traitleft').textContent=`${left} of ${TRAIT_TOTAL} left`;
+  const tip={VIT:'More health.',ERU:'More ether and tempo.',PRO:'More weapon damage (multiplies your weapon\'s stat scaling) and weapon PEN.',SNG:'More mantra damage (multiplies mantra stat scaling) and mantra PEN.'};
+  el.innerHTML=TRAITS.map(([k,n])=>{const v=tr(k);return `<div class="trait"><div class="tn"><b>${n}</b><small>${esc(v?traitFx(k,v):tip[k])}</small></div><div class="tstep"><button type="button" class="mini" data-trait="${k}:-1" ${v<=0?'disabled':''} aria-label="Less ${n}">−</button><span class="mono">${v}</span><button type="button" class="mini" data-trait="${k}:1" ${v>=TRAIT_MAX||left<=0?'disabled':''} aria-label="More ${n}">+</button></div><div class="tpips" aria-hidden="true">${Array.from({length:TRAIT_MAX},(_,i)=>`<i class="${i<v?'on':''}"></i>`).join('')}</div></div>`}).join('')}
+
 // ---- talent hover card ----
 function tipHtml(n){const t=TBY.get(n);const C=last?last.R.C:closure();const sy=t?synOf(n,C):[];const d=TDESC.get(n);
   return `<b>${esc(n)}</b>${t?` <span class="hint">${esc(t.c)}</span>`:''}${t?`<div class="mono tipreq">${esc(fmtReqFull(t))}</div>`:''}<div>${esc(d||'No description on deepwoken.co.')}</div>${rateTxt(n)?`<div class="hint">Taken by ${esc(rateTxt(n))}</div>`:''}${sy.length?`<div class="syn">⚡ Works with ${esc(sy.map(s=>s.o).join(', '))}</div>`:''}`}
@@ -5817,7 +5842,7 @@ function statHint(k){const b=last&&last.best;if(!b){$('stathint').textContent=''
   $('stathint').innerHTML=unlockListHtml(statName(k),u)}
 function applyPreset(p){
   pushUndo(p.clean?'Clean Slate':'preset '+p.n);
-  if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
+  if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.traits={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
     renderInputs();{const R=requirements();const Z=Object.fromEntries(ALL.map(k=>[k,0]));renderResults({R,best:evaluate(Z,R,R.oathAlts)||compute({starts:2,iters:60}).best,baseFree:noShrineFree(R)})}sayUndo('Clean slate: every stat at 0, no oath, attunement, talents, mantras or equipment.');return}
   S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.pin={};
   S.sel=p.t.filter(n=>TBY.has(n));S.mantras=[];S.when={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));
@@ -5895,6 +5920,7 @@ document.addEventListener('click',e=>{
   else if(d.optimize){optimizeAll()}
   else if(t.id==='autopick'||t.id==='autopick2'){autoPick()}
   else if(d.tab){showTab(d.tab)}
+  else if(d.trait){const [k,dv]=d.trait.split(':');S.traits=S.traits||{};const v=tr(k)+(+dv);if(v<0||v>TRAIT_MAX||(+dv>0&&traitSum()>=TRAIT_TOTAL))return;if(v)S.traits[k]=v;else delete S.traits[k];renderTraits();runSoon();save()}
   else if(d.spendnow){S.spend=true;$('spend').checked=true;optimizeAll()}
   else if(d.reqdel){const n=decodeURIComponent(d.reqdel);S.req=S.req.filter(x=>x!==n);if(TBY.has(n)){if(!S.sel.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);say(`${n} is no longer required; it stays picked as a normal ${TBY.has(n)?'talent':'mantra'}.`);runSoon()}
   else if(d.wuse){const n=decodeURIComponent(d.wuse);S.weapon=n;const w=WBY.get(n);if(w){const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt}if(S.wcmp===n)S.wcmp='';renderInputs();runSoon();say(`Now using ${n}.`)}
@@ -5987,6 +6013,7 @@ $('bugform').addEventListener('submit',e=>{e.preventDefault();sendBug()});
 $('adjform').addEventListener('submit',e=>{e.preventDefault();runAdjust()});
 $('adjtext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();runAdjust()}});
 $('adjclose').addEventListener('click',()=>showAdj(false));
+$('traitsugg').addEventListener('click',()=>{pushUndo('Traits');S.traits=suggestTraits();renderTraits();runSoon();say('Traits set to '+TRAITS.filter(([k])=>tr(k)).map(([k,n])=>n+' '+tr(k)).join(', ')+'. They don\'t use any stat points.')});
 $('adjpanel').hidden=!S.aiAdj;
 // screenshot import
 $('shotpick').addEventListener('click',()=>$('shotfile').click());

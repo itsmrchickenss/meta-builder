@@ -155,3 +155,6 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 ## v1.22
 - Web3Forms key set (`BUG_KEY`), tab renamed "Report bug/suggestions".
 - `S.allowOver`: adding a talent with no slots left shows "Max talent limit reached!" with a checkbox (`capWarn`); ticking it adds the talent and stops `roomFor`/`trimToCap` enforcing the cap. Also shown in the Talents tab (`#capline`) and the over-cap note.
+
+## v1.23 Adjustments
+- `#adjpanel` under the stats table, shown after an AI build (`S.aiAdj`, Hide button). `applyAdjust` understands exact values ("int to 30"), relative ("lower cha by 10", "more agility" = +15 from the current final), attunement swaps/adds/removes, weapon type/level, named oath/weapon/outfit, add/remove talents and mantras, tankier/glass cannon/more mobile, then falls through to `applyWish`. Values it sets go in `S.keep` so `easeFloors` lowers other targets first. `runAdjust` re-optimizes; if the build still cannot fit it undoes the change and says how many points were missing.

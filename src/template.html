@@ -267,9 +267,10 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .bugform label.hint{display:block}.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .bugtips{margin:0;padding-left:18px;display:grid;gap:4px}
 .capwarn{display:block}.capok{display:inline-flex;align-items:center;gap:4px;margin:0 4px;padding:1px 6px;border:1px solid var(--warn);border-radius:4px;font-weight:600;cursor:pointer}
+.adjlog{margin:0;padding-left:18px;display:grid;gap:2px;max-height:160px;overflow:auto}
 .tipacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
-#imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
+#imp1,#adjtext{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
 .shrineflow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;counter-reset:f}
 .shrineflow li{border:1px solid var(--line);border-top:3px solid var(--fc);border-radius:4px;padding:6px 8px;background:var(--abyss);display:grid;gap:2px;font-size:12.5px;counter-increment:f}
 .shrineflow li b{font-size:13px;color:var(--fc)}.shrineflow li b::before{content:counter(f) ". "}.shrineflow li span{color:var(--dim)}
@@ -416,7 +417,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.22</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.23</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -548,6 +549,13 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       <div class="row snapbtns" style="margin-top:8px"><button class="mini" id="savepre">Save before‑shrine</button><button class="mini" id="savepost">Save after‑shrine</button><button class="mini" id="loadpre">Load before‑shrine</button><button class="mini" id="loadpost">Load after‑shrine</button></div>
       <p class="hint" id="snapinfo"></p>
     </details>
+  </section>
+  <section class="panel" id="adjpanel" hidden>
+    <div class="row spread"><h2>✨ Adjustments</h2><button class="mini" type="button" id="adjclose">Hide</button></div>
+    <p class="hint" style="margin:0">Not quite right? Type what to change and the stats rearrange by themselves (the more specific you are the better!). Try “more agility”, “intelligence to 30”, “lower charisma by 10”, “swap flamecharm for frostdraw”, “add thundercall 40”, “heavy weapon 90”, “oath Blindseer”, “add Speed Demon”, “remove Ghost”, “tankier” or “more damage”.</p>
+    <form class="row" id="adjform" autocomplete="off"><textarea id="adjtext" rows="2" placeholder="e.g. more agility, swap flamecharm for frostdraw, add Speed Demon" aria-label="What to change" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit" id="adjgo">Apply changes</button></form>
+    <p class="hint" id="adjmsg" aria-live="polite" style="margin:0"></p>
+    <ul class="hint adjlog" id="adjlog"></ul>
   </section>
 </div>
 <div class="col">
@@ -1365,7 +1373,7 @@ function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iter
   const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;
   const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
   while(r.best&&!r.best.impossible&&r.best.free<0&&guard-->0){
-    const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin));
+    const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin)&&!(S.keep||{})[k]);
     if(!ks.length)break;ks.sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));const [o,k,mn,label]=ks[0];
     o[k]=Math.max(mn,(+o[k]||0)-5);if(o!==S&&!o[k])delete o[k];lowered[label]=o[k]||0;r=compute({starts:3,iters:60,seedP:r.best.P})}
   return {res:r,lowered}}
@@ -2282,7 +2290,7 @@ function wizardApply(){
   const autoOath=v('wz-oath')==='__auto';
   S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
   // a new build starts clean: required talents, equipment and enchant from the previous build don't carry over
-  S.req=[];S.caps=JSON.parse(JSON.stringify(p.caps||{}));S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
+  S.req=[];S.keep={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
   if(S.oath==='Silentheart'){const wa=p.weapon&&WBY.get(p.weapon);for(const k of Object.keys(S.atts))if(!(wa&&wa.req.s[k]))delete S.atts[k]}
   const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
   // talents the AI build maker was asked for are always kept; preset core talents are kept when these targets reach them
@@ -2292,6 +2300,7 @@ function wizardApply(){
   if(p.outfit&&OBY.has(p.outfit))S.gear.outfit=p.outfit;
   for(const gn of p.gearItems||[]){const g=GBY.get(gn);if(!g)continue;const labs=GSLOTS.filter(([,ty])=>ty===g.ty).map(([l])=>l);if(labs.some(l=>S.gear.slots[l]&&S.gear.slots[l].n===gn))continue;const lab=labs.find(l=>!S.gear.slots[l])||labs[0];S.gear.slots[lab]={n:gn,st:maxStars(g.ty),p:[]}}
   if(p.gear){S.gear.w=p.gear.w;S.gear.minhp=p.gear.minhp}
+  if(p.src==='AI build maker')showAdj(true);
   const addPop=$('wz-pop').checked&&!S.manual;const name=p.n;S.help=$('wz-help').checked;S.dsplit=+v('wz-ds');S.prio=+v('wz-pr');
   if(S.manual)manualFromTargets();
   closeWizard();renderInputs();
@@ -2747,6 +2756,67 @@ async function sendBug(){const what=$('bugwhat').value.trim();const msg=$('bugms
   catch(e){msg.innerHTML=`The report couldn't be sent from here${location.hostname.endsWith('github.io')?'':` (this page may block it; the <a href="${MB_URL}" target="_blank" rel="noopener">website version</a> can send it)`}. <button type="button" class="mini" id="bugcopy">Copy report</button>`;$('bugcopy').onclick=()=>copyText(body,'Report copied.')}
   finally{$('bugsend').disabled=false}}
 
+
+// ================= Adjustments (after the AI build maker) =================
+// Plain-language changes to the current build, then Optimize rearranges the stats. Builds on applyWish
+// (limits, more/less, damage vs talents, tanky, require/avoid) and adds exact values, swaps and names.
+function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase().replace(/[’`]/g,"'").replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' ';const did=[];
+  const b=last&&last.best;const fin=b?b.final:{};S.caps=S.caps||{};
+  const STW={STR:'strength|str',FTD:'fortitude|fort|ftd',AGL:'agility|agi|agl',INT:'intelligence|int',WLL:'willpower|will|wll',CHA:'charisma|cha'};
+  const ATW={FLM:'flamecharm|flame charm|flame|fire',ICE:'frostdraw|frost draw|frost|ice',LTN:'thundercall|thunder call|thunder|lightning',WND:'galebreathe|gale breathe|gale|wind',SDW:'shadowcast|shadow cast|shadow',IRN:'ironsing|iron sing|iron|metal',BLD:'bloodrend|blood rend|blood'};
+  const WPW={HVY:'heavy',MED:'medium',LHT:'light'};
+  S.keep=S.keep||{};const keep=k=>{S.keep[WEPS.includes(k)?'wtarget':k]=1};
+  const lock=(k,v)=>{keep(k);v=Math.max(0,Math.min(100,Math.round(v)));if(ATTR.includes(k)){if(v)S.mins[k]=v;else delete S.mins[k];S.caps[k]={on:true,max:v}}else if(ATT[k]){if(v)S.atts[k]=v;else delete S.atts[k]}else if(WEPS.includes(k)){S.wtype=k;S.wtarget=v}return v};
+  const handled=new Set();
+  // 1. swaps: "swap flame for frost", "replace flame with frost", "frost instead of flame"
+  for(const [a,wa] of Object.entries(ATW))for(const [c,wc] of Object.entries(ATW)){if(a===c)continue;
+    if(new RegExp(` (?:swap|switch|change|replace|trade) (?:${wa}) (?:for|with|to|into) (?:${wc}) | (?:${wc}) instead of (?:${wa}) `).test(s)&&a in S.atts){const v=S.atts[a];delete S.atts[a];S.atts[c]=Math.max(S.atts[c]||0,v);keep(c);delete S.keep[a];handled.add(a);handled.add(c);did.push(`${ATT[a][0]} swapped for ${ATT[c][0]} ${v}`)}}
+  // 2. exact values and relative changes for attributes, attunements and weapon
+  const num=(w,pre)=>{let m=s.match(new RegExp(` (?:set |make |put |change )?(?:${w}) (?:to |at |= |is |should be )?(\\d{1,3}) `))||s.match(new RegExp(` (\\d{1,3}) (?:${w}) `));return m?+m[1]:null};
+  const rel=w=>{let m=s.match(new RegExp(` (raise|increase|up|add|boost|lower|decrease|reduce|drop|cut) (?:the )?(?:${w}) by (\\d{1,3}) `))||s.match(new RegExp(` (?:${w}) (up|down|\\+|-) ?(\\d{1,3}) `));if(!m)return null;const up=/raise|increase|up|add|boost|\+/.test(m[1]);return up?+m[2]:-m[2]};
+  for(const [k,w] of Object.entries(STW)){const r=rel(w);if(r!=null){const v=lock(k,(fin[k]||0)+r);did.push(`${ANAME[k]} ${r>0?'raised':'lowered'} to ${v}`);handled.add(k);continue}
+    const n=num(w);if(n!=null&&n<=100){lock(k,n);did.push(`${ANAME[k]} set to ${n} after the shrine`);handled.add(k);continue}
+    // "more agility" / "less charisma": about 15 up or down from where it ends now
+    if(new RegExp(` (?:more|higher|extra|bit more) (?:${w}) `).test(s)){const v=lock(k,(fin[k]||0)+15);if(S.caps[k])S.caps[k].on=false;did.push(`more ${ANAME[k]}: ${v} after the shrine`);handled.add(k);continue}
+    if(new RegExp(` (?:less|lower|bit less|reduce) (?:${w}) `).test(s)){const v=lock(k,(fin[k]||0)-15);did.push(`less ${ANAME[k]}: ${v} after the shrine`);handled.add(k)}}
+  for(const [k,w] of Object.entries(ATW)){if(handled.has(k))continue;
+    if(new RegExp(` (?:no|remove|drop|without|lose) (?:${w}) `).test(s)&&k in S.atts){delete S.atts[k];did.push(`${ATT[k][0]} removed`);continue}
+    const r=rel(w);if(r!=null){const v=lock(k,(S.atts[k]||fin[k]||0)+r);did.push(`${ATT[k][0]} ${r>0?'raised':'lowered'} to ${v}`);continue}
+    const n=num(w);if(n!=null&&n<=100){lock(k,n);did.push(`${ATT[k][0]} set to ${n}`);continue}
+    if(new RegExp(` (?:add|use|with|also|plus|and) (?:${w}) `).test(s)&&!(k in S.atts)){S.atts[k]=40;keep(k);did.push(`${ATT[k][0]} added at 40`)}}
+  for(const [k,w] of Object.entries(WPW)){const m=s.match(new RegExp(` (?:${w}) (?:weapon|wep)s?(?: (?:to |at )?(\\d{1,3}))? | (?:switch|change|go) to (?:${w}) `));if(m){const v=m[1]?+m[1]:Math.max(S.wtarget||0,k==='HVY'?90:80);if(S.weapon&&!(k in (WBY.get(S.weapon).req.s||{})))S.weapon='';lock(k,v);did.push(`${WEP[k]} weapon ${v}`)}}
+  {const r=s.match(/ weapon (?:to |at )?(\d{1,3}) | (\d{1,3}) weapon /);if(r&&!did.some(d=>/weapon/.test(d))){const v=+(r[1]||r[2]);lock(S.wtype,v);did.push(`${WEP[S.wtype]} weapon ${v}`)}}
+  {const r=s.match(/ (raise|increase|lower|decrease|reduce) (?:the )?weapon by (\d{1,3}) /);if(r){const v=lock(S.wtype,(S.wtarget||0)+(/raise|increase/.test(r[1])?+r[2]:-r[2]));did.push(`${WEP[S.wtype]} weapon ${v}`)}}
+  // 3. names: oath, weapon, talents and mantras to add or remove
+  const found=findNames(nrm(raw),aiNames()).filter(h=>!(h.n.k==='talent'&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+nrm(raw).slice(h.at,h.end)+' '))));
+  const before=(h,re)=>re.test(nrm(raw).slice(Math.max(0,h.at-24),h.at));
+  for(const h of found){const n=h.n.n;
+    if(h.n.k==='oath'){S.oath=n;did.push('oath '+n)}
+    else if(h.n.k==='weapon'){const w=WBY.get(n);S.weapon=n;const wt=WEPS.find(k=>k in w.req.s);if(wt){S.wtype=wt;S.wtarget=Math.max(S.wtarget||0,w.req.s[wt]);keep(wt)}did.push('weapon '+n)}
+    else if(h.n.k==='outfit'){S.gear.outfit=n;did.push('outfit '+n)}
+    else if(h.n.k==='talent'||h.n.k==='mantra'){const isT=h.n.k==='talent';
+      if(before(h,/(?:remove|drop|no|without|lose|get rid of|not|avoid|skip) $/)){if(isT){S.sel=S.sel.filter(x=>x!==n);S.req=S.req.filter(x=>x!==n);if(/avoid|no $|not $|skip $/.test(nrm(raw).slice(Math.max(0,h.at-24),h.at))&&!(S.avoid||[]).includes(n))S.avoid=[...(S.avoid||[]),n]}else S.mantras=S.mantras.filter(x=>x!==n);did.push('removed '+n)}
+      else{if(isT){S.avoid=(S.avoid||[]).filter(x=>x!==n);if(!S.sel.includes(n)&&!S.req.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);did.push('added '+n)}}}
+  // 4. play styles
+  if(/ tankier | more tanky | more tank | more health | survive more /.test(s)){S.mins.FTD=Math.min(100,Math.max(+S.mins.FTD||0,(fin.FTD||0)+25,50));if(S.caps.FTD)S.caps.FTD.on=false;keep('FTD');did.push(`tankier: Fortitude ${S.mins.FTD} after the shrine`)}
+  if(/ glass cannon | less tanky | no fortitude /.test(s)){S.caps.FTD={on:true,max:/no fortitude/.test(s)?0:25};delete S.mins.FTD;did.push(`Fortitude kept at ${S.caps.FTD.max} or less`)}
+  if(/ more mobile | faster | more mobility | more speed /.test(s)){S.preMin.AGL=Math.max(+S.preMin.AGL||0,45);keep('AGL');did.push('more mobile: Agility 45 before the shrine')}
+  // 5. everything else the "What you want" box understands (limits, more/less, damage vs talents, require/avoid)
+  const skip=new Set(did.join(' ').match(/Strength|Fortitude|Agility|Intelligence|Willpower|Charisma/g)||[]);
+  {const rest=raw.replace(/\b(more|less|higher|lower|extra|reduce)\s+(strength|str|fortitude|fort|ftd|agility|agi|agl|intelligence|int|willpower|will|wll|charisma|cha)\b/gi,' ');const wd=applyWish(rest);for(const [k,w] of Object.entries(STW))if(new RegExp(` (?:high|max|lots of) (?:${w}) `).test(s))keep(k);for(const d of wd)if(![...skip].some(w=>d.includes(w))||/^(no|at most)/.test(d))did.push(d)}
+  return [...new Set(did)]}
+function runAdjust(){const txt=$('adjtext').value.trim();const msg=$('adjmsg');if(!txt){msg.textContent='Type what you want to change first.';return}
+  pushUndo('Adjust: '+txt.slice(0,40));const selBefore=new Set(S.sel);const did=applyAdjust(txt);
+  if(!did.length){UNDO.pop();renderUndo();msg.textContent='Nothing in that was recognised. Name a stat, attunement, weapon, oath or talent, e.g. “more agility” or “add Speed Demon”.';return}
+  renderInputs();msg.textContent='Changes: '+did.join(' · ')+'. Rearranging stats…';
+  $('adjlog').insertAdjacentHTML('afterbegin',`<li>${esc(txt)} → ${esc(did.join(', '))}</li>`);$('adjtext').value='';
+  optimizeAll({noUndo:true,noSpend:true,after:()=>{const bb=last&&last.best;
+    // a change that can't be paid for even after removing talents is rolled back
+    if(!bb||bb.impossible||bb.free<0){const over=bb&&!bb.impossible?-bb.free:null;undo();msg.textContent=`That doesn't fit${over?`: it needs ${over} more points than the build has, even after removing talents`:''}, so nothing was changed. Lower something else first (e.g. “weapon 75” or “less charisma”), then try again.`;$('adjlog').firstElementChild&&$('adjlog').firstElementChild.insertAdjacentHTML('beforeend',' <b>(didn\'t fit, undone)</b>');return}
+    const asked=new Set(did.filter(d=>d.startsWith('removed ')).map(d=>d.slice(8)));const gone=[...selBefore].filter(n=>!S.sel.includes(n)&&!asked.has(n));
+    msg.textContent='Changes: '+did.join(' · ')+'.'+(gone.length?` To make room, ${gone.length} talent${gone.length>1?'s were':' was'} removed: ${gone.slice(0,6).join(', ')}${gone.length>6?'…':''}.`:'')+` ${bb.free} points left. Undo reverses it.`}})}
+function showAdj(on){S.aiAdj=!!on;$('adjpanel').hidden=!S.aiAdj;save()}
+
 // ---- talent hover card ----
 function tipHtml(n){const t=TBY.get(n);const C=last?last.R.C:closure();const sy=t?synOf(n,C):[];const d=TDESC.get(n);
   return `<b>${esc(n)}</b>${t?` <span class="hint">${esc(t.c)}</span>`:''}${t?`<div class="mono tipreq">${esc(fmtReqFull(t))}</div>`:''}<div>${esc(d||'No description on deepwoken.co.')}</div>${rateTxt(n)?`<div class="hint">Taken by ${esc(rateTxt(n))}</div>`:''}${sy.length?`<div class="syn">⚡ Works with ${esc(sy.map(s=>s.o).join(', '))}</div>`:''}`}
@@ -2975,6 +3045,10 @@ $('imp1form').addEventListener('submit',e=>{e.preventDefault();runImport($('imp1
 $('imp1').addEventListener('paste',()=>setTimeout(()=>{const v=$('imp1').value;if(/dw1[A-Za-z0-9_-]{10,}/.test(v)||/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)||(v.includes('{')&&/"talents"|"attributes"/.test(v)))runImport(v,$('imp1msg'),()=>{$('imp1').value=''});else if(DW_LINK.test(v)){$('imp1msg').innerHTML=pasteHelp('');$('dwcohelp').open=true}},0));
 
 $('bugform').addEventListener('submit',e=>{e.preventDefault();sendBug()});
+$('adjform').addEventListener('submit',e=>{e.preventDefault();runAdjust()});
+$('adjtext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();runAdjust()}});
+$('adjclose').addEventListener('click',()=>showAdj(false));
+$('adjpanel').hidden=!S.aiAdj;
 // screenshot import
 $('shotpick').addEventListener('click',()=>$('shotfile').click());
 $('shotfile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)readShot(f);e.target.value=''});

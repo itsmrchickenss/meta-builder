@@ -266,6 +266,7 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .bugform{display:grid;gap:10px}.bugform label{display:grid;gap:4px;font-size:14px}.bugform textarea,.bugform input[type=text]{font:inherit;font-size:14px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px;resize:vertical}
 .bugform label.hint{display:block}.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .bugtips{margin:0;padding-left:18px;display:grid;gap:4px}
+.capwarn{display:block}.capok{display:inline-flex;align-items:center;gap:4px;margin:0 4px;padding:1px 6px;border:1px solid var(--warn);border-radius:4px;font-weight:600;cursor:pointer}
 .tipacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
 #imp1{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
@@ -415,7 +416,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.21</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v1.22</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -444,7 +445,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <button role="tab" id="t-req" data-tab="req" aria-controls="tab-req"><b>2</b> Talents &amp; mantras</button>
     <button role="tab" id="t-sum" data-tab="sum" aria-controls="tab-sum"><b>3</b> Summary</button>
     <button role="tab" id="t-arm" data-tab="arm" aria-controls="tab-arm"><b>4</b> Armor</button>
-    <button role="tab" id="t-bug" data-tab="bug" aria-controls="tab-bug"><b>!</b> Report a bug</button>
+    <button role="tab" id="t-bug" data-tab="bug" aria-controls="tab-bug"><b>!</b> Report bug/suggestions</button>
   </div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="seg modeseg" id="modeseg" role="group" aria-label="Planner mode"><button class="mini" data-mode="opt" title="The optimizer picks pre-shrine stats, raises stats for your talents and spends leftovers">Optimizer</button><button class="mini" data-mode="man" title="You set every stat yourself; nothing is raised or chosen for you">Manual</button></div>
@@ -609,6 +610,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       <div class="seg" id="tgroup"></div>
       <input type="search" id="tfind" placeholder="Search talents or stats" aria-label="Search talents" style="flex:1 1 160px">
     </div>
+    <div id="capline"></div>
     <div id="tsugg"></div>
     <div class="groups tall cols" id="tchips"></div>
     <p class="hint">Gold edge = advanced, blue = rare. Dashed = added as a prerequisite. Grey chips need more points (shown in orange). ⚡ = synergy with something you picked.</p>
@@ -734,11 +736,11 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="tabpane grid" id="tab-bug" role="tabpanel" aria-labelledby="t-bug" hidden>
 <div class="col">
   <section class="panel">
-    <h2>Report a bug</h2>
-    <p class="hint" style="margin:0">Something wrong or confusing? Tell us here. Reports go privately to the developer; nobody else can see them.</p>
+    <h2>Report a bug or suggest something</h2>
+    <p class="hint" style="margin:0">Something wrong or confusing, or an idea for something new? Tell us here. Reports and suggestions go privately to the developer; nobody else can see them.</p>
     <form id="bugform" class="bugform" autocomplete="off">
-      <label>What went wrong?<textarea id="bugwhat" rows="4" required maxlength="3000" placeholder="e.g. I pressed Optimize build and it went over budget"></textarea></label>
-      <label>What did you expect instead? <span class="hint">(optional)</span><textarea id="bugexp" rows="2" maxlength="1500"></textarea></label>
+      <label>What went wrong, or what would you like added?<textarea id="bugwhat" rows="4" required maxlength="3000" placeholder="e.g. I pressed Optimize build and it went over budget  ·  or: add a build compare page"></textarea></label>
+      <label>What did you expect instead, or more details? <span class="hint">(optional)</span><textarea id="bugexp" rows="2" maxlength="1500"></textarea></label>
       <label>How to reach you if you want a reply <span class="hint">(optional: Discord name or email)</span><input type="text" id="bugcontact" maxlength="120"></label>
       <label class="hint"><input type="checkbox" id="bugbuild" checked> Include my current build (a link to it), the version and my browser, so the bug can be reproduced</label>
       <input type="checkbox" name="botcheck" id="bugbot" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -749,12 +751,13 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 </div>
 <div class="col">
   <section class="panel">
-    <h2>Good reports</h2>
+    <h2>Good reports and suggestions</h2>
     <ul class="hint bugtips">
       <li>Say which tab and which button you used.</li>
       <li>Say what you typed or picked right before it happened.</li>
       <li>Keep “Include my current build” ticked, so the exact build can be opened again.</li>
-      <li>One problem per report.</li>
+      <li>One problem or idea per report.</li>
+      <li>For a suggestion, say what you'd use it for.</li>
     </ul>
   </section>
 </div>
@@ -801,7 +804,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 </form></dialog>
 <dialog id="ai" aria-labelledby="ai-title"><form method="dialog" id="aiform" class="dlgform">
   <h2 id="ai-title">✨ AI build maker</h2>
-  <p class="hint" style="margin:0">Type in what you want for your build and we will make it for you! Mention an oath, attunements, a weapon, an outfit, talents, mantras, a talent path (steam, lava, glass…) or a play style (bossraid, gank, tanky, semi tanky, insanity…). Small typos are fine. You can also paste a deepwoken.co build link or Deepwoken build text and say what to change.</p>
+  <p class="hint" style="margin:0">Type in what you want for your build and we will make it for you (the more specific you are the better!). Mention an oath, attunements, a weapon, an outfit, talents, mantras, a talent path (steam, lava, glass…) or a play style (bossraid, gank, tanky, semi tanky, insanity…). Small typos are fine. You can also paste a deepwoken.co build link or Deepwoken build text and say what to change.</p>
   <textarea id="aitext" rows="4" placeholder="e.g. saintsworn bossraid/gank build, steam path, flame worshipper outfit, worshipper longsword, orbital ice, semi tanky"></textarea>
   <div class="chips" id="aiex"></div>
   <p class="hint" id="aimsg" aria-live="polite" style="margin:0"></p>
@@ -1314,7 +1317,7 @@ function noShrineFree(R){
 }
 const isReq=n=>(S.req||[]).includes(n);
 // Talent cap: drop the least valuable picked talents (never required ones) until the build fits 52 + (12 - mantras) x 2
-function trimToCap(){const dropped=[];let guard=80;
+function trimToCap(){const dropped=[];if(S.allowOver)return dropped;let guard=80;
   while(guard-->0){const C=closure();const cn=counts(C);if(cn.nTal<=cn.cap)break;
     const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n));if(!cand.length)break;
     let pick=null;for(const n of cand){const keep=S.sel;S.sel=keep.filter(x=>x!==n);const c2=counts(closure()).nTal;S.sel=keep;const freed=cn.nTal-c2;if(freed<=0)continue;
@@ -1369,7 +1372,11 @@ function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iter
 // After a mantra is added (each one takes 2 talent slots), drop the least valuable talents so the cap still holds
 function fitCap(){const d=trimToCap();if(d.length)say(`That mantra takes 2 talent slots, so ${d.length} talent${d.length>1?'s were':' was'} dropped to stay under the cap: ${d.slice(0,5).join(', ')}${d.length>5?'…':''}. Undo brings ${d.length>1?'them':'it'} back.`);return d}
 // Room for one more talent (with its missing prerequisites)?
-function roomFor(n){const keep=S.sel;S.sel=[...keep,n];const cn=counts(closure());S.sel=keep;return cn.nTal<=cn.cap}
+function roomFor(n){if(S.allowOver)return true;const keep=S.sel;S.sel=[...keep,n];const cn=counts(closure());S.sel=keep;return cn.nTal<=cn.cap}
+let pendingTal=null;
+// shown when a talent is added with every slot used: tick the box to allow going over (adds the talent right away)
+function capWarn(n){pendingTal=n||null;const cn=counts(closure());
+  $('copied').innerHTML=`<span class="callout warn capwarn"><b>Max talent limit reached!</b> (${cn.nTal}/${cn.cap}) Either press this box <label class="capok"><input type="checkbox" data-allowover="1" ${S.allowOver?'checked':''}> allow going over the max talents</label> or remove some talents!</span>`}
 const fullMsg=()=>{const cn=counts(closure());return `No talent slots left (${cn.nTal}/${cn.cap}). Remove a talent or a mantra first.`};
 // Over budget: drop the picked talent that frees the most points per unit of value (popularity + synergy + damage), repeat
 function trimToBudget(res){const dropped=[];let guard=40;
@@ -1652,7 +1659,7 @@ function renderInputs(){
   renderWeaponSearch();
   $('atts').innerHTML=Object.entries(ATT).map(([k,[n,c]])=>{const on=k in S.atts;
     return `<label class="${on?'on':''}" style="--c:var(${c})" title="${n}"><input type="checkbox" id="a-${k}" data-a="${k}" ${on?'checked':''}><span class="dot"></span><span class="nm">${n}</span><input type="number" id="av-${k}" data-av="${k}" min="0" max="100" step="5" value="${on?S.atts[k]:80}" ${on?'':'disabled'} aria-label="${n} target"></label>`}).join('');
-  $('presets').innerHTML=`<button data-ai="1" class="aicard"><b>✨ AI build maker</b><span>Type in what you want for your build and we will make it for you!</span></button>`+PRESETS.map((p,i)=>`<button data-preset="${i}"><b>${esc(p.n)}</b><span>${esc(p.d)}</span><span class="mono" style="font-size:11px">${esc(p.oath)} · ${esc(p.src)}</span></button>`).join('');
+  $('presets').innerHTML=`<button data-ai="1" class="aicard"><b>✨ AI build maker</b><span>Type in what you want for your build and we will make it for you (the more specific you are the better!)</span></button>`+PRESETS.map((p,i)=>`<button data-preset="${i}"><b>${esc(p.n)}</b><span>${esc(p.d)}</span><span class="mono" style="font-size:11px">${esc(p.oath)} · ${esc(p.src)}</span></button>`).join('');
   $('floors').innerHTML='<span></span>'+ATTR.map(a=>`<span>${a}</span>`).join('')+
     '<span class="rowlabel">Before shrine</span>'+ATTR.map(a=>`<input type="number" id="pm-${a}" data-pm="${a}" min="0" max="100" step="5" value="${(S.preMin||{})[a]||0}" aria-label="${ANAME[a]} before shrine">`).join('')+
     '<span class="rowlabel">After shrine</span>'+ATTR.map(a=>`<input type="number" id="m-${a}" data-m="${a}" min="0" max="100" step="5" value="${S.mins[a]||0}" aria-label="${ANAME[a]} after shrine">`).join('');
@@ -2001,7 +2008,8 @@ function renderResults(res){
   let note='';
   if(best.impossible)note+=`<div class="callout bad">Something here needs a stat above 100. Check your talents or weapon.</div>`;
   if(best.free<0&&!best.impossible)note+=`<div class="callout bad">Over budget by ${-best.free}. ${S.manual?'Lower some pre‑shrine or final stats on the Stats tab.':'Press Optimize, drop a talent or mantra, lower a target, or try another oath.'}</div>`;
-  if(cn.nTal>cn.cap)note+=`<div class="callout bad">${cn.nTal-cn.cap} talent${cn.nTal-cn.cap>1?'s':''} over the cap.</div>`;
+  if(cn.nTal>cn.cap)note+=`<div class="callout ${S.allowOver?'warn':'bad'}">${cn.nTal-cn.cap} talent${cn.nTal-cn.cap>1?'s':''} over the max talent limit. <label class="capok"><input type="checkbox" data-allowover="1" ${S.allowOver?'checked':''}> allow going over the max talents</label></div>`;
+  {const cl=$('capline');if(cl)cl.innerHTML=cn.nTal>=cn.cap||S.allowOver?`<p class="hint" style="margin:0">${cn.nTal}/${cn.cap} talents${cn.nTal>cn.cap?` (${cn.nTal-cn.cap} over)`:cn.nTal===cn.cap?' (full)':''}. <label class="capok"><input type="checkbox" data-allowover="1" ${S.allowOver?'checked':''}> allow going over the max talents</label></p>`:''}
   if(su.over)note+=`<div class="callout warn">${su.over} mantra${su.over>1?'s':''} won't fit in your mantra slots.</div>`;
   const prePwr=powerAt(best.preSum);const latePre=best.preTaken.filter(n=>pwrOf(reqOf(n))>prePwr);
   if(latePre.length)note+=`<div class="callout warn">${esc(latePre.join(', '))} need${latePre.length>1?'':'s'} more Power than you'll have at the shrine (Power ${prePwr}).</div>`;
@@ -2725,17 +2733,17 @@ function loadShot(){const fin=SHOT.fin;if(Object.keys(fin).length<2){say('Add th
 // ================= bug reports =================
 // Sent through Web3Forms, which emails each report to the developer only. BUG_KEY is the public access key Web3Forms
 // gives for that inbox (it can only send to it). Empty = not set up yet.
-const BUG_KEY='';
+const BUG_KEY='eaf1b4e7-299b-493f-bd07-b60d1184e5d2';
 const MB_VERSION=(document.querySelector('header h1 .ver')||{}).textContent||'';
-async function sendBug(){const what=$('bugwhat').value.trim();const msg=$('bugmsg');if(what.length<5){msg.textContent='Describe what went wrong first.';return}
+async function sendBug(){const what=$('bugwhat').value.trim();const msg=$('bugmsg');if(what.length<5){msg.textContent='Write what went wrong or what you\'d like added first.';return}
   if($('bugbot').checked)return;
   const extra=$('bugbuild').checked?`\n\nVersion: ${MB_VERSION}\nBuild: ${(()=>{try{return buildLink()}catch(e){return '-'}})()}\nTab: ${S.tab}\nBrowser: ${navigator.userAgent}`:'';
-  const body=`What went wrong:\n${what}\n\nExpected:\n${$('bugexp').value.trim()||'-'}\n\nContact: ${$('bugcontact').value.trim()||'-'}${extra}`;
+  const body=`Report / suggestion:\n${what}\n\nExpected:\n${$('bugexp').value.trim()||'-'}\n\nContact: ${$('bugcontact').value.trim()||'-'}${extra}`;
   if(!BUG_KEY){msg.innerHTML='Bug reports aren\'t switched on yet. <button type="button" class="mini" id="bugcopy">Copy report</button>';$('bugcopy').onclick=()=>copyText(body,'Report copied.');return}
   $('bugsend').disabled=true;msg.textContent='Sending…';
-  try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:BUG_KEY,subject:`Meta Builder bug report ${MB_VERSION}`,from_name:'Meta Builder',message:body,botcheck:false})});
+  try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:BUG_KEY,subject:`Meta Builder bug report / suggestion ${MB_VERSION}`,from_name:'Meta Builder',message:body,botcheck:false})});
     const j=await r.json().catch(()=>({}));if(!r.ok||j.success===false)throw new Error(j.message||('HTTP '+r.status));
-    msg.textContent='Thanks! Your report was sent.';$('bugwhat').value='';$('bugexp').value=''}
+    msg.textContent='Thanks! It was sent to the developer.';$('bugwhat').value='';$('bugexp').value=''}
   catch(e){msg.innerHTML=`The report couldn't be sent from here${location.hostname.endsWith('github.io')?'':` (this page may block it; the <a href="${MB_URL}" target="_blank" rel="noopener">website version</a> can send it)`}. <button type="button" class="mini" id="bugcopy">Copy report</button>`;$('bugcopy').onclick=()=>copyText(body,'Report copied.')}
   finally{$('bugsend').disabled=false}}
 
@@ -2868,8 +2876,8 @@ document.addEventListener('click',e=>{
   else if(d.wclear){S.weapon='';renderInputs();runSoon()}
   else if(d.oathpick){S.oath=decodeURIComponent(d.oathpick);const wz=$('wz-oath');if(wz&&$('wiz').open)wz.value=S.oath;else{renderInputs();runSoon()}if($('oathdlg').open){closeDlg('oathdlg')}say(`Oath set to ${S.oath}.`)}
   else if(d.ttog&&isReq(decodeURIComponent(d.ttog))){say(`${decodeURIComponent(d.ttog)} is required. Remove it on the Talents tab first.`)}
-  else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else{if(!roomFor(n)){say(fullMsg());return}S.sel.push(n)}runSoon()}
-  else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n)){if(!roomFor(n)){say(fullMsg());return}pushUndo('Take '+n);S.sel.push(n)}runSoon();say(`Took ${n}.`)}
+  else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else{if(!roomFor(n)){capWarn(n);return}S.sel.push(n)}runSoon()}
+  else if(d.tadd){const n=decodeURIComponent(d.tadd);if(!S.sel.includes(n)){if(!roomFor(n)){capWarn(n);return}pushUndo('Take '+n);S.sel.push(n)}runSoon();say(`Took ${n}.`)}
   else if(d.mtog&&isReq(decodeURIComponent(d.mtog))){say(`${decodeURIComponent(d.mtog)} is required. Remove it on the Talents tab first.`)}
   else if(d.mtog){const n=decodeURIComponent(d.mtog);if(S.mantras.includes(n))S.mantras=S.mantras.filter(x=>x!==n);else{S.mantras.push(n);const cn=counts(closure());if(cn.nTal>cn.cap){S.mantras.pop();pushUndo('Add '+n);S.mantras.push(n);fitCap()}}runSoon()}
   else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save()}
@@ -2922,6 +2930,7 @@ document.addEventListener('change',e=>{
   else if(d.tgt){const k=d.tgt;const v=t.value===''?0:Math.max(0,Math.min(100,Math.round(+t.value||0)));
     if(ATTR.includes(k)){if(v)S.mins[k]=v;else delete S.mins[k]}else if(k===S.wtype)S.wtarget=v;else if(ATT[k]){if(v)S.atts[k]=v;else delete S.atts[k]}
     renderInputs();runSoon();say(`${statName(k)} target ${v?'set to '+v:'cleared'}. Press Optimize build to replan around it.`)}
+  else if(d.allowover){S.allowOver=t.checked;save();if(S.allowOver&&pendingTal&&!S.sel.includes(pendingTal)){pushUndo('Take '+pendingTal);S.sel.push(pendingTal);const n=pendingTal;pendingTal=null;runSoon();say(`Going over the max talents is on. Added ${n}. Untick it in the Talents tab to go back to the limit.`)}else{runSoon();say(S.allowOver?'Going over the max talents is on.':'Back to the max talent limit: Optimize removes the extras.')}}
   else if(d.fin){const k=d.fin;const clear=t.value==='';const v=clear?0:Math.max(0,Math.min(100,Math.round(+t.value||0)));S.caps=S.caps||{};pushUndo('Final '+statName(k));
     if(clear){delete S.caps[k];if(ATTR.includes(k))delete S.mins[k]}
     else{S.caps[k]={on:true,max:v};if(ATTR.includes(k)){if(v)S.mins[k]=v;else delete S.mins[k]}else if(k===S.wtype)S.wtarget=v;else if(ATT[k]){if(v)S.atts[k]=v;else delete S.atts[k]}}

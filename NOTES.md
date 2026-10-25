@@ -151,3 +151,7 @@ The version shown next to the title is in `src/template.html` (`<small class="ve
 ## v1.21
 - AI maker attunements: first named = main (80, mage 100); two = 80/40 with `p.attUp` raised to 80 in `wizardApply` when >=40 points are free (80/80 straight away for mages or "dual/double/both"); three+ = main + 40s.
 - Report a bug tab (`tab-bug`): sends through Web3Forms (`BUG_KEY`, emailed to the owner only). The artifact db cannot take reports: public-link visitors hold `view` and can never write. Empty key = "not switched on yet" + Copy report.
+
+## v1.22
+- Web3Forms key set (`BUG_KEY`), tab renamed "Report bug/suggestions".
+- `S.allowOver`: adding a talent with no slots left shows "Max talent limit reached!" with a checkbox (`capWarn`); ticking it adds the talent and stops `roomFor`/`trimToCap` enforcing the cap. Also shown in the Talents tab (`#capline`) and the over-cap note.

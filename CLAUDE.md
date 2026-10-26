@@ -8,6 +8,7 @@ Read `NOTES.md` first: it has the links, file layout, data formats, game formula
 - Bump the version in `<small class="ver">` (pre-release v0.x; the owner sets v1.0 at release).
 - If formulas or game data change, regenerate the workbook: `node tools/formulas/dump.js && python3 tools/formulas/build.py`, recalc it, commit `docs/Meta Builder formulas.xlsx`.
 - To update the Claude artifact, publish `dist/meta-builder.html` to https://claude.ai/artifact/BoupUctZcdQwYCUpkDoyFn.
+- After changing NOTES.md, refresh the handoff page: `python3 tools/handoff.py`, then publish `dist/handoff.html` to https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3.
 - The private `itsmrchickenss/Projects` repo has an older copy in `deepwoken-shrine-planner/index.html`. Update it too if the owner asks.
 - Keep share links backward compatible (`decodeBuild`), and keep game data credited to deepwoken.co.
 - Commit messages end with the `Co-Authored-By` and `Claude-Session` trailer lines.

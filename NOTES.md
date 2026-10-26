@@ -1,7 +1,11 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 25, 2026 (v0.26).
+Everything needed to pick this project back up. Last updated October 25, 2026 (v0.27).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
+
+## Starting a new chat
+
+The handoff page (a private Claude artifact) has this same information for a chat that isn't attached to the repo: https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3 (regenerate with `python3 tools/handoff.py` and publish `dist/handoff.html` to it after updating this file). In a new chat, attach the repo `itsmrchickenss/meta-builder` (or paste the handoff link) and say what to change. Claude reads `CLAUDE.md` and this file first.
 
 ## Links
 
@@ -23,7 +27,7 @@ The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.26 now). The owner sets **v1.0 at release**. Bump with every shipped change. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.27 now). The owner sets **v1.0 at release**. Bump with every shipped change. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Owner's rules and preferences (keep these)
 
@@ -43,6 +47,7 @@ Pre-release numbering is **v0.x** (v0.26 now). The owner sets **v1.0 at release*
 - Silentheart makes attunement points useless: never auto-pick it for attunement or mage builds; warn when a weapon (Hero's Blade) still needs attunement.
 - A new build must not inherit anything from the previous one (required talents, equipment, enchant, caps).
 - Saintsworn requirements, talent paths (steam = Vaporborne…), gank = mobile, semi-tanky are understood.
+- **Follow-up questions** (`aiQuestions` / `renderAiQs` / `aiAnswersText`): after "Make my build", the dialog asks only what the description left open. Attunement focus when 2+ attunements have no typed numbers: main attunement select + options (2: "80 / 80", "80 / 40", "80 / just what the path needs" when a path needs the other, "Other" with number boxes; 3+: "80 / 40 / 40", "80 / 80 / 40", "all 80", "just what the path needs", "Other"; mage main = 100). Also weapon type (if none named), oath (if none named; "best fit" default) and how tanky (glass cannon / balanced / semi tanky / tanky). Answers are appended to the description as words ("thundercall 80, flamecharm 30…") and `aiParse` runs again. Skip uses the defaults; Back returns to the text.
 - After an AI build, the Adjustments box takes plain-language changes and re-optimizes.
 
 **Talents**
@@ -83,7 +88,7 @@ Pre-release numbering is **v0.x** (v0.26 now). The owner sets **v1.0 at release*
 | `src/data/gear.txt` | `#E` equipment, `#O` outfits (incl. non-master outfits with talents), `#OT`, `#TD`. |
 | `src/data/tdesc.txt` | Talent descriptions. |
 | `tests/core-test.js` | Node check: every preset optimizes within budget and cap, with and without mantras. |
-| `tests/browser/*.py` | Playwright checks: layout, ai_paths, stress_optimize (random over-budget builds), presets_import, ai_maker, traits, screenshot_parse, talents_tab, adjustments, talent_cap, bug_report. |
+| `tests/browser/*.py` | Playwright checks: layout, ai_paths, ai_questions, stress_optimize (random over-budget builds), presets_import, ai_maker, traits, screenshot_parse, talents_tab, adjustments, talent_cap, bug_report. |
 | `tests/fixtures/dwco-build.json` | A real deepwoken.co build (with traits) for import tests. |
 | `tools/formulas/` | `dump.js` (exports data from index.html) + `build.py` (writes the workbook). |
 | `docs/Meta Builder formulas.xlsx` | The formulas workbook. |
@@ -152,3 +157,4 @@ Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 
 - v0.24: weapon/attunement talent priority; Browse/Avoided on the right.
 - v0.25: traits (Vitality, Erudition, Proficiency, Songchant); formulas workbook.
 - v0.26: path attunements kept to the minimum the path needs; "flame 50"-style numbers read correctly; attunement words never read as near-miss talent/mantra names.
+- v0.27: AI build maker asks follow-up questions (attunement focus incl. 3 attunements, weapon type, oath, how tanky); "glass cannon" understood.

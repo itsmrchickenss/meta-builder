@@ -8,6 +8,7 @@ with sync_playwright() as p:
     pg.goto(URL);pg.wait_for_timeout(2500)
     def ai(txt):
         pg.evaluate("openAI()");pg.fill('#aitext',txt);pg.click('#ai-go');pg.wait_for_timeout(400)
+        if pg.is_visible('#aiqs'): pg.click('#aiq-skip');pg.wait_for_timeout(400)
         d=pg.inner_text('#wizform p.hint');pg.click('#wz-go');pg.wait_for_timeout(500)
         pg.wait_for_function("!document.getElementById('results').classList.contains('busy')",timeout=90000);pg.wait_for_timeout(800)
         print('\n>>',txt);print('  read:',d[:600]);print('  ',pg.evaluate(ST))

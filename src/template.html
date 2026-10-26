@@ -277,6 +277,8 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .bugtips{margin:0;padding-left:18px;display:grid;gap:4px}
 .capwarn{display:block}.capok{display:inline-flex;align-items:center;gap:4px;margin:0 4px;padding:1px 6px;border:1px solid var(--warn);border-radius:4px;font-weight:600;cursor:pointer}
 .adjlog{margin:0;padding-left:18px;display:grid;gap:2px;max-height:160px;overflow:auto}
+.aiq{display:grid;gap:10px;max-height:60vh;overflow:auto}.aiqf{border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:grid;gap:6px;margin:0}.aiqf legend{font-weight:700;padding:0 4px}
+.aiqopt{display:flex;gap:8px;align-items:center;cursor:pointer}.aiqmain{display:flex;gap:8px;align-items:center}.aiqother{display:flex;flex-wrap:wrap;gap:10px}.aiqother[hidden]{display:none}.aiqother input{width:4.5em}
 .tipacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .bmsteps{margin:4px 0;padding-left:20px;display:grid;gap:4px}
 #imp1,#adjtext{resize:vertical;font:inherit;font-size:13px;background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
@@ -426,7 +428,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.26</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.27</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -827,10 +829,17 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <dialog id="ai" aria-labelledby="ai-title"><form method="dialog" id="aiform" class="dlgform">
   <h2 id="ai-title">✨ AI build maker</h2>
   <p class="hint" style="margin:0">Type in what you want for your build and we will make it for you (the more specific you are the better!). Mention an oath, attunements, a weapon, an outfit, talents, mantras, a talent path (steam, lava, glass…) or a play style (bossraid, gank, tanky, semi tanky, insanity…). Small typos are fine. You can also paste a deepwoken.co build link or Deepwoken build text and say what to change.</p>
+  <div id="aiin" class="aistep">
   <textarea id="aitext" rows="4" placeholder="e.g. saintsworn bossraid/gank build, steam path, flame worshipper outfit, worshipper longsword, orbital ice, semi tanky"></textarea>
   <div class="chips" id="aiex"></div>
   <p class="hint" id="aimsg" aria-live="polite" style="margin:0"></p>
   <div class="wizact"><button value="cancel" formnovalidate>Cancel</button><button type="button" class="primary" id="ai-go">Make my build</button></div>
+  </div>
+  <div id="aiqs" class="aistep" hidden>
+  <p class="hint" style="margin:0" id="aiqintro">A few quick questions so the build matches what you want:</p>
+  <div id="aiqbody" class="aiq"></div>
+  <div class="wizact"><button type="button" id="aiq-back">Back</button><button type="button" id="aiq-skip">Skip (use defaults)</button><button type="button" class="primary" id="aiq-go">Continue</button></div>
+  </div>
 </form></dialog>
 <dialog id="share" aria-labelledby="share-title"><form method="dialog" id="shareform" class="dlgform">
   <h2 id="share-title">Share &amp; import</h2>
@@ -2481,7 +2490,50 @@ async function aiGo(){const txt=$('aitext').value.trim();if(!txt){$('aimsg').tex
   if(j&&(j.attributes||j.talents)){base=presetFromDwb(dwbFromCoJson(j));words=txt.slice(0,txt.indexOf('{'))+' '+txt.slice(txt.lastIndexOf('}')+1)}
   else if(/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(txt)){base=presetFromDwb(dwbFromGameText(txt));words=txt.split('\n').filter(l=>/^(make|more|less|no |keep|add|use|i want|semi|tank|gank|boss)/i.test(l.trim())).join(' ')}
   else{const m=txt.match(DW_LINK);if(m){$('aimsg').textContent='Reading the deepwoken.co build…';const r=await fetchDwco(m[1]);if(!r.j){$('aimsg').innerHTML=pasteHelp(r.url)+' You can keep your other words in the box too.';return}base=presetFromDwb(dwbFromCoJson(r.j));words=txt.replace(/\S*deepwoken\.co\S*/gi,' ')}}
-  const r=aiParse(words,base);closeDlg('ai');openWizard(r.p)}
+  const r=aiParse(words,base);const qs=aiQuestions(r.p);
+  if(!qs.length){closeDlg('ai');openWizard(r.p);return}
+  AIQ={words,base,p:r.p,qs,main:null,att:null,custom:null};renderAiQs();aiShowStep(true)}
+// ---- AI build maker follow-up questions ----
+// Asked only for what the description left open; answers are added to the text and the build is read again.
+let AIQ=null;
+function aiQuestions(p){const q=p._q;if(!q)return [];const out=[];
+  const atts=q.at.filter(k=>k in p.atts);
+  if(atts.length>=2&&q.explicit.length<atts.length&&p.oath!=='Silentheart')out.push('att');
+  if(!q.weaponNamed)out.push('wep');
+  if(!q.oathNamed)out.push('oath');
+  if(!q.durNamed)out.push('dur');
+  return out}
+function aiAttOptions(p,main){const q=p._q;const atts=q.at.filter(k=>k in p.atts);const others=atts.filter(k=>k!==main);const M=q.caster?100:80;const N=k=>ATT[k][0];
+  const need=k=>Math.max(q.need[k]||0,q.pathNeed[k]||0)||1;const path=others.some(k=>k in q.pathNeed);const o=[];
+  const fmt=v=>[`${N(main)} ${M}`,...others.map(k=>`${N(k)} ${v[k]}`)].join(' / ');const mk=f=>Object.fromEntries(others.map((k,i)=>[k,f(k,i)]));
+  if(others.length===1){o.push(['both',fmt(mk(()=>80)),mk(()=>80)]);o.push(['one',fmt(mk(()=>40)),mk(()=>40)])}
+  else{o.push(['one',fmt(mk(()=>40)),mk(()=>40)]);o.push(['two',fmt(mk((k,i)=>i===0?80:40)),mk((k,i)=>i===0?80:40)]);o.push(['all',fmt(mk(()=>80)),mk(()=>80)])}
+  if(path){const v=mk(k=>k in q.pathNeed?need(k):40);o.push(['path',fmt(v)+' (just what the path needs)',v])}
+  return {atts,others,M,opts:o,def:path?'path':others.length===1?'one':'one'}}
+function renderAiQs(){const {p,qs}=AIQ;const q=p._q;let h='';
+  if(qs.includes('att')){const atts=q.at.filter(k=>k in p.atts);const main=AIQ.main||(atts.find(k=>!(k in q.pathNeed))||atts[0]);AIQ.main=main;const A=aiAttOptions(p,main);const sel=AIQ.att&&A.opts.some(o=>o[0]===AIQ.att)||AIQ.att==='other'?AIQ.att:A.def;AIQ.att=sel;
+    h+=`<fieldset class="aiqf"><legend>Which attunement do you want to focus?</legend>
+      <label class="aiqmain">Main attunement <select id="aiq-main">${atts.map(k=>`<option value="${k}" ${k===main?'selected':''}>${esc(ATT[k][0])}</option>`).join('')}</select></label>
+      ${A.opts.map(([v,l])=>`<label class="aiqopt"><input type="radio" name="aiq-att" value="${v}" ${sel===v?'checked':''}> ${esc(l)}</label>`).join('')}
+      <label class="aiqopt"><input type="radio" name="aiq-att" value="other" ${sel==='other'?'checked':''}> Other: type your own</label>
+      <div class="aiqother" ${sel==='other'?'':'hidden'}>${atts.map(k=>`<label>${esc(ATT[k][0])} <input type="number" min="1" max="100" data-aiqatt="${k}" value="${(AIQ.custom||{})[k]||(k===main?A.M:40)}"></label>`).join('')}</div></fieldset>`}
+  if(qs.includes('wep'))h+=`<fieldset class="aiqf"><legend>What weapon type?</legend>${[['heavy weapon','Heavy'],['medium weapon','Medium'],['light weapon','Light'],['no weapon','No weapon (mantras only)']].map(([v,l],i)=>`<label class="aiqopt"><input type="radio" name="aiq-wep" value="${v}" ${i===1?'checked':''}> ${l}</label>`).join('')}</fieldset>`;
+  if(qs.includes('oath'))h+=`<fieldset class="aiqf"><legend>Which oath?</legend><select id="aiq-oath"><option value="">Pick the best fit for me</option>${OATHS.filter(o=>o.n!=='None').map(o=>`<option value="${esc(o.n)}">${esc(o.n)}</option>`).join('')}<option value="no oath">No oath</option></select></fieldset>`;
+  if(qs.includes('dur'))h+=`<fieldset class="aiqf"><legend>How tanky?</legend>${[['glass cannon','Glass cannon (no Fortitude floor)'],['','Balanced (Fortitude 50)'],['semi tanky','Semi tanky'],['tanky','Tanky']].map(([v,l],i)=>`<label class="aiqopt"><input type="radio" name="aiq-dur" value="${v}" ${i===1?'checked':''}> ${l}</label>`).join('')}</fieldset>`;
+  $('aiqbody').innerHTML=h;
+  const m=$('aiq-main');if(m)m.onchange=()=>{AIQ.main=m.value;AIQ.att=null;renderAiQs()};
+  document.querySelectorAll('input[name="aiq-att"]').forEach(r=>r.onchange=()=>{AIQ.att=r.value;const box=document.querySelector('.aiqother');if(box)box.hidden=r.value!=='other'});
+  document.querySelectorAll('[data-aiqatt]').forEach(i=>i.oninput=()=>{AIQ.custom=AIQ.custom||{};AIQ.custom[i.dataset.aiqatt]=+i.value})}
+function aiAnswersText(){const {p,qs}=AIQ;const parts=[];const val=n=>{const r=document.querySelector(`input[name="${n}"]:checked`);return r?r.value:''};
+  if(qs.includes('att')){const A=aiAttOptions(p,AIQ.main);let v;
+    if(AIQ.att==='other'){v={};document.querySelectorAll('[data-aiqatt]').forEach(i=>v[i.dataset.aiqatt]=Math.max(1,Math.min(100,+i.value||1)))}
+    else{const o=A.opts.find(x=>x[0]===AIQ.att)||A.opts[0];v={...o[2],[AIQ.main]:A.M}}
+    for(const k of A.atts)parts.push(`${ATT[k][0].toLowerCase()} ${v[k]}`)}
+  if(qs.includes('wep'))parts.push(val('aiq-wep'));
+  if(qs.includes('oath')){const o=$('aiq-oath').value;if(o)parts.push(o==='no oath'?'no oath':'oath '+o)}
+  if(qs.includes('dur'))parts.push(val('aiq-dur'));
+  return parts.filter(Boolean).join(', ')}
+function aiShowStep(qs){$('aiin').hidden=qs;$('aiqs').hidden=!qs}
 function doImport(raw){try{const next=decodeBuild(raw);pushUndo('Import');Object.assign(S,next);renderInputs();run();return true}catch(e){return false}}
 
 // ---- AI build maker (keyword reader; runs in your browser, nothing is sent anywhere) ----
@@ -2560,7 +2612,7 @@ function aiParse(txt,basePreset){
   if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){if(!basePreset)p.atts={};const dual=at.length===2&&(caster||has(/\bdual\b|\bdouble\b|\bboth\b|\b80 ?\/ ?80\b|\bequal\b/));
     at.forEach((x,i)=>{const n=aiNumNear(sAtt,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):at.length===2&&dual?80:40))});
     if(at.length===2&&!dual&&!aiNumNear(sAtt,at[1].re))p.attUp=at[1].k;
-    got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + ')+(at.length>=3?` (main ${ATT[at[0].k][0]}, the others 40)`:p.attUp?` (${ATT[p.attUp][0]} goes to 80 if the points allow)`:''))}
+    got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + ')+(at.length>=3&&!at.slice(1).some(x=>aiNumNear(sAtt,x.re))?` (main ${ATT[at[0].k][0]}, the others 40)`:p.attUp?` (${ATT[p.attUp][0]} goes to 80 if the points allow)`:''))}
   // weapon, outfit, gear by name
   let wN=by('weapon').sort((a,b)=>b.length-a.length)[0];
   // "hero blade" / "heros blade" without the full name: the element comes from the attunement mentioned (Flame if none)
@@ -2608,10 +2660,13 @@ function aiParse(txt,basePreset){
     if(a){const parts=Object.entries(a.min).map(([k,v])=>`${statName(k)||k} ${v}`);for(const [k,v] of Object.entries(a.min))if(ATTR.includes(k))up(p.post,k,v);
       const pre=oathTalentPrereqs(o);if(parts.length||pre.length)got.push(`${o.n} needs ${[...parts,...pre].join(', ')}: planned in${OATH_NOTES[o.n]?' ('+OATH_NOTES[o.n]+')':''}`)}}
   p.t=[...new Set([...T,...REQ])].filter(n=>TBY.has(n));p.req=[...REQ].filter(n=>TBY.has(n));p.m=[...M].filter(n=>MBY.has(n));
+  {const pn={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pn[k]=Math.max(pn[k]||0,v)}
+    p._q={at:at.map(x=>x.k),explicit:at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
+  if(has(/\bglass cannon\b|\bsquishy\b/)){delete p.post.FTD;got.push('glass cannon: no Fortitude floor')}
   p.d=got.length?'I read: '+got.join(' · '):'No build words found, so this is a balanced starting point (Agility 40 before, Fortitude 50 after).';
   return {p,got};
 }
-function openAI(){$('aiex').innerHTML=AI_EX.map(x=>`<button type="button" class="chip" data-aiex="${esc(x)}">${esc(x)}</button>`).join('');$('aimsg').textContent='';openDlg('ai');setTimeout(()=>$('aitext').focus(),30)}
+function openAI(){aiShowStep(false);AIQ=null;$('aiex').innerHTML=AI_EX.map(x=>`<button type="button" class="chip" data-aiex="${esc(x)}">${esc(x)}</button>`).join('');$('aimsg').textContent='';openDlg('ai');setTimeout(()=>$('aitext').focus(),30)}
 
 // ================= Deepwoken / deepwoken.co import & export =================
 // deepwoken.co share links: https://deepwoken.co/builder?id=XXXX ; its data: /api/proxy/builds/XXXX
@@ -3099,6 +3154,9 @@ $('imp1form').addEventListener('submit',e=>{e.preventDefault();runImport($('imp1
 $('imp1').addEventListener('paste',()=>setTimeout(()=>{const v=$('imp1').value;if(/dw1[A-Za-z0-9_-]{10,}/.test(v)||/==\s*(ATTRIBUTES|TALENTS)\s*==/i.test(v)||(v.includes('{')&&/"talents"|"attributes"/.test(v)))runImport(v,$('imp1msg'),()=>{$('imp1').value=''});else if(DW_LINK.test(v)){$('imp1msg').innerHTML=pasteHelp('');$('dwcohelp').open=true}},0));
 
 $('bugform').addEventListener('submit',e=>{e.preventDefault();sendBug()});
+$('aiq-back').addEventListener('click',()=>aiShowStep(false));
+$('aiq-skip').addEventListener('click',()=>{if(!AIQ)return;const p=AIQ.p;AIQ=null;closeDlg('ai');openWizard(p)});
+$('aiq-go').addEventListener('click',()=>{if(!AIQ)return;const extra=aiAnswersText();const r=aiParse(AIQ.words+(extra?', '+extra:''),AIQ.base);AIQ=null;closeDlg('ai');openWizard(r.p)});
 $('adjform').addEventListener('submit',e=>{e.preventDefault();runAdjust()});
 $('adjtext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();runAdjust()}});
 $('adjclose').addEventListener('click',()=>showAdj(false));

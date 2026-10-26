@@ -8,7 +8,9 @@ with sync_playwright() as p:
     pg.goto(URL);pg.wait_for_timeout(2500)
     def wait():pg.wait_for_function("!document.getElementById('results').classList.contains('busy')",timeout=180000);pg.wait_for_timeout(500)
     print('panel hidden before AI:',pg.evaluate("$('adjpanel').hidden"))
-    pg.evaluate("openAI()");pg.fill('#aitext','flamecharm medium weapon pvp build');pg.click('#ai-go');pg.wait_for_timeout(400);pg.click('#wz-go');pg.wait_for_timeout(500);wait();pg.wait_for_timeout(800)
+    pg.evaluate("openAI()");pg.fill('#aitext','flamecharm medium weapon pvp build');pg.click('#ai-go');pg.wait_for_timeout(400)
+    if pg.is_visible('#aiq-skip'):pg.click('#aiq-skip');pg.wait_for_timeout(400)
+    pg.click('#wz-go');pg.wait_for_timeout(500);wait();pg.wait_for_timeout(800)
     print('panel shown after AI:',not pg.evaluate("$('adjpanel').hidden"));print('start  ',pg.evaluate(ST))
     for t in ["more agility","intelligence to 30","lower charisma by 10","swap flamecharm for frostdraw","add thundercall 40","heavy weapon 90","oath Blindseer","add Speed Demon and Ghost","remove Ghost","tankier","banana"]:
         pg.fill('#adjtext',t);pg.click('#adjgo');pg.wait_for_timeout(300);wait();pg.wait_for_timeout(300)

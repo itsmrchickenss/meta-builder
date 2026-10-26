@@ -1,6 +1,6 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 25, 2026 (v0.27).
+Everything needed to pick this project back up. Last updated October 26, 2026 (v0.28).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Starting a new chat
@@ -27,7 +27,7 @@ The handoff page (a private Claude artifact) has this same information for a cha
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.27 now). The owner sets **v1.0 at release**. Bump with every shipped change. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.28 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: bump by 0.01, add a line to the version history below, and push it to this repo (owner's request, October 26, 2026). (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Owner's rules and preferences (keep these)
 
@@ -158,3 +158,4 @@ Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 
 - v0.25: traits (Vitality, Erudition, Proficiency, Songchant); formulas workbook.
 - v0.26: path attunements kept to the minimum the path needs; "flame 50"-style numbers read correctly; attunement words never read as near-miss talent/mantra names.
 - v0.27: AI build maker asks follow-up questions (attunement focus incl. 3 attunements, weapon type, oath, how tanky); "glass cannon" understood.
+- v0.28: Optimize build shows three plans to pick from (attunement, weapon, talents focus; Balanced when no attunement is ticked) with damage, talent and stat changes vs the current build. Decluttered: long explanations (`.xh`) only show in Help mode (now beside Customize look), presets folded below Stats, optimizer checkboxes and stat limits/avoid folded. Pre-shrine: before/shrine/after strip with power bar and points saved, copyable "Level first" plan (1-point tags grouped), shrine column shows each stat's change, stats at 0 hidden behind a toggle.

@@ -233,6 +233,78 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .wq6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 @media (max-width:520px){.wq6{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .wq6 label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--dim);text-align:center}
+dialog#optpick{background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:8px;padding:0;width:min(1000px,calc(100% - 24px));max-height:calc(100vh - 24px)}
+dialog#optpick::backdrop{background:rgba(0,0,0,.6)}
+.opcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.opcard{display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:var(--abyss);border:1px solid var(--line);border-top:3px solid var(--oc,var(--brass));border-radius:6px;font-size:13.5px;min-width:0}
+.opcard.wait{opacity:.55}
+.opcard h3{font-family:var(--f-display);font-size:19px;letter-spacing:.02em;text-transform:none;color:var(--bone);font-weight:400;margin:0;display:flex;align-items:center;gap:8px}
+.opcard h3 i{font-style:normal;color:var(--oc,var(--brass))}
+.opcard .opdesc{margin:0;color:var(--dim);line-height:1.45}
+.opnums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.opnums div{background:var(--trench);border:1px solid var(--line);border-radius:4px;padding:5px 7px;display:flex;flex-direction:column;min-width:0}
+.opnums b{font-family:var(--f-mono);font-size:15px}
+.opnums span{font-size:11px;color:var(--dim);line-height:1.2}
+.opnums .up{color:var(--ok)} .opnums .dn{color:var(--bad)}
+.opchg{margin:0;padding-left:16px;display:flex;flex-direction:column;gap:2px;font-size:12.5px}
+.opchg li::marker{color:var(--oc,var(--brass))}
+.opbadges{display:flex;flex-wrap:wrap;gap:4px;margin-top:-4px}.opcard .best{font-family:var(--f-mono);font-size:10.5px;padding:1px 7px;border-radius:999px;border:1px solid var(--oc,var(--brass));color:var(--oc,var(--brass));white-space:nowrap}
+.opcard button.primary{margin-top:auto;background:var(--oc,var(--brass));border-color:var(--oc,var(--brass))}
+.opbar{height:4px;background:var(--kelp);border-radius:2px;overflow:hidden}.opbar i{display:block;height:100%;width:30%;background:var(--brass);animation:opslide 1.1s ease-in-out infinite}
+@keyframes opslide{0%{margin-left:-30%}100%{margin-left:100%}}
+@media (prefers-reduced-motion:reduce){.opbar i{animation:none;width:100%}}
+/* declutter: long explanations only show in Help mode */
+body:not(.helpon) .xh{display:none!important}
+.toptools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end}
+.helptgl{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--trench);color:var(--bone);font-size:13.5px;cursor:pointer;white-space:nowrap}
+.helptgl:has(input:checked){border-color:var(--brass);background:var(--brass-wash)}
+.helptgl input{margin:0;accent-color:var(--brass)}
+details.pd>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px}
+details.pd>summary::-webkit-details-marker{display:none}
+details.pd>summary::after{content:"▸";color:var(--dim);margin-left:auto;transition:transform .15s}
+details.pd[open]>summary::after{transform:rotate(90deg)}
+details.pd>summary h2{flex:0 1 auto}
+details.pd[open]>summary{margin-bottom:12px}
+details.pd>div{display:flex;flex-direction:column;gap:12px}
+.subopt{border-top:1px solid var(--line);padding-top:8px}
+.subopt>summary{cursor:pointer;color:var(--dim);font-size:13px}
+.subopt>summary:hover{color:var(--bone)}
+.subopt[open]>summary{margin-bottom:8px}
+.subopt>div{display:flex;flex-direction:column;gap:10px}
+/* pre-shrine strip */
+.shstrip{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--abyss)}
+@media (max-width:560px){.shstrip{grid-template-columns:minmax(0,1fr)}.shstrip>div+div{border-left:0!important;border-top:1px solid var(--line)}}
+.shstrip>div{padding:9px 12px;display:flex;flex-direction:column;gap:3px;min-width:0;border-top:3px solid var(--fc)}
+.shstrip>div+div{border-left:1px solid var(--line)}
+.shstrip .s1{--fc:var(--ice)} .shstrip .s2{--fc:var(--dim)} .shstrip .s3{--fc:var(--brass)}
+.shstrip .t{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--fc);font-weight:700}
+.shstrip .big{font-family:var(--f-mono);font-size:20px;line-height:1.1;color:var(--bone)}
+.shstrip .big small{font-size:12px;color:var(--dim);margin-left:4px;font-family:var(--f-body)}
+.shstrip .sub{font-size:12px;color:var(--dim);line-height:1.35}
+.shstrip .sub b{color:var(--bone);font-weight:600}
+.shstrip .good{color:var(--ok)!important} .shstrip .bad{color:var(--bad)!important}
+.pwbar{position:relative;height:6px;border-radius:3px;background:var(--kelp);margin-top:3px}
+.pwbar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--ice)}
+.pwbar b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--bone)}
+.preplan{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;border:1px dashed color-mix(in srgb,var(--ice) 55%,var(--line));border-radius:6px;background:color-mix(in srgb,var(--ice) 5%,transparent);font-size:13px}
+.preplan .lbl{color:var(--ice);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
+.preplan .pc{font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--trench);white-space:nowrap}
+.preplan .pc.pin{border-color:var(--brass)}
+.preplan .then{color:var(--dim);font-size:12.5px}
+.preplan button{margin-left:auto}
+#fstats{display:flex!important;flex-direction:column;gap:8px}
+#lookbox:not([open]){min-width:0!important}
+.preplan .tag{color:var(--dim);font-size:12px;border:0!important;background:none!important;padding:0 2px!important}.preplan .tag b{color:var(--bone);font-weight:600;font-family:var(--f-mono);font-size:11.5px}
+.stbl:not(.all) tr.zero{display:none}
+.stbl tr.sec.empty{display:none}.stbl.all tr.sec.empty{display:table-row}
+.stbl .sd{font-family:var(--f-mono);font-size:10.5px;margin-left:3px}
+.stbl .sd.up{color:var(--ok)} .stbl .sd.dn{color:var(--bad)}
+.stfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:6px}
+.shrinebtns.compact{gap:6px}
+.shrinebtns.compact .shrinebtn{flex:0 1 auto;padding:5px 10px;flex-direction:row;align-items:baseline;gap:6px}
+.shrinebtns.compact .shrinebtn b{font-size:13px}
+.shrinebtns.compact .shrinebtn small{font-size:11px}
+.recrow{grid-template-columns:minmax(0,1fr) 84px auto!important}.recrow .hint.mono{white-space:nowrap;font-size:11.5px}
 .wizact{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .fbox input.v{width:3.4em;padding:2px 0;font:inherit;font-family:var(--f-mono);text-align:center;color:var(--bone)}
 .fbox input.v.pin{border-color:var(--brass);background:var(--brass-wash)}
@@ -442,9 +514,10 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.27</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.28</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
+  <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
     <div class="panel" style="margin-top:10px;background:var(--trench);border:1px solid var(--line);border-radius:6px;padding:14px">
       <h3>Themes</h3>
@@ -461,7 +534,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       </div>
       <div class="row" style="margin-top:10px"><button class="mini" id="lookreset">Reset to theme</button><span class="hint">Saved in this browser.</span></div>
     </div>
-  </details>
+  </details></div>
 </header>
 
 <nav class="tabbar" id="tabbar">
@@ -488,7 +561,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="col">
   <section class="panel" id="importpanel">
     <h2>Import a build</h2>
-    <p class="hint" style="margin:0">Paste a Meta Builder link or the build text Deepwoken gives you in game. For deepwoken.co builds, use the bookmark below.</p>
+    <p class="hint xh" style="margin:0">Paste a Meta Builder link or the build text Deepwoken gives you in game. For deepwoken.co builds, use the bookmark below.</p>
     <form class="row" id="imp1form" autocomplete="off"><textarea id="imp1" rows="2" placeholder="Paste a build here…" aria-label="Build to import" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit">Import</button></form>
     <p class="hint" id="imp1msg" aria-live="polite" style="margin:0"></p>
     <details id="dwcohelp" open><summary>Importing from deepwoken.co</summary>
@@ -503,7 +576,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
   <section class="panel" id="shotpanel">
     <h2>Build from a screenshot</h2>
-    <p class="hint" style="margin:0">Got a picture of a build, like a frame from a YouTube video, the in‑game stat menu or a deepwoken.co page? Add it here. The stats are read from it, then the talents that build most likely has are filled in from top deepwoken.co builds with the same stats.</p>
+    <p class="hint xh" style="margin:0">Got a picture of a build, like a frame from a YouTube video, the in‑game stat menu or a deepwoken.co page? Add it here. The stats are read from it, then the talents that build most likely has are filled in from top deepwoken.co builds with the same stats.</p>
     <div class="shotdrop" id="shotdrop" tabindex="0" aria-label="Drop, paste or choose a screenshot">
       <input type="file" id="shotfile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
       <button class="primary" type="button" id="shotpick">Choose image</button>
@@ -525,12 +598,12 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="col">
   <section class="panel" id="likelypanel">
     <h2>Likely talents <small id="likelycount"></small></h2>
-    <p class="hint" style="margin:0">Ticked = most likely in this build: talents these stats allow, ranked by how often top deepwoken.co builds with the same stats take them, plus how often they go with the talents you saw. Untick any that are wrong.</p>
+    <p class="hint xh" style="margin:0">Ticked = most likely in this build: talents these stats allow, ranked by how often top deepwoken.co builds with the same stats take them, plus how often they go with the talents you saw. Untick any that are wrong.</p>
     <div id="likely" class="likely"><p class="hint">Add a screenshot or type the stats, then press Find likely talents.</p></div>
   </section>
   <section class="panel" id="seenpanel">
     <h2>Talents you see in the video <small id="seencount"></small></h2>
-    <p class="hint" style="margin:0">Add every talent you can spot. They're always kept, and the likely list re‑ranks around them.</p>
+    <p class="hint xh" style="margin:0">Add every talent you can spot. They're always kept, and the likely list re‑ranks around them.</p>
     <form class="row" id="seenform" autocomplete="off"><input type="search" id="seenin" list="seenlist" placeholder="Type a talent or mantra name" aria-label="Talent you saw" style="flex:1 1 200px"><button class="primary" type="submit">Add</button></form>
     <datalist id="seenlist"></datalist>
     <p class="hint" id="seenmsg" aria-live="polite" style="margin:0"></p>
@@ -543,25 +616,10 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <!-- ============ 1 STATS ============ -->
 <div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
 <div class="col">
-  <section class="panel">
-    <div class="row spread"><h2>Starting presets</h2><label class="helpchk"><input type="checkbox" id="helpon"> Help mode</label></div>
-    <p class="hint">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
-    <div class="tpl" id="presets"></div>
-    <h3>My presets <small id="mpcount"></small></h3>
-    <p class="hint" style="margin:0">Save the build you have now (stats, oath, weapon, talents, mantras, gear) as your own preset. Saved on this computer, in this browser.</p>
-    <form class="row" id="mpform" autocomplete="off"><input type="text" id="mpname" placeholder="Preset name, e.g. My Saintsworn gank" aria-label="Preset name" maxlength="60" style="flex:1 1 200px"><button class="primary" type="submit">Save as preset</button></form>
-    <div class="list" id="mypresets"></div>
-    <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
-  </section>
   <section class="panel" id="statspanel">
-    <div class="row spread"><h2>Stats</h2><button class="mini" id="pinclear">Clear pins</button></div>
-    <ol class="shrineflow" aria-label="How the shrine works">
-      <li class="f-pre"><b>Before shrine</b><span>Level up with these stats first</span></li>
-      <li class="f-sh"><b>Shrine of Order</b><span>Averages your stats (needs Power 8)</span></li>
-      <li class="f-post"><b>After shrine</b><span>Spend the rest; this is your final build</span></li>
-    </ol>
-    <div class="row shrinebtns"><button class="shrinebtn" id="orderbtn"></button><button class="shrinebtn" id="masterybtn"></button></div>
-    <p class="hint" id="statshelp"></p>
+    <div class="row spread"><h2>Stats <small>pre‑shrine → final</small></h2><button class="mini" id="pinclear">Clear pins</button></div>
+    <div class="row shrinebtns compact"><button class="shrinebtn" id="orderbtn"></button><button class="shrinebtn" id="masterybtn"></button></div>
+    <p class="hint xh" id="statshelp"></p>
     <div class="fstats" id="fstats"></div>
     <div id="bstats"></div>
     <div class="hlist stathint" id="stathint" aria-live="polite"><span class="hint">Click a stat to see what raising it unlocks.</span></div>
@@ -577,22 +635,35 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
   <section class="panel" id="adjpanel" hidden>
     <div class="row spread"><h2>✨ Adjustments</h2><button class="mini" type="button" id="adjclose">Hide</button></div>
-    <p class="hint" style="margin:0">Not quite right? Type what to change and the stats rearrange by themselves (the more specific you are the better!). Try “more agility”, “intelligence to 30”, “lower charisma by 10”, “swap flamecharm for frostdraw”, “add thundercall 40”, “heavy weapon 90”, “oath Blindseer”, “add Speed Demon”, “remove Ghost”, “tankier” or “more damage”.</p>
+    <p class="hint xh" style="margin:0">Not quite right? Type what to change and the stats rearrange by themselves (the more specific you are the better!). Try “more agility”, “intelligence to 30”, “lower charisma by 10”, “swap flamecharm for frostdraw”, “add thundercall 40”, “heavy weapon 90”, “oath Blindseer”, “add Speed Demon”, “remove Ghost”, “tankier” or “more damage”.</p>
     <form class="row" id="adjform" autocomplete="off"><textarea id="adjtext" rows="2" placeholder="e.g. more agility, swap flamecharm for frostdraw, add Speed Demon" aria-label="What to change" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit" id="adjgo">Apply changes</button></form>
     <p class="hint" id="adjmsg" aria-live="polite" style="margin:0"></p>
     <ul class="hint adjlog" id="adjlog"></ul>
+  </section>
+  <section class="panel" id="presetpanel">
+    <details class="pd" id="presetbox"><summary><h2>Starting presets</h2><span class="hint" style="margin:0">AI build maker, top builds, your saved presets</span></summary><div>
+    <p class="hint xh">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
+    <div class="tpl" id="presets"></div>
+    <h3>My presets <small id="mpcount"></small></h3>
+    <p class="hint xh" style="margin:0">Save the build you have now (stats, oath, weapon, talents, mantras, gear) as your own preset. Saved on this computer, in this browser.</p>
+    <form class="row" id="mpform" autocomplete="off"><input type="text" id="mpname" placeholder="Preset name, e.g. My Saintsworn gank" aria-label="Preset name" maxlength="60" style="flex:1 1 200px"><button class="primary" type="submit">Save as preset</button></form>
+    <div class="list" id="mypresets"></div>
+    <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
+    </div></details>
   </section>
 </div>
 <div class="col">
   <section class="panel">
     <h2>Optimizer</h2>
-    <div class="optbar"><p>Best pre‑shrine stats and pre/post order. Over budget? It drops the talents with the worst value per point.</p><button class="primary" data-optimize="1">Optimize build</button></div>
-    <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement when optimizing</label>
-    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: an attribute (Strength…Charisma) raised before the shrine gets no points after it (either 1 before and the rest after, or high before and the shrine brings it down)</label>
+    <div class="optbar"><p>Plans your pre‑shrine stats and which talents come before or after the shrine. Pick from three plans.</p><button class="primary" data-optimize="1">Optimize build</button></div>
     <label class="hint split" for="prio">Optimize for <b style="color:var(--bone)">damage</b><input type="range" id="prio" min="0" max="100" step="10"><b style="color:var(--bone)">talent options</b></label>
-    <p class="hint" style="margin:0">Press Optimize build after moving it. Toward damage: weapon and attunement go up toward 100 (paid for by the least useful non‑damage talents) and open slots get damage talents. Toward talent options: weapon and attunement come down (never below what your weapon needs) and the points go to more talents. The middle keeps your build as it is.</p>
+    <p class="hint xh" style="margin:0">Press Optimize build after moving it. Toward damage: weapon and attunement go up toward 100 (paid for by the least useful non‑damage talents) and open slots get damage talents. Toward talent options: weapon and attunement come down (never below what your weapon needs) and the points go to more talents. The middle keeps your build as it is.</p>
     <label class="hint split" for="dsplit">Damage from <b style="color:var(--bone)">M1 (weapon)</b><input type="range" id="dsplit" min="0" max="100" step="10"><b style="color:var(--bone)">mantras (attunement)</b></label>
-    <p class="hint" id="dsplithelp" style="margin:0"></p>
+    <p class="hint xh" id="dsplithelp" style="margin:0"></p>
+    <details class="subopt"><summary>More optimizer options</summary><div>
+    <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement</label>
+    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: attributes raised before the shrine get no points after it</label>
+    </div></details>
     <div class="verdict" id="verdict"></div>
     <div id="caps"></div>
     <div id="note"></div>
@@ -607,12 +678,12 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
   <section class="panel">
     <div class="row spread"><h2>Attunements</h2><button class="mini" id="aresetbtn">Reset attunements</button></div>
-    <p class="hint">Tick each attunement and set its final target. 80 gives level‑5 mantras. Every attunement after the first gets its first point free.</p>
+    <p class="hint xh">Tick each attunement and set its final target. 80 gives level‑5 mantras. Every attunement after the first gets its first point free.</p>
     <div class="att" id="atts"></div>
   </section>
   <section class="panel" id="traitpanel">
     <div class="row spread"><h2>Traits <small id="traitleft"></small></h2><button class="mini" type="button" id="traitsugg">Suggest for this build</button></div>
-    <p class="hint" style="margin:0">A separate pool from your stat points: 12 trait points in total (one at most even Power levels), up to 6 in each. They don't use any of your 330 stat points.</p>
+    <p class="hint xh" style="margin:0">A separate pool from your stat points: 12 trait points in total (one at most even Power levels), up to 6 in each. They don't use any of your 330 stat points.</p>
     <div class="traits" id="traits"></div>
   </section>
   <section class="panel">
@@ -625,15 +696,17 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
   <section class="panel" id="wishpanel">
     <h2>What you want <small>stats and talents</small></h2>
-    <p class="hint" style="margin:0">Say what you want before you optimize. Try “no willpower, keep intelligence under 20, more damage, no Ghost, must have Speed Demon”.</p>
+    <p class="hint xh" style="margin:0">Say what you want before you optimize. Try “no willpower, keep intelligence under 20, more damage, no Ghost, must have Speed Demon”.</p>
     <form class="row" id="wishform" autocomplete="off"><input type="text" id="wishin" placeholder="e.g. low charisma, mantra damage, avoid Fishman" aria-label="What you want" style="flex:1 1 220px"><button class="primary" type="submit">Apply</button></form>
     <p class="hint" id="wishmsg" aria-live="polite" style="margin:0"></p>
+    <details class="subopt" id="limitbox"><summary>Stat limits &amp; avoided talents <span id="limitsum"></span></summary><div>
     <h3>Keep these stats low</h3>
-    <p class="hint" style="margin:0">Tick a stat and the optimizer won't raise it past the number. Talents that need more of it are skipped.</p>
+    <p class="hint xh" style="margin:0">Tick a stat and the optimizer won't raise it past the number. Talents that need more of it are skipped.</p>
     <div class="capgrid" id="capgrid"></div>
     <h3>Talents to avoid <small id="avcount"></small></h3>
     <div class="chips" id="avlist"></div>
     <p class="hint" style="margin:0">Add more on the <button class="linkbtn" data-tab="req">Talents &amp; mantras</button> tab, or type “no &lt;talent&gt;” above.</p>
+    </div></details>
   </section>
 </div>
 </div>
@@ -651,11 +724,11 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div id="capline"></div>
     <div id="tsugg"></div>
     <div class="groups tall cols" id="tchips"></div>
-    <p class="hint">Gold edge = advanced, blue = rare. Dashed = added as a prerequisite. Grey chips need more points (shown in orange). ⚡ = synergy with something you picked.</p>
+    <p class="hint xh">Gold edge = advanced, blue = rare. Dashed = added as a prerequisite. Grey chips need more points (shown in orange). ⚡ = synergy with something you picked.</p>
   </section>
   <section class="panel">
     <h2>Required talents <small id="reqcount"></small></h2>
-    <p class="hint">Type the talents or mantras the build must have. Optimize treats them as fixed: it never drops them to fit the budget, removes other talents first, and plans stats around them. </p>
+    <p class="hint xh">Type the talents or mantras the build must have. Optimize treats them as fixed: it never drops them to fit the budget, removes other talents first, and plans stats around them. </p>
     <form class="row" id="reqform" autocomplete="off">
       <input type="search" id="reqin" placeholder="Search talents by name, stat or what they do (e.g. 'insanity', 'charm')" aria-label="Search talents" style="flex:1 1 220px">
       <button class="primary" type="submit">Add</button>
@@ -667,14 +740,14 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="col">
   <section class="panel">
     <h2>Browse talents <small id="reqbrcount"></small></h2>
-    <p class="hint">Click a talent to read what it does. “Require” locks it into the build; “Avoid” keeps it out.</p>
+    <p class="hint xh">Click a talent to read what it does. “Require” locks it into the build; “Avoid” keeps it out.</p>
     <input type="search" id="reqbq" placeholder="Search by name, category, stat or effect (e.g. “steam”, “WLL”, “ragdoll”)" aria-label="Search talents to browse" autocomplete="off">
     <div class="seg" id="reqbf"></div>
     <div class="list reqbrowse" id="reqbrowse"></div>
   </section>
   <section class="panel">
     <h2>Avoided talents <small id="avcount2"></small></h2>
-    <p class="hint" style="margin:0">The optimizer, auto‑pick, recommendations and presets never add these.</p>
+    <p class="hint xh" style="margin:0">The optimizer, auto‑pick, recommendations and presets never add these.</p>
     <div class="chips" id="avlist2"></div>
   </section>
   <section class="panel">
@@ -685,14 +758,14 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
   <section class="panel">
     <h2>Mantras <small id="mcount"></small></h2>
-    <p class="hint">Each normal mantra costs 2 talent slots. Oath, monster and event mantras are free.</p>
+    <p class="hint xh">Each normal mantra costs 2 talent slots. Oath, monster and event mantras are free.</p>
     <div class="row">
       <div class="seg" id="mfilter"></div>
       <input type="search" id="mfind" placeholder="Search mantras" aria-label="Search mantras" style="flex:1 1 160px">
     </div>
     <div class="groups" id="mchips" style="max-height:300px"></div>
     <details class="combos" id="combobox" open><summary><h3>⚔ True combos <small id="ccount"></small></h3></summary>
-      <p class="hint" style="margin:4px 0">Starter mantras that hold the target (grab, bind or freeze, knock up or down, counter) and the follow‑ups fast enough to land after them, using the mantras this build has or can learn. Timings shift with ping, modifiers and patches, so test them in game and save the ones that work as your own.</p>
+      <p class="hint xh" style="margin:4px 0">Starter mantras that hold the target (grab, bind or freeze, knock up or down, counter) and the follow‑ups fast enough to land after them, using the mantras this build has or can learn. Timings shift with ping, modifiers and patches, so test them in game and save the ones that work as your own.</p>
       <label class="hint"><input type="checkbox" id="comboopt"> Let the optimizer aim stats at combos you could unlock</label>
       <div class="seg" id="cfilter" style="margin:6px 0"></div>
       <div id="mcombos" class="combolist"></div>
@@ -701,7 +774,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   </section>
   <section class="panel">
     <h2>What they need</h2>
-    <p class="hint">Grey = the least each stat must reach (cheapest option where a talent has a choice). Box = your highest value before or after the shrine, green when it's enough.</p>
+    <p class="hint xh">Grey = the least each stat must reach (cheapest option where a talent has a choice). Box = your highest value before or after the shrine, green when it's enough.</p>
     <div class="fstats" id="reqneed"></div>
     <div id="reqwarn"></div>
   </section>
@@ -806,7 +879,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="col">
   <section class="panel" id="armor">
     <div class="row spread"><h2>Equipment</h2><button class="accentbtn" id="gearopt">Optimize equipment</button></div>
-    <p class="hint">Click the search bar to see every outfit and item, strongest first. Type to filter by name, a talent it gives (try “orbital ice” or “worshipper”), or a slot. Click one and it goes into its slot under “Your armor”. Stars add pips; click a pip to switch it between health and armor.</p>
+    <p class="hint xh">Click the search bar to see every outfit and item, strongest first. Type to filter by name, a talent it gives (try “orbital ice” or “worshipper”), or a slot. Click one and it goes into its slot under “Your armor”. Stars add pips; click a pip to switch it between health and armor.</p>
     <input type="search" id="gsearch" placeholder="Click to browse outfits and equipment, or type to filter…" aria-label="Search outfits and equipment" autocomplete="off">
     <div class="results-pop" id="gresults"></div>
     <h3>Your armor</h3>
@@ -821,7 +894,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <label class="hint split" for="gw">Favor <b style="color:var(--bone)">Health</b><input type="range" id="gw" min="0" max="100" step="10"><b style="color:var(--bone)">Physical armor</b></label>
     <label class="hint split" for="gminhp">Minimum health<input type="range" id="gminhp" min="300" max="700" step="10"><b class="mono" id="gminhpv" style="color:var(--bone)"></b></label>
     <label class="hint split" for="gminpp">Minimum physical armor<input type="range" id="gminpp" min="0" max="80" step="5"><b class="mono" id="gminppv" style="color:var(--bone)"></b></label>
-    <p class="hint" style="margin:0">Optimize equipment reaches the minimum health and minimum physical armor first (500 HP and 50% by default), then spends the rest on health or physical armor by the slider. Elemental armor is never used, and Transfusion Ring is never picked.</p>
+    <p class="hint xh" style="margin:0">Optimize equipment reaches the minimum health and minimum physical armor first (500 HP and 50% by default), then spends the rest on health or physical armor by the slider. Elemental armor is never used, and Transfusion Ring is never picked.</p>
     <p class="hint" id="gnote"></p>
   </section>
   <section class="panel">
@@ -839,6 +912,13 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   <div class="row"><input type="search" id="oathq" placeholder="Search oaths" aria-label="Search oaths" style="flex:1 1 160px"><label class="hint"><input type="checkbox" id="oathfit"> Only oaths that fit</label></div>
   <div class="oathcards" id="oathcards"></div>
   <div class="wizact"><button value="cancel" formnovalidate>Close</button></div>
+</form></dialog>
+<dialog id="optpick" aria-labelledby="optpick-title"><form method="dialog" class="dlgform">
+  <h2 id="optpick-title">Pick a stat plan</h2>
+  <p class="hint" style="margin:0" id="optpick-sub">Three ways to fix your stats, each built from your current talents, limits and required picks. Numbers compare against your build right now.</p>
+  <div class="opbar" id="optpick-bar"><i></i></div>
+  <div class="opcards" id="optpick-cards"></div>
+  <div class="wizact"><button value="cancel" formnovalidate>Keep my current build</button></div>
 </form></dialog>
 <dialog id="ai" aria-labelledby="ai-title"><form method="dialog" id="aiform" class="dlgform">
   <h2 id="ai-title">✨ AI build maker</h2>
@@ -4819,9 +4899,22 @@ function renderFinal(){
   const pin=S.pin||{};const man=S.manual;const sho=k=>(b.sh&&b.sh.out?b.sh.out[k]:b.P[k])||0;
   const tgtOf=k=>ATTR.includes(k)?(+S.mins[k]||0):k===S.wtype?(+S.wtarget||0):ATT[k]?(k in S.atts?+S.atts[k]:0):null;
   const nm=k=>esc(statName(k).replace(' Weapon',' Wep.'));
-  // power summary: before the shrine | after the shrine
-  $('fstats').innerHTML=`<div class="fbox pw pre"><span class="hd2">Before shrine</span><span class="k">Points spent</span><b class="mono">${b.preSum}</b><span class="k">Power at shrine</span><b class="mono">${powerAt(b.preSum)}</b>${b.noShrine?`<span class="flav">Below Power ${SHRINE_PWR}: no shrine, these stats carry straight through.</span>`:''}</div>
-   <div class="fbox pw post"><span class="hd2">After shrine (final)</span><span class="k">Final Power</span><b class="mono">${pw}</b><span class="k">Next Power</span><b class="mono">${next==null?'max':next+' pts'}</b><span class="k">Points left</span><b class="mono ${b.free<0?'down':''}">${b.impossible?'—':b.free}</b></div>`;
+  // pre-shrine strip: ① before (points, power, bar to the shrine) · ② shrine (what it saves) · ③ after (final)
+  const preP=powerAt(b.preSum);let need=0;while(need<330&&powerAt(need)<SHRINE_PWR)need++;
+  const gain=last&&last.baseFree!=null&&!b.impossible?b.free-last.baseFree:null;
+  const moved=ALL.filter(k=>(b.P[k]||0)>0&&sho(k)!==(b.P[k]||0));const down=moved.filter(k=>sho(k)<b.P[k]),upk=moved.filter(k=>sho(k)>b.P[k]);
+  $('fstats').innerHTML=`<div class="shstrip">
+    <div class="s1"><span class="t">① Before shrine</span><span class="big">${b.preSum}<small>pts · Power ${preP}</small></span>
+      <div class="pwbar" title="Points before the shrine; the mark is Power ${SHRINE_PWR}, where the Shrine of Order unlocks"><i style="width:${Math.min(100,b.preSum/Math.max(need*1.6,b.preSum)*100)}%"></i><b style="left:${need/Math.max(need*1.6,b.preSum)*100}%"></b></div>
+      <span class="sub">${b.noShrine?`<span class="bad">Below Power ${SHRINE_PWR}: no shrine.</span> These stats carry straight through.`:`Shrine unlocks at Power ${SHRINE_PWR} (${need} pts) <span class="good">✓</span>`}</span></div>
+    <div class="s2"><span class="t">② Shrine of Order</span>${b.noShrine?'<span class="big">—</span><span class="sub">Not used.</span>':`<span class="big ${gain>0?'good':''}">${gain==null?'—':(gain>0?'+':'')+gain}<small>pts vs no shrine</small></span><span class="sub">${down.length?`Lowers <b>${down.map(k=>esc(statName(k).replace(' Weapon',' wpn'))).slice(0,3).join(', ')}</b>${down.length>3?'…':''}`:'Changes nothing'}${upk.length?`; raises <b>${upk.map(k=>esc(statName(k).replace(' Weapon',' wpn'))).slice(0,3).join(', ')}</b>${upk.length>3?'…':''}`:''}</span>`}</div>
+    <div class="s3"><span class="t">③ After shrine</span><span class="big">Power ${pw}<small>final</small></span><span class="sub"><b class="${b.free<0?'bad':''}">${b.impossible?'—':b.free}</b> points left · next Power ${next==null?'max':'in <b>'+next+'</b>'}</span></div>
+  </div>`+(()=>{const ks=ALL.filter(k=>(b.P[k]||0)>0);if(!ks.length||b.noShrine)return '';
+    const sh=k=>({STR:'STR',FTD:'FTD',AGL:'AGL',INT:'INT',WLL:'WLL',CHA:'CHA'})[k]||statName(k).replace(' Weapon',' wpn');
+    window.PRETXT='Before the shrine: '+ks.map(k=>sh(k)+' '+b.P[k]).join(', ')+` (${b.preSum} points, Power ${preP}). Then use the Shrine of Order.`;
+    const main=ks.filter(k=>b.P[k]>1||k in pin),tags=ks.filter(k=>!main.includes(k));
+    return `<div class="preplan"><span class="lbl">Level first</span>${main.map(k=>`<span class="pc ${k in pin?'pin':''}" title="${esc(statName(k))}: ${b.P[k]} before the shrine${k in pin?' (pinned)':''} → ${sho(k)} after it">${esc(sh(k))} ${b.P[k]}</span>`).join('')}${tags.length?`<span class="tag" title="1 point before the shrine so it gets averaged up: the shrine raises it">+ tag <b>${tags.map(k=>esc(sh(k))).join(', ')}</b> (1 each)</span>`:''}<span class="then">→ then Shrine of Order</span><button class="mini" data-precopy="1" title="Copy the pre‑shrine leveling plan as text">Copy</button></div>`})();
+  {const cn=Object.values(S.caps||{}).filter(c=>c&&c.on).length,av=(S.avoid||[]).length;const e=$('limitsum');if(e)e.textContent=cn||av?`(${[cn?cn+' limit'+(cn>1?'s':''):'',av?av+' avoided':''].filter(Boolean).join(', ')})`:''}
   const zero=k=>!(b.P[k]||b.final[k]||tgtOf(k)||(k in pin));
   const secs=[['Attributes',ATTR],['Weapon',WEPS],['Attunements',ATTS]];
   let head,row;
@@ -4832,10 +4925,12 @@ function renderFinal(){
     head=`<tr class="sgrp"><th rowspan="2" class="sk">Stat</th><th class="c-pre">① Before</th><th class="c-sh">② Shrine</th><th class="c-post">③ After shrine</th></tr><tr class="sub"><th class="c-pre">level to</th><th class="c-sh">leaves</th><th class="c-post">final</th></tr>`;
     row=k=>{const pre=b.P[k]||0,fin=b.final[k]||0,sh=sho(k);const pinned=k in pin;const tg=tgtOf(k);const cp=(S.caps||{})[k];const locked=!!(cp&&cp.on&&tg!==null&&+cp.max===+tg);const lv=locked?+cp.max:'';
       const sil=S.oath==='Silentheart'&&ATT[k];
-      return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}${sil&&fin?' <small class="warn" title="Silentheart can\'t use attunement mantras">no use</small>':''}</th><td class="c-pre"><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine${pinned?' (pinned)':''}"></td><td class="c-sh mono" title="What the shrine leaves you with">${b.noShrine?'—':sh}</td><td class="c-post"><input class="v fin ${locked?'pin':''} ${fin>sh?'up':''} ${fin<pre&&pre>1&&fin<=sh?'down':''}" type="number" min="0" max="100" data-fin="${k}" value="${locked?lv:''}" placeholder="${fin}" ${tg===null?'disabled title="Switch weapon type to use this"':`title="${locked?'Locked at '+lv+'. Clear the box to unlock.':'Type a value to lock the final amount'}"`} aria-label="${esc(statName(k))} final${locked?' (locked)':''}"></td></tr>`}}
+      return `<tr class="${zero(k)?'zero':''}"><th scope="row">${nm(k)}${sil&&fin?' <small class="warn" title="Silentheart can\'t use attunement mantras">no use</small>':''}</th><td class="c-pre"><input class="v ${pinned?'pin':''}" type="number" min="0" max="100" data-pin="${k}" value="${pinned?pin[k]:''}" placeholder="${pre}" aria-label="${esc(statName(k))} before the shrine${pinned?' (pinned)':''}"></td><td class="c-sh mono" title="What the shrine leaves you with">${b.noShrine?'—':sh}${!b.noShrine&&pre>0&&sh!==pre?`<small class="sd ${sh>pre?'up':'dn'}">${sh>pre?'+':''}${sh-pre}</small>`:''}</td><td class="c-post"><input class="v fin ${locked?'pin':''} ${fin>sh?'up':''} ${fin<pre&&pre>1&&fin<=sh?'down':''}" type="number" min="0" max="100" data-fin="${k}" value="${locked?lv:''}" placeholder="${fin}" ${tg===null?'disabled title="Switch weapon type to use this"':`title="${locked?'Locked at '+lv+'. Clear the box to unlock.':'Type a value to lock the final amount'}"`} aria-label="${esc(statName(k))} final${locked?' (locked)':''}"></td></tr>`}}
   const cols=4;
-  $('bstats').innerHTML=`<div class="scroll"><table class="stbl">${head}${secs.map(([t,ks])=>`<tr class="sec"><th colspan="${cols}">${t}</th></tr>`+ks.map(row).join('')).join('')}</table></div>
-   <p class="hint" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first (type to lock). <b>Final</b> = where it ends (type to lock it exactly; clear the box to let the optimizer choose). Green = raised after the shrine, red = lowered by the shrine.'}</p>`;
+  const nZero=ALL.filter(zero).length;
+  $('bstats').innerHTML=`<div class="scroll"><table class="stbl ${S.statsAll||man?'all':''}">${head}${secs.map(([t,ks])=>`<tr class="sec ${ks.every(zero)?'empty':''}"><th colspan="${cols}">${t}</th></tr>`+ks.map(row).join('')).join('')}</table></div>
+   ${man||!nZero?'':`<div class="stfoot"><button class="linkbtn" data-stall="1">${S.statsAll?'Hide unused stats':`Show all stats (${nZero} at 0 hidden)`}</button></div>`}
+   <p class="hint xh" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first (type to lock). <b>Final</b> = where it ends (type to lock it exactly; clear the box to let the optimizer choose). Green = raised after the shrine, red = lowered by the shrine.'}</p>`;
 }
 function renderPicked(){
   const C=last?last.R.C:closure();const b=last&&last.best;const cn=counts(C);
@@ -4967,7 +5062,7 @@ function autoPick(){
   say(`Auto-picked ${picks.length} talent${picks.length>1?'s':''}${syn.length?`, including ${syn.length} synerg${syn.length>1?'ies':'y'} (${syn.slice(0,4).join(', ')}${syn.length>4?'…':''})`:''}. All fit your current stats.`);
 }
 function renderResults(res){
-  const {best,R,baseFree}=res;last={best,R};
+  const {best,R,baseFree}=res;last={best,R,baseFree};
   const C=R.C;const cn=counts(C);const su=slotUse(C);
   if(!best){renderStatus();renderReq();$('fstats').innerHTML='';$('bstats').innerHTML=Object.keys(S.pin||{}).length?'<div class="callout bad">No build fits these pinned values. Clear a pin or lower one.</div>':'';$('verdict').innerHTML='';$('note').innerHTML='<div class="callout bad">No valid build: a requirement is above 100 or over 330 points before the shrine.</div>';$('tbl').innerHTML='';$('steps').innerHTML='';$('fits').innerHTML='';$('recs').innerHTML='';renderTalentChips();renderMantraChips();return}
   const gain=best.free-baseFree;
@@ -5028,8 +5123,8 @@ function renderResults(res){
    $('ratio').innerHTML=`<thead><tr><th>Stat</th><th>Now</th><th>Damage/pt</th><th>Next</th><th>Cost</th><th>Talent value/pt</th><th>Unlocks (popularity)</th></tr></thead><tbody>`+rows.map(({k,now,b,dpt})=>`<tr><td>${statName(k)}</td><td>${now}</td><td>${fd(dpt)}</td><td>${b?b.th:'—'}</td><td>${b?'+'+b.cost:'—'}</td><td><b>${b?b.ratio.toFixed(1):'—'}</b></td><td>${b?esc(b.gained.slice(0,4).map(v=>`${v.n} ${Math.round(v.p)}%`).join(', ')+(b.gained.length>4?` +${b.gained.length-4} more`:'')):'nothing popular within 40 points'}</td></tr>`).join('')+'</tbody>';}
   // recommendations
   const ctx=ctxNow();recCache=recommendations(ctx,10);
-  $('recsub').textContent=`synergies first; % = top builds whose stats allow it that take it`;
-  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% of builds that can</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
+  $('recsub').textContent=`% of top builds that take it`;
+  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% pick it</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
   // oath fits
   const fits=OATHS.filter(o=>o.n!=='None').map(o=>({o,b:evaluate(best.P,R,oathAltsOf(o))})).sort((x,y)=>(y.b&&!y.b.impossible?y.b.free:-999)-(x.b&&!x.b.impossible?x.b.free:-999));
   $('fits').innerHTML=fits.map(({o,b})=>{const ok=b&&b.free>=0&&!b.impossible;return `<button class="chip" data-oathpick="${enc(o.n)}" aria-pressed="${o.n===S.oath}" style="${ok?'':'opacity:.55'}">${esc(o.n)}<small>${b&&!b.impossible?(b.free>=0?b.free+' points left':(-b.free)+' points over'):'—'}</small></button>`}).join('');
@@ -5047,10 +5142,8 @@ function renderResults(res){
 function run(){renderResults(compute({starts:2,iters:60,seedP:prevP()}))}
 
 // Optimize: choose pre/post for each talent, tag stats, then optionally spend leftovers
-function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.value;if(de&&!de.disabled)S.dsplit=+de.value}if(S.manual){if(opts&&opts.after)opts.after();else say('Manual mode is on, so Optimize is off. Switch to Optimizer in the top bar to use it.');return}const spend=S.spend&&!(opts&&opts.noSpend);if(!(opts&&opts.noUndo))pushUndo('Optimize');
-  const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});$('results').classList.add('busy');
-  setTimeout(()=>{
-    try{
+// optCore runs one optimization on the current state S (no rendering) and returns what it did
+function optCore(spend){
       let dropped=[];{const R0=requirements();const cb=(R0.capBlocked||[]).filter(n=>S.sel.includes(n)&&!isReq(n));if(cb.length){S.sel=S.sel.filter(n=>!cb.includes(n));dropped.push(...cb)}}
       dropped=dropped.concat(trimToCap());
       let res=compute({starts:18,iters:200,seedP:prevP()});
@@ -5086,11 +5179,72 @@ function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
         let F=prevRes.best.free,ok=null;for(let tries=0;tries<4&&F>0;tries++){const r=spendTry(F);if(r.best&&!r.best.impossible&&r.best.free>=0){ok=r;break}F-=Math.max(2,r.best?-r.best.free+2:F)}
         if(ok)res=ok;else{S.wtarget=prevW;S.atts=prevA;S.mins=prevM;res=prevRes}
       }
-      renderInputs();renderResults(res);
+      return {res,dropped,lw,sb,spend};
+}
+function optMsg(o){const {res,dropped,lw,sb,spend}=o;
       const still=res.best&&!res.best.impossible&&res.best.free<0?` Still over by ${-res.best.free}: ${S.req.length?'your required talents and stat floors':'your stat floors, weapon and attunement targets'} need more than ${BUDGET} points on their own${Object.keys(S.pin||{}).length?', together with your pinned stats':''}.`:'';
       const pr=(S.prio==null?50:S.prio);const sbTxt=sb.notes.length||sb.added.length?`${pr<50?'Damage focus':'Talent-options focus'}: ${[sb.notes.length?sb.notes.join(', '):'',sb.added.length?`added ${sb.added.length} talent${sb.added.length>1?'s':''} (${sb.added.slice(0,4).join(', ')}${sb.added.length>4?'…':''})`:''].filter(Boolean).join('; ')}. `:'';
-      say(sbTxt+(lw.length?`Lowered ${lw.map(([l,v])=>l+' to '+v).join(', ')} so the build fits. `:'')+(dropped.length?`Removed ${dropped.join(', ')} to fit your stat limits, the talent cap and the point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
-    }finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
+      return (sbTxt+(lw.length?`Lowered ${lw.map(([l,v])=>l+' to '+v).join(', ')} so the build fits. `:'')+(dropped.length?`Removed ${dropped.join(', ')} to fit your stat limits, the talent cap and the point budget (lowest value first; required talents are never removed). `:'')+'Optimized: pre-shrine stats, which talents to take before and after the shrine'+(spend?', and leftover points':'')+' updated.'+still);
+}
+// Optimize build → three plans (attunement, weapon, talents), each run on a copy of the build, shown side by side to pick from
+const OPT_PLANS={
+  att:{t:'Attunement focus',ic:'✦',c:'var(--sdw)',prio:0,dsplit:100,d:'Pours points into your attunement for bigger mantras and higher mantra levels (every 20 points). Your weapon stat drops to what your weapon needs (at most 50) and low‑value talents give way to pay for it.'},
+  wep:{t:'Weapon focus',ic:'⚔',c:'var(--flm)',prio:0,dsplit:0,d:'Pushes your weapon stat toward 100 for the hardest M1 hits, plus damage talents in open slots. Attunements drop to 40 (enough for level‑3 mantras) and the least useful non‑damage talents are cut to fund it.'},
+  tal:{t:'Talents focus',ic:'❖',c:'var(--ok)',prio:100,dsplit:null,d:'Brings weapon and attunement down to what your gear needs and spends the freed points on attributes that unlock more popular and synergy talents. More utility, less raw damage.'},
+  bal:{t:'Balanced',ic:'⚖',c:'var(--brass)',prio:50,dsplit:50,d:'No attunement is ticked, so instead of an attunement plan this keeps damage and talents in balance: it fixes the budget and spends leftovers where they help most.'}
+};
+let OPTV=null;
+function optSnap(){const s={...S};delete s.tab;return JSON.stringify(s)}
+function optRestore(j){const tab=S.tab;for(const k of Object.keys(S))if(k!=='tab')delete S[k];Object.assign(S,JSON.parse(j));S.tab=tab}
+function optSum(best,R){if(!best||best.impossible)return null;const C=R.C;const cn=counts(C);const dm=best.dm;
+  return {hit:dm?dm.hit:0,mh:dm&&dm.md?dm.md.hit:0,nTal:cn.nTal,cap:cn.cap,free:best.free,final:{...best.final},sel:[...C.T.keys()].filter(n=>{const t=TBY.get(n);return t&&t.k&&t.r!=='Q'&&t.r!=='O'})}}
+// make the damage plans distinct: attunement plan gives up weapon points, weapon plan gives up attunement points (limits win)
+function optShape(k){const on=x=>!!((S.caps||{})[x]&&S.caps[x].on);
+  if(k==='att'&&!on(S.wtype)){const w=S.weapon&&WBY.get(S.weapon);const need=w?(w.req.s[S.wtype]||0):0;S.wtarget=Math.max(need,Math.min(+S.wtarget||0,50))}
+  if(k==='wep')for(const a of Object.keys(S.atts||{}))if(!on(a)&&S.atts[a]>40)S.atts[a]=40}
+function optimizeChoices(){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.value;if(de&&!de.disabled)S.dsplit=+de.value}
+  if(S.manual){say('Manual mode is on, so Optimize is off. Switch to Optimizer in the top bar to use it.');return}
+  const dlg=$('optpick');if(!dlg||!dlg.showModal){optimizeAll();return}
+  const base=optSnap();const cur=last&&last.best?optSum(last.best,last.R):null;const hasAtt=Object.keys(S.atts||{}).length>0;
+  const keys=[hasAtt?'att':'bal','wep','tal'];OPTV={base,cur,list:keys.map(k=>({k,p:OPT_PLANS[k],done:false}))};
+  const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});
+  $('optpick-bar').hidden=false;renderOptCards();dlg.showModal();
+  const token=OPTV;let i=0;const step=()=>{if(OPTV!==token||!dlg.open){optRestore(base);btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});return}
+    const v=OPTV.list[i];
+    try{optRestore(base);S.prio=v.p.prio;if(v.p.dsplit!=null)S.dsplit=v.p.dsplit;optShape(v.k);
+      const o=optCore(S.spend);v.msg=optMsg(o);v.res=o.res;v.sum=optSum(o.res.best,o.res.R);v.state=optSnap()}
+    catch(e){v.err=String(e&&e.message||e)}finally{optRestore(base)}
+    v.done=true;renderOptCards();i++;
+    if(i<OPTV.list.length)setTimeout(step,20);else{$('optpick-bar').hidden=true;btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false})}};
+  setTimeout(step,40)}
+function renderOptCards(){if(!OPTV)return;const cur=OPTV.cur;const done=OPTV.list.filter(v=>v.sum);
+  const top=f=>{if(done.length<2)return null;const m=Math.max(...done.map(v=>f(v.sum)));const w=done.filter(v=>f(v.sum)>m-1e-6);return w.length===1&&m>0?w[0].k:null};
+  const bH=top(s=>s.hit),bM=top(s=>s.mh),bT=top(s=>s.nTal);
+  const delta=(a,b,dp)=>{if(b==null)return '';const d=a-b;if(Math.abs(d)<(dp?0.05:0.5))return '';return ` <small class="${d>0?'up':'dn'}">${d>0?'+':''}${d.toFixed(dp)}</small>`};
+  $('optpick-cards').innerHTML=OPTV.list.map(v=>{const p=v.p;
+    if(!v.done)return `<div class="opcard wait" style="--oc:${p.c}"><h3><i>${p.ic}</i>${p.t}</h3><p class="opdesc">${p.d}</p><p class="hint" style="margin:0">Working it out…</p></div>`;
+    if(!v.sum)return `<div class="opcard" style="--oc:${p.c}"><h3><i>${p.ic}</i>${p.t}</h3><p class="opdesc">${p.d}</p><div class="callout bad">${v.err?'Something went wrong building this plan.':'No build fits for this plan with your limits and required talents.'}</div></div>`;
+    const s=v.sum;const badges=[v.k===bH?'most M1':'',v.k===bM&&s.mh?'best mantras':'',v.k===bT?'most talents':''].filter(Boolean);
+    const chg=[];const cf=cur?cur.final:{};
+    const order=[S.wtype,...Object.keys(S.atts||{}),...ATTR];
+    for(const k of [...new Set(order)]){const a=cf[k]||0,b=s.final[k]||0;if(cur&&a!==b)chg.push(`${esc(statName(k))} ${a} → <b>${b}</b>`);else if(!cur&&b)chg.push(`${esc(statName(k))} <b>${b}</b>`)}
+    if(cur){const was=new Set(cur.sel),now=new Set(s.sel);const add=s.sel.filter(n=>!was.has(n)),rm=cur.sel.filter(n=>!now.has(n));
+      if(add.length)chg.push(`<span class="up">+${add.length} talent${add.length>1?'s':''}</span>: ${esc(add.slice(0,4).join(', '))}${add.length>4?'…':''}`);
+      if(rm.length)chg.push(`<span class="dn">−${rm.length} talent${rm.length>1?'s':''}</span>: ${esc(rm.slice(0,4).join(', '))}${rm.length>4?'…':''}`)}
+    return `<div class="opcard" style="--oc:${p.c}"><h3><i>${p.ic}</i>${p.t}</h3>${badges.length?`<div class="opbadges">${badges.map(x=>`<span class="best">${x}</span>`).join('')}</div>`:''}
+      <p class="opdesc">${p.d}</p>
+      <div class="opnums"><div><b>${s.hit.toFixed(1)}${delta(s.hit,cur&&cur.hit,1)}</b><span>M1 hit</span></div><div><b>${s.mh?s.mh.toFixed(1):'—'}${s.mh?delta(s.mh,cur&&cur.mh,1):''}</b><span>Mantra hit</span></div><div><b>${s.nTal}/${s.cap}${delta(s.nTal,cur&&cur.nTal,0)}</b><span>Talents</span></div></div>
+      ${s.free<0?`<div class="callout bad" style="margin:0">Still over budget by ${-s.free}.</div>`:s.free>0?`<p class="hint" style="margin:0">${s.free} point${s.free>1?'s':''} left over.</p>`:''}
+      ${chg.length?`<ul class="opchg">${chg.slice(0,9).map(x=>`<li>${x}</li>`).join('')}</ul>`:'<p class="hint" style="margin:0">Same stats as now.</p>'}
+      <button type="button" class="primary" data-optuse="${v.k}">Use this plan</button></div>`}).join('')}
+function useOptPlan(k){if(!OPTV)return;const v=OPTV.list.find(x=>x.k===k);if(!v||!v.state)return;
+  const keepP=S.prio,keepD=S.dsplit;optRestore(OPTV.base);pushUndo('Optimize ('+v.p.t+')');optRestore(v.state);S.prio=keepP;S.dsplit=keepD;
+  OPTV=null;$('optpick').close();renderInputs();renderResults(v.res);sayUndo(v.p.t+': '+v.msg.replace(/^(Damage|Talent-options) focus: /,''))}
+function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.value;if(de&&!de.disabled)S.dsplit=+de.value}if(S.manual){if(opts&&opts.after)opts.after();else say('Manual mode is on, so Optimize is off. Switch to Optimizer in the top bar to use it.');return}const spend=S.spend&&!(opts&&opts.noSpend);if(!(opts&&opts.noUndo))pushUndo('Optimize');
+  const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});$('results').classList.add('busy');
+  setTimeout(()=>{
+    try{const o=optCore(spend);renderInputs();renderResults(o.res);say(optMsg(o))}
+    finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
     if(opts&&opts.after)opts.after();
   },30);
 }
@@ -5901,7 +6055,7 @@ function helpTips(){
   if(b.dm&&b.dm.mRaw>.4)tips.push({k:'down',t:`Your damage bonus is +${Math.round(b.dm.mRaw*100)}% raw, but past +25% it counts half (max +50%). More damage talents add little; spend picks on utility.`});
   return tips.slice(0,7);
 }
-function renderHelp(){const on=!!S.help;$('helpon').checked=on;const box=$('help');if(!on){box.hidden=true;return}
+function renderHelp(){const on=!!S.help;$('helpon').checked=on;document.body.classList.toggle('helpon',on);const box=$('help');if(!on){box.hidden=true;return}
   const tips=helpTips();box.hidden=false;
   const acts=x=>{const bs=[...(x.take||[]).filter(n=>!S.sel.includes(n)&&!isReq(n)).map(n=>`<button class="mini primary" data-tadd="${enc(n)}">Take ${esc(n)}</button>`),...(x.spend?['<button class="mini" data-spendnow="1">Spend on damage</button>']:[]),...(x.opt?['<button class="mini primary" data-optimize="1">Optimize build</button>']:[])];return bs.length?`<span class="tipacts">${bs.join('')}</span>`:''};
   box.innerHTML=`<b>Help mode</b> <span class="hint">suggestions for your current build</span><ul>${tips.map(x=>`<li class="${x.k}">${esc(x.t)}${acts(x)}</li>`).join('')||'<li>Nothing stands out. Your stats line up with your picks.</li>'}</ul>`}
@@ -5985,7 +6139,10 @@ document.addEventListener('click',e=>{
   else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save();keepInView(t)}
   else if(d.tf){S.tfilter=d.tf;renderTalentChips();save();keepInView(t)}
   else if(d.mf){S.mfilter=d.mf;renderMantraChips();save()}
-  else if(d.optimize){optimizeAll()}
+  else if(d.optimize){optimizeChoices()}
+  else if(d.optuse){useOptPlan(d.optuse)}
+  else if(d.stall){S.statsAll=!S.statsAll;save();renderFinal()}
+  else if(d.precopy){copyText(window.PRETXT||'','Pre‑shrine plan copied.')}
   else if(t.id==='autopick'||t.id==='autopick2'){autoPick()}
   else if(d.tab){showTab(d.tab)}
   else if(d.trait){const [k,dv]=d.trait.split(':');S.traits=S.traits||{};const v=tr(k)+(+dv);if(v<0||v>TRAIT_MAX||(+dv>0&&traitSum()>=TRAIT_TOTAL))return;if(v)S.traits[k]=v;else delete S.traits[k];renderTraits();runSoon();save()}

@@ -54,11 +54,21 @@ jobs:
       - run: python src/build.py
       - run: npm install --no-audit --no-fund
         working-directory: app
-      - run: npm run ${{ matrix.script }}
+      # on failure, the end of the build output is attached as an annotation so it can be read without the raw log
+      - run: |
+          set -o pipefail
+          npm run ${{ matrix.script }} 2>&1 | tee build.log
+        shell: bash
         working-directory: app
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: failure()
+        shell: bash
+        working-directory: app
+        run: |
+          msg=$(tail -n 40 build.log | sed 's/\x1b\[[0-9;]*m//g' | sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')
+          echo "::error title=Desktop build failed (${{ matrix.os }})::$msg"
       - uses: actions/upload-artifact@v4
         with:
           name: meta-builder-${{ matrix.os }}

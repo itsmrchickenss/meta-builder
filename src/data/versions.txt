@@ -1,3 +1,8 @@
+## v0.30 | 2026-10-26
+- Key talents for each stat (from Infekted's buildmaking guide) are favored everywhere: Optimize, Auto-pick and Recommended talents (marked "key talent"). Builds from the AI build maker take the key talents their stats reach.
+- AI build maker understands play styles: "armor shredding" or "high penetration" means high Strength + Ironsing on a heavy weapon; "gank" means high Agility (65 for Cheap Shot) with Ghost; "stealth" means Agility 40 for Ghost; also block breaking, support, alchemy, burn, stuns, slows, ether drain, lifesteal and fighting several people.
+- Fortitude stays at 50 unless you ask for Reinforced Armor, which plans Fortitude 90.
+
 ## v0.29 | 2026-10-26
 - Click the version next to the title to see this version history.
 

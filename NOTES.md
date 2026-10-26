@@ -1,11 +1,11 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 26, 2026 (v0.29).
+Everything needed to pick this project back up. Last updated October 26, 2026 (v0.30).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Starting a new chat
 
-The handoff page (a private Claude artifact) has this same information for a chat that isn't attached to the repo: https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3 (regenerate with `python3 tools/handoff.py` and publish `dist/handoff.html` to it only when the owner asks). In a new chat, attach the repo `itsmrchickenss/meta-builder` (or paste the handoff link) and say what to change. Claude reads `CLAUDE.md` and this file first.
+The handoff page (a private Claude artifact) has this same information for a chat that isn't attached to the repo: https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3 (regenerate with `python3 tools/handoff.py` and publish `dist/handoff.html` to it every 10 versions — v0.30, v0.40… — or when the owner asks). In a new chat, attach the repo `itsmrchickenss/meta-builder` (or paste the handoff link) and say what to change. Claude reads `CLAUDE.md` and this file first.
 
 ## Links
 
@@ -27,7 +27,7 @@ The handoff page (a private Claude artifact) has this same information for a cha
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.29 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: +0.01, a new entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players), pushed to this repo (owner's request, October 26, 2026). The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is not refreshed per version, only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.30 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: +0.01, a new entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players), pushed to this repo (owner's request, October 26, 2026). The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Owner's rules and preferences (keep these)
 
@@ -49,6 +49,12 @@ Pre-release numbering is **v0.x** (v0.29 now). The owner sets **v1.0 at release*
 - Saintsworn requirements, talent paths (steam = Vaporborne…), gank = mobile, semi-tanky are understood.
 - **Follow-up questions** (`aiQuestions` / `renderAiQs` / `aiAnswersText`): after "Make my build", the dialog asks only what the description left open. Attunement focus when 2+ attunements have no typed numbers: main attunement select + options (2: "80 / 80", "80 / 40", "80 / just what the path needs" when a path needs the other, "Other" with number boxes; 3+: "80 / 40 / 40", "80 / 80 / 40", "all 80", "just what the path needs", "Other"; mage main = 100). Also weapon type (if none named), oath (if none named; "best fit" default) and how tanky (glass cannon / balanced / semi tanky / tanky). Answers are appended to the description as words ("thundercall 80, flamecharm 30…") and `aiParse` runs again. Skip uses the defaults; Back returns to the text.
 - After an AI build, the Adjustments box takes plain-language changes and re-optimizes.
+
+**Buildmaking guide (owner's source, October 26, 2026):** Infekted, "Build Making Made Easy! - Deepwoken Buildmaking Guide" (https://www.youtube.com/watch?v=o9fxuIc64NM), plus the fandom wiki Attunements and Talents pages (the wiki blocks automated reads; WebFetch failed on October 26, 2026). What it means here:
+- **Key talents per stat** (`KEY_T`): STR Champion's Regalia, Going Nowhere, Bulldozer (25), Unwavering Resolve, Showstopper (40), Berserk (80), Collapsed Lung, Piercing Blow (100); FTD Exoskeleton (40), To The Finish (50), Reinforced Armor (90); AGL Risky Moves, Spine Cutter, Conditioned Runner (25), Ghost (40), Cheap Shot (65), Dustlunge, Pursuit (90), None Left Behind (100); INT Lightspeed Reflexes (20), Everchanging Aegis, Perfect Flash (25), Eureka (30), Overflowing Dam (40), Master Craftsman (45), Foolish Outburst, Water off a Duck's Back (50), Critical Engine, Ether Overdrive (90), Absolute Pitch (100); WLL Breathing Exercise (5), Old Habits Die Hard (20), Magical Resolve, Azure Flames (40), Emergency Reserves, Heretic's Sutra, Piercing Will (80), Shared Misery (85); CHA Charismatic Cast (25), Golden Tongue (40), Manipulator (60), Unnecessary Theatrics, Command: Live (75), Cult of Personality (90). You almost always take these when the stats reach them: +60 in `talentVal`, +70 in auto-pick, +1.2 in recommendations, and the AI build maker takes the ones its stats reach after optimizing. (Observation and Safety Dance are left out: they exclude Risky Moves, which Ghost needs.)
+- **Archetypes in the AI build maker** (`AI_ARCH_ATT` and the play-style block in `aiParse`): armor shredding / high penetration = high Strength (90 before the shrine, Million Ton Piercer) + Ironsing + heavy weapon; gank = high Agility (65, Cheap Shot) + Ghost; stealth = Agility 40 for Ghost (take Ghost and the Butterfly talents before the shrine); block breaking = Strength 40; support = Charisma 55 (whole Charm Caster tree); alchemy = Intelligence 45. Attunement themes: burn/explosions = Flamecharm, freeze/slows = Frostdraw, stuns/lockdown/zoning = Thundercall, pressure = Galebreathe, ether drain/blind/anti-mage = Shadowcast, armor manipulation/shredding = Ironsing, lifesteal/bleed/blood poison = Bloodrend, fighting several people = Ironsing + Bloodrend. Words like these add the attunement after any named outright.
+- **Fortitude:** people rarely go over 50. Only plan 90 (Reinforced Armor) when the person asks for Reinforced Armor; a typed number still wins.
+- **Shrine facts from the guide** (already modelled): Power 8+; it takes at most 25 from a stat (attunements excluded); 1 point in a stat lets the shrine raise it; one use only; mantra levels drop if the attunement drops below 20/40/60/80; weapons you no longer meet are unequipped; you must be Oathless when you use it (oaths come after the shrine); race points don't count toward its averaging.
 
 **Talents**
 - Prioritize talents tied to your **weapon type and attunements** (`kitOf`).
@@ -111,7 +117,7 @@ Data line formats: talent `name|category|rarity(+0 = not counted)|stats|o=alts|a
 
 - **Score:** (330 − used) + 2(1 − slider) × damage% + 2 × slider × talent options/10; penalties 20/pt over a stat limit or breaking the pre-shrine rule.
 - **Optimize** (`optimizeAll`): drop limit-blocked talents → trim to cap (`trimToCap`) → search (`compute`) → `trimToBudget` → if required + floors alone are over, `easeFloors` (never values set in Adjustments, `S.keep`) → `rebuildToBudget` → `sliderRebalance` (damage end raises weapon/attunements toward 100 paid by low-value non-damage talents; talent end lowers them and fills with popular/synergy talents; 35–65 does nothing) → optional leftover spend (retries with fewer points).
-- **Talent value** (`talentVal`): 90 × kit + (1 + popularity + 15 × synergy)(0.4 + 1.2 × slider) + 100 × (damage + PEN)(0.2 + 3.6 × (1 − slider)).
+- **Talent value** (`talentVal`): 90 × kit + 60 × key talent + (1 + popularity + 15 × synergy)(0.4 + 1.2 × slider) + 100 × (damage + PEN)(0.2 + 3.6 × (1 − slider)).
 - **Auto-pick** fills open slots with talents that already fit, best value per slot (prerequisites count as slots).
 - **Recommendations:** synergies first (10 + weight), then take rate given stats, +0.8 × kit.
 - **Equipment optimizer:** meet min HP and min physical armor, then hp × (1/(1−res))^a.

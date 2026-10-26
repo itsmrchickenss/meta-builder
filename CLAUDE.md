@@ -8,7 +8,7 @@ Read `NOTES.md` first: it has the links, file layout, data formats, game formula
 - Every update the owner asks for is a new version (+0.01; pre-release v0.x, the owner sets v1.0 at release): add a `## vX | YYYY-MM-DD` entry with `- change` lines at the top of `src/data/versions.txt`. The build puts the newest version on the badge next to the title, and clicking the badge shows that history. Write the lines for players, in plain words. Commit and push every version.
 - If formulas or game data change, regenerate the workbook: `node tools/formulas/dump.js && python3 tools/formulas/build.py`, recalc it, commit `docs/Meta Builder formulas.xlsx`.
 - To update the Claude artifact, publish `dist/meta-builder.html` to https://claude.ai/artifact/BoupUctZcdQwYCUpkDoyFn.
-- Only refresh the handoff page when the owner asks for it (not every version): `python3 tools/handoff.py`, then publish `dist/handoff.html` to https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3.
+- Refresh the handoff page automatically every 10 versions (v0.30, v0.40, v0.50…), and otherwise only when the owner asks: `python3 tools/handoff.py`, then publish `dist/handoff.html` to https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3.
 - The private `itsmrchickenss/Projects` repo has an older copy in `deepwoken-shrine-planner/index.html`. Update it too if the owner asks.
 - Keep share links backward compatible (`decodeBuild`), and keep game data credited to deepwoken.co.
 - Commit messages end with the `Co-Authored-By` and `Claude-Session` trailer lines.

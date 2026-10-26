@@ -525,7 +525,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.29</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.30</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -3890,7 +3890,12 @@ True Shatter|Landing a critical shatters your opponent, ridding them of their sp
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
 Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
-<script type="text/plain" id="dwvers">## v0.29 | 2026-10-26
+<script type="text/plain" id="dwvers">## v0.30 | 2026-10-26
+- Key talents for each stat (from Infekted's buildmaking guide) are favored everywhere: Optimize, Auto-pick and Recommended talents (marked "key talent"). Builds from the AI build maker take the key talents their stats reach.
+- AI build maker understands play styles: "armor shredding" or "high penetration" means high Strength + Ironsing on a heavy weapon; "gank" means high Agility (65 for Cheap Shot) with Ghost; "stealth" means Agility 40 for Ghost; also block breaking, support, alchemy, burn, stuns, slows, ether drain, lifesteal and fighting several people.
+- Fortitude stays at 50 unless you ask for Reinforced Armor, which plans Fortitude 90.
+
+## v0.29 | 2026-10-26
 - Click the version next to the title to see this version history.
 
 ## v0.28 | 2026-10-26
@@ -4464,7 +4469,15 @@ const KIT_W={HVY:'heavy',MED:'medium',LHT:'light'};
 function kitOf(n,wt,atts){const t=TBY.get(n);if(!t)return 0;wt=wt===undefined?S.wtype:wt;atts=atts||Object.keys(S.atts);
   const keys=new Set();for(const a of chainStatic(t))for(const k of Object.keys(a.min||{}))keys.add(k);const c=(t.c||'').toLowerCase();
   if(wt&&(keys.has(wt)||c.includes(KIT_W[wt])))return 1;for(const k of atts)if(keys.has(k)||(ATT[k]&&c.includes(ATT[k][0].toLowerCase().slice(0,5))))return 1;return 0}
-const talentVal=(n,C)=>{const md=DMG_MODS[n];const pr=(S.prio==null?50:S.prio)/100;return 90*kitOf(n)+(1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS)*(0.4+1.2*pr)+(md?((md.dmg||0)+(md.pen||0))*100:0)*(0.2+3.6*(1-pr))};
+// key talents per stat (Infekted's buildmaking guide, May 2026): when your stats reach them you almost always take them
+const KEY_T=new Set(["Champion's Regalia",'Going Nowhere','Bulldozer','Unwavering Resolve','Showstopper','Berserk','Collapsed Lung','Piercing Blow',
+  'Exoskeleton','To The Finish','Reinforced Armor',
+  'Risky Moves','Spine Cutter','Conditioned Runner','Ghost','Cheap Shot','Dustlunge','Pursuit','None Left Behind',
+  'Lightspeed Reflexes','Everchanging Aegis','Perfect Flash','Eureka','Overflowing Dam','Master Craftsman','Foolish Outburst',"Water off a Duck's Back",'Critical Engine','Ether Overdrive','Absolute Pitch',
+  'Breathing Exercise','Old Habits Die Hard','Magical Resolve','Azure Flames','Emergency Reserves',"Heretic's Sutra",'Piercing Will','Shared Misery',
+  'Charismatic Cast','Golden Tongue','Manipulator','Unnecessary Theatrics','Command: Live','Cult of Personality'].filter(n=>TBY.has(n)));
+const keyOf=n=>KEY_T.has(n)?1:0;
+const talentVal=(n,C)=>{const md=DMG_MODS[n];const pr=(S.prio==null?50:S.prio)/100;return 90*kitOf(n)+60*keyOf(n)+(1+(POP.get(n)||0)+synW(synOf(n,C))*SYN_PTS)*(0.4+1.2*pr)+(md?((md.dmg||0)+(md.pen||0))*100:0)*(0.2+3.6*(1-pr))};
 // Last resort when dropping one talent at a time can't fix the budget (several picks share a stat):
 // rebuild the picked talents from most to least valuable, keeping each only if the build still fits.
 // The damage <-> talent options slider trades between the two when you press Optimize (the middle keeps the build as it is).
@@ -4613,7 +4626,7 @@ function recommendations(ctx,limit){
   const seen=new Set(out.map(r=>r.t.n));
   for(const n of picked)for(const s of SYN.get(n)||[]){const t=TBY.get(s.o);if(!t||isAvoid(s.o)||seen.has(s.o)||picked.has(s.o)||!t.k||t.r==='Q'||t.r==='O'||t.req.q)continue;
     const st=statusOf(t,false,ctx);if(st.k==='block'||st.k==='far')continue;seen.add(s.o);out.push({t,share:shareOf(s.o),st,syn:synOf(s.o,ctx.C)})}
-  const rank=r=>(r.syn.length?10+synW(r.syn):0)+r.share+0.8*kitOf(r.t.n);
+  const rank=r=>(r.syn.length?10+synW(r.syn):0)+r.share+0.8*kitOf(r.t.n)+1.2*keyOf(r.t.n);
   out.sort((a,b)=>rank(b)-rank(a));
   const top=out.filter(r=>r.syn.length);return [...top,...out.filter(r=>!r.syn.length).slice(0,Math.max(0,(limit||12)-Math.min(top.length,limit||12)))].slice(0,Math.max(limit||12,top.length));
 }
@@ -4621,11 +4634,11 @@ function recommendations(ctx,limit){
 // ================= auto-pick talents =================
 // Greedy: fill free talent slots with talents the current final (or pre-shrine) stats already reach,
 // ranked by popularity + synergy with what is picked so far + damage bonus. Respects exclusives and the cap.
-function autoPickList(ctx){
+function autoPickList(ctx,only){
   const cn=counts(ctx.C);let room=cn.cap-cn.nTal;if(room<=0)return [];
   const added=new Set();const have=n=>ctx.C.T.has(n)||added.has(n);
   const blockedBy=n=>{const t=TBY.get(n);if((t.req.x||[]).some(have))return true;for(const h of [...ctx.C.T.keys(),...added]){const ht=TBY.get(h);if(ht&&(ht.req.x||[]).includes(n))return true}return false};
-  const pool=DB.T.filter(t=>t.k&&!isAvoid(t.n)&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&!t.n.startsWith('Oath:')&&!have(t.n));
+  const pool=DB.T.filter(t=>(!only||only.has(t.n))&&t.k&&!isAvoid(t.n)&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&!t.n.startsWith('Oath:')&&!have(t.n));
   const ok=new Map();for(const t of pool){const st=statusOf(t,false,ctx);if(st.k==='fit')ok.set(t.n,st)}
   const out=[];
   while(room>0){let best=null;
@@ -4636,7 +4649,7 @@ function autoPickList(ctx){
       walk(n);if(bad)continue;const cost=1+pre.length;if(cost>room)continue;
       const sy=synW(synOf(n,ctx.C,added));const md=DMG_MODS[n];
       const pop=POP.get(n)||0;const pr=(S.prio==null?50:S.prio)/100;const dmgV=md?((md.dmg||0)+(md.pen||0))*100:0;
-      const v=(((pop>=3?pop:0)+sy*SYN_PTS)*(0.4+1.2*pr)+dmgV*(0.2+3.6*(1-pr))+90*kitOf(n))/cost;
+      const v=(((pop>=3?pop:0)+sy*SYN_PTS)*(0.4+1.2*pr)+dmgV*(0.2+3.6*(1-pr))+90*kitOf(n)+70*keyOf(n)+(only?1:0))/cost;
       if(v>0&&(!best||v>best.v))best={n,v,pre,sy}}
     if(!best)break;
     for(const p of best.pre){added.add(p)}added.add(best.n);out.push(best);room-=1+best.pre.length}
@@ -4837,7 +4850,7 @@ function statGroupOf(t){
   return ANAME[k]||(k==='BOD'?'Body (STR/FTD/AGL)':k==='MND'?'Mind (INT/WLL/CHA)':k==='WPN'?'Any weapon':k==='ATN'?'Any attunement':WEP[k]?WEP[k]+' weapon':ATT[k]?ATT[k][0]:'Combined stats');
 }
 function renderSuggest(ctx){const box=$('tsugg');if(!box)return;const recs=recommendations(ctx,8).slice(0,8);
-  box.innerHTML=recs.length?`<details class="tsugg" ${S.tsuggClosed?'':'open'}><summary><h3>Suggested for this build <small>${recs.length}</small></h3></summary><div class="list">${recs.map(r=>`<div class="sugrow" data-t="${enc(r.t.n)}"><div class="nm"><b>${r.syn.length?'⚡ ':''}${esc(r.t.n)}</b> <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`Synergy with ${esc(r.syn.map(x=>x.o).join(', '))} · `:''}${Math.round(r.share*100)}% of top builds that can take it do${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><button class="mini primary" data-tadd="${enc(r.t.n)}" aria-label="Take ${esc(r.t.n)}">Take</button></div>`).join('')}</div></details>`:''}
+  box.innerHTML=recs.length?`<details class="tsugg" ${S.tsuggClosed?'':'open'}><summary><h3>Suggested for this build <small>${recs.length}</small></h3></summary><div class="list">${recs.map(r=>`<div class="sugrow" data-t="${enc(r.t.n)}"><div class="nm"><b>${r.syn.length?'⚡ ':''}${esc(r.t.n)}</b> <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`Synergy with ${esc(r.syn.map(x=>x.o).join(', '))} · `:''}${Math.round(r.share*100)}% of top builds that can take it do${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${keyOf(r.t.n)?' · <b class="kittxt" title="A talent most builds take once their stats reach it">key talent</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><button class="mini primary" data-tadd="${enc(r.t.n)}" aria-label="Take ${esc(r.t.n)}">Take</button></div>`).join('')}</div></details>`:''}
 function renderTalentChips(){
   const ctx=ctxNow();const cn=counts(ctx.C);renderSuggest(ctx);
   $('tcount').textContent=`${cn.nTal}/${cn.cap} slots`;
@@ -5215,7 +5228,7 @@ function renderResults(res){
   // recommendations
   const ctx=ctxNow();recCache=recommendations(ctx,10);
   $('recsub').textContent=`% of top builds that take it`;
-  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% pick it</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
+  $('recs').innerHTML=recCache.map(r=>`<div class="recrow" data-t="${enc(r.t.n)}"><div class="nm">${r.syn.length?'<span class="syn">⚡</span> ':''}${esc(r.t.n)} <span class="hint">${esc(r.t.c)}</span><small>${r.syn.length?`<span class="syn">Synergy with ${esc(r.syn.map(s=>s.o).join(', '))}</span> · `:''}${esc(fmtReq(r.t.req))}${kitOf(r.t.n)?' · <b class="kittxt">your weapon / attunement</b>':''}${keyOf(r.t.n)?' · <b class="kittxt" title="A talent most builds take once their stats reach it">key talent</b>':''}${r.st.pre?' · <b class="pretxt">take it before the shrine</b>':''}${r.st.k==='close'?' · needs '+esc(r.st.label):''}</small></div><div title="Of the top deepwoken.co builds whose stats allow this talent, the share that take it"><div class="meter"><i style="width:${Math.round(r.share*100)}%"></i></div><span class="hint mono">${Math.round(r.share*100)}% pick it</span></div><button class="mini primary" data-tadd="${enc(r.t.n)}">Take</button></div>`).join('')||'<p class="hint">Nothing new to suggest that fits.</p>';
   // oath fits
   const fits=OATHS.filter(o=>o.n!=='None').map(o=>({o,b:evaluate(best.P,R,oathAltsOf(o))})).sort((x,y)=>(y.b&&!y.b.impossible?y.b.free:-999)-(x.b&&!x.b.impossible?x.b.free:-999));
   $('fits').innerHTML=fits.map(({o,b})=>{const ok=b&&b.free>=0&&!b.impossible;return `<button class="chip" data-oathpick="${enc(o.n)}" aria-pressed="${o.n===S.oath}" style="${ok?'':'opacity:.55'}">${esc(o.n)}<small>${b&&!b.impossible?(b.free>=0?b.free+' points left':(-b.free)+' points over'):'—'}</small></button>`}).join('');
@@ -5540,6 +5553,8 @@ function wizardApply(){
     // two attunements: try 80/80 when the points allow, else keep 80/40
     if(p.attUp&&S.atts[p.attUp]===40&&last&&last.best&&last.best.free>=40){S.atts[p.attUp]=80;const r=compute({starts:6,iters:100,seedP:prevP()});
       if(r.best&&!r.best.impossible&&r.best.free>=0){renderResults(r);notes.push(`${ATT[p.attUp][0]} raised to 80 (the points allow 80/80)`)}else S.atts[p.attUp]=40}
+    if(p.src==='AI build maker'&&!S.manual){const picks=autoPickList(ctxNow(),KEY_T);for(const x of picks){x.pre.forEach(q=>{if(!S.sel.includes(q))S.sel.push(q)});if(!S.sel.includes(x.n))S.sel.push(x.n)}
+      if(picks.length){notes.push(`took ${picks.length} key talent${picks.length>1?'s':''} your stats reach (${picks.slice(0,5).map(x=>x.n).join(', ')}${picks.length>5?'…':''})`);run()}}
     if(addPop){const picks=autoPickList(ctxNow()).slice(0,20);for(const x of picks){x.pre.forEach(q=>{if(!S.sel.includes(q))S.sel.push(q)});if(!S.sel.includes(x.n))S.sel.push(x.n)}if(picks.length)notes.push(`added ${picks.length} popular talents`);const dr=trimToCap();if(dr.length)notes.push(`dropped ${dr.length} to fit the talent cap`);run()}
     else{const dr=trimToCap();if(dr.length){notes.push(`dropped ${dr.length} to fit the talent cap`);run()}}
     renderInputs();
@@ -5738,9 +5753,15 @@ function aiNames(){if(AI_NAMES)return AI_NAMES;
   AI_NAMES=out;return out}
 // talent families people call "paths"
 const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter']];
-const AI_EX=['insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
+const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast','insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
 const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
+const AI_ARCH_ATT=[['FLM',/\b(burn\w*|damage over time|dot|explosions?|explosive|pyro\w*)\b/,'burn'],['ICE',/\b(freez\w*|slows|slowing|crippl\w*)\b/,'freezing / slows'],
+  ['LTN',/\b(stun\w*|lock ?down|zon(e|ing)|crowd control)\b/,'stuns / lockdown'],['WND',/\b(high pressure|pressure)\b/,'pressure'],
+  ['SDW',/\b(ether drain\w*|drain\w* ether|anti ?mage|blind\w*|darkness)\b/,'ether drain / blind'],
+  ['IRN',/\b(armou?r ?(shred\w*|break\w*|pierc\w*|penetrat\w*|manipulat\w*)|shred\w*|high pen\w*|penetration|pen build|metal rods?)\b/,'armor shredding'],
+  ['BLD',/\b(life ?steal\w*|bleed\w*|poison\w*|vampir\w*|drain\w* health)\b/,'lifesteal / blood poison'],
+  ['IRN+BLD',/\b(group fights?|multiple (people|enemies|players)|1 ?v ?[2-9]|outnumbered|multi ?target)\b/,'fighting several people']];
 const AI_STAT=[['STR',/\b(strength|str)\b/],['FTD',/\b(fortitude|fort|ftd)\b/],['AGL',/\b(agility|agi|agl)\b/],['INT',/\b(intelligence|int)\b/],['WLL',/\b(willpower|will|wll)\b/],['CHA',/\b(charisma|cha)\b/]];
 // the number that goes with a stat word: "flame 50" first; "60 flame" only when that number isn't already "lightning 60"
 function aiNumNear(s,re){const w=re.source.replace(/\\b/g,'');let m=s.match(new RegExp('(?:'+w+')\\s*(\\d{1,3})(?!\\d)'));if(m)return Math.max(1,Math.min(100,+m[m.length-1]));
@@ -5767,8 +5788,18 @@ function aiParse(txt,basePreset){
   if(semi||has(/\btank\w*|\bbeefy\b|\bsurviv\w*|\bdurable\b|\bmore health\b|\bhp\b/)){up(p.post,'FTD',50);add('Exoskeleton','To The Finish',...(semi?[]:['Brassneck','Ready or Not','Padded Armor','Steel Scales']));
     p.gear={w:semi?35:20,minhp:semi?550:620};got.push((semi?'semi tanky':'tanky')+' → Fortitude 50 after the shrine, equipment favors health (Fortitude is not pushed higher for gear)')}
   if(has(/\bcharm\w*|\bcharisma\w*|\bcha\b/)){up(p.pre,'CHA',75);add('Charismatic Cast','Tough Love','Lasting Charisma','Manipulator');got.push('charm → Charisma 75')}
-  const mobile=has(/\bgank\w*|\bmobil\w*|\bmovement\b|\bspeed\w*|\bfast\b|\bdodg\w*|\bagile\b|\bagility mantras?\b/);
-  if(mobile){up(p.pre,'AGL',has(/\bvery (fast|mobile)\b/)?60:45);add('Speed Demon','Swift Rebound','Evasive Expert','Kick Off');M.add('Agile Dash');got.push('mobile → Agility 45, Agile Dash and speed talents')}
+  const mobile=has(/\bgank\w*|\bmobil\w*|\bmovement\b|\bspeed\w*|\bfast\b|\bdodg\w*|\bagile\b|\bagility mantras?\b/);const gank=has(/\bgank\w*/);
+  // ganking builds run high Agility (Cheap Shot at 65); other mobile builds 45
+  if(mobile){const a=gank?65:has(/\bvery (fast|mobile)\b/)?60:45;up(p.pre,'AGL',a);add('Speed Demon','Swift Rebound','Evasive Expert','Kick Off',...(gank?['Risky Moves','Ghost','Cheap Shot']:[]));M.add('Agile Dash');got.push(gank?'gank → high Agility (65 for Cheap Shot), Ghost, Agile Dash and speed talents':`mobile → Agility ${a}, Agile Dash and speed talents`)}
+  // archetypes from Infekted's buildmaking guide (May 2026)
+  const shred=has(/\barmou?r ?(shred\w*|break\w*|pierc\w*|penetrat\w*)|\bshred\w*|\bhigh pen\w*|\bpenetration\b|\bpen build\b/);
+  if(shred){up(p.pre,'STR',90);add('Million Ton Piercer','Berserk','Unwavering Resolve','Showstopper','Exposed Durability','Metal Thief','Piercing Metal');got.push('armor shredding / high penetration → Strength 90 + Ironsing (Million Ton Piercer removes the PEN cap)')}
+  if(has(/\bstealth\w*|\bassassin\w*|\bsneak\w*|\binvisib\w*/)){up(p.pre,'AGL',40);add('Risky Moves','Swift Rebound','Evasive Expert','Ghost');got.push('stealth → Agility 40 for Ghost (Ghost and the Butterfly talents are taken before the shrine)')}
+  if(has(/\bblock ?break\w*|\bguard ?break\w*/)){up(p.pre,'STR',40);add('Bulldozer','Unwavering Resolve','Showstopper');got.push('block breaking → Strength 40')}
+  if(has(/\bsupport\w*|\bhealer\b|\bbuff (my )?(allies|team)\b/)){up(p.pre,'CHA',55);add('Charismatic Cast');got.push('support → Charisma 55 (the whole Charm Caster tree)')}
+  if(has(/\balchem\w*|\bcrafting\b|\bcrafter\b|\bpotions?\b/)){up(p.pre,'INT',45);add('Master Craftsman');got.push('alchemy / crafting → Intelligence 45 (Master Craftsman)')}
+  // Fortitude: most builds stop at 50; 90 only when Reinforced Armor is asked for
+  if(has(/\breinforced armou?r\b/)){p.post.FTD=Math.max(p.post.FTD||0,90);REQ.add('Reinforced Armor');got.push('Reinforced Armor → Fortitude 90 after the shrine (only because you asked; most builds stop at 50)')}
   if(pvp)add('Showstopper','Exoskeleton');if(pve)add('Thresher Claws','Bloodiron Spirit','Carnivore');
   if(has(/\bsmart\b|\bint build\b|\bintelligence build\b/)){up(p.pre,'INT',75);add('Neuroplasticity','Eureka','Approaching Singularity');got.push('Intelligence 75')}
   if(has(/\bbrute\b|\bstrength build\b|\bstr build\b|\bhard hitting\b/)){up(p.pre,'STR',75);add('Unwavering Resolve','Showstopper');got.push('Strength 75')}
@@ -5780,6 +5811,10 @@ function aiParse(txt,basePreset){
   if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base)p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
   // attunements in order of mention (words that are part of a name don't count)
   const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
+  // play-style words that mean an attunement ("burn" = Flamecharm, "armor shredding" = Ironsing…), after the ones named outright
+  if(!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){const extra=[];for(const [k,re,why] of AI_ARCH_ATT){const m=sAtt.match(re);if(!m)continue;
+    for(const kk of k.split('+'))if(!at.some(x=>x.k===kk)&&!extra.some(x=>x.k===kk))extra.push({k:kk,i:1000+m.index,re:/(?!)/,why})}
+    if(extra.length){at.push(...extra);got.push(extra.map(x=>`${x.why} → ${ATT[x.k][0]}`).join(', '))}}
   // attunements only when asked for (a mage too): preset attunements are not carried in
   if(!at.length&&!basePreset)p.atts={};
   // one main attunement (the first named): 80, or 100 for a mage. Two: 80/80 for a mage or when asked ("dual",
@@ -5800,6 +5835,7 @@ function aiParse(txt,basePreset){
     got.push('weapon '+w.n+(need?` (needs ${WEP[p.wtype]} ${need})`:'')+(wAtt.length?` (needs ${wAtt.map(([k,v])=>ATT[k][0]+' '+v).join(', ')}${WEPS.some(k=>k in w.req.s)?'':', no weapon points'})`:''))}
   if(caster&&!Object.keys(p.atts).length)got.push('no attunement named: add one below (a mage needs one), or say e.g. "mage with flamecharm"');
   const wm=AI_WEP.find(([k,re])=>re.test(sAtt));
+  if(shred&&!wm&&!wN&&!caster){p.wtype='HVY';p.wtarget=Math.max(90,p.wtarget||0);got.push('Heavy weapon 90 (highest penetration)')}
   if(wm&&!wN){p.wtype=wm[0];const n=aiNumNear(sAtt,wm[1]);p.wtarget=n||(wm[0]==='HVY'?90:80);got.push(`${WEP[wm[0]]} weapon ${p.wtarget}`)}else if(caster&&!wN){p.wtarget=0;got.push('no weapon points (caster)')}
   const oN=by('outfit')[0];if(oN){p.outfit=oN;got.push('outfit '+oN)}
   const gN=by('gear');if(gN.length){p.gearItems=gN;got.push('equipment '+gN.join(', '))}

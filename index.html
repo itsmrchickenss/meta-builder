@@ -525,7 +525,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.30</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.31</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -3890,7 +3890,12 @@ True Shatter|Landing a critical shatters your opponent, ridding them of their sp
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
 Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
-<script type="text/plain" id="dwvers">## v0.30 | 2026-10-26
+<script type="text/plain" id="dwvers">## v0.31 | 2026-10-26
+- Talents that get weaker when the shrine drops you below a stat are now counted: Million Ton Piercer and Ether Overdrive give their full PEN only at 90 Strength / Intelligence, Cheap Shot needs 65 Agility for its full PEN and Overflowing Dam 40 Intelligence for its full damage. Damage numbers and the optimizer use the reduced values.
+- A warning lists picked talents that end up below their full-strength stat after the shrine (To The Finish under 50 Fortitude, Reinforced Armor under 90, and others from the wiki).
+- The shrine help now says it plainly: attributes and weapon stats lose at most 25, but attunements have no floor (100 can drop to about 20).
+
+## v0.30 | 2026-10-26
 - Key talents for each stat (from Infekted's buildmaking guide) are favored everywhere: Optimize, Auto-pick and Recommended talents (marked "key talent"). Builds from the AI build maker take the key talents their stats reach.
 - AI build maker understands play styles: "armor shredding" or "high penetration" means high Strength + Ironsing on a heavy weapon; "gank" means high Agility (65 for Cheap Shot) with Ghost; "stealth" means Agility 40 for Ghost; also block breaking, support, alchemy, burn, stuns, slows, ether drain, lifesteal and fighting several people.
 - Fortitude stays at 50 unless you ask for Reinforced Armor, which plans Fortitude 90.
@@ -4027,6 +4032,15 @@ const GENERIC={HVY:{d:24,p:.05,sc:{HVY:8}},MED:{d:20,p:.1,sc:{MED:6.5}},LHT:{d:1
 const DMG_MODS={'Manipulator':{dmg:.2},'Ardour Scream':{dmg:.125},'Pressure Break':{dmg:.25},'Charged Return':{dmg:.1},'Matador':{dmg:.2},'Lose Your Mind':{dmg:.15},'Nullifying Clarity':{dmg:.1},'Overflowing Dam':{dmg:.1},'Tough Love':{dmg:.1},'Flame Within':{dmg:.1},'Last Resort':{dmg:.05},'Exposed Durability':{dmg:.1},'Spinning Swordsman':{dmg:.15},"Wyvern's Claw":{dmg:.1},'Reshape and Remold':{dmg:.05},'Underdog':{dmg:.04},'Rush Hour':{dmg:.15},'Electrify':{dmg:.1},'Amplified Rage':{dmg:.1},'Shade Devour':{dmg:.25},'Taunt':{dmg:.2},'Reinforce':{dmg:.05},
   'Piercing Will':{pen:.15},'Cult of Personality':{pen:.15},'Thresher Claws':{pen:.1},'Cheap Shot':{pen:.1,mult:1},'Million Ton Piercer':{pen:.05,uncap:1},'Ether Overdrive':{pen:.05,uncap:1},'After Cut':{dmg:.1,unique:1}};
 const ARMOR=.3;
+// bonuses that shrink when the final stat is below the talent's full-strength value (wiki Talents page, Oct 2026)
+const SCALE_MOD={'Million Ton Piercer':(m,f)=>({...m,pen:m.pen*Math.min(1,(f.STR||0)/90)}),'Ether Overdrive':(m,f)=>({...m,pen:m.pen*Math.min(1,(f.INT||0)/90)}),
+  'Cheap Shot':(m,f)=>({...m,pen:Math.max(.0722,m.pen-.0011*Math.max(0,65-(f.AGL||0)))}),'Overflowing Dam':(m,f)=>({...m,dmg:Math.max(.06875,m.dmg-.00125*Math.max(0,40-(f.INT||0)))})};
+// talents that keep working below their requirement but get weaker (stat → value for the full effect; null = the talent's own requirement)
+const WEAK_T={'To The Finish':{FTD:50},'Reinforced Armor':{FTD:90},'Collapsed Lung':{STR:100},'Defensive Reprisal':null,'Dancing Guard':null,'Down to your Level':{FTD:60},'Knuckle Guard':null,
+  'Overflowing Dam':{INT:40},'Cornered Fool':{CHA:85},'Alloyblood':{IRN:100},'Twelve Steps Ahead':{INT:80},'Broken Ankles':{STR:70},'Unwavering Resolve':{STR:40},'Million Ton Piercer':{STR:90},
+  'Ether Overdrive':{INT:90},'Foolish Outburst':{INT:50},'Cheap Shot':{AGL:65},'Donation Drive':{CHA:60},'Audacity':{CHA:75,STR:25}};
+function weakAfterShrine(final,names){const out=[];for(const n of names){if(!(n in WEAK_T))continue;const t=TBY.get(n);const full=WEAK_T[n]||(t&&t.req&&t.req.s)||{};
+  const low=Object.entries(full).filter(([k,v])=>ALL.includes(k)&&(final[k]||0)<v).map(([k,v])=>[k,v,final[k]||0]);if(low.length)out.push({n,low})}return out}
 const MDMG=new Map();
 for(const l of document.getElementById('dwmdmg').textContent.split('\n')){if(!l.trim())continue;const [n,lv,sc]=l.split('|');const s={};(sc||'').split(' ').filter(Boolean).forEach(x=>{const m=x.match(/^([A-Z]{3})([\d.]+)$/);if(m)s[m[1]]=+m[2]});MDMG.set(n,{lv:lv.split(',').map(Number),sc:s})}
 // mantra level = 1 + floor(attunement/20), max 5; damage = level damage x (1 + sum(scaling/10 x stat/100)) (deepwoken.co)
@@ -4102,7 +4116,7 @@ function damageOf(final,names,wname){
   for(const [k,c] of Object.entries(w.sc)){const v=k==='MND'?Math.max(final.INT,final.WLL,final.CHA):k==='BOD'?Math.max(final.STR,final.FTD,final.AGL):(final[k]||0);h+=v*c}
   const pf=tr('PRO');const scaled=w.d*(1+.75*h*(1+.065*pf)/1000);
   let m=0,uniq=0,pen=0,mult=1,uncap=false;const used=[];
-  for(const n of names){const md=DMG_MODS[n];if(!md)continue;used.push(n);if(md.unique){uniq+=md.dmg||0;continue}m+=md.dmg||0;if(md.pen){if(md.mult)mult+=md.pen;else pen+=md.pen}if(md.uncap)uncap=true}
+  for(const n of names){let md=DMG_MODS[n];if(!md)continue;if(SCALE_MOD[n])md=SCALE_MOD[n](md,final);used.push(n);if(md.unique){uniq+=md.dmg||0;continue}m+=md.dmg||0;if(md.pen){if(md.mult)mult+=md.pen;else pen+=md.pen}if(md.uncap)uncap=true}
   if(S.oath==='Soulbreaker')m+=.025;
   const mRaw=m;if(m>.25){m=.25+(m-.25)/2;if(m>.5)m=.5}
   const penRaw=w.p+(final.STR||0)/10*.01+pen+(en.pen||0)+.025*pf;const cap=uncap?1:.5;const pe=Math.min(cap,Math.min(penRaw,1)*mult);
@@ -5011,7 +5025,7 @@ function renderFinal(){
     <div class="s1"><span class="t">① Before shrine</span><span class="big">${b.preSum}<small>pts · Power ${preP}</small></span>
       <div class="pwbar" title="Points before the shrine; the mark is Power ${SHRINE_PWR}, where the Shrine of Order unlocks"><i style="width:${Math.min(100,b.preSum/Math.max(need*1.6,b.preSum)*100)}%"></i><b style="left:${need/Math.max(need*1.6,b.preSum)*100}%"></b></div>
       <span class="sub">${b.noShrine?`<span class="bad">Below Power ${SHRINE_PWR}: no shrine.</span> These stats carry straight through.`:`Shrine unlocks at Power ${SHRINE_PWR} (${need} pts) <span class="good">✓</span>`}</span></div>
-    <div class="s2"><span class="t">② Shrine of Order</span>${b.noShrine?'<span class="big">—</span><span class="sub">Not used.</span>':`<span class="big ${gain>0?'good':''}">${gain==null?'—':(gain>0?'+':'')+gain}<small>pts vs no shrine</small></span><span class="sub">${down.length?`Lowers <b>${down.map(k=>esc(statName(k).replace(' Weapon',' wpn'))).slice(0,3).join(', ')}</b>${down.length>3?'…':''}`:'Changes nothing'}${upk.length?`; raises <b>${upk.map(k=>esc(statName(k).replace(' Weapon',' wpn'))).slice(0,3).join(', ')}</b>${upk.length>3?'…':''}`:''}</span>`}</div>
+    <div class="s2" title="Attributes and weapon stats lose at most 25 to the shrine. Attunements have no floor: they can drop all the way to the average (100 can become about 20)."><span class="t">② Shrine of Order</span>${b.noShrine?'<span class="big">—</span><span class="sub">Not used.</span>':`<span class="big ${gain>0?'good':''}">${gain==null?'—':(gain>0?'+':'')+gain}<small>pts vs no shrine</small></span><span class="sub">${down.length?`Lowers <b>${down.map(k=>esc(statName(k).replace(' Weapon',' wpn'))).slice(0,3).join(', ')}</b>${down.length>3?'…':''}`:'Changes nothing'}${upk.length?`; raises <b>${upk.map(k=>esc(statName(k).replace(' Weapon',' wpn'))).slice(0,3).join(', ')}</b>${upk.length>3?'…':''}`:''}</span>`}</div>
     <div class="s3"><span class="t">③ After shrine</span><span class="big">Power ${pw}<small>final</small></span><span class="sub"><b class="${b.free<0?'bad':''}">${b.impossible?'—':b.free}</b> points left · next Power ${next==null?'max':'in <b>'+next+'</b>'}</span></div>
   </div>`+(()=>{const ks=ALL.filter(k=>(b.P[k]||0)>0);if(!ks.length||b.noShrine)return '';
     const sh=k=>({STR:'STR',FTD:'FTD',AGL:'AGL',INT:'INT',WLL:'WLL',CHA:'CHA'})[k]||statName(k).replace(' Weapon',' wpn');
@@ -5034,7 +5048,7 @@ function renderFinal(){
   const nZero=ALL.filter(zero).length;
   $('bstats').innerHTML=`<div class="scroll"><table class="stbl ${S.statsAll||man?'all':''}">${head}${secs.map(([t,ks])=>`<tr class="sec ${ks.every(zero)?'empty':''}"><th colspan="${cols}">${t}</th></tr>`+ks.map(row).join('')).join('')}</table></div>
    ${man||!nZero?'':`<div class="stfoot"><button class="linkbtn" data-stall="1">${S.statsAll?'Hide unused stats':`Show all stats (${nZero} at 0 hidden)`}</button></div>`}
-   <p class="hint xh" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first (type to lock). <b>Final</b> = where it ends (type to lock it exactly; clear the box to let the optimizer choose). Green = raised after the shrine, red = lowered by the shrine.'}</p>`;
+   <p class="hint xh" style="margin:6px 0 0">${man?'Manual mode: you set every number. Final can\'t go below what the shrine leaves.':'Grey numbers are what the optimizer picked; type over one to lock it. <b>Before</b> = what you level to first (type to lock). <b>Final</b> = where it ends (type to lock it exactly; clear the box to let the optimizer choose). Green = raised after the shrine, red = lowered by the shrine. The shrine takes at most 25 from an attribute or weapon stat, but attunements have no floor: 100 can drop to about 20.'}</p>`;
 }
 function renderPicked(){
   const C=last?last.R.C:closure();const b=last&&last.best;const cn=counts(C);
@@ -5190,6 +5204,7 @@ function renderResults(res){
   if(best.manual&&best.unmet.length)note+=`<div class="callout warn">Not reached with these stats: ${esc(best.unmet.map(u=>u.n+' (+'+u.c+')').join(', '))}.</div>`;
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
   if(best.free>0&&!best.impossible&&!best.manual)note+=`<div class="callout">${best.free} points left. Optimize with “spend leftover” ticked to pour them into damage, or add a recommended talent.</div>`;
+  {const wk=best&&!best.impossible?weakAfterShrine(best.final,[...C.T.keys()]):[];if(wk.length)note+=`<div class="callout warn">Weaker after the shrine: ${wk.map(x=>`${esc(x.n)} (${x.low.map(([k,v,f])=>`${esc(statName(k))} ${f}, full at ${v}`).join(', ')})`).join('; ')}. These still work below their requirement, just less${wk.some(x=>SCALE_MOD[x.n])?'; the damage numbers already count it':''}.</div>`}
   $('note').innerHTML=note;
   const rows=[...new Set([...ATTR,S.wtype,...Object.keys(S.atts),...ALL.filter(k=>!ATTR.includes(k)&&(best.final[k]>0||best.P[k]>0))])];
   const color=k=>ATT[k]?`var(${ATT[k][1]})`:WEP[k]?'var(--bone)':'var(--brass)';

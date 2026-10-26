@@ -1,3 +1,8 @@
+## v0.31 | 2026-10-26
+- Talents that get weaker when the shrine drops you below a stat are now counted: Million Ton Piercer and Ether Overdrive give their full PEN only at 90 Strength / Intelligence, Cheap Shot needs 65 Agility for its full PEN and Overflowing Dam 40 Intelligence for its full damage. Damage numbers and the optimizer use the reduced values.
+- A warning lists picked talents that end up below their full-strength stat after the shrine (To The Finish under 50 Fortitude, Reinforced Armor under 90, and others from the wiki).
+- The shrine help now says it plainly: attributes and weapon stats lose at most 25, but attunements have no floor (100 can drop to about 20).
+
 ## v0.30 | 2026-10-26
 - Key talents for each stat (from Infekted's buildmaking guide) are favored everywhere: Optimize, Auto-pick and Recommended talents (marked "key talent"). Builds from the AI build maker take the key talents their stats reach.
 - AI build maker understands play styles: "armor shredding" or "high penetration" means high Strength + Ironsing on a heavy weapon; "gank" means high Agility (65 for Cheap Shot) with Ghost; "stealth" means Agility 40 for Ghost; also block breaking, support, alchemy, burn, stuns, slows, ether drain, lifesteal and fighting several people.

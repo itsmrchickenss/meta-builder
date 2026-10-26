@@ -440,7 +440,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.25</small></h1>
+    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.26</small></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <details id="lookbox" style="min-width:min(100%,280px)"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.9 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>Customize look</summary>
@@ -5439,13 +5439,16 @@ const AI_EX=['insanity build with flamecharm','semi tanky heavy weapon bossraid'
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
 const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
 const AI_STAT=[['STR',/\b(strength|str)\b/],['FTD',/\b(fortitude|fort|ftd)\b/],['AGL',/\b(agility|agi|agl)\b/],['INT',/\b(intelligence|int)\b/],['WLL',/\b(willpower|will|wll)\b/],['CHA',/\b(charisma|cha)\b/]];
-function aiNumNear(s,re){const m=s.match(new RegExp('(\\d{1,3})\\s*(?:'+re.source.replace(/\\b/g,'')+')'))||s.match(new RegExp('(?:'+re.source.replace(/\\b/g,'')+')\\s*(\\d{1,3})'));return m?Math.max(1,Math.min(100,+m[1])):null}
+// the number that goes with a stat word: "flame 50" first; "60 flame" only when that number isn't already "lightning 60"
+function aiNumNear(s,re){const w=re.source.replace(/\\b/g,'');let m=s.match(new RegExp('(?:'+w+')\\s*(\\d{1,3})(?!\\d)'));if(m)return Math.max(1,Math.min(100,+m[m.length-1]));
+  const statWord=/(?:flame ?charm\w*|flame|fire|frost ?draw\w*|frost|ice|thunder ?call\w*|thunder|lightning|electric\w*|gale ?breath\w*|wind|gale|shadow ?cast\w*|shadow|iron ?sing\w*|metal|iron|blood ?rend\w*|blood|strength|str|fortitude|fort|ftd|agility|agi|agl|intelligence|int|willpower|will|wll|charisma|cha|heavy|medium|light|weapon)\s*$/;
+  const g=new RegExp('(\\d{1,3})\\s*(?:'+w+')','g');let x;while((x=g.exec(s))){if(!statWord.test(s.slice(0,x.index)))return Math.max(1,Math.min(100,+x[1]))}return null}
 const cheapAlt=alts=>alts.slice().sort((a,b)=>altCost(a,{})-altCost(b,{}))[0];
 function aiParse(txt,basePreset){
   const s=nrm(txt);const got=[];const has=re=>re.test(s);
   // the attunement words inside names ("flame worshipper", "orbital ice") must not count as attunement picks on their own
   // an attunement word ("flamecharm") is not a typo of a talent ("Flamecharmer")
-  const found=findNames(s,aiNames()).filter(h=>!(h.n.k==='talent'&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+s.slice(h.at,h.end)+' '))));let sAtt=s;for(const h of found)sAtt=sAtt.slice(0,h.at)+' '.repeat(h.end-h.at)+sAtt.slice(h.end);
+  const found=findNames(s,aiNames()).filter(h=>!((h.n.k==='talent'||h.n.k==='mantra')&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+s.slice(h.at,h.end)+' '))));let sAtt=s;for(const h of found)sAtt=sAtt.slice(0,h.at)+' '.repeat(h.end-h.at)+sAtt.slice(h.end);
   const by=k=>found.filter(h=>h.n.k===k).map(h=>h.n.n);
   let base=basePreset||null;const pvp=has(/\bgank\w*|\bpvp\b|\bduel\w*|\barena\b|\bchime\b/);const pve=has(/\bboss ?raid\w*|\bbosses\b|\bboss\b|\bpve\b/);
   if(!base){if(pve){base=PRESETS.find(p=>p.n===(has(/\b(mage|caster|no weapon)\b/)?'Bossraid Mage':'Bossraid'));got.push(base.n+' starting point'+(pvp?' (PvE and ganking)':''))}
@@ -5498,10 +5501,11 @@ function aiParse(txt,basePreset){
   const oN=by('outfit')[0];if(oN){p.outfit=oN;got.push('outfit '+oN)}
   const gN=by('gear');if(gN.length){p.gearItems=gN;got.push('equipment '+gN.join(', '))}
   // talent paths ("steam path") and named talents / mantras: these are must-haves
+  const pathT=[];
   for(const [kw,cat] of AI_PATHS){if(new RegExp(`\\b(?:${kw})\\w*\\s+(?:path|tree|talents?|build)\\b|\\b${cat.toLowerCase()}\\b`).test(s)){
     const ts=DB.T.filter(t=>t.c===cat&&t.k&&t.r!=='Q'&&!t.req.q&&!isAvoid(t.n));
     // keep the path's own talents that don't need an attunement you didn't ask for (beyond what the path itself needs)
-    ts.forEach(t=>REQ.add(t.n));got.push(`${cat} path: ${ts.map(t=>t.n).join(', ')}`)}}
+    ts.forEach(t=>{REQ.add(t.n);pathT.push(t.n)});got.push(`${cat} path: ${ts.map(t=>t.n).join(', ')}`)}}
   const tN=by('talent').filter(n=>!isAvoid(n));tN.forEach(n=>REQ.add(n));if(tN.length)got.push('talents: '+tN.join(', '));
   const mN=by('mantra').filter(n=>!oathTagOf(n));mN.forEach(n=>M.add(n));if(mN.length)got.push('mantras: '+mN.join(', '));
   // whatever the must-haves need: attunements are raised to their level, oath requirements are planned in
@@ -5514,6 +5518,15 @@ function aiParse(txt,basePreset){
       if(keep.length)got.push(`Silentheart warning: the ${keep.map(k=>ATT[k][0]+' '+p.atts[k]).join(', ')} only unlocks ${wa.n}; Silentheart can't use those points for mantras`);
       for(const k of Object.keys(p.atts))if(!keep.includes(k))delete p.atts[k]}}
   if(p.oath!=='Silentheart')for(const [k,v] of Object.entries(needAtt)){if((p.atts[k]||0)<v){p.atts[k]=v;got.push(`${ATT[k][0]} ${v} for your picks`)}}
+  // a path that needs other attunements (steam = Flamecharm + Frostdraw…): those secondary attunements go only as high as
+  // the talents you asked for need, and the main attunement is the first one named that the path doesn't need
+  {const pathNeed={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pathNeed[k]=Math.max(pathNeed[k]||0,v)}
+    if(Object.keys(pathNeed).length&&p.oath!=='Silentheart'){const explicit=new Set(at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k));
+      const mainX=at.find(x=>!(x.k in pathNeed))||at[0];const main=mainX&&mainX.k;
+      if(main&&!explicit.has(main))p.atts[main]=Math.max(p.atts[main]||0,caster?100:80);
+      const low=[];for(const k of Object.keys(pathNeed)){if(k===main||explicit.has(k))continue;const v=Math.max(needAtt[k]||0,pathNeed[k]);if(p.atts[k]!==v){p.atts[k]=v;low.push(`${ATT[k][0]} ${v}`)}}
+      if(p.attUp&&p.attUp in pathNeed)delete p.attUp;
+      if(low.length)got.push(`path attunements kept to what the talents need: ${low.join(', ')}${main?` (main ${ATT[main][0]} ${p.atts[main]})`:''}`)}}
   if(mobile&&p.oath!=='Silentheart'){const mob=DB.M.filter(m=>m.c==='M'&&m.ty==='N'&&m.at.length===1&&ATT[m.at[0]]&&m.at[0] in p.atts).sort((a,b)=>bestCost(reqAlts(a.req,false),{})-bestCost(reqAlts(b.req,false),{}))[0];if(mob){M.add(mob.n);got.push('mobility mantra '+mob.n)}}
   if(p.oath&&p.oath!=='__auto'&&p.oath!=='None'){const o=findO(p.oath);const oa=oathAltsOf(o);const a=oa&&cheapAlt(oa);
     if(a){const parts=Object.entries(a.min).map(([k,v])=>`${statName(k)||k} ${v}`);for(const [k,v] of Object.entries(a.min))if(ATTR.includes(k))up(p.post,k,v);

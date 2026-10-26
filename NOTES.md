@@ -1,6 +1,6 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 24, 2026 (v0.25).
+Everything needed to pick this project back up. Last updated October 25, 2026 (v0.26).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Links
@@ -23,7 +23,7 @@ The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.25 now). The owner sets **v1.0 at release**. Bump with every shipped change. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.26 now). The owner sets **v1.0 at release**. Bump with every shipped change. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Owner's rules and preferences (keep these)
 
@@ -39,6 +39,7 @@ Pre-release numbering is **v0.x** (v0.25 now). The owner sets **v1.0 at release*
 - Keep the oath the person names; otherwise use the starting point's default.
 - A mage gets **no attunement unless asked**.
 - Attunements: one → 80 (mage 100); two → 80/40, or 80/80 when the points allow (mage or "dual" → 80/80); three+ → one main at 80 (mage 100), the rest 40.
+- A talent path that needs other attunements (steam = Flamecharm + Frostdraw): those secondary attunements go **only as high as the requested talents need** (e.g. "lightning steam path" → Thundercall 80, Flamecharm 30, Frostdraw 30). The main attunement is the first one named that the path doesn't need. Numbers the person types always win ("flame 50").
 - Silentheart makes attunement points useless: never auto-pick it for attunement or mage builds; warn when a weapon (Hero's Blade) still needs attunement.
 - A new build must not inherit anything from the previous one (required talents, equipment, enchant, caps).
 - Saintsworn requirements, talent paths (steam = Vaporborne…), gank = mobile, semi-tanky are understood.
@@ -82,7 +83,7 @@ Pre-release numbering is **v0.x** (v0.25 now). The owner sets **v1.0 at release*
 | `src/data/gear.txt` | `#E` equipment, `#O` outfits (incl. non-master outfits with talents), `#OT`, `#TD`. |
 | `src/data/tdesc.txt` | Talent descriptions. |
 | `tests/core-test.js` | Node check: every preset optimizes within budget and cap, with and without mantras. |
-| `tests/browser/*.py` | Playwright checks: layout, stress_optimize (random over-budget builds), presets_import, ai_maker, traits, screenshot_parse, talents_tab, adjustments, talent_cap, bug_report. |
+| `tests/browser/*.py` | Playwright checks: layout, ai_paths, stress_optimize (random over-budget builds), presets_import, ai_maker, traits, screenshot_parse, talents_tab, adjustments, talent_cap, bug_report. |
 | `tests/fixtures/dwco-build.json` | A real deepwoken.co build (with traits) for import tests. |
 | `tools/formulas/` | `dump.js` (exports data from index.html) + `build.py` (writes the workbook). |
 | `docs/Meta Builder formulas.xlsx` | The formulas workbook. |
@@ -150,3 +151,4 @@ Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 
 - v0.23: renamed to v0.x; compact sticky bar; search over descriptions.
 - v0.24: weapon/attunement talent priority; Browse/Avoided on the right.
 - v0.25: traits (Vitality, Erudition, Proficiency, Songchant); formulas workbook.
+- v0.26: path attunements kept to the minimum the path needs; "flame 50"-style numbers read correctly; attunement words never read as near-miss talent/mantra names.

@@ -27,7 +27,7 @@ The handoff page (a private Claude artifact) has this same information for a cha
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.32 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: +0.01, a new entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players), pushed to this repo (owner's request, October 26, 2026). The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.32 now). The owner sets **v1.0 at release**. Each release is a new version (+0.01) with an entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players). **Releases happen only when the owner says so** (October 26, 2026: fewer updates, higher quality): work goes on the `next` branch under a `## vX | unreleased` entry, and is merged into `main` (which updates the website, the artifact and the desktop downloads) only on the owner's word. The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Desktop app and web server (v0.32+)
 

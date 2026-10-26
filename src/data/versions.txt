@@ -1,3 +1,6 @@
+## v0.33 | unreleased
+- Starting presets (with the AI build maker) are back at the top of the Stats tab, open by default. Fold them away and they stay folded.
+
 ## v0.32 | 2026-10-26
 - Meta Builder is now a desktop app for Mac and Windows: download it from the GitHub Releases page. It works like the website and keeps your builds, presets and theme.
 - It also comes with its own small web server, so the planner can be hosted on any server later (with Docker or plain Node.js).

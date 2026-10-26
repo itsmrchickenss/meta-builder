@@ -1,11 +1,11 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 26, 2026 (v0.28).
+Everything needed to pick this project back up. Last updated October 26, 2026 (v0.29).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Starting a new chat
 
-The handoff page (a private Claude artifact) has this same information for a chat that isn't attached to the repo: https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3 (regenerate with `python3 tools/handoff.py` and publish `dist/handoff.html` to it after updating this file). In a new chat, attach the repo `itsmrchickenss/meta-builder` (or paste the handoff link) and say what to change. Claude reads `CLAUDE.md` and this file first.
+The handoff page (a private Claude artifact) has this same information for a chat that isn't attached to the repo: https://claude.ai/artifact/YBSQSo98nCQC84rkSZVZE3 (regenerate with `python3 tools/handoff.py` and publish `dist/handoff.html` to it only when the owner asks). In a new chat, attach the repo `itsmrchickenss/meta-builder` (or paste the handoff link) and say what to change. Claude reads `CLAUDE.md` and this file first.
 
 ## Links
 
@@ -22,12 +22,12 @@ The handoff page (a private Claude artifact) has this same information for a cha
 2. `python3 src/build.py` → writes `index.html` (website) and `dist/meta-builder.html` (artifact).
 3. `node tests/core-test.js` → every preset, with and without 6 mantras, must say `ok` (fits budget and talent cap).
 4. Browser checks (Playwright + Chromium are preinstalled): `python3 tests/browser/layout.py` (no sideways scroll at 1280/390, no console errors) plus the others in `tests/browser/` that touch what changed.
-5. Bump the version (`<small class="ver">` in the template), commit with the `Co-Authored-By` / `Claude-Session` trailers, push, publish the artifact.
+5. Add the new version at the top of `src/data/versions.txt` (it sets the badge and the in-app Version history), commit with the `Co-Authored-By` / `Claude-Session` trailers, push, publish the artifact.
 6. If formulas or data changed: `node tools/formulas/dump.js && python3 tools/formulas/build.py`, then recalc the workbook (xlsx skill `recalc.py`), commit `docs/Meta Builder formulas.xlsx`.
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.28 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: bump by 0.01, add a line to the version history below, and push it to this repo (owner's request, October 26, 2026). (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.29 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: +0.01, a new entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players), pushed to this repo (owner's request, October 26, 2026). The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is not refreshed per version, only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Owner's rules and preferences (keep these)
 
@@ -148,14 +148,6 @@ Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 
 - Hover cards don't show on phones (Browse talents shows descriptions).
 - Refreshing data: pull again from deepwoken.co with the endpoints above (from a deepwoken.co page) and regenerate `src/data/*.txt` in the same formats.
 
-## Version history (short)
+## Version history
 
-- v1.12–v1.16: version badge; AI builder carry-over/Silentheart/Hero's Blade fixes; four tabs with one before/after stats table; Import box, stats-only presets, Fortitude rule; Elder/Enmity and Brick Wall presets.
-- v1.17–v1.19: deepwoken.co bookmark opens the site with the build; editable finals, PRE badges, help-mode Take buttons, Optimize always fits, equipment 500 HP / 50% armor; slider trades stats for talents.
-- v1.20–v1.23: Import tab with screenshot builds; attunement focus rules; bug/suggestion reports; max-talent opt-in; Adjustments.
-- v0.23: renamed to v0.x; compact sticky bar; search over descriptions.
-- v0.24: weapon/attunement talent priority; Browse/Avoided on the right.
-- v0.25: traits (Vitality, Erudition, Proficiency, Songchant); formulas workbook.
-- v0.26: path attunements kept to the minimum the path needs; "flame 50"-style numbers read correctly; attunement words never read as near-miss talent/mantra names.
-- v0.27: AI build maker asks follow-up questions (attunement focus incl. 3 attunements, weapon type, oath, how tanky); "glass cannon" understood.
-- v0.28: Optimize build shows three plans to pick from (attunement, weapon, talents focus; Balanced when no attunement is ticked) with damage, talent and stat changes vs the current build. Decluttered: long explanations (`.xh`) only show in Help mode (now beside Customize look), presets folded below Stats, optimizer checkboxes and stat limits/avoid folded. Pre-shrine: before/shrine/after strip with power bar and points saved, copyable "Level first" plan (1-point tags grouped), shrine column shows each stat's change, stats at 0 hidden behind a toggle.
+The full list lives in `src/data/versions.txt` (shown in the app when you click the version). It is the only copy; don't repeat it here.

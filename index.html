@@ -35,6 +35,17 @@ body{background:var(--abyss);color:var(--bone);font-family:var(--f-body);font-si
   background-image:radial-gradient(1200px 500px at 70% -10%, var(--glow) 0%, transparent 60%);}
 .wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 header h1 .ver{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;color:var(--dim);margin-left:8px;vertical-align:middle;font-weight:400}
+button.ver{background:transparent;border:1px solid var(--line);border-radius:999px;padding:2px 9px;cursor:pointer;line-height:1.4}
+button.ver:hover,button.ver:focus-visible{color:var(--brass);border-color:var(--brass)}
+dialog#vers{background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:8px;padding:0;width:min(620px,calc(100% - 24px));max-height:calc(100vh - 24px)}
+dialog#vers::backdrop{background:rgba(0,0,0,.6)}
+.verlist{display:flex;flex-direction:column;gap:14px;max-height:62vh;overflow:auto;padding-right:4px}
+.verent{border-left:3px solid var(--line);padding:2px 0 2px 12px}
+.verent.cur{border-left-color:var(--brass)}
+.verent h3{display:flex;align-items:baseline;gap:10px;margin:0 0 4px;font-family:var(--f-mono);font-size:14px;letter-spacing:0;text-transform:none;color:var(--bone)}
+.verent h3 small{color:var(--dim);font-size:11.5px;font-weight:400}
+.verent h3 .now{font-family:var(--f-body);font-size:10.5px;color:var(--brass-ink);background:var(--brass);border-radius:999px;padding:1px 7px;font-weight:700}
+.verent ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:13.5px;line-height:1.45}
 header h1{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,3.6vw,38px);margin:0;letter-spacing:.02em;text-wrap:balance}
 header h1 span{color:var(--brass)}
 header p{margin:6px 0 0;color:var(--dim);max-width:74ch}
@@ -514,7 +525,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><small class="ver" title="Meta Builder version">v0.28</small></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.29</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -919,6 +930,12 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   <div class="opbar" id="optpick-bar"><i></i></div>
   <div class="opcards" id="optpick-cards"></div>
   <div class="wizact"><button value="cancel" formnovalidate>Keep my current build</button></div>
+</form></dialog>
+<dialog id="vers" aria-labelledby="vers-title"><form method="dialog" class="dlgform">
+  <h2 id="vers-title">Version history</h2>
+  <p class="hint" style="margin:0">Every update to Meta Builder, newest first. Before v0.23 versions were numbered v1.x.</p>
+  <div class="verlist" id="verlist"></div>
+  <div class="wizact"><button value="cancel" class="primary">Close</button></div>
 </form></dialog>
 <dialog id="ai" aria-labelledby="ai-title"><form method="dialog" id="aiform" class="dlgform">
   <h2 id="ai-title">✨ AI build maker</h2>
@@ -3873,6 +3890,80 @@ True Shatter|Landing a critical shatters your opponent, ridding them of their sp
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
 Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
+<script type="text/plain" id="dwvers">## v0.29 | 2026-10-26
+- Click the version next to the title to see this version history.
+
+## v0.28 | 2026-10-26
+- Optimize build shows three plans to pick from: attunement focus, weapon focus and talents focus (Balanced when no attunement is ticked), each with its damage, talents and stat changes compared with your build.
+- Decluttered: long explanations only show in Help mode (now next to Customize look); presets, optimizer options and stat limits are folded away.
+- Clearer pre-shrine: before / shrine / after strip with a Power bar and points saved, a copyable "Level first" plan, the shrine's change on each stat, and stats at 0 hidden behind a toggle.
+
+## v0.27 | 2026-10-25
+- AI build maker asks follow-up questions: attunement focus (including 3 attunements), weapon type, oath and how tanky.
+- "Glass cannon" is understood.
+
+## v0.26 | 2026-10-25
+- AI build maker keeps a talent path's extra attunements only as high as the path needs.
+- Numbers like "flame 50" are read correctly; attunement words are never mistaken for talent or mantra names.
+
+## v0.25 | 2026-10-24
+- Traits: Vitality, Erudition, Proficiency and Songchant.
+- Formulas workbook with every formula and all game data.
+
+## v0.24 | 2026-10-24
+- Talents tied to your weapon type and attunements are prioritized.
+- Browse talents and Avoided talents moved to the right column.
+
+## v0.23 | 2026-10-24
+- Version numbers renamed to v0.x (this followed v1.23); v1.0 comes at release.
+- Compact sticky top bar so it no longer covers the Talents filters.
+- Talent search also finds talents by what they do.
+
+## v1.23 | 2026-10-24
+- Adjustments box after the AI build maker: type changes and the stats rearrange by themselves.
+
+## v1.22 | 2026-10-24
+- Bug and suggestion reports switched on.
+- Max talent warning, with an opt-in to go over the limit.
+
+## v1.21 | 2026-10-24
+- AI build maker focuses one attunement (80/40, or 80/80 when the points allow).
+- Report a bug tab.
+
+## v1.20 | 2026-10-24
+- Import tab with builds from a screenshot: reads the stats, guesses likely talents, adds talents seen in a video.
+
+## v1.19 | 2026-10-24
+- The damage vs talent options slider now trades stats for talents when you optimize.
+
+## v1.18 | 2026-10-24
+- Editable final stats, PRE badges, help-mode Take buttons.
+- Optimize always fits the budget; equipment aims for 500 HP and 50% physical armor.
+
+## v1.17 | 2026-10-24
+- deepwoken.co bookmark opens Meta Builder with the build loaded.
+
+## v1.16 | 2026-10-23
+- Elder / Enmity and Brick Wall Dawnwalker presets from top deepwoken.co PvE builds.
+
+## v1.15 | 2026-10-23
+- Import box with the deepwoken.co bookmark.
+- Presets are starting stats only; Fortitude shrine rule.
+
+## v1.14 | 2026-10-23
+- Stats, Talents, Summary and Armor tabs with one before-shrine / after-shrine table.
+- Mage and oath rules for the AI build maker.
+
+## v1.13 | 2026-10-23
+- AI build maker: nothing carries over between builds; Silentheart and Hero's Blade handled.
+
+## v1.12 | 2026-10-23
+- Version shown next to the title.
+- Talents stay under the cap when mantras are added; Shrine of Order needs Power 8; take rates given your stats.
+
+## Launch | 2026-10-23
+- Meta Builder website: optimizer, Shrine of Order and Mastery, presets, AI build maker, talent descriptions on hover, share links.
+- Stat limits, avoided talents, "What you want" box, Oath requirements, true combos, talent outfits, Deepwoken import and export, health vs armor equipment.</script>
 <script>
 // ================= data =================
 const ATTR=['STR','FTD','AGL','INT','WLL','CHA'];
@@ -5202,6 +5293,12 @@ function optSum(best,R){if(!best||best.impossible)return null;const C=R.C;const 
 function optShape(k){const on=x=>!!((S.caps||{})[x]&&S.caps[x].on);
   if(k==='att'&&!on(S.wtype)){const w=S.weapon&&WBY.get(S.weapon);const need=w?(w.req.s[S.wtype]||0):0;S.wtarget=Math.max(need,Math.min(+S.wtarget||0,50))}
   if(k==='wep')for(const a of Object.keys(S.atts||{}))if(!on(a)&&S.atts[a]>40)S.atts[a]=40}
+// ---- version history popup (src/data/versions.txt: "## vX | date" headings, "- change" lines) ----
+const VERSIONS=(()=>{const out=[];let cur=null;for(const l of (document.getElementById('dwvers')||{textContent:''}).textContent.split('\n')){const t=l.trim();
+  const h=t.match(/^##\s+(.+?)\s*(?:\|\s*(.+))?$/);if(h){cur={v:h[1],d:h[2]||'',ch:[]};out.push(cur)}else if(cur&&t.startsWith('- '))cur.ch.push(t.slice(2))}return out})();
+function openVersions(){const dl=$('vers');if(!dl)return;const fmt=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d);return m?new Date(+m[1],+m[2]-1,+m[3]).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):esc(d)};
+  $('verlist').innerHTML=VERSIONS.map((x,i)=>`<section class="verent ${i===0?'cur':''}"><h3>${esc(x.v)}${x.d?`<small>${fmt(x.d)}</small>`:''}${i===0?'<span class="now">current</span>':''}</h3><ul>${x.ch.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></section>`).join('')||'<p class="hint">No history yet.</p>';
+  dl.showModal();$('verlist').scrollTop=0}
 function optimizeChoices(){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.value;if(de&&!de.disabled)S.dsplit=+de.value}
   if(S.manual){say('Manual mode is on, so Optimize is off. Switch to Optimizer in the top bar to use it.');return}
   const dlg=$('optpick');if(!dlg||!dlg.showModal){optimizeAll();return}
@@ -6139,6 +6236,7 @@ document.addEventListener('click',e=>{
   else if(d.tg){S.tgroup=d.tg;S.tclosed=[];renderTalentChips();save();keepInView(t)}
   else if(d.tf){S.tfilter=d.tf;renderTalentChips();save();keepInView(t)}
   else if(d.mf){S.mfilter=d.mf;renderMantraChips();save()}
+  else if(t.id==='verbtn'){openVersions()}
   else if(d.optimize){optimizeChoices()}
   else if(d.optuse){useOptPlan(d.optuse)}
   else if(d.stall){S.statsAll=!S.statsAll;save();renderFinal()}

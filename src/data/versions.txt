@@ -1,0 +1,74 @@
+## v0.29 | 2026-10-26
+- Click the version next to the title to see this version history.
+
+## v0.28 | 2026-10-26
+- Optimize build shows three plans to pick from: attunement focus, weapon focus and talents focus (Balanced when no attunement is ticked), each with its damage, talents and stat changes compared with your build.
+- Decluttered: long explanations only show in Help mode (now next to Customize look); presets, optimizer options and stat limits are folded away.
+- Clearer pre-shrine: before / shrine / after strip with a Power bar and points saved, a copyable "Level first" plan, the shrine's change on each stat, and stats at 0 hidden behind a toggle.
+
+## v0.27 | 2026-10-25
+- AI build maker asks follow-up questions: attunement focus (including 3 attunements), weapon type, oath and how tanky.
+- "Glass cannon" is understood.
+
+## v0.26 | 2026-10-25
+- AI build maker keeps a talent path's extra attunements only as high as the path needs.
+- Numbers like "flame 50" are read correctly; attunement words are never mistaken for talent or mantra names.
+
+## v0.25 | 2026-10-24
+- Traits: Vitality, Erudition, Proficiency and Songchant.
+- Formulas workbook with every formula and all game data.
+
+## v0.24 | 2026-10-24
+- Talents tied to your weapon type and attunements are prioritized.
+- Browse talents and Avoided talents moved to the right column.
+
+## v0.23 | 2026-10-24
+- Version numbers renamed to v0.x (this followed v1.23); v1.0 comes at release.
+- Compact sticky top bar so it no longer covers the Talents filters.
+- Talent search also finds talents by what they do.
+
+## v1.23 | 2026-10-24
+- Adjustments box after the AI build maker: type changes and the stats rearrange by themselves.
+
+## v1.22 | 2026-10-24
+- Bug and suggestion reports switched on.
+- Max talent warning, with an opt-in to go over the limit.
+
+## v1.21 | 2026-10-24
+- AI build maker focuses one attunement (80/40, or 80/80 when the points allow).
+- Report a bug tab.
+
+## v1.20 | 2026-10-24
+- Import tab with builds from a screenshot: reads the stats, guesses likely talents, adds talents seen in a video.
+
+## v1.19 | 2026-10-24
+- The damage vs talent options slider now trades stats for talents when you optimize.
+
+## v1.18 | 2026-10-24
+- Editable final stats, PRE badges, help-mode Take buttons.
+- Optimize always fits the budget; equipment aims for 500 HP and 50% physical armor.
+
+## v1.17 | 2026-10-24
+- deepwoken.co bookmark opens Meta Builder with the build loaded.
+
+## v1.16 | 2026-10-23
+- Elder / Enmity and Brick Wall Dawnwalker presets from top deepwoken.co PvE builds.
+
+## v1.15 | 2026-10-23
+- Import box with the deepwoken.co bookmark.
+- Presets are starting stats only; Fortitude shrine rule.
+
+## v1.14 | 2026-10-23
+- Stats, Talents, Summary and Armor tabs with one before-shrine / after-shrine table.
+- Mage and oath rules for the AI build maker.
+
+## v1.13 | 2026-10-23
+- AI build maker: nothing carries over between builds; Silentheart and Hero's Blade handled.
+
+## v1.12 | 2026-10-23
+- Version shown next to the title.
+- Talents stay under the cap when mantras are added; Shrine of Order needs Power 8; take rates given your stats.
+
+## Launch | 2026-10-23
+- Meta Builder website: optimizer, Shrine of Order and Mastery, presets, AI build maker, talent descriptions on hover, share links.
+- Stat limits, avoided talents, "What you want" box, Oath requirements, true combos, talent outfits, Deepwoken import and export, health vs armor equipment.

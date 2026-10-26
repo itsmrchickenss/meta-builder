@@ -2,7 +2,7 @@
 import markdown,pathlib,re,html
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 notes=(ROOT/'NOTES.md').read_text()
-ver=re.search(r'class="ver"[^>]*>([^<]+)<',(ROOT/'src'/'template.html').read_text()).group(1)
+ver=re.search(r'^## (v[0-9.]+)',(ROOT/'src'/'data'/'versions.txt').read_text(),re.M).group(1)
 body=markdown.markdown(notes,extensions=['tables','fenced_code','sane_lists'])
 body=re.sub(r'<table>','<div class="tw"><table>',body);body=body.replace('</table>','</table></div>')
 starter=f"""I'm continuing work on Meta Builder, my Deepwoken Shrine of Order build planner (currently {ver}).

@@ -6,7 +6,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.comments import Comment
 D=json.load(open(HERE/'data.json'))
-VERSION=re.search(r'class="ver"[^>]*>([^<]+)<',(HERE.parents[1]/'src'/'template.html').read_text()).group(1)
+VERSION=re.search(r'^## (v[0-9.]+)',(HERE.parents[1]/'src'/'data'/'versions.txt').read_text(),re.M).group(1)
 F='Arial'
 f_norm=Font(name=F,size=10);f_bold=Font(name=F,size=10,bold=True);f_in=Font(name=F,size=10,color='0000FF');f_link=Font(name=F,size=10,color='008000')
 f_h1=Font(name=F,size=14,bold=True);f_h2=Font(name=F,size=11,bold=True);f_head=Font(name=F,size=10,bold=True,color='FFFFFF')

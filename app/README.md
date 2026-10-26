@@ -16,6 +16,8 @@ The page itself is built from `src/` by `python3 src/build.py`, which also write
 - **Mac:** `Meta-Builder-<version>-mac-universal.dmg` (Apple Silicon and Intel). The app isn't notarized by Apple, so the first time, right-click the app → Open → Open (or System Settings → Privacy & Security → Open Anyway).
 - **Windows:** `Meta-Builder-<version>-Setup.exe` installs it; `Meta-Builder-<version>-Portable.exe` runs without installing. The app isn't code-signed, so the first time Windows may show "Windows protected your PC": click More info → Run anyway.
 
+**Updates:** the app keeps itself up to date. When it opens (and every few hours) it fetches the latest planner page from the website, checks it, and asks whether to reload now or use it next time. If a release changes the app itself, it says so and opens the download page. Turn this off with Help → Update Automatically; Check for Updates is in the app menu (Mac) or Help menu (Windows).
+
 Builds, presets and themes are saved inside the app. Links to deepwoken.co, the wiki and share links open in your normal browser. Share links point to the website.
 
 **Build it yourself** (on the computer you're building for):

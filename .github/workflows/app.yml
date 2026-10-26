@@ -1,6 +1,6 @@
 # Builds the Meta Builder desktop app for Mac and Windows and publishes it as a GitHub Release named after the
 # version in src/data/versions.txt (v0.32, v0.33, …). Runs on every push to main that changes the app or the page,
-# and can be started by hand from the Actions tab ("Run workflow").
+# and can be started by hand from the Actions tab ("Run workflow"); on a branch other than main it only test-builds.
 name: Desktop app
 
 on:
@@ -28,7 +28,7 @@ jobs:
         with: { node-version: 22 }
       - run: python src/build.py
       - run: node tests/core-test.js
-      - run: node test-server.js
+      - run: npm test
         working-directory: app
 
   build:
@@ -78,6 +78,8 @@ jobs:
   release:
     name: Publish release
     needs: build
+    # only main publishes; running the workflow by hand on another branch (e.g. next) just test-builds the app
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

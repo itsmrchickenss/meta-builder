@@ -1,6 +1,6 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 26, 2026 (v0.31).
+Everything needed to pick this project back up. Last updated October 26, 2026 (v0.32).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Starting a new chat
@@ -27,7 +27,14 @@ The handoff page (a private Claude artifact) has this same information for a cha
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.31 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: +0.01, a new entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players), pushed to this repo (owner's request, October 26, 2026). The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.32 now). The owner sets **v1.0 at release**. Every update the owner makes is a new version: +0.01, a new entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players), pushed to this repo (owner's request, October 26, 2026). The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+
+## Desktop app and web server (v0.32+)
+
+- `app/` holds a Node.js web server (`server.js`, no dependencies; `npm start`, `npm test`, `/healthz`, `/version`, Dockerfile) and an Electron desktop app (`electron/main.js`). Both show the built page. The owner chose JavaScript so the same code can be hosted on a server later.
+- The desktop app serves `www/` on a private `app://meta-builder/` address so localStorage persists; outside links open in the normal browser; share links point to the GitHub Pages site (`shareBase()` treats non-http pages that way). A hosted server's share links use its own address.
+- `.github/workflows/app.yml`: on every push to `main` touching `src/`, `app/` or the workflow, it builds the page, runs `core-test.js` and `app/test-server.js`, builds the Mac universal `.dmg` (ad-hoc signed, not notarized) and Windows `Setup.exe` + `Portable.exe` (unsigned), and publishes a GitHub Release tagged with the version from `versions.txt`. Electron can't be downloaded in Claude's cloud workspace (GitHub release downloads are blocked there), so desktop builds only happen in Actions.
+- `app/www/`, `app/node_modules/` and `app/release/` are git-ignored; the server falls back to the repo's `index.html` on a fresh clone.
 
 ## Owner's rules and preferences (keep these)
 

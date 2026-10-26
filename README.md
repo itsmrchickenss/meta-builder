@@ -4,6 +4,8 @@ A Deepwoken build planner built around the ability to optimize your builds effec
 
 **Use it:** https://itsmrchickenss.github.io/meta-builder/
 
+**Desktop app (Mac and Windows):** download the latest from [Releases](https://github.com/itsmrchickenss/meta-builder/releases/latest). To host it on your own server, see [app/README.md](app/README.md).
+
 - Optimizer that picks pre-shrine stats and the pre/post order for every talent, or Manual mode where you set every stat
 - Shrine of Order, Shrine of Mastery, and save/load pre- and post-shrine stats
 - AI build maker: describe the build in plain words ("insanity build with flamecharm, tanky") and it fills in the starting questions

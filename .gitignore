@@ -1,3 +1,6 @@
 dist/
 node_modules/
 tools/formulas/data.json
+app/www/
+app/node_modules/
+app/release/

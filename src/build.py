@@ -19,4 +19,13 @@ os.makedirs(os.path.join(root,'dist'),exist_ok=True)
 open(os.path.join(root,'dist','meta-builder.html'),'w',encoding='utf-8').write(t)
 head=open(os.path.join(here,'head.html'),encoding='utf-8').read()
 open(os.path.join(root,'index.html'),'w',encoding='utf-8').write(head+t.rstrip('\n')+'\n</body>\n</html>\n')
-print('built index.html and dist/meta-builder.html,',len(t),'bytes')
+# the app (Node server + Electron desktop app) serves the same page; its version follows versions.txt (v0.32 -> 0.32.0)
+os.makedirs(os.path.join(root,'app','www'),exist_ok=True)
+open(os.path.join(root,'app','www','index.html'),'w',encoding='utf-8').write(head+t.rstrip('\n')+'\n</body>\n</html>\n')
+import json as _json
+pj=os.path.join(root,'app','package.json')
+if os.path.exists(pj):
+  pkg=_json.load(open(pj,encoding='utf-8'));ver=m['@@VER@@'].lstrip('v')+'.0'
+  if pkg.get('version')!=ver:
+    pkg['version']=ver;open(pj,'w',encoding='utf-8').write(_json.dumps(pkg,indent=2)+'\n')
+print('built index.html, dist/meta-builder.html and app/www/index.html,',len(t),'bytes')

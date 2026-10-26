@@ -1,0 +1,83 @@
+{
+  "name": "meta-builder",
+  "productName": "Meta Builder",
+  "version": "0.32.0",
+  "description": "Deepwoken Shrine of Order build planner: optimizer, talents, damage and armor tools.",
+  "author": "itsmrchickenss",
+  "license": "MIT",
+  "private": true,
+  "homepage": "https://itsmrchickenss.github.io/meta-builder/",
+  "main": "electron/main.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-server.js",
+    "desktop": "electron .",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:win": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "io.github.itsmrchickenss.metabuilder",
+    "productName": "Meta Builder",
+    "copyright": "Meta Builder by itsmrchickenss. Game data from deepwoken.co.",
+    "files": [
+      "electron/**",
+      "www/**",
+      "build/icon.png",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "artifactName": "Meta-Builder-${version}-${os}-${arch}.${ext}",
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.games",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "identity": "-",
+      "hardenedRuntime": false
+    },
+    "dmg": {
+      "title": "Meta Builder ${version}"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "Meta-Builder-${version}-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Meta-Builder-${version}-Portable.${ext}"
+    }
+  }
+}

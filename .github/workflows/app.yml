@@ -1,0 +1,89 @@
+# Builds the Meta Builder desktop app for Mac and Windows and publishes it as a GitHub Release named after the
+# version in src/data/versions.txt (v0.32, v0.33, …). Runs on every push to main that changes the app or the page,
+# and can be started by hand from the Actions tab ("Run workflow").
+name: Desktop app
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'app/**', '.github/workflows/app.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desktop-app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server:
+    name: Web server check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: python src/build.py
+      - run: node tests/core-test.js
+      - run: node test-server.js
+        working-directory: app
+
+  build:
+    name: Build (${{ matrix.os }})
+    needs: server
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            script: dist:mac
+            files: app/release/*.dmg
+          - os: windows-latest
+            script: dist:win
+            files: app/release/*.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: python src/build.py
+      - run: npm install --no-audit --no-fund
+        working-directory: app
+      - run: npm run ${{ matrix.script }}
+        working-directory: app
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meta-builder-${{ matrix.os }}
+          path: ${{ matrix.files }}
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: ver
+        run: echo "v=$(grep -m1 -oE '^## v[0-9.]+' src/data/versions.txt | cut -c4-)" >> "$GITHUB_OUTPUT"
+      - id: notes
+        run: |
+          awk 'NR>1 && /^## /{exit} NR>1{print}' src/data/versions.txt > notes.md
+          printf '\n**Downloads:** Mac: the `.dmg` (right-click the app, then Open, the first time). Windows: `Setup.exe` installs it, `Portable.exe` runs without installing (click More info, then Run anyway, the first time).\n' >> notes.md
+      - uses: actions/download-artifact@v4
+        with: { path: dl, merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.v }}
+          name: Meta Builder ${{ steps.ver.outputs.v }}
+          body_path: notes.md
+          files: dl/*
+          make_latest: true
+          fail_on_unmatched_files: true

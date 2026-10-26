@@ -1,3 +1,7 @@
+## v0.32 | 2026-10-26
+- Meta Builder is now a desktop app for Mac and Windows: download it from the GitHub Releases page. It works like the website and keeps your builds, presets and theme.
+- It also comes with its own small web server, so the planner can be hosted on any server later (with Docker or plain Node.js).
+
 ## v0.31 | 2026-10-26
 - Talents that get weaker when the shrine drops you below a stat are now counted: Million Ton Piercer and Ether Overdrive give their full PEN only at 90 Strength / Intelligence, Cheap Shot needs 65 Agility for its full PEN and Overflowing Dam 40 Intelligence for its full damage. Damage numbers and the optimizer use the reduced values.
 - A warning lists picked talents that end up below their full-strength stat after the shrine (To The Finish under 50 Fortitude, Reinforced Armor under 90, and others from the wiki).

@@ -7,6 +7,10 @@
   "license": "MIT",
   "private": true,
   "homepage": "https://itsmrchickenss.github.io/meta-builder/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itsmrchickenss/meta-builder.git"
+  },
   "main": "electron/main.js",
   "engines": {
     "node": ">=18"
@@ -78,6 +82,7 @@
     },
     "portable": {
       "artifactName": "Meta-Builder-${version}-Portable.${ext}"
-    }
+    },
+    "publish": null
   }
 }

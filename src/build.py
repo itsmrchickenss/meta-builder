@@ -13,6 +13,10 @@ m={'@@DATA@@':r('part1.txt')+'\n'+r('part2.txt'),'@@BUILDS@@':r('builds.txt'),'@
 # the newest version (first '## vX' heading in versions.txt) is the badge next to the title
 import re as _re
 m['@@VER@@']=_re.search(r'^## (v[0-9.]+)',m['@@VERSIONS@@'],_re.M).group(1)
+# the desktop app version this page needs (app/package.json shellVersion); older apps are told to download the new one
+import json as _j0
+try:m['@@SHELL@@']=str(int(_j0.load(open(os.path.join(root,'app','package.json'),encoding='utf-8')).get('shellVersion',1)))
+except Exception:m['@@SHELL@@']='1'
 for k,v in m.items(): t=t.replace(k,v)
 assert '@@' not in t, 'a placeholder was left unfilled'
 os.makedirs(os.path.join(root,'dist'),exist_ok=True)

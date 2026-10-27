@@ -613,6 +613,17 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <!-- ============ 1 STATS ============ -->
 <div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
 <div class="col">
+  <section class="panel" id="presetpanel">
+    <details class="pd" id="presetbox" open><summary><h2>Starting presets</h2><span class="hint" style="margin:0">AI build maker, top builds, your saved presets</span></summary><div>
+    <p class="hint xh">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
+    <div class="tpl" id="presets"></div>
+    <h3>My presets <small id="mpcount"></small></h3>
+    <p class="hint xh" style="margin:0">Save the build you have now (stats, oath, weapon, talents, mantras, gear) as your own preset. Saved on this computer, in this browser.</p>
+    <form class="row" id="mpform" autocomplete="off"><input type="text" id="mpname" placeholder="Preset name, e.g. My Saintsworn gank" aria-label="Preset name" maxlength="60" style="flex:1 1 200px"><button class="primary" type="submit">Save as preset</button></form>
+    <div class="list" id="mypresets"></div>
+    <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
+    </div></details>
+  </section>
   <section class="panel" id="statspanel">
     <div class="row spread"><h2>Stats <small>pre‑shrine → final</small></h2><button class="mini" id="pinclear">Clear pins</button></div>
     <div class="row shrinebtns compact"><button class="shrinebtn" id="orderbtn"></button><button class="shrinebtn" id="masterybtn"></button></div>
@@ -636,17 +647,6 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <form class="row" id="adjform" autocomplete="off"><textarea id="adjtext" rows="2" placeholder="e.g. more agility, swap flamecharm for frostdraw, add Speed Demon" aria-label="What to change" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit" id="adjgo">Apply changes</button></form>
     <p class="hint" id="adjmsg" aria-live="polite" style="margin:0"></p>
     <ul class="hint adjlog" id="adjlog"></ul>
-  </section>
-  <section class="panel" id="presetpanel">
-    <details class="pd" id="presetbox"><summary><h2>Starting presets</h2><span class="hint" style="margin:0">AI build maker, top builds, your saved presets</span></summary><div>
-    <p class="hint xh">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
-    <div class="tpl" id="presets"></div>
-    <h3>My presets <small id="mpcount"></small></h3>
-    <p class="hint xh" style="margin:0">Save the build you have now (stats, oath, weapon, talents, mantras, gear) as your own preset. Saved on this computer, in this browser.</p>
-    <form class="row" id="mpform" autocomplete="off"><input type="text" id="mpname" placeholder="Preset name, e.g. My Saintsworn gank" aria-label="Preset name" maxlength="60" style="flex:1 1 200px"><button class="primary" type="submit">Save as preset</button></form>
-    <div class="list" id="mypresets"></div>
-    <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
-    </div></details>
   </section>
 </div>
 <div class="col">
@@ -967,6 +967,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <script type="text/plain" id="dwgear">@@GEAR@@</script>
 <script type="text/plain" id="dwtdesc">@@TDESC@@</script>
 <script type="text/plain" id="dwvers">@@VERSIONS@@</script>
+<script type="text/plain" id="dwshell">@@SHELL@@</script>
 <script>
 // ================= data =================
 const ATTR=['STR','FTD','AGL','INT','WLL','CHA'];
@@ -3383,6 +3384,7 @@ $('aiq-go').addEventListener('click',()=>{if(!AIQ)return;const extra=aiAnswersTe
 $('adjform').addEventListener('submit',e=>{e.preventDefault();runAdjust()});
 $('adjtext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();runAdjust()}});
 $('adjclose').addEventListener('click',()=>showAdj(false));
+{const d=$('presetbox');if(d){if(S.presetsClosed)d.open=false;d.addEventListener('toggle',()=>{S.presetsClosed=!d.open;save()})}}
 $('traitsugg').addEventListener('click',()=>{pushUndo('Traits');S.traits=suggestTraits();renderTraits();runSoon();say('Traits set to '+TRAITS.filter(([k])=>tr(k)).map(([k,n])=>n+' '+tr(k)).join(', ')+'. They don\'t use any stat points.')});
 $('adjpanel').hidden=!S.aiAdj;
 // screenshot import

@@ -1,7 +1,8 @@
 {
   "name": "meta-builder",
   "productName": "Meta Builder",
-  "version": "0.32.0",
+  "version": "0.33.0",
+  "shellVersion": 1,
   "description": "Deepwoken Shrine of Order build planner: optimizer, talents, damage and armor tools.",
   "author": "itsmrchickenss",
   "license": "MIT",
@@ -17,7 +18,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node test-server.js",
+    "test": "node test-server.js && node test-updater.js",
     "desktop": "electron .",
     "dist:mac": "electron-builder --mac --publish never",
     "dist:win": "electron-builder --win --publish never"

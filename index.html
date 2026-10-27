@@ -525,7 +525,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.32</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.33</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -627,6 +627,17 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <!-- ============ 1 STATS ============ -->
 <div class="tabpane grid" id="tab-build" role="tabpanel" aria-labelledby="t-build">
 <div class="col">
+  <section class="panel" id="presetpanel">
+    <details class="pd" id="presetbox" open><summary><h2>Starting presets</h2><span class="hint" style="margin:0">AI build maker, top builds, your saved presets</span></summary><div>
+    <p class="hint xh">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
+    <div class="tpl" id="presets"></div>
+    <h3>My presets <small id="mpcount"></small></h3>
+    <p class="hint xh" style="margin:0">Save the build you have now (stats, oath, weapon, talents, mantras, gear) as your own preset. Saved on this computer, in this browser.</p>
+    <form class="row" id="mpform" autocomplete="off"><input type="text" id="mpname" placeholder="Preset name, e.g. My Saintsworn gank" aria-label="Preset name" maxlength="60" style="flex:1 1 200px"><button class="primary" type="submit">Save as preset</button></form>
+    <div class="list" id="mypresets"></div>
+    <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
+    </div></details>
+  </section>
   <section class="panel" id="statspanel">
     <div class="row spread"><h2>Stats <small>pre‑shrine → final</small></h2><button class="mini" id="pinclear">Clear pins</button></div>
     <div class="row shrinebtns compact"><button class="shrinebtn" id="orderbtn"></button><button class="shrinebtn" id="masterybtn"></button></div>
@@ -650,17 +661,6 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <form class="row" id="adjform" autocomplete="off"><textarea id="adjtext" rows="2" placeholder="e.g. more agility, swap flamecharm for frostdraw, add Speed Demon" aria-label="What to change" style="flex:1 1 220px;min-width:0"></textarea><button class="primary" type="submit" id="adjgo">Apply changes</button></form>
     <p class="hint" id="adjmsg" aria-live="polite" style="margin:0"></p>
     <ul class="hint adjlog" id="adjlog"></ul>
-  </section>
-  <section class="panel" id="presetpanel">
-    <details class="pd" id="presetbox"><summary><h2>Starting presets</h2><span class="hint" style="margin:0">AI build maker, top builds, your saved presets</span></summary><div>
-    <p class="hint xh">Stat starting points from top deepwoken.co builds: stat floors, oath, weapon type, attunements and the core talents only.</p>
-    <div class="tpl" id="presets"></div>
-    <h3>My presets <small id="mpcount"></small></h3>
-    <p class="hint xh" style="margin:0">Save the build you have now (stats, oath, weapon, talents, mantras, gear) as your own preset. Saved on this computer, in this browser.</p>
-    <form class="row" id="mpform" autocomplete="off"><input type="text" id="mpname" placeholder="Preset name, e.g. My Saintsworn gank" aria-label="Preset name" maxlength="60" style="flex:1 1 200px"><button class="primary" type="submit">Save as preset</button></form>
-    <div class="list" id="mypresets"></div>
-    <details><summary>Full example builds</summary><div class="tpl" id="tpls" style="margin-top:10px"></div></details>
-    </div></details>
   </section>
 </div>
 <div class="col">
@@ -3890,7 +3890,12 @@ True Shatter|Landing a critical shatters your opponent, ridding them of their sp
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
 Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
-<script type="text/plain" id="dwvers">## v0.32 | 2026-10-26
+<script type="text/plain" id="dwvers">## v0.33 | 2026-10-26
+- Starting presets (with the AI build maker) are back at the top of the Stats tab, open by default. Fold them away and they stay folded.
+- The desktop app updates itself: it checks for a new version when it opens and every few hours, downloads it, and asks whether to reload now or use it next time. When the app itself needs a new download, it tells you and opens the download page. Check for Updates and an Update Automatically switch are in the menu.
+- Desktop app users: download v0.33 once from the Releases page. From then on it updates itself.
+
+## v0.32 | 2026-10-26
 - Meta Builder is now a desktop app for Mac and Windows: download it from the GitHub Releases page. It works like the website and keeps your builds, presets and theme.
 - It also comes with its own small web server, so the planner can be hosted on any server later (with Docker or plain Node.js).
 
@@ -3978,6 +3983,7 @@ Wormwarder|Your lantern generates a shroud of static electricity around you that
 ## Launch | 2026-10-23
 - Meta Builder website: optimizer, Shrine of Order and Mastery, presets, AI build maker, talent descriptions on hover, share links.
 - Stat limits, avoided talents, "What you want" box, Oath requirements, true combos, talent outfits, Deepwoken import and export, health vs armor equipment.</script>
+<script type="text/plain" id="dwshell">1</script>
 <script>
 // ================= data =================
 const ATTR=['STR','FTD','AGL','INT','WLL','CHA'];
@@ -6394,6 +6400,7 @@ $('aiq-go').addEventListener('click',()=>{if(!AIQ)return;const extra=aiAnswersTe
 $('adjform').addEventListener('submit',e=>{e.preventDefault();runAdjust()});
 $('adjtext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();runAdjust()}});
 $('adjclose').addEventListener('click',()=>showAdj(false));
+{const d=$('presetbox');if(d){if(S.presetsClosed)d.open=false;d.addEventListener('toggle',()=>{S.presetsClosed=!d.open;save()})}}
 $('traitsugg').addEventListener('click',()=>{pushUndo('Traits');S.traits=suggestTraits();renderTraits();runSoon();say('Traits set to '+TRAITS.filter(([k])=>tr(k)).map(([k,n])=>n+' '+tr(k)).join(', ')+'. They don\'t use any stat points.')});
 $('adjpanel').hidden=!S.aiAdj;
 // screenshot import

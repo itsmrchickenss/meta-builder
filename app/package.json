@@ -1,7 +1,7 @@
 {
   "name": "meta-builder",
   "productName": "Meta Builder",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "shellVersion": 1,
   "description": "Deepwoken Shrine of Order build planner: optimizer, talents, damage and armor tools.",
   "author": "itsmrchickenss",

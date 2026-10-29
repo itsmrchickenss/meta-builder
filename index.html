@@ -525,7 +525,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.33</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.34</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -846,6 +846,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
       <button id="copy">Copy as text</button>
       <button id="xgame" title="Deepwoken's build text format, which deepwoken.co imports">Copy in Deepwoken format</button>
     </div>
+    <p class="hint" style="margin:0"><button class="linkbtn" data-x="txtfile" title="Pre-shrine stats, post-shrine stats and every talent as a .txt file (deepwoken.co's JSON format). Import reads it back.">📄 Download build file (.txt)</button> <span class="xh">pre‑shrine, post‑shrine and talents in deepwoken.co's format; paste it into Import to load it again.</span></p>
     <div class="row">
       <input type="text" id="ximport" placeholder="Paste a share link, deepwoken.co link, or Deepwoken build text" aria-label="Import build" style="flex:1 1 200px">
       <button id="xload">Import</button>
@@ -961,6 +962,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
   <h3>Deepwoken &amp; deepwoken.co</h3>
   <p class="hint" style="margin:0">Copies the build in Deepwoken's build text format. On deepwoken.co open the Builder, press “Import build from Deepwoken” and paste. Pre‑shrine stats ride along at the end so this page can read them back.</p>
   <div class="row"><button type="button" class="primary" data-x="game">Copy in Deepwoken format</button></div>
+  <p class="hint" style="margin:0"><button type="button" class="linkbtn" data-x="txtfile">📄 Download build file (.txt)</button> · pre‑shrine stats, post‑shrine stats and talents in deepwoken.co's JSON format.</p>
   <textarea id="gametext" rows="5" readonly hidden aria-label="Build in Deepwoken format" class="mono" style="font-size:12px"></textarea>
   <h3>Import a build</h3>
   <p class="hint" style="margin:0">Paste any of these: a Meta Builder link or code, a deepwoken.co build link (deepwoken.co/builder?id=…), that build's data, or the build text Deepwoken gives you in‑game.</p>
@@ -3890,7 +3892,10 @@ True Shatter|Landing a critical shatters your opponent, ridding them of their sp
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
 Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
-<script type="text/plain" id="dwvers">## v0.33 | 2026-10-26
+<script type="text/plain" id="dwvers">## v0.34 | unreleased
+- New "Download build file (.txt)" link in Share & export (and the Share dialog): saves the build as a text file in deepwoken.co's format, with pre-shrine stats, post-shrine stats and every talent, including the ones the game gives you for your stats (like Adept Ironsinger and Ironsing Unbounded) and your oath. Paste the file's text into Import to load the build again.
+
+## v0.33 | 2026-10-26
 - Starting presets (with the AI build maker) are back at the top of the Stats tab, open by default. Fold them away and they stay folded.
 - The desktop app updates itself: it checks for a new version when it opens and every few hours, downloads it, and asks whether to reload now or use it next time. When the app itself needs a new download, it tells you and opens the download page. Check for Updates and an Update Automatically switch are in the menu.
 - Desktop app users: download v0.33 once from the Releases page. From then on it updates itself.
@@ -5917,14 +5922,15 @@ const cleanName=n=>String(n||'').replace(/\s*\[[A-Z]{3}\]\s*$/,'').replace(/[’
 function matchName(n,map){const c=cleanName(n).toLowerCase();if(map.has(c))return map.get(c);const p=c.replace(/\s*\(.*\)\s*$/,'');if(map.has(p))return map.get(p);return null}
 function extractJson(txt){const i=txt.indexOf('{');const j=txt.lastIndexOf('}');if(i<0||j<=i)return null;try{return JSON.parse(txt.slice(i,j+1))}catch(e){return null}}
 function dwbFromCoJson(j){
-  const st=src=>{const o={};for(const grp of ['base','weapon','attunement'])for(const [k,v] of Object.entries((src||{})[grp]||{})){const key=DWCO_NAME[k];if(key)o[key]=Math.max(0,Math.min(100,+v||0))}return o};
+  const st=src=>{const o={};const put=(k,v)=>{const key=DWCO_NAME[k];if(key)o[key]=Math.max(0,Math.min(100,+v||0))};for(const grp of ['base','weapon','attunement'])for(const [k,v] of Object.entries((src||{})[grp]||{}))put(k,v);
+    for(const [k,v] of Object.entries(src||{}))if(typeof v!=='object')put(k,v);return o};
   const meta=(j.stats&&j.stats.meta)||{};const unknown=[];
   const talents=[];for(const n of j.talents||[]){const m=matchName(n,LOWER_T);if(m)talents.push(m);else if(!matchName(n,LOWER_M))unknown.push(cleanName(n))}
   const mantras=[];for(const n of j.mantras||[]){const m=matchName(n,LOWER_M);if(m)mantras.push(m);else unknown.push(cleanName(n))}
   const wraw=Array.isArray(j.weapons)?j.weapons[0]:j.weapons;const weapon=wraw?matchName(wraw,LOWER_W):null;if(wraw&&!weapon)unknown.push(cleanName(wraw));
   const pre=j.preShrine?st(j.preShrine):null;const fin=st(j.attributes||j.postShrine);
   const traits={};for(const [n,v] of Object.entries((j.stats&&j.stats.traits)||{})){const k=TRAIT_FROM(n);if(k)traits[k]=Math.max(0,Math.min(6,+v||0))}
-  return {traits,src:'deepwoken.co',name:(j.stats&&j.stats.buildName)||'deepwoken.co build',pre:pre&&ALL.some(k=>pre[k])?pre:null,fin,talents,mantras,weapon,oath:meta.Oath&&OATHS.some(o=>o.n===meta.Oath)?meta.Oath:'None',outfit:meta.Outfit&&OBY.has(meta.Outfit)?meta.Outfit:'',unknown}}
+  return {traits,src:'deepwoken.co',name:(j.stats&&j.stats.buildName)||'deepwoken.co build',pre:pre&&ALL.some(k=>pre[k])?pre:null,fin,talents,mantras,weapon,oath:meta.Oath&&OATHS.some(o=>o.n===meta.Oath)?meta.Oath:(()=>{const t=(j.talents||[]).map(cleanName).find(n=>/^Oath: /.test(n));const o=t&&t.slice(6);return o&&OATHS.some(x=>x.n===o)?o:'None'})(),outfit:meta.Outfit&&OBY.has(meta.Outfit)?meta.Outfit:'',unknown}}
 function dwbFromGameText(txt){
   const lines=txt.split('\n').map(l=>l.trim()).filter(l=>l&&!/^=+$/.test(l));const sec=h=>{const i=lines.findIndex(l=>l.replace(/\s+/g,' ').toUpperCase()==='== '+h+' ==');if(i<0)return [];const e=lines.findIndex((l,k)=>k>i&&/^==/.test(l));return lines.slice(i+1,e<0?undefined:e)};
   const stats=ls=>{const o={};for(const l of ls)for(const m of l.matchAll(/(?:^|[;,])\s*(\d+)\s+([A-Z]{3})\s*(?=[;,]|$)/gi)){const k=GAME_BACK[m[2].toUpperCase()];if(k)o[k]=Math.min(100,+m[1])}return o};
@@ -5974,6 +5980,23 @@ function buildGameText(){if(!last||!last.best)return '';const b=last.best,C=last
   return [name,`LVL ${powerAt(b.used)} None, Castaway, ${S.oath==='None'?'None':S.oath}`,'== ATTRIBUTES ==',line(ATTR,b.final),line(WEPS,b.final),line(ATTS,b.final),'== MANTRAS ==',...[...C.M.keys()],'== TALENTS ==',...tal.map(dwTalentName),
     ...(S.weapon?['== WEAPON ==',S.weapon]:[]),...(S.gear.outfit?['== OUTFIT ==',S.gear.outfit]:[]),'== PRE-SHRINE ==',line(ATTR,b.P),line(WEPS,b.P),line(ATTS,b.P),...(traitSum()?['== TRAITS ==',TRAITS.map(([k])=>`${tr(k)} ${k}`).join('; ')]:[])].join('\n')}
 
+// Build file (.txt): deepwoken.co-style JSON {"preShrine":{Strength…Bloodrend},"postShrine":{…},"talents":[…]}.
+// The talent list is what the character ends up holding: picks and their prerequisites, plus the talents the game hands
+// out for the final stats (attunement milestones like "Adept Ironsinger" and "… Unbounded" at 75), the oath, and the
+// oath's own talent when that oath has only one (Blindseer: All-Seeing Eye).
+const DW_KEYS=Object.entries(DWCO_NAME);
+function autoGrantedTalents(final){const out=[];const meets=t=>Object.entries(t.req.s||{}).every(([k,v])=>k==='PWR'||(final[k]||0)>=v);
+  for(const t of DB.T){if(t.k||t.r!=='C')continue;const milestone=/(charmer|drawer|caller|breather|caster|singer|render)$/.test(t.n)&&ATT[Object.keys(t.req.s||{})[0]];const unb=t.c==='Boundless Potential';
+    if((milestone||unb)&&Object.keys(t.req.s||{}).length&&meets(t))out.push(t.n)}
+  const lv=n=>{const r=TBY.get(n).req.s;return Object.values(r)[0]||0};return out.sort((a,b)=>lv(a)-lv(b))}
+function buildFileJson(){if(!last||!last.best)return null;const b=last.best,C=last.R.C;
+  const stats=src=>Object.fromEntries(DW_KEYS.map(([name,k])=>[name,Math.max(0,Math.min(100,Math.round(src[k]||0)))]));
+  const tal=[];const add=n=>{if(n&&!tal.includes(n))tal.push(n)};
+  autoGrantedTalents(b.final).forEach(add);
+  if(S.oath&&S.oath!=='None'&&TBY.has('Oath: '+S.oath)){add('Oath: '+S.oath);const own=DB.T.filter(t=>t.r==='O'&&!t.n.startsWith('Oath:')&&(t.req.t||[]).includes('Oath: '+S.oath));if(own.length===1&&!Object.keys(own[0].req.s||{}).length)add(own[0].n)}
+  for(const n of C.T.keys())add(n);
+  return {preShrine:stats(b.noShrine?b.final:b.P),postShrine:stats(b.final),talents:tal}}
+const buildFileText=()=>{const j=buildFileJson();return j?JSON.stringify(j):''};
 
 // ================= build from a screenshot =================
 // Reading: in the Claude app Claude reads the picture (sample capability with images); elsewhere (GitHub Pages)
@@ -6253,6 +6276,7 @@ document.addEventListener('click',e=>{
   else if(d.x==='img'){closeDlg('share');say('Drawing image…');buildImage().then(blob=>blob?saveFile(`deepwoken-${slug()}.png`,blob,'image/png'):'Nothing to export yet.').then(m=>linkToast(m))}
   else if(d.x==='sheet'){closeDlg('share');if(!last||!last.best){say('Nothing to export yet.');return}saveFile(`deepwoken-${slug()}.html`,buildSheet(),'text/html').then(m=>linkToast(m))}
   else if(d.x==='text'){closeDlg('share');copyText(buildText(),'Build copied as text (the link is included).')}
+  else if(d.x==='txtfile'){const txt=buildFileText();if(!txt){say('Nothing to export yet.');return}closeDlg('share');saveFile(`deepwoken-${slug()}.txt`,txt,'text/plain').then(m=>linkToast(m))}
   else if(d.x==='import'){runImport($('imptext').value,$('impmsg'),()=>{$('imptext').value='';closeDlg('share')})}
   else if(d.x==='game'){const txt=buildGameText();if(!txt){say('Nothing to export yet.');return}$('gametext').value=txt;$('gametext').hidden=false;copyText(txt,'Copied in Deepwoken build format. On deepwoken.co: Builder → Import build from Deepwoken → paste.').then(()=>{$('impmsg').textContent='Copied. On deepwoken.co open the Builder, press “Import build from Deepwoken” and paste.'})}
   else if(d.mpload){const p=myPresets()[+d.mpload];if(p){if(doImport(p.code))sayUndo(`Loaded your preset “${p.n}”.`);else say('That preset could not be read.')}}

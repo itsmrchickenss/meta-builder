@@ -148,6 +148,7 @@ Data line formats: talent `name|category|rarity(+0 = not counted)|stats|o=alts|a
 - localStorage `meta-builder-v1` (build + settings), `meta-builder-look` (theme), `meta-builder-presets`, `meta-builder-combos`.
 - Share code: `dw1` + base64url JSON, keys `v w t a s m n i q o p g r e x sn av cp tr` (tr = traits). `decodeBuild` validates every field; keep old keys working.
 - deepwoken.co JSON: `stats.meta.{Oath,Outfit}`, `stats.traits`, `attributes|preShrine|postShrine.{base,weapon,attunement}`, `talents` (some with `[HVY]`-style tags), `mantras`, `weapons`.
+- **Build file (.txt)** (`buildFileJson` / `buildFileText`, "Download build file (.txt)" link in Share & export and the Share dialog; v0.34): owner-specified format, one line of JSON `{"preShrine":{"Strength":…,"Heavy Wep.":…,"Bloodrend":…},"postShrine":{…},"talents":[…]}` with the 16 stats in deepwoken.co order. Talents = the attunement milestone talents (Flamecharmer, Adept/Expert/Master …) and "… Unbounded" (75) the final stats reach, then "Oath: X" and that oath's own talent when it has exactly one (Blindseer: All-Seeing Eye), then every picked talent and prerequisite. Plain names (no [HVY] tags). The importer reads flat stat objects like these and takes the oath from an "Oath: X" talent when there is no `stats.meta.Oath`. `tests/browser/build_file.py` round-trips the owner's example (`tests/fixtures/build-file.txt`).
 - Our Deepwoken-text export adds `== WEAPON ==`, `== OUTFIT ==`, `== PRE-SHRINE ==`, `== TRAITS ==` sections, read back on import.
 
 ## Where the data came from

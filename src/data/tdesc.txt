@@ -290,7 +290,7 @@ Ironsinger|Grants you the ability to command Metal as an Ironsinger. Press X to 
 Adept Ironsinger|You can now obtain 1-star Ironsinger mantras.
 Expert Ironsinger|You can now obtain 2-star Ironsinger mantras.
 Master Ironsinger|You can now obtain 3-star Ironsinger mantras.
-Alloyblood|You don't bleed like others do. Bleed damage reduced by 30%. Blood loss is reduced by 75%.
+Iron Veins|You don't bleed like others do. Bleed damage reduced by 30%. Blood loss is reduced by 75%.
 Heavy Shoulders|If your opponent has 3 or more rods, their dodges are slower.
 Laced Traps|People hit by your 'Caltrops' cannot jump and are slowed for a small duration, while also applying Sluggish to PvE…
 Metal Shackles|Guardbreaking an opponent prevents them from receiving speed boost for 5 seconds, while PvE opponents will be Sluggish…

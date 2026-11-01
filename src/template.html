@@ -1033,7 +1033,7 @@ const SCALE_MOD={'Million Ton Piercer':(m,f)=>({...m,pen:m.pen*Math.min(1,(f.STR
   'Cheap Shot':(m,f)=>({...m,pen:Math.max(.0722,m.pen-.0011*Math.max(0,65-(f.AGL||0)))}),'Overflowing Dam':(m,f)=>({...m,dmg:Math.max(.06875,m.dmg-.00125*Math.max(0,40-(f.INT||0)))})};
 // talents that keep working below their requirement but get weaker (stat → value for the full effect; null = the talent's own requirement)
 const WEAK_T={'To The Finish':{FTD:50},'Reinforced Armor':{FTD:90},'Collapsed Lung':{STR:100},'Defensive Reprisal':null,'Dancing Guard':null,'Down to your Level':{FTD:60},'Knuckle Guard':null,
-  'Overflowing Dam':{INT:40},'Cornered Fool':{CHA:85},'Alloyblood':{IRN:100},'Twelve Steps Ahead':{INT:80},'Broken Ankles':{STR:70},'Unwavering Resolve':{STR:40},'Million Ton Piercer':{STR:90},
+  'Overflowing Dam':{INT:40},'Cornered Fool':{CHA:85},'Iron Veins':{IRN:100},'Twelve Steps Ahead':{INT:80},'Broken Ankles':{STR:70},'Unwavering Resolve':{STR:40},'Million Ton Piercer':{STR:90},
   'Ether Overdrive':{INT:90},'Foolish Outburst':{INT:50},'Cheap Shot':{AGL:65},'Donation Drive':{CHA:60},'Audacity':{CHA:75,STR:25}};
 function weakAfterShrine(final,names){const out=[];for(const n of names){if(!(n in WEAK_T))continue;const t=TBY.get(n);const full=WEAK_T[n]||(t&&t.req&&t.req.s)||{};
   const low=Object.entries(full).filter(([k,v])=>ALL.includes(k)&&(final[k]||0)<v).map(([k,v])=>[k,v,final[k]||0]);if(low.length)out.push({n,low})}return out}
@@ -1244,7 +1244,10 @@ document.addEventListener('input',e=>{if(e.target.type==='range')paintRanges()})
 
 // ================= state =================
 let S={prio:50,dsplit:50,wtype:'HVY',wtarget:90,atts:{FLM:80},sel:[],mantras:[],when:{},mins:{},preMin:{},oath:'Oathless',weapon:'',tfilter:'fit',mfilter:'fit',spend:true,gear:{outfit:'',slots:{},focus:'bal'},req:[],avoid:[],caps:{},pin:{},order:true,mastery:{on:false,pre:{},post:{}},manual:false,man:{pre:{},fin:{}},enchant:'None',wcmp:'',mview:''};
-try{const s=JSON.parse(localStorage.getItem('meta-builder-v1')||'null');if(s)S=Object.assign(S,s)}catch(e){}
+// talents the game renamed (Hallowtide 2026: Alloyblood → Iron Veins); old names keep loading everywhere
+const RENAMED_T={'Alloyblood':'Iron Veins'};const RENAMED_LOW=Object.fromEntries(Object.entries(RENAMED_T).map(([a,b])=>[a.toLowerCase(),b]));const renameT=n=>RENAMED_T[n]||RENAMED_LOW[String(n).toLowerCase()]||n;const renameList=l=>Array.isArray(l)?[...new Set(l.map(renameT))]:l;
+function renameState(o){if(!o)return o;for(const k of ['sel','req','avoid'])if(Array.isArray(o[k]))o[k]=renameList(o[k]);if(o.when)for(const [a,b] of Object.entries(RENAMED_T))if(a in o.when){o.when[b]=o.when[a];delete o.when[a]}return o}
+try{const s=JSON.parse(localStorage.getItem('meta-builder-v1')||'null');if(s)S=Object.assign(S,renameState(s))}catch(e){}
 if(!Array.isArray(S.req))S.req=[];if(!Array.isArray(S.avoid))S.avoid=[];if(!S.caps||typeof S.caps!=='object')S.caps={};if(!S.mastery||typeof S.mastery!=='object')S.mastery={on:false,pre:{},post:{}};if(!S.man||typeof S.man!=='object')S.man={pre:{},fin:{}};S.order=true;if(!S.pin||typeof S.pin!=='object')S.pin={};
 if(!S.gear||typeof S.gear!=='object')S.gear={outfit:'',slots:{},focus:'bal'};S.gear.slots=S.gear.slots||{};
 const save=()=>{try{localStorage.setItem('meta-builder-v1',JSON.stringify(S))}catch(e){}};
@@ -2383,6 +2386,7 @@ function decodeBuild(raw){
   const num=(v,d)=>Number.isFinite(+v)?Math.max(0,Math.min(100,+v)):d;const next={};
   next.wtype=WEP[o.w]?o.w:'HVY';next.wtarget=num(o.t,90);
   next.atts={};for(const [k,v] of Object.entries(o.a||{}))if(ATT[k])next.atts[k]=num(v,80);
+  for(const k of ['s','r','av'])if(Array.isArray(o[k]))o[k]=renameList(o[k]);if(o.n)for(const [a,b] of Object.entries(RENAMED_T))if(a in o.n){o.n[b]=o.n[a];delete o.n[a]}
   next.sel=(o.s||[]).filter(n=>TBY.has(n));next.mantras=(o.m||[]).filter(n=>MBY.has(n));
   next.when={};for(const [k,v] of Object.entries(o.n||{}))if(v==='pre'||v==='post')next.when[k]=v;
   next.mins={};for(const [k,v] of Object.entries(o.i||{}))if(ATTR.includes(k))next.mins[k]=num(v,0);
@@ -2900,7 +2904,7 @@ const GAME_BACK=Object.fromEntries([...Object.entries(GAME_CODE).map(([k,v])=>[v
 const DW_LINK=/deepwoken\.co\/(?:builder\/?\?(?:[^\s#]*&)?id=|api\/proxy\/builds\/|build\/)([A-Za-z0-9_-]{4,})/i;
 const LOWER_T=new Map(DB.T.map(t=>[t.n.toLowerCase(),t.n])),LOWER_M=new Map(DB.M.map(m=>[m.n.toLowerCase(),m.n])),LOWER_W=new Map(DB.W.map(w=>[w.n.toLowerCase(),w.n]));
 const cleanName=n=>String(n||'').replace(/\s*\[[A-Z]{3}\]\s*$/,'').replace(/[’`]/g,"'").trim();
-function matchName(n,map){const c=cleanName(n).toLowerCase();if(map.has(c))return map.get(c);const p=c.replace(/\s*\(.*\)\s*$/,'');if(map.has(p))return map.get(p);return null}
+function matchName(n,map){const c=renameT(cleanName(n)).toLowerCase();if(map.has(c))return map.get(c);const p=c.replace(/\s*\(.*\)\s*$/,'');if(map.has(p))return map.get(p);return null}
 function extractJson(txt){const i=txt.indexOf('{');const j=txt.lastIndexOf('}');if(i<0||j<=i)return null;try{return JSON.parse(txt.slice(i,j+1))}catch(e){return null}}
 function dwbFromCoJson(j){
   const st=src=>{const o={};const put=(k,v)=>{const key=DWCO_NAME[k];if(key)o[key]=Math.max(0,Math.min(100,+v||0))};for(const grp of ['base','weapon','attunement'])for(const [k,v] of Object.entries((src||{})[grp]||{}))put(k,v);

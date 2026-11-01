@@ -263,7 +263,7 @@ Ironsinger|Ironsinger|C0|IRN1
 Adept Ironsinger|Ironsinger|C0|IRN20|t=Ironsinger
 Expert Ironsinger|Ironsinger|C0|IRN30|t=Adept Ironsinger
 Master Ironsinger|Ironsinger|C0|IRN50|t=Expert Ironsinger
-Alloyblood|Ironsinger|A|IRN100
+Iron Veins|Ironsinger|A|IRN100
 Heavy Shoulders|Ironsinger|C|IRN55
 Laced Traps|Ironsinger|C|IRN45|m=Caltrops
 Metal Shackles|Ironsinger|C|IRN40 STR15

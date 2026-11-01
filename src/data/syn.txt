@@ -9,7 +9,7 @@ Pressure Detonation|Apparitions|m
 Muffled Screams|Execution|m
 Muffled Screams|Stay of Execution|m
 Frozen Web|Bottom Freeze|m
-Cauterized Wounds|Alloyblood|m
+Cauterized Wounds|Iron Veins|m
 Warding Radiance|Hell's Partisan|m
 Fulgurite Formation|Grounding Bolt|m
 Inhale|After Cut|m

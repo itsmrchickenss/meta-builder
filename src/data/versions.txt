@@ -1,5 +1,6 @@
 ## v0.34 | unreleased
 - New "Download build file (.txt)" link in Share & export (and the Share dialog): saves the build as a text file in deepwoken.co's format, with pre-shrine stats, post-shrine stats and every talent, including the ones the game gives you for your stats (like Adept Ironsinger and Ironsing Unbounded) and your oath. Paste the file's text into Import to load the build again.
+- Hallowtide 2026: the talent Alloyblood is now called Iron Veins, as in the game. Builds, share links and imports that still say Alloyblood load as Iron Veins.
 
 ## v0.33 | 2026-10-26
 - Starting presets (with the AI build maker) are back at the top of the Stats tab, open by default. Fold them away and they stay folded.

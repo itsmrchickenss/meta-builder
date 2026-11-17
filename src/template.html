@@ -2767,7 +2767,7 @@ function aiNames(){if(AI_NAMES)return AI_NAMES;
   for(const m of DB.M)if(!m.at[0].startsWith('Origin'))out.push([m.n,{k:'mantra',n:m.n}]);
   AI_NAMES=out;return out}
 // talent families people call "paths"
-const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter']];
+const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter'],['alloyblood|composite|plasma','Alloyblood'],['sanguine blaze|exotherm\\w*|black blood','Exotherm','sanguine blaze|exotherm\\w*']];
 const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast','insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
 const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
@@ -2856,8 +2856,9 @@ function aiParse(txt,basePreset){
   const gN=by('gear');if(gN.length){p.gearItems=gN;got.push('equipment '+gN.join(', '))}
   // talent paths ("steam path") and named talents / mantras: these are must-haves
   const pathT=[];
-  for(const [kw,cat] of AI_PATHS){if(new RegExp(`\\b(?:${kw})\\w*\\s+(?:path|tree|talents?|build)\\b|\\b${cat.toLowerCase()}\\b`).test(s)){
-    const ts=DB.T.filter(t=>t.c===cat&&t.k&&t.r!=='Q'&&!t.req.q&&!isAvoid(t.n));
+  for(const [kw,cat,bare] of AI_PATHS){if(new RegExp(`\\b(?:${kw})\\w*\\s+(?:path|tree|talents?|build)\\b|\\b${cat.toLowerCase()}\\b${bare?`|\\b(?:${bare})\\b`:''}`).test(s)){
+    // Hypoferritinemia also needs Torture Mastery + Needleblade (two other trees), so "alloyblood path" doesn't pull it in
+    const ts=DB.T.filter(t=>t.c===cat&&t.k&&t.r!=='Q'&&!t.req.q&&!isAvoid(t.n)&&t.n!=='Hypoferritinemia');
     // keep the path's own talents that don't need an attunement you didn't ask for (beyond what the path itself needs)
     ts.forEach(t=>{REQ.add(t.n);pathT.push(t.n)});got.push(`${cat} path: ${ts.map(t=>t.n).join(', ')}`)}}
   const tN=by('talent').filter(n=>!isAvoid(n));tN.forEach(n=>REQ.add(n));if(tN.length)got.push('talents: '+tN.join(', '));

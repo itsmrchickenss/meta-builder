@@ -1166,7 +1166,7 @@ Flamecharmer|Flamecharmer|C0|FLM1
 Adept Flamecharmer|Flamecharmer|C0|FLM20|t=Flamecharmer
 Expert Flamecharmer|Flamecharmer|C0|FLM30|t=Adept Flamecharmer
 Master Flamecharmer|Flamecharmer|C0|FLM50|t=Expert Flamecharmer
-Azure Flames|Flamecharmer|C|FLM70 WLL40|x=Wraith Path: Twisted Puppets
+Azure Flames|Flamecharmer|C|FLM70 WLL40|x=Wraith Path: Twisted Puppets;Exotherm Path: Sanguine Blaze
 Temperature Shock|Flashfreeze|C|FLM40 ICE40|t=Glass Path: Crystallization
 Exoskeleton|Freak of Nature|R|FTD40
 Glacial Mobility|Frost Forger|C|ICE20 AGL20|m=Ice Blade
@@ -1265,7 +1265,7 @@ Defensive Sweep|Lancer|C|MED50|w=Spear
 Driving Impact|Lancer|C|MED30|w=Spear
 Lancer's Impale|Lancer|C|MED30|w=Spear
 Hoplite|Lancer|C|FTD15|w=Spear
-Eruption Path: Lava Serpent|Lava Serpent|C|FLM40|x=Flashboil;The Final Act;Wraith Path: Twisted Puppets
+Eruption Path: Lava Serpent|Lava Serpent|C|FLM40|x=Flashboil;The Final Act;Wraith Path: Twisted Puppets;Exotherm Path: Sanguine Blaze
 Empowered Eruption|Lava Serpent|C|FLM50|t=Eruption Path: Lava Serpent
 Flash Point|Lava Serpent|C|FLM55|t=Eruption Path: Lava Serpent
 The Floor is Lava|Lava Serpent|A|FLM100|t=Eruption Path: Lava Serpent
@@ -1383,7 +1383,7 @@ Sharing is Caring|Scarlet Donor|C|BLD50 CHA30|t=Charismatic Cast
 Windwaker|Scholar of the Cloud|Q0|WND20|q
 Dirty Boxing|Scoundrel|R|AGL25|w=Fists
 Pocket Sand|Scoundrel|C|LHT35 STR20
-Gilded Path: Scrapsinger|Scrapsinger|C|IRN35
+Gilded Path: Scrapsinger|Scrapsinger|C|IRN35|x=Composite Path: Alloyblood
 Artisan's Blade|Scrapsinger|C|IRN45|t=Gilded Path: Scrapsinger
 Masterwork|Scrapsinger|R|IRN60|t=Artisan's Blade
 Refine and Reuse|Scrapsinger|C|IRN45|t=Gilded Path: Scrapsinger
@@ -1494,7 +1494,7 @@ Maiming Claws|Trickster|C|AGL100|t=Down Comes the Claw
 Pursuit|Trickster|C|AGL90|m=Revenge
 Face Cutter|Twinblade|R|MED75|t=Spine Cutter|w=Twinblade
 Turning of the Wheel|Twinblade|R|MED75|w=Twinblade
-Wraith Path: Twisted Puppets|Twisted Puppets|C|FLM40 SDW40|x=Eruption Path: Lava Serpent;Flashboil;Azure Flames
+Wraith Path: Twisted Puppets|Twisted Puppets|C|FLM40 SDW40|x=Eruption Path: Lava Serpent;Flashboil;Azure Flames;Exotherm Path: Sanguine Blaze
 Burning Puppets|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets
 Burning Sacrifice|Twisted Puppets|R|FLM40 SDW40|t=Wraith Path: Twisted Puppets;Emperor Flame
 Explosive Rage|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets
@@ -1596,6 +1596,18 @@ Pressure Strike|Vanguard Arts|C|MED90|t=Both Ends|w=Staff
 Rage Bait|Psychopath|C|WLL40 CHA90|t=Manipulator
 Guilt Trip|Psychopath|C|CHA100
 Depressive State|Psychopath|R|WLL90 CHA90|t=Guilt Trip;Rage Bait
+Composite Path: Alloyblood|Alloyblood|C|BLD50 IRN50|x=Gilded Path: Scrapsinger
+Plasma Signal|Alloyblood|C|BLD55 IRN55|t=Composite Path: Alloyblood
+Stored Plasma|Alloyblood|C|BLD60 IRN60|t=Composite Path: Alloyblood
+Retained Hemoglobin|Alloyblood|C|BLD60 IRN60|t=Composite Path: Alloyblood
+Ultrafiltration|Alloyblood|C|BLD65 IRN65|t=Composite Path: Alloyblood
+Plasma Refresh|Alloyblood|C|BLD40 IRN40 WPN60|t=Composite Path: Alloyblood
+Hypoferritinemia|Alloyblood|C|BLD30 IRN30|t=Composite Path: Alloyblood;Torture Mastery;Needleblade
+Exotherm Path: Sanguine Blaze|Exotherm|C|BLD40 FLM40|x=Azure Flames;Eruption Path: Lava Serpent;Wraith Path: Twisted Puppets
+Critical Mass|Exotherm|C|BLD45 FLM45
+Pressure Bleed|Exotherm|C|BLD50 FLM50|t=Exotherm Path: Sanguine Blaze
+Burnout|Exotherm|C|BLD60 FLM65
+Exothermic Finish|Exotherm|C|BLD60 FLM80
 #M
 Burning Servants|FLM|C0|FLM1
 Flame Grab|FLM|C0|FLM1
@@ -1827,6 +1839,12 @@ Abyssal Ridge|Monster|C2M||q
 Abyssal Tendrils|Monster|C2M||q
 Coral Burst|Monster|C2M||q
 Bone Wisp|Monster|W2M||q
+Infused Slash|IRN+BLD|C0||t=Composite Path: Alloyblood
+Spinning Serum|IRN+BLD|C2||t=Composite Path: Alloyblood
+Rising Plasma|IRN+BLD|C0|BLD50 IRN50|t=Composite Path: Alloyblood
+Cauterize|BLD+FLM|C0||t=Exotherm Path: Sanguine Blaze
+Combustion Tide|BLD+FLM|C0||t=Exotherm Path: Sanguine Blaze
+Flashfusion|BLD+FLM|C0||t=Exotherm Path: Sanguine Blaze
 #W
 Formless Shard|Dagger|
 Stiletto|Dagger|
@@ -2059,6 +2077,14 @@ The Barrel|Greatcannon|HVY75 STR30
 Smouldering Hallow|Greatcannon|HVY75 STR30
 Edenbrand Hellcoil|Greatcannon|HVY75 STR30
 Unsung Scythern|Exclusive|HVY75 PWR10
+Ironcry|Bow|
+Corvidirge Severants|Twinblade|LHT55 MED55
+Silas's Cenotaph|Greatsword|HVY100 MND50
+Cursed Flames|Sword|FLM100 WLL40 PWR10
+Alloyblood Daggers|Dagger||t=Composite Path: Alloyblood|m=Infused Slash
+Alloyblood Spear|Spear||t=Composite Path: Alloyblood|m=Spinning Serum
+Alloyblood Axe|Greataxe||t=Composite Path: Alloyblood|m=Rising Plasma
+Infected|Fist|
 #O
 Oathless|W3|
 Blindseer|C1 S1 W1|Sightless Beam;Mindsoothe;Tranquil Circle
@@ -2153,7 +2179,7 @@ Sanguine Transfuser|13.5|0.2|LHT6.5 BLD4
 Nemit's Sickle|11.5|0.3|LHT13
 Flareblood Kamas|14|0.3|LHT8 INT1.5 BLD3
 The Flippers of Fate|13|0.15|LHT8 MND5
-Krulian Knife|12.5|0.2|LHT10.5
+Krulian Knife|13.5|0.2|LHT10.5
 Spectral Grasp|16|0.05|LHT7
 Moppet|15|0|LHT8.5
 Kyrsedge|15|0.3|LHT8.5
@@ -2179,7 +2205,7 @@ Worldpiercer Gauntlets|16.5|0.15|LHT8
 Silversix|10|0|LHT13
 Flintlock|11|0|LHT12
 Dawnshot|14|0|LHT12
-Iron Requiem|21|0|LHT3 IRN4
+Iron Requiem|18|0|LHT3 IRN4
 Repeater|14|0|LHT12
 Dragoon|16|0|LHT12
 Rosen's Roscoe|16|0|LHT11
@@ -2231,7 +2257,7 @@ Soulthorn|17|0.1|MED7 INT3.5
 Purple Cloud|16.5|0.15|MED9
 Shattered Katana|20|0.3|MED7
 Nocturne|19.8|0.1|MED8
-Withered Phantomcleave|17.5|0.1|MED7
+Withered Phantomcleave|18|0.05|MED7 AGL2
 Hero's Blade of Flame|19|0|FLM5.5
 Hero's Blade of Frost|19|0|ICE5.5
 Hero's Blade of Lightning|19|0|LTN5.5
@@ -2245,7 +2271,7 @@ Black Death|16.5|0.15|MED2.5 MND2 SDW3
 Ritual Spear|19|0.25|MED5
 Ritual Sacrifice|25|0.25|MED7
 Acheron's Warspear|18|0.15|MED6
-Imperial Staff|20|0.12|MED5 STR4
+Imperial Staff|20|0.1|MED5 STR4
 Trident Spear|19|0.25|MED6
 Kyrswynter|17|0.2|MED5 ICE4
 The Weaving Web|20|0|MED5.5 CHA1
@@ -2292,7 +2318,7 @@ Enforcer's Axe|26|0.1|HVY9
 Alloyed Canorian Axe|24|0.2|HVY9
 Alloyed Halberd|24|0.15|HVY8
 Alloyed Adretian Axe|24|0.1|HVY8
-Duskguard Axe|26|0.15|HVY8
+Duskguard Axe|24|0.15|HVY8
 Night Axe|23|0.05|HVY8
 Pale Briar|23|0.25|HVY8.5
 Chorus of Agonies|26|0|HVY11
@@ -2307,7 +2333,7 @@ Bloodfouler|19|0.2|HVY5 BLD4
 Bloodbane|23|0|HVY7
 Hailbreaker|22|0.15|HVY7.5 ICE4
 Wretched Mawblades|27|0|HVY8
-First Light|23|0.15|HVY8
+First Light|23|0.15|HVY8 FLM2
 Alloyed Zweihander|23|0.1|HVY10
 Alloyed Crescent Cleaver|22|0|HVY10
 Darkalloy Greatsword|26|0.1|HVY8
@@ -2340,7 +2366,7 @@ Edenbrand Hellcoil|27|0|HVY8.3
 Rifle Spear|21|0.25|MED7
 Red Death|16|0.25|MED2.5 MND2 BLD3 SDW3
 Wyrmtooth|20|0.25|MED6.5 HVY4.5
-Ysley's Pyre Keeper|21|0.15|HVY5 FLM4
+Ysley's Pyre Keeper|21|0.3|HVY5 FLM4
 Calamity Cinnabar|22|0|HVY4 SDW9
 Moonseye Scalpel|18.5|0.25|INT13
 Unsung Scythern|26|0.1|HVY9
@@ -2370,7 +2396,14 @@ True Seraph Spear|18.5|0.2|MED7
 Rangescraper|18|0|LHT7.5
 Steelscale Dusters|14|0.2|LHT10
 The Long Tong of the Law|20|0|HVY7 MND3
-Palace Tachi|22.5|0.05|MED6.5</script>
+Palace Tachi|22.5|0.05|MED6.5
+Corvidirge Severants|13.5|0.2|LHT5 MED5
+Silas's Cenotaph|25|0|HVY10 MND3
+Cursed Flames|19|0.1|FLM5.5
+Alloyblood Daggers|14.5|0.15|LHT3 BLD5 IRN5
+Alloyblood Spear|18|0.25|MED3 BLD5 IRN5
+Alloyblood Axe|24|0.2|HVY3 BLD5 IRN5
+Infected|10|0|</script>
 <script type="text/plain" id="dwcond">Against All Odds:99/125;Emergency Reserves:61/92;Unswayed:44/92;Kick Off:222/416;Steady Footing:56/337;Time To Go:58/433;An Ironsinger's Instinct:62/66;Exposed Durability:49/68;Phantom Edge:59/66;Everchanging Aegis:207/314;Neural Overload:44/58;Overflowing Dam:128/183;Perfect Flash:254/315;Wyvern's Claw:299/356;Aerogliding:14/54;Gale Trap:27/90;Suffocating Impact:32/72;Stifled Jump:24/72;Apothecary:24/329;Chain Reaction:14/64;Placebo Effect:18/77;Potion Quaffer:27/241;Endurance Runner:266/385;Scaredy Cat:270/433;Conditioned Runner:229/385;Approaching Singularity:59/65;Flame Within:86/158;Proficient Baiting:5/500;Hook, Line, and Sinker:5/500;Fisher's Lure:5/500;Collapsed Lung:41/46;Carnivore:187/381;Grand Feast:115/381;Sunken Predator:71/500;Arc Module: Dash:1/3;Arc Module: Eject:1/3;Arc Module: Enhance:1/3;Arc Module: Guard:1/3;Arc Module: Leap:1/3;Arc Module: Null:1/3;Master Craftsman:125/149;Deep Wound:37/250;Lights Out:32/99;Lowstride:50/416;Unseen Threat:29/99;Authority Intimidation:32/46;Resolve Crusher:32/44;First Interrogation:32/44;Second Interrogation:32/44;Battle Tendency:321/374;Braced Collapse:276/438;Moving Fortress:342/445;Perseverance:158/321;Reinforced Armor:115/120;All-Seeing Eye:3/19;Berserk:53/86;Float Like a Butterfly:24/61;Lithe Step:24/61;Reveal:24/61;Soaring Storm:24/61;Untouchable:24/61;Anchor Shock:5/11;Blight Pierce:5/11;Blighted Touch:4/11;Blightlash:4/11;Sovereign State:4/11;Bloodwarden's Sense:46/87;Smell of Blood:41/74;Bloodrend Unbounded:41/73;Bloodrender:79/89;Adept Bloodrender:77/88;Expert Bloodrender:77/87;Master Bloodrender:74/80;Crimson Fountain:50/82;First Blood:29/89;Hemorrhaging Blow:13/15;Rush Hour:42/80;Sanguine Siphon:41/81;Blood and Iron:5/10;Brain Death:3/11;Cold Blooded:11/15;Electrolyte:2/10;Malevolent Sapper:7/10;Bruiser's Mixup:12/500;Impairing Blow:46/147;Brazen Blow:42/147;Heavy Fatigue:32/143;Rending Impact:42/143;Defensive Reprisal:25/130;Dancing Guard:19/137;Down to your Level:27/133;Knuckle Guard:19/104;Swift Rebound:385/417;Evasive Expert:359/417;Risky Moves:327/409;Ghost:228/250;Perpetual Wrath:9/27;Chainlash:9/27;Champion's Regalia:187/349;Defiance:78/95;Underdog:278/350;Charismatic Cast:330/347;Chaotic Charm:157/167;Lasting Charisma:157/167;Tough Love:317/347;Dazing Finisher:84/166;Freezing Wight:15/24;Destructive Recovery:52/110;Heavy Hitter:75/129;Lord's Tithe:6/62;Grand Support:29/430;Hidden Tendril:6/21;String Trick:6/21;Pressure Detonation:9/14;Finishing Touch:13/44;Knife's Journey:57/140;Successive Throw:46/137;Chilling Flourish:50/106;Condensation Drip:10/75;Cool Head:34/106;Fragile Freeze:34/75;Preceding Chill:8/75;Golden Age:0/3;Blood Thirsty:30/143;In a Hurry:10/266;Muffled Screams:4/120;Blighted Song:7/90;Dark God:64/121;Dark Synergy:35/63;Dark Waltz:6/8;Dark Hours:59/66;Dark Rift:46/55;Night Terror:5/7;Overwhelming Drain:8/129;Shadow Overflow:39/55;Absolute Radiance:12/28;Protagonist Syndrome:12/28;Luminous Flash:12/28;Blackhole:21/55;Energy Siphon:19/55;Spell Shout:7/500;Frozen Web:4/10;Ethiron's Gaze:51/500;Concussion:102/336;Concussive Force:33/383;Precise Swing:98/306;Spine Cutter:258/318;Steady Nerves:70/125;Strong Hold:39/116;Strong Stern:92/347;Tap Dancer:87/100;Concussive Flash:8/91;Charged Return:184/319;Nullifying Clarity:89/269;Cornered Fool:30/38;Give and Take:65/214;Off Your Game:17/23;Robber Baron:15/500;Ether Absorption:132/327;Eureka:214/258;Keen Recovery:41/87;Behind You:4/23;Unwavering Focus:17/46;Reverse Leech:0/2;Barber's Skillset:3/17;Hair Product:3/17;Hair Spray:3/17;Meteor Impact:75/158;Phoenix Impact:65/129;Fang and Coil:3/141;Fishman:349/500;Landshark:5/500;Dancing Steps:40/130;Graceful Steps:17/62;The Final Act:50/77;Cauterized Wounds:30/111;Warding Radiance:51/113;Flamewalker:16/90;Hell's Partisan:19/130;Flamecharm Unbounded:45/69;Flamecharmer:114/171;Adept Flamecharmer:81/160;Expert Flamecharmer:76/155;Master Flamecharmer:61/81;Azure Flames:43/53;Temperature Shock:10/35;Exoskeleton:412/431;Glacial Mobility:3/79;Frostdraw Unbounded:34/56;Frostdrawer:78/120;Adept Frostdrawer:69/112;Expert Frostdrawer:69/106;Master Frostdrawer:60/83;Cold Front:36/106;Fulgurite Formation:7/14;Orbital Ice:52/61;Glacial Coasting:15/52;Frozen Legs:34/75;Imperium Kata:6/500;Legion Kata:7/500;Galebreathe Unbounded:28/51;Galebreather:60/114;Adept Galebreather:49/108;Expert Galebreather:49/106;Master Galebreather:46/90;After Cut:83/100;Breathing Impact:34/106;Inhale:78/87;Neuroplasticity:407/471;Glass Path: Crystallization:37/92;Crystal Shrapnel:24/75;Reclaimed Glass:20/61;Fortitude Unbounded:40/126;Bodkin Arrow:2/93;Hard Stop:2/93;Precision Crusher:2/87;Armor Piercing:26/431;Execution:3/5;Gunpowder Blast:6/126;Hip Shooter:3/11;Parting Gift:8/101;True Ether Bullets:10/214;Prime Ether Bullets:7/16;Quickdraw:5/110;Quick Swap:4/134;Brain Rattler:10/137;Dispatch:3/94;Hammerfall:8/162;Fan the Flames:9/24;All the Dead Gods:64/73;All Above, Gods Below:7/9;Heretic's Sutra:43/92;Sin Stacker:19/24;Brick Wall:39/39;Not a Scratch:31/46;Peripheral Vision:4/272;Bottom Freeze:28/106;Cryonis:65/92;Frost Buster:5/19;Frozen Anchor:4/7;Frostbite:73/106;Frozen Pin-Cushion:25/75;Saint Jay:65/106;Union Hook:45/500;Agitating Spark:114/130;Immolation:112/130;Phoenix Flames:47/129;Corpse Explosion:10/77;Pleeksty's Faith:6/79;Pleeksty's Will:6/273;Critical Engine:32/43;Ironsing Unbounded:38/66;Ironsinger:70/83;Adept Ironsinger:69/80;Expert Ironsinger:69/79;Master Ironsinger:66/71;Iron Veins:16/17;Heavy Shoulders:30/68;Laced Traps:21/71;Metal Shackles:18/43;Piercing Metal:49/68;Thornmail:26/71;Willpower Unbounded:32/92;Grand Skewer:9/46;Acceleration Points:20/51;Decisive Winds:20/51;Jetstream Pursuit:20/51;Rush of Ancients:20/51;Stratos Step:20/51;Electrify:49/96;Amplified Reflexes:9/85;Amplified Rage:40/85;Jus Karita:29/143;Justicar's Prowess:10/135;Justicar's Renewal:18/140;Flying Swiftkick:12/136;Kickstart:4/63;Blade's Edge:23/177;Defensive Sweep:17/137;Driving Impact:15/177;Lancer's Impale:21/177;Hoplite:17/444;Eruption Path: Lava Serpent:20/129;Empowered Eruption:12/81;Flash Point:13/78;The Floor is Lava:10/19;Callout:12/348;Spotter:9/500;Observation:70/416;Safety Dance:67/416;Air Pressure:53/71;Cyclone Blade:28/47;Pressure Break:28/49;Wind Step:84/100;Scorched Peak:11/30;Comeback Kid:40/500;Last Resort:254/319;The Eleventh Hour:106/318;Entropy Link:5/12;Symbiotic Link:6/12;Silencer's Song:2/5;Old Habits Die Hard:346/394;Thresher Claws:455/500;Leg Shot:2/90;Stock Bash:2/105;Tactical Reload:0/33;Impervious Slumber:84/432;Breathing Exercise:381/436;Conquer your Fears:102/409;Disbelief:247/373;Intuitive Repairs:7/79;Metal Absorption:9/79;Metal Eater:42/71;Metal Thief:31/71;Polished Armor:59/66;Chain of Perfection:62/500;Echoing Lunatic:36/127;Lose Your Mind:67/268;Shared Misery:26/62;Charisma Unbounded:28/67;Ardour Scream:114/500;Armor Conserver:196/500;Lightweight:46/500;Padded Armor:332/500;Steel Scales:331/500;Captain Etrea:9/271;Fists of Fortitude:42/115;Way of Navae:7/500;Defensive Stance:12/126;Duelist's Lunge:11/139;Frenzied Dance:11/126;Pressure Skewer:14/134;Fast Blade:326/416;Lightspeed Reflexes:148/271;Speed Emission:69/409;All Knowing:25/77;Intelligence Unbounded:31/69;Successive Prediction:33/99;Twelve Steps Ahead:23/65;Lock n Load:11/110;Rapid Fire:10/126;Rapid Reload:12/126;Sleight of Hands:6/126;Ultrakill:8/110;Cult of Personality:18/23;Pardon Me:10/38;Excavator:9/500;Harvester:9/500;Celebrity:11/194;Under The Radar:21/117;You'll Need To Get Past Me:23/68;Going Nowhere:187/304;Volcanic Glass:12/35;Hungry Flames:21/129;Blood Bag:31/88;Blood Transfusion:56/76;Open Wound:36/81;Kj's Courage:26/500;Nanji's Training:42/500;Supernatural Sense:25/500;Bulldozer:197/349;Broken Ankles:55/88;Piercing Blow:45/50;Shield Breaker:81/93;Unwavering Resolve:228/250;Million Ton Piercer:63/68;Jolting Current:8/85;Rending Needle: Conductor:23/66;Conductor's Cable:20/66;Rending Needle: Impaler:25/66;Rending Needle: Jailer:17/66;Family Recipe:112/500;Incendiary Formula:9/500;Sulphur Surprise:9/500;Hot Potato:25/500;Explosive Efficiency:9/500;Pocket Bombs:81/500;Chorus of Souls:5/5;Will o' Wisp:259/383;Wisp Convergence:5/5;Light Weapons Unbounded:37/101;Medium Weapons Unbounded:47/112;Heavy Weapons Unbounded:31/100;Saint's Negation:6/25;Saint's Overload:6/25;Saint's Synergy:6/25;Antithetic Salts:10/18;Aromatic Salts:10/18;Biotic Salts:10/18;Enhanced Flow:25/30;Torture Mastery:1/3;Dark Receiver:5/6;Blood Bank:31/38;Sharing is Caring:45/56;Windwaker:8/108;Dirty Boxing:32/409;Pocket Sand:18/97;Gilded Path: Scrapsinger:61/71;Artisan's Blade:60/71;Masterwork:57/68;Refine and Reuse:60/71;Songs Unforged:61/71;Reshape and Remold:56/66;Gruesome Harvest:44/52;Hemolysis:26/39;Hemolytic Transfusion:52/74;Juicy Snack:27/58;Panacea:60/74;Tainted Ground:49/87;Vasculitis:21/40;Shadowcast Unbounded:24/44;Shadowcaster:63/129;Adept Shadowcaster:50/121;Expert Shadowcaster:41/76;Master Shadowcaster:34/59;Blossoming Darkness:11/66;Fear the Dark:42/59;Lasting Sorrow:39/59;Shadow Travel:12/44;Sightless Still:14/76;Singularity:46/66;Knight's Rally:117/377;Turtle Shell:113/358;Grounding Bolt:1/4;Silencer's Blade:48/87;A World Without Song:43/51;Dread Fighter:20/51;Flow State:20/51;Mayhem:20/51;Relentless Hunt:21/51;Rising Star:21/51;Silent Cascade:19/51;True Vantage:21/51;Unmatched Dexterity:21/51;Vengeful Pursuit:21/51;Golden Tongue:153/196;Snake Oil:39/228;Absolute Pitch:26/32;Ether Overdrive:39/57;Bloodiron Spirit:433/500;Soul Infusion:20/59;Formless:19/59;Heart Reverb:19/59;Haunted Path: Specter:42/90;Phantom Step:38/88;Vanishing Wraith:21/87;Possession:17/51;Death From Above:8/21;Ichor Imbuement:8/21;Static Link:38/51;Jumper Cables:31/48;Link Conduction:26/37;Static Ace:24/33;Static Allure:19/50;Storm Link:4/9;Grasp on Reality:102/400;Magical Resolve:157/266;Unfazed:73/121;Voltaic Conductor:3/11;Iron Gut:8/471;Termite:105/381;Dustlunge:26/27;None Left Behind:17/21;Foolish Outburst:35/99;Hard Read:52/322;Punishing Blow:73/153;Target Switch:24/322;Water off a Duck's Back:41/99;Controlled Combustion:4/36;Artisan Chef:10/218;Master Chef:9/218;Explosive Finish:50/83;Flaming Flourish:110/155;Emperor Flame:57/77;Mirage Clone:62/72;Cap Artist:22/288;Pickpocket:39/309;Discharge:22/37;Rain of Static:6/116;Windup Battery:3/38;Static Blade:15/24;Gathering Electricity:11/15;Overcharge:6/16;Thundercall Unbounded:26/37;Thundercaller:55/116;Adept Thundercaller:48/106;Expert Thundercaller:46/94;Master Thundercaller:40/74;Discovery of Fire:13/74;Shocking Finish:4/94;Static Fakeout:23/46;Static Flash Clone:4/46;Manipulator:96/118;Narcissist:13/117;Sow and Mend:69/76;Cyclical Exsanguination:60/74;Embolism:38/74;Hypovolemic Focus:49/74;Cheap Shot:76/85;Crippling Comeuppance:18/21;Down Comes the Claw:39/44;Maiming Claws:17/21;Pursuit:17/27;Face Cutter:6/82;Turning of the Wheel:7/112;Wraith Path: Twisted Puppets:19/23;Burning Puppets:18/23;Burning Sacrifice:3/11;Explosive Rage:15/23;Moths to a Flame:18/23;Audacity:6/7;No Survivors:8/12;Denial Repulse:5/83;Undying Flame:24/83;Surge Path: Unstable Capacitor:29/75;Battery Sapper:2/4;Catalytic Strike:28/74;Closed Circuit:27/74;Human Battery:10/46;Flashboil:32/57;Boiling Point:15/57;Action Surge:23/44;Bear Trap:241/324;Blade Dancer:253/409;Cut to the Chase:82/99;Speed Demon:358/409;Spinning Swordsman:180/416;Cheap Trick:7/16;Reality Shift:7/16;Shared Mimicry:5/16;Encore:19/194;Vow of Mastery:29/348;Command: Live:26/67;Command: Summon:18/44;Chronostasis:309/500;Conditioned Swimmer:31/500;Brutal Momentum:85/127;Matador:110/332;Showstopper:219/249;Switchblade:7/8;Warrior's Swing:74/147;Haunted Gale:75/100;Agility Unbounded:12/44;Ash Ember:6/8;Brassneck:57/264;Careful Handling:6/500;Dragon's Song:35/500;Full Reset:84/500;Gourmand:156/500;Heavy Haul:12/383;Martyr:35/500;Polite Awakening:54/500;Ready or Not:51/443;Replenishing Knockout:247/500;Treefelling Blow:7/500;Ether Blade:4/277;Unyielding Frost:13/17;Unyielding Inferno:48/130;Swiftkick Prodigy:17/138;Ankle Cutter:20/51;Piercing Will:85/93;Both Ends:0/177;Counter Spin:3/162;Stasis Strike:1/7;Decisive Blow:45/139;Unstoppable Force:29/78;Vacuum Punch:9/108;Scorchblood:4/12;Dark Replenishment:9/41;Strength Unbounded:36/87;Beiruul's Vengeance:23/500;Another Man's Trash:20/175;Mantra Permanence:27/321;Ironclad Punishment:53/71;Ether Proselyte:6/25;Hero's Assist:6/25;Perpetual Distillery:10/18;Unnecessary Theatrics:55/69;Bulletproof:10/498;Oh The Irony:20/27;Taste The Rainbow:3/126;Rule Through Fear:9/12;Merciless Blade:20/51;Stratoshock:14/85;Apparitions:30/90;Donation Drive:21/42;Fried Circuits:11/46;Enrage:2/72;Scorching Decay:5/8;Mythic Stability:49/124;Stay of Execution:12/481;Cook's Kit:5/442;Chemistry Kit:8/314;To The Finish:385/406;Propagandist:9/67;Elemental Mentalist:4/20;Sclerosteosis:8/49;Needleblade:0/6;Heavy Cannonball:1/106;Sticky Flames:1/87;Mortar Mystery:2/41;Pressure Strike:0/64;Rage Bait:0/8;Guilt Trip:0/11;Depressive State:0/3</script>
 <script type="text/plain" id="dwpop">Thresher Claws:94;Bloodiron Spirit:90;Exoskeleton:84;Neuroplasticity:84;Swift Rebound:79;Breathing Exercise:78;Speed Demon:75;Evasive Expert:74;Old Habits Die Hard:73;Fishman:69;Moving Fortress:69;Padded Armor:68;Risky Moves:68;Steel Scales:68;Charismatic Cast:66;Fast Blade:66;Battle Tendency:65;Chronostasis:65;Wyvern's Claw:63;Tough Love:63;To The Finish:60;Underdog:58;Braced Collapse:57;Endurance Runner:55;Blade Dancer:55;Last Resort:54;Scaredy Cat:54;Spine Cutter:53;Will o' Wisp:53;Perfect Flash:51;Disbelief:51;Bear Trap:49;Replenishing Knockout:48;Ghost:47;Kick Off:47;Conditioned Runner:46;Unwavering Resolve:44;Showstopper:43;Eureka:42;Everchanging Aegis:42;Bulldozer:42;Armor Conserver:41;Carnivore:40;Spinning Swordsman:40;Charged Return:39;Champion's Regalia:39;Going Nowhere:39;Magical Resolve:33;Gourmand:31;Perseverance:31;Lightspeed Reflexes:31;Chaotic Charm:29;Lasting Charisma:29;Golden Tongue:27;Ether Absorption:27;Overflowing Dam:26;Matador:25;Grand Feast:25;Master Craftsman:24;To the Finish:24;Ardour Scream:23;Knight's Rally:23;Flamecharmer:23;Reinforced Armor:23;Agitating Spark:23;Immolation:22;The Eleventh Hour:22;Turtle Shell:22;Concussion:22;Flaming Flourish:22;Family Recipe:21;Conquer your Fears:21;Termite:21;Grasp on Reality:21;Nullifying Clarity:20;Against All Odds:19;Tap Dancer:19;Brutal Momentum:19;After Cut:19;Wind Step:19;Precise Swing:19;Strong Stern:19;Cut to the Chase:19;Cheap Shot:18;Flame Within:18;Full Reset:18;Piercing Will:18;Inhale:18;Punishing Blow:18;Impervious Slumber:17;Manipulator:17;Warrior's Swing:17;Adept Flamecharmer:17;Haunted Gale:17;Frostdrawer:17;Heavy Hitter:17;Frostbite:17;Meteor Impact:17;Defiance:16;Expert Flamecharmer:16;Steady Nerves:16;Unfazed:16;Adept Frostdrawer:16;Expert Frostdrawer:16;Dazing Finisher:15;Bloodrender:15;Saint Jay:15;Shield Breaker:15;Adept Bloodrender:15;Galebreather:15;Sunken Predator:15;Expert Bloodrender:15;Pocket Bombs:15;Master Bloodrender:14;Cryonis:14;Speed Emission:14;Phoenix Impact:14;Ironsinger:14;Adept Ironsinger:14;Emergency Reserves:13;Lose Your Mind:13;Polite Awakening:13;Master Frostdrawer:13;Expert Ironsinger:13;Sow and Mend:13;Air Pressure:13;Silencer's Blade:13;Gilded Path: Scrapsinger:13;Adept Galebreather:13;Expert Galebreather:13;Observation:13;Safety Dance:12;An Ironsinger's Instinct:12;Master Ironsinger:12;Million Ton Piercer:12;Panacea:12;Mirage Clone:12;Master Flamecharmer:12;Ready or Not:12;Steady Footing:12;Orbital Ice:12;Polished Armor:12;Shadowcaster:12;All the Dead Gods:12;Artisan's Blade:12;Refine and Reuse:12;Songs Unforged:12;Time To Go:12;Phantom Edge:12;Give and Take:12;Cyclical Exsanguination:12;Emperor Flame:12;Blood Transfusion:11;Hard Read:11;Approaching Singularity:11;Dark God:11;Master Galebreather:11;Broken Ankles:11;Masterwork:11;Ironclad Punishment:11;Thundercaller:11;A World Without Song:11;Warding Radiance:11;Chilling Flourish:11;Brassneck:11;Lightweight:11;Electrify:11;Medium Weapons Unbounded:11;Unnecessary Theatrics:11;Explosive Finish:11;Reshape and Remold:11;Knife's Journey:11;Berserk:11;Exposed Durability:11;Lowstride:10;Down Comes the Claw:10;Crimson Fountain:10;Hemolytic Transfusion:10;Destructive Recovery:10;Mythic Stability:10;Adept Shadowcaster:10;Tainted Ground:10;Dark Hours:10;Unyielding Inferno:10;Bloodwarden's Sense:10;Impairing Blow:10;Adept Thundercaller:10;Piercing Metal:10;The Final Act:10;Comeback Kid:10;Hypovolemic Focus:10;Phoenix Flames:10;Expert Thundercaller:9;Gruesome Harvest:9;Fortitude Unbounded:9;Cold Front:9;Rending Impact:9;Azure Flames:9;Brazen Blow:9;Brick Wall:9;Flamecharm Unbounded:9;Amplified Rage:9;Breathing Impact:9;Suffocating Impact:9;Glass Path: Crystallization:9;Smell of Blood:9;Rush Hour:9;Sharing is Caring:9;Water off a Duck's Back:9;Unswayed:8;Metal Eater:8;Piercing Blow:8;Bloodrend Unbounded:8;Keen Recovery:8;Sanguine Siphon:8;Frostdraw Unbounded:8;Dark Rift:8;Neural Overload:8;Singularity:8;Willpower Unbounded:8;Successive Throw:8;Decisive Blow:8;Dragon's Song:8;Collapsed Lung:8;Fists of Fortitude:8;Haunted Path: Specter:8;Master Thundercaller:8;Ether Overdrive:8;Heavy Weapons Unbounded:8;Strong Hold:8;Deep Wound:8;Fragile Freeze:8;Dancing Steps:8;Expert Shadowcaster:8;Static Link:8;Open Wound:8;Galebreathe Unbounded:8;Ironsing Unbounded:8;Fear the Dark:8;Embolism:7;Cool Head:7;Cyclone Blade:7;Surge Path: Unstable Capacitor:7;Frozen Legs:7;Strength Unbounded:7;Phantom Step:7;Second Interrogation:7;Resolve Crusher:7;First Interrogation:7;Heavy Fatigue:7;Lasting Sorrow:7;Authority Intimidation:7;Stifled Jump:7;Concussive Force:7;Lights Out:7;Snake Oil:7;Metal Thief:7;Shadow Overflow:7;Pickpocket:7;Martyr:7;Pressure Break:7;Flashboil:7;Catalytic Strike:7;Critical Engine:7;Foolish Outburst:7;Unseen Threat:7;Blood Bag:7;Dark Synergy:7;Master Shadowcaster:7;Action Surge:7;Echoing Lunatic:6;Closed Circuit:6;Bottom Freeze:6;Crystal Shrapnel:6;Gale Trap:6;Successive Prediction:6;Down to your Level:6;Dirty Boxing:6;Conditioned Swimmer:6;Cauterized Wounds:6;Heavy Shoulders:6;Jumper Cables:6;Apparitions:6;Intelligence Unbounded:6;Light Weapons Unbounded:6;Dustlunge:6;Undying Flame:6;Frozen Pin-Cushion:6;First Blood:6;Mantra Permanence:6;Blood Bank:6;Hemolysis:6;Blood Thirsty:6;Armor Piercing:6;Cornered Fool:6;Link Conduction:6;Hot Potato:6;Grand Support:5;Juicy Snack:5;Unstoppable Force:5;Thundercall Unbounded:5;Enhanced Flow:5;Defensive Reprisal:5;Charisma Unbounded:5;All Knowing:5;Thornmail:5;Reclaimed Glass:5;Vow of Mastery:5;Target Switch:5;Static Fakeout:5;Static Ace:5;Rending Needle: Conductor:5;Shadowcast Unbounded:5;Rending Needle: Impaler:5;Twelve Steps Ahead:5;Hell's Partisan:5;Command: Live:5;Absolute Pitch:4;Hungry Flames:4;Conductor's Cable:4;Eruption Path: Lava Serpent:4;Blackhole:4;Dancing Guard:4;Shared Misery:4;Vanishing Wraith:4;Potion Quaffer:4;Energy Siphon:4;Static Allure:4;Pursuit:4;Vasculitis:4;Donation Drive:4;Unwavering Focus:4;Static Blade:4;Not a Scratch:4;Metal Shackles:4;Cap Artist:4;Under The Radar:4;Fried Circuits:4;Sin Stacker:4;Discharge:4;Wraith Path: Twisted Puppets:4;Graceful Steps:4;Crippling Comeuppance:4;Maiming Claws:4;Apothecary:4;Oh The Irony:4;Another Man's Trash:4;You'll Need To Get Past Me:4;Blade's Edge:3;Laced Traps:3;Flamewalker:3;Knuckle Guard:3;None Left Behind:3;Cult of Personality:3;Moths to a Flame:3;Burning Puppets:3;Iron Veins:3;Rending Needle: Jailer:3;Encore:3;Robber Baron:3;Freezing Wight:3;Boiling Point:3;Command: Summon:3;Human Battery:3;Lancer's Impale:3;Discovery of Fire:3;Placebo Effect:3;Possession:3;Aerogliding:3;Gathering Electricity:3</script>
 <script type="text/plain" id="dwmdmg">Burning Servants|44,48.4,52.8,57.2,61.6|FLM2.75
@@ -2921,6 +2954,22 @@ Broodplate Cuirass|A|0|0|0|0|0|0|R1L1|PWR10|||Rotten Regeneration
 Wool Beret|H|3|0|0|0|0|0|R2|PWR4|||
 Glassdancer Shinwraps|L|5|0|0|0|0|0|R1|PWR8|Glassdancer||
 Bejeweled Clip|F|1|0|0|0|0|0|||||
+Familiar Prosthetic Arm|A|3|0|0|0|0|0|R1L1|PWR8|||Iron Body
+Thorned Blazer|A|5|0|0|0|0|0|R1L2|PWR15|||Cursed Thorns
+Harvestman's Halo|H|-20|0|0|0|0|0||PWR15|Harvestman||Ardenstar Rage
+Wreath of the Ardenstar|H|12|0|0|0|0|0|R1||||Revitalizing Pumpkin
+Hunter's Chapeau|H|0|0|0|0|0|0|||||
+Crooked Witch Hat|H|0|0|0|0|0|0|||||
+Harvestman's Cloak|T|1|0|0|0|0|0||PWR10|Harvestman||Cursed Pumpkin
+Wispfire Beacon|T|1|0|0|0|0|0|||||
+Pilferer's Trophy|T|1|0|0|0|0|0|||||
+Eyes of the Moppet|F|1|0|0|0|0|0|||||
+Stitched Effigy|F|1|0|0|0|0|0|||||
+Mask of Phantoms|F|1|0|0|0|0|0|||||
+Coffin Earrings|E|1|0|0|0|0|0|||||
+Pumpkin Earrings|E|1|0|0|0|0|0|||||
+Raudra's Pendant Earrings|E|0|0|0|0|0|0|C1R1||Shiva||Skillful Recovery
+Raudra's Finger|R|0|0|0|0|0|0||PWR10|Shiva||Raudra's Pride
 #O
 Hive Adjudicator|25|25|1000|PWR15|
 Corsair Outlaw|15|10|1200||
@@ -2992,13 +3041,13 @@ Stratos' Cloak|20|30|2200||
 Warder's Attire|30|35|2750|PWR15|
 Blacksteel Attire|30|0|1000||
 Eager Tradesman|10|5|1000||
-Merchant Robes|0|0|1200||
-Pathfinder Sorcerer|5|10|1000|INT5|
+Merchant Robes|10|5|1200||
+Pathfinder Sorcerer|5|10|1000||
 Scholar|8|10|1000||
 Cutthroat Light Armor|10|0|1000|PWR5|
 Experienced Adventurer|10|0|1000|PWR5|
 Flame Worshipper Armor|10|5|1000|PWR5|
-Pathfinder Thaumaturge|10|15|1000|PWR5 INT10|
+Pathfinder Thaumaturge|15|10|1000|PWR5 INT10|
 Shadow Hunter|10|5|1500|AGL10|
 Steel Plate|5|0|1000|PWR5 FTD10|
 Summer Company Uniform|10|5|1500|PWR5|
@@ -3008,14 +3057,18 @@ Veteran Adventurer|15|15|1500|PWR10|
 Familiar Assassin's Armor|25|25|2000|PWR15|
 Familiar Demon's Armor|25|25|2500|PWR15|
 Familiar Occultist's Armor|25|25|2000|PWR15|
+Familiar Vagrant's Armor|20|30|2500|PWR15|
+Familiar Sage's Armor|25|25|2750|PWR15|
+Familiar Prince's Armor|35|35|3250|PWR15|
+Familiar Arachnid's Cloak|20|15|3500|PWR15|
 #OT
 Hive Adjudicator|Lowstride
 Corsair Outlaw|Lightweight
 Eager Tradesman|Knack
 Merchant Robes|Merchant's Accord
-Pathfinder Sorcerer|Lowstride
+Pathfinder Sorcerer|Mantra Permanence
 Scholar|Scholar's Intuition
-Skeptic Pioneer|Apothecary
+Skeptic Pioneer|Ready or Not
 Authority Peacekeeper Armor|Lowstride
 Bounty Hunter|Lightweight
 Carefree Garments|Fleetfoot
@@ -3079,6 +3132,10 @@ Hidden Knife Armor|Bane
 Ringing Scholar's Garb|Lose Your Mind
 Stratos' Cloak|Breeze
 Warder's Attire|Justicar's Gift
+Familiar Vagrant's Armor|Grapple
+Familiar Sage's Armor|Lightning Drop
+Familiar Prince's Armor|Light Piercer
+Familiar Arachnid's Cloak|Arachnid Surge
 #TD
 Umami|Feast on foes with mighty cutlery. Chef Weapons now steal opponents hunger.
 Gourmand|Your hunger and thirst gain from eating is increased.
@@ -3256,7 +3313,18 @@ Aerogliding|When falling from a high place, hold space to generate wind currents
 Vigil's Grace|Whenever you gain a speed boost, increase your swing speed by 0.02.
 Action Surge|Adrenaline Surge now increases your swing speed by 0.04 for its duration.
 Breeze|Gain a permanent +2 speed at all times.
-Justicar's Gift|Your Justicar support mantras now heal allies for 10 health instead of 5. Karita Aid lasts 15 seconds.</script>
+Justicar's Gift|Your Justicar support mantras now heal allies for 10 health instead of 5. Karita Aid lasts 15 seconds.
+Grapple|Aim your mouse and shoot a grapple from your metal arm to target and pull yourself towards it. Requires the Familiar Prosthetic Arm.
+Lightning Drop|While in the air, quickly drop down and strike opponents near where you land with fierce lightning.
+Light Piercer|While using a spear, shoot out 3 light spears that pierce through your opponent and their block. While wearing Familiar Prince's Armor, all passive regeneration is increased by 10%.
+Arachnid Surge|Gives you a brief window of very powerful climbing, at the cost of wearing out your ankles.
+Mantra Permanence|Knocking an enemy with a mantra refunds the cost of the mantra.
+Iron Body|Reduce the amount of chip damage you receive by a flat 10%. Enables you to use actions that require a prosthetic arm.
+Cursed Pumpkin|Double the damage of your pumpkins from your Pumpkin Pitch mantra. This increases its cooldown to 10 seconds.
+Ardenstar Rage|When below 50% health, reduce all mantra cooldowns by 50%. When below 20% health, all mantras set your opponent on cursed fire. Consistently lose health while wearing this halo in combat.
+Revitalizing Pumpkin|Pumpkins from Pumpkin Pitch that hit your opponent heal you for 1% of your max health.
+Cursed Thorns|Monsters who hit you take 20% of the damage they deal to you, but you now also take 10% more damage from monsters. Landing Pumpkin Pitch on a player makes them susceptible to this effect for a few seconds.
+Raudra's Pride|Gain 3% damage for each player and 1% damage for each mob that has combat-tagged you. At 5 stacks, Vent to burn all stacks and reset your cooldowns.</script>
 <script type="text/plain" id="dwtdesc">Against All Odds|For each combat tag you have on your character, increase your damage by 2% (max of 14%).
 Emergency Reserves|When you get hit below 20% health, gain 20% tempo immediately.
 Unswayed|The effects of Taunt and Encore no longer work on you.
@@ -3891,10 +3959,26 @@ True Seraph Slash|Landing the first hit of your critical attack enhances your ne
 True Shatter|Landing a critical shatters your opponent, ridding them of their speed debuffs and dealing true damage scaling off how…
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
-Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…</script>
+Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…
+Composite Path: Alloyblood|Fuse the Ironsing rods from Ironsing mantras and Blood Poison from Bloodrend mantras into a composite plasma that flows in your opponents blood. Your Bloodrend mantras are now silver.
+Stored Plasma|Feinting an alloyblood mantra increases the duration of the next weapon summoned from an alloyblood mantra by 33%.
+Plasma Signal|Your opponent now signals a noise and are highlighted when they have enough plasma for you to cast your Rising Plasma mantra. Raise your opponent's plasma by 10% when this happens.
+Ultrafiltration|Filter out your bloodalloy hybrid mantras' composite plasma, allowing them to apply ironsing/bloodrend elemental effects once again.
+Retained Hemoglobin|Using an alloyblood mantra reduces the composite plasma cost of the next alloyblood mantra by 20%. This effect lasts for 10 seconds and can be stacked.
+Plasma Refresh|When casting an Alloyblood hybrid mantra, refresh your critical attack cooldown. Your critical hits with alloyblood weaponry now add composite plasma to your opponent.
+Hypoferritinemia|Using Rising Plasma now summons your Metal Greatsword instead. Your Metal Greatsword now has an innate 75% chip, gaining even more chip based on how much composite plasma is inside your opponent.
+Exotherm Path: Sanguine Blaze|Your blood runs thick and oily, clinging to all it touches. Blood mantras leave foes coated in Black Blood, slowing them and stifling their healing, up to 3 stacks. Touch it with flame and it erupts. Your fire burns a searing pink.
+Pressure Bleed|Your vents turn pink, spraying explosive Black Puddles that ignite enemies.
+Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites them with pink fire.
+Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
+Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
 <script type="text/plain" id="dwvers">## v0.34 | unreleased
 - New "Download build file (.txt)" link in Share & export (and the Share dialog): saves the build as a text file in deepwoken.co's format, with pre-shrine stats, post-shrine stats and every talent, including the ones the game gives you for your stats (like Adept Ironsinger and Ironsing Unbounded) and your oath. Paste the file's text into Import to load the build again.
 - Hallowtide 2026: the talent Alloyblood is now called Iron Veins, as in the game. Builds, share links and imports that still say Alloyblood load as Iron Veins.
+- Hallowtide 2026 weapons: Corvidirge Severants (twinblade, Light 55 + Medium 55), Silas's Cenotaph (greatsword, Heavy 100 + Mind 50), Cursed Flames (Flamecharm sword), the Alloyblood Daggers, Spear and Axe (summoned by the Alloyblood mantras) and Infected. Ironcry (bow) can now be picked too.
+- Two new talent paths: Composite Path: Alloyblood (Ironsing + Bloodrend) with Infused Slash, Spinning Serum and Rising Plasma, and Exotherm Path: Sanguine Blaze (Bloodrend + Flamecharm) with Cauterize, Combustion Tide and Flashfusion. The AI build maker understands "alloyblood path" and "sanguine blaze".
+- New outfits: Familiar Vagrant's, Sage's and Prince's Armor and Familiar Arachnid's Cloak. New equipment: Familiar Prosthetic Arm, Thorned Blazer, Harvestman's Halo and Cloak, Wreath of the Ardenstar, Raudra's Finger and Raudra's Pendant Earrings, plus the Hallowtide cosmetics.
+- Balance changes from the game: Krulian Knife, Iron Requiem, Withered Phantomcleave, Imperial Staff, Duskguard Axe, Ysley's Pyre Keeper and First Light have new damage, PEN or scaling; Merchant Robes and Pathfinder Thaumaturge have new armor; Pathfinder Sorcerer now gives Mantra Permanence (no Intelligence needed) and Skeptic Pioneer gives Ready or Not.
 
 ## v0.33 | 2026-10-26
 - Starting presets (with the AI build maker) are back at the top of the Stats tab, open by default. Fold them away and they stay folded.
@@ -5787,7 +5871,7 @@ function aiNames(){if(AI_NAMES)return AI_NAMES;
   for(const m of DB.M)if(!m.at[0].startsWith('Origin'))out.push([m.n,{k:'mantra',n:m.n}]);
   AI_NAMES=out;return out}
 // talent families people call "paths"
-const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter']];
+const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter'],['alloyblood|composite|plasma','Alloyblood'],['sanguine blaze|exotherm\\w*|black blood','Exotherm','sanguine blaze|exotherm\\w*']];
 const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast','insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
 const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
@@ -5876,8 +5960,9 @@ function aiParse(txt,basePreset){
   const gN=by('gear');if(gN.length){p.gearItems=gN;got.push('equipment '+gN.join(', '))}
   // talent paths ("steam path") and named talents / mantras: these are must-haves
   const pathT=[];
-  for(const [kw,cat] of AI_PATHS){if(new RegExp(`\\b(?:${kw})\\w*\\s+(?:path|tree|talents?|build)\\b|\\b${cat.toLowerCase()}\\b`).test(s)){
-    const ts=DB.T.filter(t=>t.c===cat&&t.k&&t.r!=='Q'&&!t.req.q&&!isAvoid(t.n));
+  for(const [kw,cat,bare] of AI_PATHS){if(new RegExp(`\\b(?:${kw})\\w*\\s+(?:path|tree|talents?|build)\\b|\\b${cat.toLowerCase()}\\b${bare?`|\\b(?:${bare})\\b`:''}`).test(s)){
+    // Hypoferritinemia also needs Torture Mastery + Needleblade (two other trees), so "alloyblood path" doesn't pull it in
+    const ts=DB.T.filter(t=>t.c===cat&&t.k&&t.r!=='Q'&&!t.req.q&&!isAvoid(t.n)&&t.n!=='Hypoferritinemia');
     // keep the path's own talents that don't need an attunement you didn't ask for (beyond what the path itself needs)
     ts.forEach(t=>{REQ.add(t.n);pathT.push(t.n)});got.push(`${cat} path: ${ts.map(t=>t.n).join(', ')}`)}}
   const tN=by('talent').filter(n=>!isAvoid(n));tN.forEach(n=>REQ.add(n));if(tN.length)got.push('talents: '+tN.join(', '));

@@ -95,6 +95,18 @@ Pressure Strike|Vanguard Arts|C|MED90|t=Both Ends|w=Staff
 Rage Bait|Psychopath|C|WLL40 CHA90|t=Manipulator
 Guilt Trip|Psychopath|C|CHA100
 Depressive State|Psychopath|R|WLL90 CHA90|t=Guilt Trip;Rage Bait
+Composite Path: Alloyblood|Alloyblood|C|BLD50 IRN50|x=Gilded Path: Scrapsinger
+Plasma Signal|Alloyblood|C|BLD55 IRN55|t=Composite Path: Alloyblood
+Stored Plasma|Alloyblood|C|BLD60 IRN60|t=Composite Path: Alloyblood
+Retained Hemoglobin|Alloyblood|C|BLD60 IRN60|t=Composite Path: Alloyblood
+Ultrafiltration|Alloyblood|C|BLD65 IRN65|t=Composite Path: Alloyblood
+Plasma Refresh|Alloyblood|C|BLD40 IRN40 WPN60|t=Composite Path: Alloyblood
+Hypoferritinemia|Alloyblood|C|BLD30 IRN30|t=Composite Path: Alloyblood;Torture Mastery;Needleblade
+Exotherm Path: Sanguine Blaze|Exotherm|C|BLD40 FLM40|x=Azure Flames;Eruption Path: Lava Serpent;Wraith Path: Twisted Puppets
+Critical Mass|Exotherm|C|BLD45 FLM45
+Pressure Bleed|Exotherm|C|BLD50 FLM50|t=Exotherm Path: Sanguine Blaze
+Burnout|Exotherm|C|BLD60 FLM65
+Exothermic Finish|Exotherm|C|BLD60 FLM80
 #M
 Burning Servants|FLM|C0|FLM1
 Flame Grab|FLM|C0|FLM1
@@ -326,6 +338,12 @@ Abyssal Ridge|Monster|C2M||q
 Abyssal Tendrils|Monster|C2M||q
 Coral Burst|Monster|C2M||q
 Bone Wisp|Monster|W2M||q
+Infused Slash|IRN+BLD|C0||t=Composite Path: Alloyblood
+Spinning Serum|IRN+BLD|C2||t=Composite Path: Alloyblood
+Rising Plasma|IRN+BLD|C0|BLD50 IRN50|t=Composite Path: Alloyblood
+Cauterize|BLD+FLM|C0||t=Exotherm Path: Sanguine Blaze
+Combustion Tide|BLD+FLM|C0||t=Exotherm Path: Sanguine Blaze
+Flashfusion|BLD+FLM|C0||t=Exotherm Path: Sanguine Blaze
 #W
 Formless Shard|Dagger|
 Stiletto|Dagger|
@@ -558,6 +576,14 @@ The Barrel|Greatcannon|HVY75 STR30
 Smouldering Hallow|Greatcannon|HVY75 STR30
 Edenbrand Hellcoil|Greatcannon|HVY75 STR30
 Unsung Scythern|Exclusive|HVY75 PWR10
+Ironcry|Bow|
+Corvidirge Severants|Twinblade|LHT55 MED55
+Silas's Cenotaph|Greatsword|HVY100 MND50
+Cursed Flames|Sword|FLM100 WLL40 PWR10
+Alloyblood Daggers|Dagger||t=Composite Path: Alloyblood|m=Infused Slash
+Alloyblood Spear|Spear||t=Composite Path: Alloyblood|m=Spinning Serum
+Alloyblood Axe|Greataxe||t=Composite Path: Alloyblood|m=Rising Plasma
+Infected|Fist|
 #O
 Oathless|W3|
 Blindseer|C1 S1 W1|Sightless Beam;Mindsoothe;Tranquil Circle

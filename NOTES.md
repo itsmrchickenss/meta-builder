@@ -159,16 +159,19 @@ deepwoken.co snapshot (October 2026), read in the Claude desktop app's built-in 
 
 Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 + INT 40, attunement 100) · Elder / Enmity (Bladeharper Ironsing: CHA 40 pre, INT 90 + STR 25 post, Ironsing 80, Shadowcast 20, Shattered Katana, Prophet's Cloak; real builds hit INT 100 but shrine below Power 8) · Brick Wall Dawnwalker (FTD/WLL 100 → 75, Frostdraw 80 + Flamecharm 40, steam talents locked, Gran Sudaruska) · Chime · High Charisma · High Strength · Jetstriker Agility · Willpower Tank · High Intelligence · Reinforced Armor · Mage · No Willpower.
 
-## Hallowtide 2026 (October 31, 2026): waiting for numbers
+## Hallowtide 2026 (October 31, 2026): added in v0.34
 
-Sources: the wiki Hallowtide page (pasted by the owner) and ZakoTB's patch-notes video "NEW PATHS + NEW WEAPONS!! HALLOWTIDE 2026 IS HERE!!" (transcript pasted; names are auto-transcribed, so check spellings). No requirements, damage or scaling were in either, so none of these are in the data yet. Add each one only with real numbers (wiki item pages pasted by the owner, or deepwoken.co once it has them).
-- **Done (v0.34):** Alloyblood renamed to **Iron Veins** in `src/data/*` and `WEAK_T`; `RENAMED_T` maps old names in saved builds (`renameState`), share links (`decodeBuild`) and imports (`matchName`). Add future game renames there.
-- **Composite Path: Alloyblood** (Ironsing + Bloodrend hybrid). Mantras: Infused Slash, Spinning Serum, Rising Plasma. Talents: Composite Path: Alloyblood, Stored Plasma, Plasma Signal, Retained Hemoglobin, Ultrafiltration, Plasma Refresh. Bloodrend is recolored by this path, no longer by Iron Veins.
-- **Exothermic Path: Sanguine Blaze** (Flamecharm + Bloodrend hybrid). Mantras: Cauterize, Flashpoint, Combustion Tide. Talents: Exothermic Path: Sanguine Blaze, Pressure Bleed, Critical Mass, Exothermic Finish, Burnout.
-- **Weapons:** Corvidirge Severants (dagger/twinblade), Silas's Cenotaph (greatsword).
-- **Outfits (schematics):** Familiar Vagrant's Armor, Familiar Sage's Armor, Familiar Prince's Armor.
-- **Equipment:** Familiar Prosthetic Arm, Hunter's Chapeau, Wispfire Beacon, Pilferer's Trophy, Eyes of the Moppet, Stitched Effigy, Coffin Earrings, Pumpkin Earrings, Crooked Witch Hat, Mask of Phantoms.
-- Also mentioned without details: Flame Hero's Blade balance changes; human mobs no longer parry when they block (not modelled). Once the paths are in, add them to `AI_PATHS` so "alloyblood path" / "sanguine blaze" work in the AI build maker.
+Numbers from deepwoken.co on November 16, 2026 (same endpoints as above). Weapons are compared by name against `#W`/`wdmg.txt`, outfits against `#O`/`#OT`.
+- **Iron Veins** rename (was Alloyblood): `RENAMED_T` maps old names in saved builds, share links and imports. Add future game renames there.
+- **Composite Path: Alloyblood** (category `Alloyblood`, BLD + IRN): Composite Path, Plasma Signal, Stored Plasma, Retained Hemoglobin, Ultrafiltration, Plasma Refresh, Hypoferritinemia (also needs Torture Mastery + Needleblade, so `aiParse` leaves it out of "alloyblood path"). Excludes Gilded Path: Scrapsinger. Mantras Infused Slash, Spinning Serum, Rising Plasma (no damage numbers on deepwoken.co yet, so not in `mdmg.txt`).
+- **Exotherm Path: Sanguine Blaze** (category `Exotherm`, BLD + FLM): Exotherm Path, Critical Mass, Pressure Bleed, Burnout, Exothermic Finish. Excludes Azure Flames, Eruption Path, Wraith Path. Mantras Cauterize, Combustion Tide, Flashfusion (the wiki's "Flashpoint" is Flashfusion).
+- `AI_PATHS` knows both; a third element is a bare-words match ("sanguine blaze").
+- **Weapons:** Corvidirge Severants, Silas's Cenotaph, Cursed Flames, Alloyblood Daggers / Spear / Axe (needs the path talent + the mantra that summons it), Infected; Ironcry was in `wdmg.txt` but missing from `#W`.
+- **Outfits:** Familiar Vagrant's / Sage's / Prince's Armor, Familiar Arachnid's Cloak. Crimsonsteel, Ceruleansteel and Etrean Steel Plate are on deepwoken.co with no stats, so not added.
+- **Equipment:** Familiar Prosthetic Arm, Thorned Blazer, Harvestman's Halo / Cloak, Wreath of the Ardenstar, Raudra's Finger, Raudra's Pendant Earrings, and the cosmetics (Hunter's Chapeau, Crooked Witch Hat, Wispfire Beacon, Pilferer's Trophy, Eyes of the Moppet, Stitched Effigy, Mask of Phantoms, Coffin / Pumpkin Earrings). Mushroom costumes and Party Hat have no stats and aren't listed.
+- **Balance changes:** Krulian Knife 13.5 dmg, Iron Requiem 18, Withered Phantomcleave 18 / 5% PEN / AGL 2 scaling, Imperial Staff 10% PEN, Duskguard Axe 24, Ysley's Pyre Keeper 30% PEN, First Light FLM 2 scaling; Merchant Robes 10/5, Pathfinder Thaumaturge 15/10, Pathfinder Sorcerer no INT req + Mantra Permanence, Skeptic Pioneer Ready or Not.
+- Not added: Ether Surge (Vow of Iron-only enchant). Test: `tests/browser/hallowtide26.py`.
+- deepwoken.co also lists about 100 older equippable items that aren't in `gear.txt` (Sorcerer's set, Hallowed Monastery, Corrupted items, many rings and earrings). Not part of this update; add them if the owner asks.
 
 ## Ideas not done yet
 

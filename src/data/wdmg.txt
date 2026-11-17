@@ -11,7 +11,7 @@ Sanguine Transfuser|13.5|0.2|LHT6.5 BLD4
 Nemit's Sickle|11.5|0.3|LHT13
 Flareblood Kamas|14|0.3|LHT8 INT1.5 BLD3
 The Flippers of Fate|13|0.15|LHT8 MND5
-Krulian Knife|12.5|0.2|LHT10.5
+Krulian Knife|13.5|0.2|LHT10.5
 Spectral Grasp|16|0.05|LHT7
 Moppet|15|0|LHT8.5
 Kyrsedge|15|0.3|LHT8.5
@@ -37,7 +37,7 @@ Worldpiercer Gauntlets|16.5|0.15|LHT8
 Silversix|10|0|LHT13
 Flintlock|11|0|LHT12
 Dawnshot|14|0|LHT12
-Iron Requiem|21|0|LHT3 IRN4
+Iron Requiem|18|0|LHT3 IRN4
 Repeater|14|0|LHT12
 Dragoon|16|0|LHT12
 Rosen's Roscoe|16|0|LHT11
@@ -89,7 +89,7 @@ Soulthorn|17|0.1|MED7 INT3.5
 Purple Cloud|16.5|0.15|MED9
 Shattered Katana|20|0.3|MED7
 Nocturne|19.8|0.1|MED8
-Withered Phantomcleave|17.5|0.1|MED7
+Withered Phantomcleave|18|0.05|MED7 AGL2
 Hero's Blade of Flame|19|0|FLM5.5
 Hero's Blade of Frost|19|0|ICE5.5
 Hero's Blade of Lightning|19|0|LTN5.5
@@ -103,7 +103,7 @@ Black Death|16.5|0.15|MED2.5 MND2 SDW3
 Ritual Spear|19|0.25|MED5
 Ritual Sacrifice|25|0.25|MED7
 Acheron's Warspear|18|0.15|MED6
-Imperial Staff|20|0.12|MED5 STR4
+Imperial Staff|20|0.1|MED5 STR4
 Trident Spear|19|0.25|MED6
 Kyrswynter|17|0.2|MED5 ICE4
 The Weaving Web|20|0|MED5.5 CHA1
@@ -150,7 +150,7 @@ Enforcer's Axe|26|0.1|HVY9
 Alloyed Canorian Axe|24|0.2|HVY9
 Alloyed Halberd|24|0.15|HVY8
 Alloyed Adretian Axe|24|0.1|HVY8
-Duskguard Axe|26|0.15|HVY8
+Duskguard Axe|24|0.15|HVY8
 Night Axe|23|0.05|HVY8
 Pale Briar|23|0.25|HVY8.5
 Chorus of Agonies|26|0|HVY11
@@ -165,7 +165,7 @@ Bloodfouler|19|0.2|HVY5 BLD4
 Bloodbane|23|0|HVY7
 Hailbreaker|22|0.15|HVY7.5 ICE4
 Wretched Mawblades|27|0|HVY8
-First Light|23|0.15|HVY8
+First Light|23|0.15|HVY8 FLM2
 Alloyed Zweihander|23|0.1|HVY10
 Alloyed Crescent Cleaver|22|0|HVY10
 Darkalloy Greatsword|26|0.1|HVY8
@@ -198,7 +198,7 @@ Edenbrand Hellcoil|27|0|HVY8.3
 Rifle Spear|21|0.25|MED7
 Red Death|16|0.25|MED2.5 MND2 BLD3 SDW3
 Wyrmtooth|20|0.25|MED6.5 HVY4.5
-Ysley's Pyre Keeper|21|0.15|HVY5 FLM4
+Ysley's Pyre Keeper|21|0.3|HVY5 FLM4
 Calamity Cinnabar|22|0|HVY4 SDW9
 Moonseye Scalpel|18.5|0.25|INT13
 Unsung Scythern|26|0.1|HVY9
@@ -229,3 +229,10 @@ Rangescraper|18|0|LHT7.5
 Steelscale Dusters|14|0.2|LHT10
 The Long Tong of the Law|20|0|HVY7 MND3
 Palace Tachi|22.5|0.05|MED6.5
+Corvidirge Severants|13.5|0.2|LHT5 MED5
+Silas's Cenotaph|25|0|HVY10 MND3
+Cursed Flames|19|0.1|FLM5.5
+Alloyblood Daggers|14.5|0.15|LHT3 BLD5 IRN5
+Alloyblood Spear|18|0.25|MED3 BLD5 IRN5
+Alloyblood Axe|24|0.2|HVY3 BLD5 IRN5
+Infected|10|0|

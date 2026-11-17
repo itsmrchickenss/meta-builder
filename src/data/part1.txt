@@ -191,7 +191,7 @@ Flamecharmer|Flamecharmer|C0|FLM1
 Adept Flamecharmer|Flamecharmer|C0|FLM20|t=Flamecharmer
 Expert Flamecharmer|Flamecharmer|C0|FLM30|t=Adept Flamecharmer
 Master Flamecharmer|Flamecharmer|C0|FLM50|t=Expert Flamecharmer
-Azure Flames|Flamecharmer|C|FLM70 WLL40|x=Wraith Path: Twisted Puppets
+Azure Flames|Flamecharmer|C|FLM70 WLL40|x=Wraith Path: Twisted Puppets;Exotherm Path: Sanguine Blaze
 Temperature Shock|Flashfreeze|C|FLM40 ICE40|t=Glass Path: Crystallization
 Exoskeleton|Freak of Nature|R|FTD40
 Glacial Mobility|Frost Forger|C|ICE20 AGL20|m=Ice Blade
@@ -290,7 +290,7 @@ Defensive Sweep|Lancer|C|MED50|w=Spear
 Driving Impact|Lancer|C|MED30|w=Spear
 Lancer's Impale|Lancer|C|MED30|w=Spear
 Hoplite|Lancer|C|FTD15|w=Spear
-Eruption Path: Lava Serpent|Lava Serpent|C|FLM40|x=Flashboil;The Final Act;Wraith Path: Twisted Puppets
+Eruption Path: Lava Serpent|Lava Serpent|C|FLM40|x=Flashboil;The Final Act;Wraith Path: Twisted Puppets;Exotherm Path: Sanguine Blaze
 Empowered Eruption|Lava Serpent|C|FLM50|t=Eruption Path: Lava Serpent
 Flash Point|Lava Serpent|C|FLM55|t=Eruption Path: Lava Serpent
 The Floor is Lava|Lava Serpent|A|FLM100|t=Eruption Path: Lava Serpent
@@ -408,7 +408,7 @@ Sharing is Caring|Scarlet Donor|C|BLD50 CHA30|t=Charismatic Cast
 Windwaker|Scholar of the Cloud|Q0|WND20|q
 Dirty Boxing|Scoundrel|R|AGL25|w=Fists
 Pocket Sand|Scoundrel|C|LHT35 STR20
-Gilded Path: Scrapsinger|Scrapsinger|C|IRN35
+Gilded Path: Scrapsinger|Scrapsinger|C|IRN35|x=Composite Path: Alloyblood
 Artisan's Blade|Scrapsinger|C|IRN45|t=Gilded Path: Scrapsinger
 Masterwork|Scrapsinger|R|IRN60|t=Artisan's Blade
 Refine and Reuse|Scrapsinger|C|IRN45|t=Gilded Path: Scrapsinger
@@ -519,7 +519,7 @@ Maiming Claws|Trickster|C|AGL100|t=Down Comes the Claw
 Pursuit|Trickster|C|AGL90|m=Revenge
 Face Cutter|Twinblade|R|MED75|t=Spine Cutter|w=Twinblade
 Turning of the Wheel|Twinblade|R|MED75|w=Twinblade
-Wraith Path: Twisted Puppets|Twisted Puppets|C|FLM40 SDW40|x=Eruption Path: Lava Serpent;Flashboil;Azure Flames
+Wraith Path: Twisted Puppets|Twisted Puppets|C|FLM40 SDW40|x=Eruption Path: Lava Serpent;Flashboil;Azure Flames;Exotherm Path: Sanguine Blaze
 Burning Puppets|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets
 Burning Sacrifice|Twisted Puppets|R|FLM40 SDW40|t=Wraith Path: Twisted Puppets;Emperor Flame
 Explosive Rage|Twisted Puppets|C|FLM40 SDW40|t=Wraith Path: Twisted Puppets

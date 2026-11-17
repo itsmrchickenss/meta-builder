@@ -633,3 +633,15 @@ True Shatter|Landing a critical shatters your opponent, ridding them of their sp
 Vital Wound|Uppercutting your opponent punctures their lungs, slowing their rate of posture recovery for 20 seconds.…
 Drop Dead|Take less damage when you are crouching.
 Wormwarder|Your lantern generates a shroud of static electricity around you that the flesh-burrowing parasites of the Eternal…
+Composite Path: Alloyblood|Fuse the Ironsing rods from Ironsing mantras and Blood Poison from Bloodrend mantras into a composite plasma that flows in your opponents blood. Your Bloodrend mantras are now silver.
+Stored Plasma|Feinting an alloyblood mantra increases the duration of the next weapon summoned from an alloyblood mantra by 33%.
+Plasma Signal|Your opponent now signals a noise and are highlighted when they have enough plasma for you to cast your Rising Plasma mantra. Raise your opponent's plasma by 10% when this happens.
+Ultrafiltration|Filter out your bloodalloy hybrid mantras' composite plasma, allowing them to apply ironsing/bloodrend elemental effects once again.
+Retained Hemoglobin|Using an alloyblood mantra reduces the composite plasma cost of the next alloyblood mantra by 20%. This effect lasts for 10 seconds and can be stacked.
+Plasma Refresh|When casting an Alloyblood hybrid mantra, refresh your critical attack cooldown. Your critical hits with alloyblood weaponry now add composite plasma to your opponent.
+Hypoferritinemia|Using Rising Plasma now summons your Metal Greatsword instead. Your Metal Greatsword now has an innate 75% chip, gaining even more chip based on how much composite plasma is inside your opponent.
+Exotherm Path: Sanguine Blaze|Your blood runs thick and oily, clinging to all it touches. Blood mantras leave foes coated in Black Blood, slowing them and stifling their healing, up to 3 stacks. Touch it with flame and it erupts. Your fire burns a searing pink.
+Pressure Bleed|Your vents turn pink, spraying explosive Black Puddles that ignite enemies.
+Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites them with pink fire.
+Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
+Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.

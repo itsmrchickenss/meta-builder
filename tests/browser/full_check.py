@@ -33,7 +33,7 @@ window.__check=function(){
     if(b.free!==BUDGET-used&&!b.capOver&&!b.reup)P.push(`free points shown ${b.free}, should be ${BUDGET-used}`)}
   // the owner's rule: pre-shrine is the peak for attributes
   if(useShrine&&!S.manual)for(const k of ATTR)if(pre[k]>1&&!(S.pin&&k in S.pin)&&fin[k]>sh.out[k])P.push(`${k} raised again after the shrine: ${pre[k]} -> ${sh.out[k]} -> ${fin[k]}`);
-  if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))P.push('Fortitude the same before and after: '+pre.FTD);
+  if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))(b.free<=0?W:P).push('Fortitude the same before and after: '+pre.FTD+(b.free<=0?' (no points to spare)':''));
   const caps=capsOf();for(const [k,v] of Object.entries(caps))if(fin[k]>v)P.push(`${k} over its limit ${v}: ${fin[k]}`);
   for(const [k,v] of Object.entries(S.atts||{}))if(fin[k]<Math.min(+v||0,k in caps?caps[k]:100))P.push(`attunement ${k} ${fin[k]} under its target ${v}`);
   if(S.wtarget&&fin[S.wtype]<Math.min(S.wtarget,S.wtype in caps?caps[S.wtype]:100))P.push(`weapon ${S.wtype} ${fin[S.wtype]} under its target ${S.wtarget}`);
@@ -50,7 +50,7 @@ window.__check=function(){
     if(S.oath==='Silentheart'&&m.at.some(a=>ATT[a])&&!oathTagOf(n))P.push('Silentheart with an attunement mantra: '+n)}
   if(S.weapon&&!blocked.has(S.weapon)){const w=WBY.get(S.weapon);if(w&&!met(w.req,true,fin))P.push('weapon requirement not met: '+S.weapon+' ('+fmtReq(w.req)+')')}
   if(S.oath&&S.oath!=='None'){const al=oathAltsOf(findO(S.oath));if(al&&!al.some(a=>altCost(a,fin)===0))P.push('oath requirement not met: '+S.oath)}
-  const cn=counts(C);if(cn.nTal>cn.cap&&!S.allowOver)P.push(`over the talent cap: ${cn.nTal}/${cn.cap}`);
+  const cn=counts(C);if(cn.nTal>cn.cap&&!S.allowOver)(S.manual?W:P).push(`over the talent cap: ${cn.nTal}/${cn.cap}`);
   for(const n of S.req||[])if(!C.T.has(n)&&!C.M.has(n)&&(TBY.has(n)||MBY.has(n)))P.push('required talent missing: '+n);
   for(const n of S.sel)if((S.avoid||[]).includes(n)&&!(S.req||[]).includes(n))P.push('avoided talent picked: '+n);
   if(!Number.isFinite(b.damage)||!Number.isFinite(b.score))P.push('damage or score not a number');

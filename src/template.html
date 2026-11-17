@@ -1585,7 +1585,11 @@ function fixReup(res){const dropped=[];let guard=12;
     if(did){const t=compute({starts:18,iters:200,seedP:b.P});if(t.best&&better(t.best,b))res=t}}
   // Fortitude 50 -> 50: put it after the shrine instead (1 before) when that still fits
   const b=res.best;if(b&&!b.impossible&&!b.noShrine&&!b.manual&&b.P.FTD>1&&b.P.FTD===b.final.FTD&&!(S.pin&&'FTD' in S.pin)&&!((S.preMin||{}).FTD>1)){
-    const e=evaluate({...b.P,FTD:1},res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0)res={...res,best:e}}
+    // 1 before (all after), else a little more or less before so the shrine moves it; keep the first that fits
+    const tryF=()=>{const b=res.best;for(const v of [1,b.P.FTD+5,b.P.FTD+10,b.P.FTD-5,b.P.FTD+15,b.P.FTD-10,b.P.FTD+20]){if(v<1||v>100)continue;
+      const e=evaluate({...b.P,FTD:v},res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0&&e.P.FTD!==e.final.FTD){res={...res,best:e};return true}}return false};
+    // (with no points to spare the budget wins: moving Fortitude can change whether the shrine is reachable at all)
+    tryF()}
   return {res,dropped}}
 function rebuildToBudget(seedP){const dropped=[];const C=closure();
   const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n)).sort((a,b)=>talentVal(b,C)-talentVal(a,C));
@@ -1917,7 +1921,16 @@ function addMyPreset(name){name=String(name||'').trim().slice(0,60);if(!name){sa
   const l=myPresets();const d=`${S.oath==='None'?'No oath':S.oath} · ${S.weapon||WEP[S.wtype]+' '+(S.wtarget||0)} · ${Object.keys(S.atts).map(k=>ATT[k][0]+' '+S.atts[k]).join(' + ')||'no attunement'} · ${S.sel.length} talents`;
   const i=l.findIndex(x=>x.n.toLowerCase()===name.toLowerCase());const item={n:name,d,code:encodeBuild(),at:Date.now()};if(i>=0)l[i]=item;else l.unshift(item);
   if(saveMyPresets(l.slice(0,50))){renderMyPresets();say(i>=0?`Updated your preset “${name}”.`:`Saved “${name}” to your presets on this computer.`)}else say('This browser blocked saving. Use Share → Copy link to keep the build instead.')}
-function renderInputs(){renderTraits();
+// owner (November 17, 2026): a build with no weapon stats (a mage) always gets a Hero's Blade for its strongest element, unless
+// the person picked a weapon, cleared it, or imported a build without one. S.weaponAuto = we picked it; S.noAutoW = leave it empty.
+const HERO_EL={FLM:'Flame',ICE:'Frost',LTN:'Lightning',WND:'Wind',SDW:'Shadow'};
+function autoHeroBlade(){if(S.manual)return;
+  if(+S.wtarget>0||S.oath==='Silentheart'){if(S.weaponAuto){S.weapon='';S.weaponAuto=false}return}
+  if((S.weapon&&!S.weaponAuto)||S.noAutoW)return;
+  const el=Object.keys(HERO_EL).filter(k=>(+(S.atts||{})[k]||0)>0).sort((a,b)=>(+S.atts[b])-(+S.atts[a]))[0];
+  const n=el?"Hero's Blade of "+HERO_EL[el]:'';if(n&&!WBY.has(n))return;
+  if(n!==S.weapon){S.weapon=n;S.weaponAuto=!!n;if(n)S.wtype='MED'}}
+function renderInputs(){autoHeroBlade();renderTraits();
   renderMyPresets();
   $('tpls').innerHTML=TEMPLATES.map((t,i)=>`<button data-tpl="${i}"><b>${esc(t.n)}</b><span>${esc(t.d)}</span></button>`).join('');
   $('wtype').innerHTML=Object.entries(WEP).map(([k,n])=>`<button aria-pressed="${S.wtype===k}" data-w="${k}">${n}</button>`).join('');
@@ -2365,11 +2378,11 @@ function renderResults(res){
   $('steps').innerHTML=steps.map(s=>`<li>${s}</li>`).join('');
   renderTalentChips();renderMantraChips();renderGear();renderFinal();renderPicked();renderStatus();renderReq();renderWeaponPanels();renderHelp();renderShrines();renderWishes();if($('otbl').closest('details').open)renderOathTable();save();
 }
-function run(){const sp=S._seedP||prevP();delete S._seedP;renderResults(compute({starts:2,iters:60,seedP:sp}))}
+function run(){autoHeroBlade();const sp=S._seedP||prevP();delete S._seedP;renderResults(compute({starts:2,iters:60,seedP:sp}))}
 
 // Optimize: choose pre/post for each talent, tag stats, then optionally spend leftovers
 // optCore runs one optimization on the current state S (no rendering) and returns what it did
-function optCore(spend,noFill){
+function optCore(spend,noFill){autoHeroBlade();
       let dropped=[];{const cf=dropConflicts();dropped.push(...cf)}
       {const R0=requirements();const cb=(R0.capBlocked||[]).filter(n=>S.sel.includes(n)&&!isReq(n));if(cb.length){S.sel=S.sel.filter(n=>!cb.includes(n));dropped.push(...cb)}}
       dropped=dropped.concat(trimToCap());
@@ -2383,6 +2396,14 @@ function optCore(spend,noFill){
         else efP=base.best.P;
         const rb=rebuildToBudget(efP);dropped=dropped.concat(rb.dropped);res=compute({starts:18,iters:200,seedP:rb.res.best&&rb.res.best.P});
         if(rb.res.best&&(!res.best||better(rb.res.best,res.best)))res=rb.res}
+      // last resort (owner's rule: Optimize always ends within the budget): picked mantras, the one that frees the most points
+      // first, then a picked weapon. Required ones are never removed.
+      {let guard=12;while(res.best&&!res.best.impossible&&res.best.free<0&&guard-->0){
+        const ms=S.mantras.filter(m=>!isReq(m));let best=null;
+        for(const m of ms){const keepM=S.mantras;S.mantras=keepM.filter(x=>x!==m);const r=compute({starts:4,iters:80,seedP:res.best.P});S.mantras=keepM;if(r.best&&(!best||better(r.best,best.r.best)))best={m,r}}
+        if(best){S.mantras=S.mantras.filter(x=>x!==best.m);dropped.push(best.m);res=compute({starts:12,iters:160,seedP:best.r.best.P});continue}
+        if(S.weapon&&!isReq(S.weapon)){dropped.push(S.weapon+' (weapon)');S.weapon='';S.weaponAuto=false;S.noAutoW=true;res=compute({starts:12,iters:160,seedP:res.best.P});continue}
+        break}}
       {const fx=fixReup(res);res=fx.res;dropped=dropped.concat(fx.dropped);Object.assign(lowered,fx.lowered)}
       const lw=Object.entries(lowered);
       const sb=sliderRebalance(res,noFill);res=sb.res;dropped=dropped.concat(sb.dropped);
@@ -2491,7 +2512,7 @@ function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
 // share links always point at the public website so anyone can open them
 const ARTIFACT_URL='https://itsmrchickenss.github.io/meta-builder/';
 function shareBase(){const h=location.hostname||'';const inClaude=/claude\.ai|anthropic|usercontent|claude\.site/.test(h)||!/^https?:$/.test(location.protocol);return inClaude?ARTIFACT_URL:location.href.split('#')[0]}
-function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined,wa:S.weaponAuto?1:undefined,nw:S.noAutoW?1:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function decodeBuild(raw){
   let code=String(raw||'').trim();const i=code.indexOf('#');if(i>=0)code=code.slice(i+1);
   if(!code.startsWith('dw1'))throw new Error('not a build code');
@@ -2502,6 +2523,7 @@ function decodeBuild(raw){
   next.atts={};for(const [k,v] of Object.entries(o.a||{}))if(ATT[k])next.atts[k]=num(v,80);
   for(const k of ['s','r','av'])if(Array.isArray(o[k]))o[k]=renameList(o[k]);if(o.n)for(const [a,b] of Object.entries(RENAMED_T))if(a in o.n){o.n[b]=o.n[a];delete o.n[a]}
   next.sel=(o.s||[]).filter(n=>TBY.has(n));next.mantras=(o.m||[]).filter(n=>MBY.has(n));
+  next.weaponAuto=!!o.wa;next.noAutoW=!!o.nw;
   if(o.lp&&typeof o.lp==='object'){const sp={};for(const k of ALL)sp[k]=num(o.lp[k],0);next._seedP=sp}
   next.when={};for(const [k,v] of Object.entries(o.n||{}))if(v==='pre'||v==='post')next.when[k]=v;
   next.mins={};for(const [k,v] of Object.entries(o.i||{}))if(ATTR.includes(k))next.mins[k]=num(v,0);
@@ -2660,7 +2682,7 @@ function wizardApply(){
   const pre={},post={};ATTR.forEach(a=>{const x=+v('wz-pre-'+a);if(x)pre[a]=x;const y=+v('wz-post-'+a);if(y)post[a]=y});
   const atts={};document.querySelectorAll('#wz-atts .wzatt').forEach(r=>{const s=r.querySelectorAll('select');const k=s[0].value,lv=+s[1].value;if(k&&!(k in atts))atts[k]=lv});
   const autoOath=v('wz-oath')==='__auto';
-  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
+  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.weaponAuto=false;S.noAutoW=false;S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
   // a new build starts clean: required talents, equipment and enchant from the previous build don't carry over
   S.req=[];S.keep={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
   if(S.oath==='Silentheart'){const wa=p.weapon&&WBY.get(p.weapon);for(const k of Object.keys(S.atts))if(!(wa&&wa.req.s[k]))delete S.atts[k]}
@@ -3060,7 +3082,7 @@ function applyDwb(b){
   pushUndo('Import '+b.name);const fin=b.fin||{};
   const wt=WEPS.slice().sort((x,y)=>(fin[y]||0)-(fin[x]||0))[0];S.wtype=b.weapon&&wType(b.weapon)?(WEPS.find(k=>k in (WBY.get(b.weapon).req.s||{}))||wt):wt;S.wtarget=fin[S.wtype]||0;
   S.atts={};for(const k of ATTS)if(fin[k]>0)S.atts[k]=fin[k];S.mins={};for(const k of ATTR)if(fin[k])S.mins[k]=fin[k];S.preMin={};S.pin={};S.when={};
-  S.oath=b.oath||'None';S.weapon=b.weapon||'';if(b.outfit)S.gear.outfit=b.outfit;if(b.traits&&Object.values(b.traits).some(v=>v>0))S.traits={...b.traits};
+  S.oath=b.oath||'None';S.weapon=b.weapon||'';S.weaponAuto=false;S.noAutoW=!S.weapon;if(b.outfit)S.gear.outfit=b.outfit;if(b.traits&&Object.values(b.traits).some(v=>v>0))S.traits={...b.traits};
   const otal=new Set(OATHS.flatMap(o=>[...(o.mantras||[])]));
   S.sel=[...new Set(b.talents)].filter(n=>TBY.has(n)&&!n.startsWith('Oath:')&&TBY.get(n).r!=='O');S.mantras=[...new Set(b.mantras)].filter(n=>MBY.has(n)&&!oathTagOf(n)&&!otal.has(n));
   if(b.pre){S.manual=true;S.man={pre:{},fin:{}};for(const k of ALL){if(b.pre[k])S.man.pre[k]=b.pre[k];if(fin[k])S.man.fin[k]=fin[k]}}else S.manual=false;
@@ -3269,7 +3291,7 @@ function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase(
   const before=(h,re)=>re.test(nrm(raw).slice(Math.max(0,h.at-24),h.at));
   for(const h of found){const n=h.n.n;
     if(h.n.k==='oath'){S.oath=n;did.push('oath '+n)}
-    else if(h.n.k==='weapon'){const w=WBY.get(n);S.weapon=n;const wt=WEPS.find(k=>k in w.req.s);if(wt){S.wtype=wt;S.wtarget=Math.max(S.wtarget||0,w.req.s[wt]);keep(wt)}did.push('weapon '+n)}
+    else if(h.n.k==='weapon'){const w=WBY.get(n);S.weapon=n;S.weaponAuto=false;S.noAutoW=false;const wt=WEPS.find(k=>k in w.req.s);if(wt){S.wtype=wt;S.wtarget=Math.max(S.wtarget||0,w.req.s[wt]);keep(wt)}did.push('weapon '+n)}
     else if(h.n.k==='outfit'){S.gear.outfit=n;did.push('outfit '+n)}
     else if(h.n.k==='talent'||h.n.k==='mantra'){const isT=h.n.k==='talent';
       if(before(h,/(?:remove|drop|no|without|lose|get rid of|not|avoid|skip) $/)){if(isT){S.sel=S.sel.filter(x=>x!==n);S.req=S.req.filter(x=>x!==n);if(/avoid|no $|not $|skip $/.test(nrm(raw).slice(Math.max(0,h.at-24),h.at))&&!(S.avoid||[]).includes(n))S.avoid=[...(S.avoid||[]),n]}else S.mantras=S.mantras.filter(x=>x!==n);did.push('removed '+n)}
@@ -3362,13 +3384,13 @@ function applyPreset(p){
   pushUndo(p.clean?'Clean Slate':'preset '+p.n);
   if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.traits={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
     renderInputs();{const R=requirements();const Z=Object.fromEntries(ALL.map(k=>[k,0]));renderResults({R,best:evaluate(Z,R,R.oathAlts)||compute({starts:2,iters:60}).best,baseFree:noShrineFree(R)})}sayUndo('Clean slate: every stat at 0, no oath, attunement, talents, mantras or equipment.');return}
-  S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.pin={};
+  S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.weaponAuto=false;S.noAutoW=false;S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.pin={};
   S.sel=p.t.filter(n=>TBY.has(n));S.mantras=[];S.when={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));
   if(S.manual)manualFromTargets();
   renderInputs();optimizeAll({noSpend:true,noUndo:true});say(`Loaded the ${p.n} preset. ${p.src} on deepwoken.co start like this. Add talents, then press Optimize build.`);
 }
 function applyTemplate(t){pushUndo('example build '+t.n);
-  S.oath=t.oath;S.wtype=t.wtype;S.wtarget=t.wtarget;S.weapon=WBY.has(t.weapon)?t.weapon:'';S.atts={...t.atts};
+  S.oath=t.oath;S.wtype=t.wtype;S.wtarget=t.wtarget;S.weapon=WBY.has(t.weapon)?t.weapon:'';S.weaponAuto=false;S.noAutoW=false;S.atts={...t.atts};
   S.sel=t.t.split(';').filter(n=>TBY.has(n)&&TBY.get(n).r!=='O');S.mantras=t.m.split(';').filter(n=>MBY.has(n)&&MBY.get(n).ty==='N');S.when={};S.mins={};S.preMin={};
   renderInputs();optimizeAll();
 }
@@ -3426,8 +3448,8 @@ document.addEventListener('click',e=>{
   else if(t.id==='lookreset'){const th=LOOK.theme in THEMES?LOOK.theme:'abyss';LOOK={theme:th,cb:'off',...THEMES[th],size:100};applyLook();renderLook()}
   else if(d.w){S.wtype=d.w;renderInputs();runSoon()}
   else if(d.wq){S.wtarget=+d.wq;renderInputs();runSoon()}
-  else if(d.wpick){const w=WBY.get(decodeURIComponent(d.wpick));S.weapon=w.n;const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt;$('wsearch').value='';renderInputs();runSoon()}
-  else if(d.wclear){S.weapon='';renderInputs();runSoon()}
+  else if(d.wpick){const w=WBY.get(decodeURIComponent(d.wpick));S.weapon=w.n;S.weaponAuto=false;S.noAutoW=false;const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt;$('wsearch').value='';renderInputs();runSoon()}
+  else if(d.wclear){S.weapon='';S.weaponAuto=false;S.noAutoW=true;renderInputs();runSoon()}
   else if(d.oathpick){S.oath=decodeURIComponent(d.oathpick);const wz=$('wz-oath');if(wz&&$('wiz').open)wz.value=S.oath;else{renderInputs();runSoon()}if($('oathdlg').open){closeDlg('oathdlg')}say(`Oath set to ${S.oath}.`)}
   else if(d.ttog&&isReq(decodeURIComponent(d.ttog))){say(`${decodeURIComponent(d.ttog)} is required. Remove it on the Talents tab first.`)}
   else if(d.ttog){const n=decodeURIComponent(d.ttog);if(S.sel.includes(n))S.sel=S.sel.filter(x=>x!==n);else{if(!roomFor(n)){capWarn(n);return}S.sel.push(n)}runSoon()}
@@ -3447,7 +3469,7 @@ document.addEventListener('click',e=>{
   else if(d.trait){const [k,dv]=d.trait.split(':');S.traits=S.traits||{};const v=tr(k)+(+dv);if(v<0||v>TRAIT_MAX||(+dv>0&&traitSum()>=TRAIT_TOTAL))return;if(v)S.traits[k]=v;else delete S.traits[k];renderTraits();runSoon();save()}
   else if(d.spendnow){S.spend=true;$('spend').checked=true;optimizeAll()}
   else if(d.reqdel){const n=decodeURIComponent(d.reqdel);S.req=S.req.filter(x=>x!==n);if(TBY.has(n)){if(!S.sel.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);say(`${n} is no longer required; it stays picked as a normal ${TBY.has(n)?'talent':'mantra'}.`);runSoon()}
-  else if(d.wuse){const n=decodeURIComponent(d.wuse);S.weapon=n;const w=WBY.get(n);if(w){const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt}if(S.wcmp===n)S.wcmp='';renderInputs();runSoon();say(`Now using ${n}.`)}
+  else if(d.wuse){const n=decodeURIComponent(d.wuse);S.weapon=n;S.weaponAuto=false;S.noAutoW=false;const w=WBY.get(n);if(w){const wt=WEPS.find(k=>k in w.req.s)||(w.req.o||[]).flatMap(o=>Object.keys(o.s)).find(k=>WEPS.includes(k));if(wt)S.wtype=wt}if(S.wcmp===n)S.wcmp='';renderInputs();runSoon();say(`Now using ${n}.`)}
   else if(d.tdel){const n=decodeURIComponent(d.tdel);S.sel=S.sel.filter(x=>x!==n);runSoon()}
   else if(t.id==='gearopt'){const fin=last&&last.best?last.best.final:null;if(!fin){say('Build the stats first.');return}const f={a:(S.gear.w==null?50:S.gear.w)/50,minhp:S.gear.minhp||500,minpp:S.gear.minpp==null?50:S.gear.minpp};pushUndo('Optimize equipment');const w=S.gear.w,mh=S.gear.minhp,mp=S.gear.minpp,keepO=S.gear.outfit;const b=gearStats(S.gear,fin);S.gear=optimizeGear(fin,f);if(keepO)S.gear.outfit=keepO;S.gear.w=w;S.gear.minhp=mh;S.gear.minpp=mp;const a=gearStats(S.gear,fin);renderGear();save();
     const miss=[a.hp<f.minhp?`${f.minhp} HP (got ${Math.round(a.hp)})`:'',a.pp<f.minpp?`${f.minpp}% physical armor (got ${Math.round(a.pp)}%)`:''].filter(Boolean);

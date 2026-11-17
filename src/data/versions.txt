@@ -1,4 +1,5 @@
-## v0.35 | unreleased
+## v0.35 | 2026-11-17
+- Mage builds with no weapon stats now get the Hero's Blade of their strongest element (Flame, Frost, Lightning, Wind or Shadow) automatically. Pick another weapon, or clear it, and your choice stays.
 - Presets with a weapon now start at 80 in a weapon of your choice: pick Light, Medium or Heavy with the buttons at the top of the preset window (Elder / Enmity keeps Medium 90 for the Shattered Katana; the mage presets stay weapon-free).
 - New Attunementless preset: pick Agility 100 + Strength 40 (Jetstriker), Strength 100 + Agility 65 (Starkindred) or Strength 100 + Agility 100 before the shrine, then Willpower 40, Fortitude 50 or 90 (Reinforced Armor) and 80 in your weapon after.
 - Loading a preset keeps exactly its stats: "More damage" no longer raises the weapon above what you picked until you press Optimize build.
@@ -13,6 +14,7 @@
 - Optimize never ends over the point budget any more (it could finish up to 33 over), and it now also fixes builds whose stat floors alone are over 330 by lowering the floors.
 - Optimize and Auto-pick never raise a stat again after the shrine (they used to, e.g. Willpower 40 → 18 → 20 for a talent that needs Strength too), and Fortitude isn't left the same before and after.
 - Auto-pick takes back its own picks if they would put the build over budget.
+- If a build still can't fit after lowering every floor, Optimize removes picked mantras (and then a picked weapon) as a last resort, and tells you which.
 - Talents are blocked when one of their prerequisites conflicts with a path you picked (Eruption Path plus a Twisted Puppets talent used to bring in Wraith Path too). Optimize removes such conflicts.
 - Silentheart: talents that need an attunement mantra are blocked, and Optimize removes them.
 - Optimize keeps every stat inside the limits you set (the shrine could push a limited stat a little over), and removes any picked talent you've marked as avoided.

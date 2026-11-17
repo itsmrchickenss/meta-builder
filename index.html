@@ -3977,6 +3977,8 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - Willpower Tank preset removed (Diluvian covers it).
 - Presets only set an oath when they're built around it: Jetstriker Agility, Elder / Enmity (Bladeharper), Bossraid Mage (Saintsworn), Diluvian (Dawnwalker) and a new Silentheart preset. The others leave the oath up to you, and the AI build maker picks the best fit for them.
 - Every preset's stats now meet its oath. Bossraid Mage gets 15 in the other four elements that Saintsworn needs; Bossraid, High Strength, High Intelligence, Reinforced Armor, Mage and No Willpower had oaths their stats didn't meet, so they're gone.
+- Fixed: picking a weapon that scales with Mind or Body (The Flippers of Fate, Kindred Edict, Black Death, Red Death, The Pastry Paster, Guiding Star, The Long Tong of the Law, Silas's Cenotaph) broke the weapon panel.
+- Optimize equipment tries a few starting points and keeps the best, so it lands on the armor targets more often (for example 487 HP / 50% physical instead of 485 / 49%).
 - Loading a preset no longer fills your talents on its own when "Optimizer favors" isn't Balanced (Bossraid used to start with 76 talents). Press Optimize build to get them.
 
 ## v0.34 | 2026-11-17
@@ -4833,13 +4835,20 @@ function optimizeGear(final,focus){const o=typeof focus==='object'?focus:{a:1,mi
       const st=maxStars(ty);const pips=pipsOf(g,st);let combos=[[]];
       for(const r of pips){const ch=optPip(ty,r);if(!ch.length){combos=combos.map(c=>[...c,'']);continue}const nx=[];for(const c of combos)for(const x of ch)nx.push([...c,x]);combos=nx.slice(0,729)}
       for(const p of combos)opts[lab].push({n:g.n,st,p})}}
-  G.outfit=okO.reduce((b,x)=>!b||x.p>b.p?x:b,null)?.n||'';
-  for(let pass=0;pass<4;pass++){let changed=false;
+  const ascend=G=>{for(let pass=0;pass<6;pass++){let changed=false;
     {let best=G.outfit,bs=gearScore(gearStats(G,final),o);for(const x of okO){G.outfit=x.n;const s=gearScore(gearStats(G,final),o);if(s>bs+1e-9){bs=s;best=x.n;changed=true}}G.outfit=best}
     for(const [lab] of GSLOTS){let best=G.slots[lab]||null,bs=gearScore(gearStats(G,final),o);
       const taken=new Set(GSLOTS.filter(([l,ty])=>l!==lab&&ty==='R'&&G.slots[l]).map(([l])=>G.slots[l].n));
       for(const c of opts[lab]){if(c&&taken.has(c.n))continue;G.slots[lab]=c;const s=gearScore(gearStats(G,final),o);if(s>bs+1e-9){bs=s;best=c;changed=true}}G.slots[lab]=best}
-    if(!changed)break}
+    if(!changed)break}return G};
+  // the slot-by-slot climb can stop short (485 HP / 49% when 487 / 51% exists), so start it from the best few outfits and keep the best
+  const starts=[...okO].sort((x,y)=>(y.p+y.e*0)-(x.p+x.e*0)).slice(0,3).map(x=>x.n);if(!starts.length)starts.push('');
+  // slot fills to start from: empty, most health per slot, most physical armor per slot (rings never doubled)
+  const fill=key=>{const G0={outfit:'',slots:{}};const used=new Set();for(const [lab,ty] of GSLOTS){let bc=null,bv=-Infinity;for(const c of opts[lab]){if(!c||used.has(c.n))continue;
+      const one=gearStats({outfit:'',slots:{[lab]:c}},final);const v=key==='hp'?one.hp+one.pp:one.pp*10+one.hp/100;if(v>bv){bv=v;bc=c}}G0.slots[lab]=bc;if(bc&&ty==='R')used.add(bc.n)}return G0.slots};
+  const fills=[{},fill('hp'),fill('pp')];
+  let bestG=null,bestS=-Infinity;for(const st of starts)for(const sl of fills){const g=ascend({outfit:st,slots:{...sl}});const sc=gearScore(gearStats(g,final),o);if(sc>bestS+1e-9){bestS=sc;bestG=g}}
+  Object.assign(G,bestG);
   return G;
 }
 
@@ -5529,7 +5538,7 @@ async function saveFile(filename,data,mime){
 }
 const slug=()=>((S.weapon||WEP[S.wtype]+' weapon')+'-'+(S.oath==='None'?'no-oath':S.oath)).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const statRows=b=>[...new Set([...ATTR,S.wtype,...Object.keys(S.atts),...ALL.filter(k=>!ATTR.includes(k)&&(b.final[k]>0||b.P[k]>0))])];
-const statName=k=>ANAME[k]||(WEP[k]?WEP[k]+' Weapon':ATT[k][0]);
+const statName=k=>ANAME[k]||(WEP[k]?WEP[k]+' Weapon':ATT[k]?ATT[k][0]:({MND:'Mind',BOD:'Body',WPN:'Weapon',ATN:'Attunement',PWR:'Power'})[k]||k);
 function wrapLines(ctx,text,maxW){const words=text.split(' ');const out=[];let line='';for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>maxW&&line){out.push(line);line=w}else line=t}if(line)out.push(line);return out}
 async function buildImage(){
   if(!last||!last.best)return null;try{await document.fonts.ready}catch(e){}

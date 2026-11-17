@@ -3,6 +3,8 @@
 - Willpower Tank preset removed (Diluvian covers it).
 - Presets only set an oath when they're built around it: Jetstriker Agility, Elder / Enmity (Bladeharper), Bossraid Mage (Saintsworn), Diluvian (Dawnwalker) and a new Silentheart preset. The others leave the oath up to you, and the AI build maker picks the best fit for them.
 - Every preset's stats now meet its oath. Bossraid Mage gets 15 in the other four elements that Saintsworn needs; Bossraid, High Strength, High Intelligence, Reinforced Armor, Mage and No Willpower had oaths their stats didn't meet, so they're gone.
+- Fixed: picking a weapon that scales with Mind or Body (The Flippers of Fate, Kindred Edict, Black Death, Red Death, The Pastry Paster, Guiding Star, The Long Tong of the Law, Silas's Cenotaph) broke the weapon panel.
+- Optimize equipment tries a few starting points and keeps the best, so it lands on the armor targets more often (for example 487 HP / 50% physical instead of 485 / 49%).
 - Loading a preset no longer fills your talents on its own when "Optimizer favors" isn't Balanced (Bossraid used to start with 76 talents). Press Optimize build to get them.
 
 ## v0.34 | 2026-11-17

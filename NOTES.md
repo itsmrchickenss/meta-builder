@@ -1,6 +1,6 @@
 # Meta Builder: project notes
 
-Everything needed to pick this project back up. Last updated October 26, 2026 (v0.32).
+Everything needed to pick this project back up. Last updated November 17, 2026 (v0.35).
 The spreadsheet `docs/Meta Builder formulas.xlsx` has every formula (with a live Calculator) and every talent, mantra, weapon and item.
 
 ## Starting a new chat
@@ -27,7 +27,7 @@ The handoff page (a private Claude artifact) has this same information for a cha
 
 ## Version
 
-Pre-release numbering is **v0.x** (v0.32 now). The owner sets **v1.0 at release**. Each release is a new version (+0.01) with an entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players). **Releases happen only when the owner says so** (October 26, 2026: fewer updates, higher quality): work goes on the `next` branch under a `## vX | unreleased` entry, and is merged into `main` (which updates the website, the artifact and the desktop downloads) only on the owner's word. The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
+Pre-release numbering is **v0.x** (v0.35 released November 17, 2026). The owner sets **v1.0 at release**. Each release is a new version (+0.01) with an entry at the top of `src/data/versions.txt` (`## vX | YYYY-MM-DD`, then `- change` lines in plain words for players). **Releases happen only when the owner says so** (October 26, 2026: fewer updates, higher quality): work goes on the `next` branch under a `## vX | unreleased` entry, and is merged into `main` (which updates the website, the artifact and the desktop downloads) only on the owner's word. The build puts the newest version on the badge next to the title; clicking it opens the Version history popup. The handoff page is refreshed automatically every 10 versions (v0.30, v0.40, v0.50…) and otherwise only when the owner asks. (Earlier commits used v1.12–v1.23 before the owner renamed it; v0.23 followed v1.23.)
 
 ## Desktop app and web server (v0.32+)
 
@@ -75,7 +75,7 @@ Pre-release numbering is **v0.x** (v0.32 now). The owner sets **v1.0 at release*
 - Default targets: **500 HP and 50% physical armor**, then the Health ↔ Armor slider. **Never elemental armor** pips. Never Transfusion Ring.
 
 **Optimizer**
-- Optimize must always end within the budget (drop talents, then lower floors, then rebuild picks), and the damage ↔ talent options slider must visibly change the result.
+- Optimize must always end within the budget (drop talents, then lower floors, then rebuild picks, then as a last resort picked mantras and a picked weapon), and the damage ↔ talent options slider must visibly change the result. Only when a build ends with exactly 0 points to spare can Fortitude stay the same before and after (moving it could make the shrine unreachable).
 
 **Layout and wording**
 - Tabs: ⇩ Import · 1 Stats · 2 Talents & mantras · 3 Summary · 4 Armor · ! Report bug/suggestions.
@@ -175,11 +175,11 @@ Numbers from deepwoken.co on November 16, 2026 (same endpoints as above). Weapon
 
 ## Featured builds (owner's picks, November 17, 2026)
 
-`src/data/featured.txt`: 12 builds the owner rates above the scraped top builds: 9 Chime of Conflict builds (weight 10 each, "weight these the highest") and 3 gank builds (weight 5). Read from deepwoken.co (`/api/proxy/builds/<id>` on a deepwoken.co page) and dwt.sh (`api.dwt.sh/builds/<id>` on a dwt.sh page) in the built-in browser. `FEATURED` blends them into POP (as extra builds on top of the 802), CONDD (they count where their pre-shrine or final stats allow a talent) and REF (each repeated `weight` times). Add more by appending lines in the same format; the Chime preset's stats follow these builds. Not in our data: the Justicar Whistle talent and the Pumpkin Pitch mantra.
+`src/data/featured.txt`: 15 builds the owner rates above the scraped top builds: 9 Chime of Conflict builds (weight 10 each, "weight these the highest"), 3 gank builds (weight 5) and the owner's 3 attunementless examples (weight 5; the Attunementless preset is built from them). Read from deepwoken.co (`/api/proxy/builds/<id>` on a deepwoken.co page) and dwt.sh (`api.dwt.sh/builds/<id>` on a dwt.sh page) in the built-in browser. `FEATURED` blends them into POP (as extra builds on top of the 802), CONDD (they count where their pre-shrine or final stats allow a talent) and REF (each repeated `weight` times). Add more by appending lines in the same format; the Chime preset's stats follow these builds. Not in our data: the Justicar Whistle talent and the Pumpkin Pitch mantra.
 
 ## Full build check (November 17, 2026)
 
-`python3 tests/browser/full_check.py [seed] [scale]` runs about 180 builds (random presets x attunements x paths x stat changes, AI build maker descriptions, the 63 REF builds, every preset), Optimize and Auto-pick at several stages, the Summary and Armor tabs, and share link / Deepwoken text / build file round trips, checked by an independent checker (`window.__check`). About 35 minutes at scale 1. Fixed from its first report: Mind/Body weapon crash (`statName`), equipment optimizer restarts, `dropConflicts` / `conflictOf` (prerequisite path conflicts, Silentheart attunement mantras), shrine-skipped manual imports (`computeManual`: same stats before and after = no shrine), `easeFloors` with no build at all, `rebuildToBudget(seedP)`, `fixReup` + `better()` (a plan that fits without a re-raise always wins; `REUP_W`), Auto-pick taking back its picks, share codes carry `lp` (pre-shrine plan) used as the first seed.
+`python3 tests/browser/full_check.py [seed] [scale]` runs about 180 builds (random presets x attunements x paths x stat changes, AI build maker descriptions, the 63 REF builds, every preset), Optimize and Auto-pick at several stages, the Summary and Armor tabs, and share link / Deepwoken text / build file round trips, checked by an independent checker (`window.__check`). Problems print as they're found. Run it in 5 parallel chunks, about 15 minutes in all: `full_check.py SEED 1 0 30`, `30 60`, `60 90`, `90 120` (random builds) and `-1 0` (presets, AI builds, popular builds, imports, buttons). Imported builds' own numbers (over budget, over the talent cap) are warnings, not problems. Fixed from its first report: Mind/Body weapon crash (`statName`), equipment optimizer restarts, `dropConflicts` / `conflictOf` (prerequisite path conflicts, Silentheart attunement mantras), shrine-skipped manual imports (`computeManual`: same stats before and after = no shrine), `easeFloors` with no build at all, `rebuildToBudget(seedP)`, `fixReup` + `better()` (a plan that fits without a re-raise always wins; `REUP_W`), Auto-pick taking back its picks, share codes carry `lp` (pre-shrine plan) used as the first seed.
 
 ## Ideas not done yet
 

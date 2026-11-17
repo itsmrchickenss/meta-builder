@@ -5,6 +5,13 @@
 - Every preset's stats now meet its oath. Bossraid Mage gets 15 in the other four elements that Saintsworn needs; Bossraid, High Strength, High Intelligence, Reinforced Armor, Mage and No Willpower had oaths their stats didn't meet, so they're gone.
 - Fixed: picking a weapon that scales with Mind or Body (The Flippers of Fate, Kindred Edict, Black Death, Red Death, The Pastry Paster, Guiding Star, The Long Tong of the Law, Silas's Cenotaph) broke the weapon panel.
 - Optimize equipment tries a few starting points and keeps the best, so it lands on the armor targets more often (for example 487 HP / 50% physical instead of 485 / 49%).
+- Optimize never ends over the point budget any more (it could finish up to 33 over), and it now also fixes builds whose stat floors alone are over 330 by lowering the floors.
+- Optimize and Auto-pick never raise a stat again after the shrine (they used to, e.g. Willpower 40 → 18 → 20 for a talent that needs Strength too), and Fortitude isn't left the same before and after.
+- Auto-pick takes back its own picks if they would put the build over budget.
+- Talents are blocked when one of their prerequisites conflicts with a path you picked (Eruption Path plus a Twisted Puppets talent used to bring in Wraith Path too). Optimize removes such conflicts.
+- Silentheart: talents that need an attunement mantra are blocked, and Optimize removes them.
+- Builds that don't use the Shrine of Order (under Power 8) now import back correctly from the build file.
+- Share links open with the same stat plan the sender had.
 - Loading a preset no longer fills your talents on its own when "Optimizer favors" isn't Balanced (Bossraid used to start with 76 talents). Press Optimize build to get them.
 
 ## v0.34 | 2026-11-17

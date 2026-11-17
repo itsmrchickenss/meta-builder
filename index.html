@@ -3979,6 +3979,13 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - Every preset's stats now meet its oath. Bossraid Mage gets 15 in the other four elements that Saintsworn needs; Bossraid, High Strength, High Intelligence, Reinforced Armor, Mage and No Willpower had oaths their stats didn't meet, so they're gone.
 - Fixed: picking a weapon that scales with Mind or Body (The Flippers of Fate, Kindred Edict, Black Death, Red Death, The Pastry Paster, Guiding Star, The Long Tong of the Law, Silas's Cenotaph) broke the weapon panel.
 - Optimize equipment tries a few starting points and keeps the best, so it lands on the armor targets more often (for example 487 HP / 50% physical instead of 485 / 49%).
+- Optimize never ends over the point budget any more (it could finish up to 33 over), and it now also fixes builds whose stat floors alone are over 330 by lowering the floors.
+- Optimize and Auto-pick never raise a stat again after the shrine (they used to, e.g. Willpower 40 → 18 → 20 for a talent that needs Strength too), and Fortitude isn't left the same before and after.
+- Auto-pick takes back its own picks if they would put the build over budget.
+- Talents are blocked when one of their prerequisites conflicts with a path you picked (Eruption Path plus a Twisted Puppets talent used to bring in Wraith Path too). Optimize removes such conflicts.
+- Silentheart: talents that need an attunement mantra are blocked, and Optimize removes them.
+- Builds that don't use the Shrine of Order (under Power 8) now import back correctly from the build file.
+- Share links open with the same stat plan the sender had.
 - Loading a preset no longer fills your talents on its own when "Optimizer favors" isn't Balanced (Bossraid used to start with 76 talents). Press Optimize build to get them.
 
 ## v0.34 | 2026-11-17
@@ -4418,6 +4425,20 @@ function closure(){
   return {T,M};
 }
 const reqOf=n=>(TBY.get(n)||MBY.get(n)).req;
+// a talent or mantra plus every prerequisite it pulls in
+function prereqSet(n,acc){acc=acc||{T:new Set(),M:new Set()};const t=TBY.get(n),m=t?null:MBY.get(n);const e=t||m;if(!e)return acc;
+  if(t){if(acc.T.has(n))return acc;acc.T.add(n)}else{if(acc.M.has(n))return acc;acc.M.add(n)}
+  for(const p of e.req.t||[])if(!p.startsWith('Oath:'))prereqSet(p,acc);for(const p of e.req.m||[])prereqSet(p,acc);return acc}
+// Silentheart can't use attunement mantras (oath and monster mantras are fine)
+const silentNo=mn=>{const m=MBY.get(mn);return !!m&&m.ty==='N'&&m.at.some(a=>ATT[a])&&!oathTagOf(mn)};
+// why talent n can't join a build that holds the talents in `have` (null = it can): a prerequisite path that excludes a picked
+// one (Eruption Path + a Twisted Puppets talent that needs Wraith Path), or under Silentheart, an attunement mantra it needs
+function conflictOf(n,have,oath){const ps=prereqSet(n);
+  for(const a of ps.T){const ta=TBY.get(a);const via=a===n?'':` (it needs ${a})`;
+    for(const x of ta.req.x||[])if(have.has(x)&&!ps.T.has(x))return 'Blocked by '+x+via;
+    for(const h of have){if(ps.T.has(h))continue;const th=TBY.get(h);if(th&&(th.req.x||[]).includes(a))return 'Blocked by '+h+via}}
+  if((oath||S.oath)==='Silentheart')for(const mn of ps.M)if(silentNo(mn))return `Needs ${mn}: Silentheart can't use attunement mantras`;
+  return null}
 // 'auto' = taken before the shrine if the pre-shrine stats already meet it, otherwise after
 function whenOf(name,alts){const w=S.when[name];if(w==='pre'&&canPre(alts))return 'pre';if(w==='post')return 'post';return canPre(alts)?'auto':'post'}
 // talents the user never wants, and stats the optimizer must keep low (manual mode ignores limits)
@@ -4520,7 +4541,7 @@ function evaluate(P,R,oathAlts){
   let tv=0;for(const v of R.val){if(v.alts.some(a=>altCost(a,final)===0)||(v.pre&&v.alts.some(a=>altCost(a,P)===0)))tv+=v.p}
   const pr=(S.prio==null?50:S.prio)/100;
   const damage=dmgPct;const score=(BUDGET-used)+2*(1-pr)*dmgPct+2*pr*tv/10;
-  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20-reup*20,impossible,damage,refund:sh.refund,oathAlt:oathPick,preTaken,pmSum,qmSum,capOver,reup,reupK,noShrine};
+  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20-reup*REUP_W,impossible,damage,refund:sh.refund,oathAlt:oathPick,preTaken,pmSum,qmSum,capOver,reup,reupK,noShrine};
 }
 // ---- shrines ----
 const MASTERY_LIMIT=3;
@@ -4532,7 +4553,9 @@ function computeManual(){
   const P={};ALL.forEach(k=>P[k]=Math.max(0,Math.min(100,+(man.pre||{})[k]||0)));
   const preSum=ALL.reduce((s,k)=>s+P[k],0);
   const pm=masteryOf('pre'),qm=masteryOf('post');const Pm={...P};let pmSum=0;for(const [k,v] of Object.entries(pm)){const d=Math.min(v,Pm[k]||0);Pm[k]-=d;pmSum+=d}
-  const noShrine=S.order!==false&&powerAt(preSum)<SHRINE_PWR;const sh=noShrine?{out:{...Pm},refund:0}:shrineStep(Pm);const final={},adds={};
+  // the same stats before and after = the shrine wasn't used (our build file and deepwoken.co write it that way for builds under Power 8)
+  const same=ALL.every(k=>P[k]===Math.max(0,Math.min(100,+(man.fin||{})[k]||0)));
+  const noShrine=S.order!==false&&(powerAt(preSum)<SHRINE_PWR||same);const sh=noShrine?{out:{...Pm},refund:0}:shrineStep(Pm);const final={},adds={};
   ALL.forEach(k=>{const f=Math.max(sh.out[k],Math.min(100,+(man.fin||{})[k]||0));final[k]=f;adds[k]=f-sh.out[k]});
   const preTaken=[],unmet=[];
   for(const it of R.items){if(it.mode!=='post'&&it.alts.some(a=>altCost(a,P)===0))preTaken.push(it.name);else if(!it.alts.some(a=>altCost(a,final)===0))unmet.push({n:it.name,c:bestCost(it.alts,final)})}
@@ -4544,7 +4567,10 @@ function computeManual(){
   const best={score:0,dm,tv:0,P,sh,final,adds,preSum,postSum,used,free:BUDGET-used,impossible:false,damage:0,refund:sh.refund,oathAlt:oathPick,preTaken,pmSum,qmSum,unmet,manual:true,noShrine};
   return {R,best,baseFree:noShrineFree(R)};
 }
-const better=(a,b)=>{if(!b)return true;const fa=a.free>=0,fb=b.free>=0;if(fa!==fb)return fa;if(!fa)return a.free>b.free;if(Math.abs(a.score-b.score)>1e-6)return a.score>b.score;return a.preSum<b.preSum};
+const better=(a,b)=>{if(!b)return true;
+  // owner's rule: a plan that fits without raising an attribute again after the shrine beats any that re-raises
+  const okA=a.free>=0&&!(a.reup>0&&S.noReup!==false),okB=b.free>=0&&!(b.reup>0&&S.noReup!==false);if(okA!==okB)return okA;
+  const fa=a.free>=0,fb=b.free>=0;if(fa!==fb)return fa;if(!fa)return a.free>b.free;if(Math.abs(a.score-b.score)>1e-6)return a.score>b.score;return a.preSum<b.preSum};
 function searchStats(R,oathAlts,opt){
   const nStarts=opt&&opt.starts!=null?opt.starts:12,maxIt=opt&&opt.iters||120;
   const dims=[...new Set([...ATTR,S.wtype,...Object.keys(S.atts),...ALL.filter(k=>R.pre[k]>0||R.thr[k].size)])];
@@ -4634,9 +4660,41 @@ function sliderRebalance(res,noFill){const pr=(S.prio==null?50:S.prio)/100;const
   // never leave the build worse off than it started: undo the trade if it can't be paid for
   if(!r.best||r.best.impossible||r.best.free<0){S.wtarget=keep.w;S.atts=keep.a;S.sel=keep.sel;return {res,notes:[],dropped:[],added:[]}}
   out.dropped=out.dropped.filter(n=>!S.sel.includes(n));out.added=out.added.filter(n=>!out.dropped.includes(n));out.res=r;return out}
-function rebuildToBudget(){const dropped=[];const C=closure();
+// Optimize: picks that can't be in the build (a prerequisite path that excludes another pick, or an attunement mantra under
+// Silentheart) are removed; required talents and earlier picks win
+function dropConflicts(){const out=[];const have=new Set();
+  for(const n of (S.req||[]).filter(n=>TBY.has(n)))prereqSet(n).T.forEach(x=>have.add(x));
+  oathTalentPrereqs(findO(S.oath)).forEach(n=>prereqSet(n).T.forEach(x=>have.add(x)));
+  const keep=[];for(const n of S.sel){if(isReq(n)||!TBY.has(n)){keep.push(n);continue}const ps=prereqSet(n);if(ps.T.size&&[...ps.T].every(x=>have.has(x))){keep.push(n);continue}
+    if(conflictOf(n,have))out.push(n);else{keep.push(n);ps.T.forEach(x=>have.add(x))}}
+  S.sel=keep;
+  if(S.oath==='Silentheart'){const bad=S.mantras.filter(m=>silentNo(m)&&!isReq(m));if(bad.length){S.mantras=S.mantras.filter(m=>!bad.includes(m));out.push(...bad)}}
+  return out}
+// points taken off per point an attribute is raised again after the shrine (fixReup raises it to rule the plan out)
+let REUP_W=20;
+// owner's rules: never raise an attribute again after the shrine, and Fortitude is never the same before and after.
+// The search only penalises a re-raise, so: search again with it counted much heavier, then drop the cheapest pick that causes it
+function rootPick(n,C){let cur=n,seen=0;while(seen++<40){const e=C.T.get(cur)||C.M.get(cur);if(!e)return null;if(e.by===null)return cur;if(!e.by||String(e.by).startsWith('Oath:'))return null;cur=e.by}return null}
+function fixReup(res){const dropped=[];let guard=12;
+  while(res.best&&!res.best.impossible&&res.best.reup>0&&S.noReup!==false&&guard-->0){
+    REUP_W=400;let t;try{t=compute({starts:18,iters:200,seedP:res.best.P})}finally{REUP_W=20}
+    if(t.best&&!t.best.impossible&&!t.best.reup&&t.best.free>=0){res=compute({starts:0,iters:200,seedP:t.best.P});if(!res.best||res.best.reup)res=t;break}
+    const b=res.best;const C=res.R.C;let pick=null;
+    for(const it of res.R.items){if(b.preTaken.includes(it.name))continue;
+      if(!it.alts.some(a=>b.reupK.some(k=>(a.min[k]||0)>(b.sh.out[k]||0))))continue;
+      const root=rootPick(it.name,C);if(!root||isReq(root)||!S.sel.includes(root))continue;const v=talentVal(root,C);if(!pick||v<pick.v)pick={n:root,v}}
+    if(!pick)break;S.sel=S.sel.filter(x=>x!==pick.n);dropped.push(pick.n);res=compute({starts:18,iters:200,seedP:res.best.P})}
+  const lowered={};
+  if(res.best&&!res.best.impossible&&res.best.reup>0&&S.noReup!==false){const b=res.best;let did=false;
+    for(const k of b.reupK)if((+S.mins[k]||0)>(b.sh.out[k]||0)&&!(S.keep||{})[k]&&!(S.pin&&k in S.pin)){S.mins[k]=b.sh.out[k]||0;if(!S.mins[k])delete S.mins[k];lowered[ANAME[k]+' after']=S.mins[k]||0;did=true}
+    if(did){const t=compute({starts:18,iters:200,seedP:b.P});if(t.best&&better(t.best,b))res=t}}
+  // Fortitude 50 -> 50: put it after the shrine instead (1 before) when that still fits
+  const b=res.best;if(b&&!b.impossible&&!b.noShrine&&!b.manual&&b.P.FTD>1&&b.P.FTD===b.final.FTD&&!(S.pin&&'FTD' in S.pin)&&!((S.preMin||{}).FTD>1)){
+    const e=evaluate({...b.P,FTD:1},res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0)res={...res,best:e}}
+  return {res,dropped}}
+function rebuildToBudget(seedP){const dropped=[];const C=closure();
   const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n)).sort((a,b)=>talentVal(b,C)-talentVal(a,C));
-  S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));let r=compute({starts:4,iters:80});
+  S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));let r=compute({starts:4,iters:80,seedP});
   if(!r.best||r.best.impossible||r.best.free<0){dropped.push(...cand);return {res:r,dropped}}
   for(const n of cand){if(S.sel.includes(n))continue;S.sel=[...S.sel,n];const t=compute({starts:1,iters:40,seedP:r.best.P});
     if(t.best&&!t.best.impossible&&t.best.free>=0)r=t;else{S.sel=S.sel.filter(x=>x!==n);dropped.push(n)}}
@@ -4645,10 +4703,10 @@ function rebuildToBudget(){const dropped=[];const C=closure();
 function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iters:80});
   const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;
   const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
-  while(r.best&&!r.best.impossible&&r.best.free<0&&guard-->0){
+  while((!r.best||(!r.best.impossible&&r.best.free<0))&&guard-->0){
     const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin)&&!(S.keep||{})[k]);
     if(!ks.length)break;ks.sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));const [o,k,mn,label]=ks[0];
-    o[k]=Math.max(mn,(+o[k]||0)-5);if(o!==S&&!o[k])delete o[k];lowered[label]=o[k]||0;r=compute({starts:3,iters:60,seedP:r.best.P})}
+    o[k]=Math.max(mn,(+o[k]||0)-5);if(o!==S&&!o[k])delete o[k];lowered[label]=o[k]||0;r=compute({starts:3,iters:60,seedP:r.best&&r.best.P})}
   return {res:r,lowered}}
 // After a mantra is added (each one takes 2 talent slots), drop the least valuable talents so the cap still holds
 function fitCap(){const d=trimToCap();if(d.length)say(`That mantra takes 2 talent slots, so ${d.length} talent${d.length>1?'s were':' was'} dropped to stay under the cap: ${d.slice(0,5).join(', ')}${d.length>5?'…':''}. Undo brings ${d.length>1?'them':'it'} back.`);return d}
@@ -4717,7 +4775,8 @@ function statusOf(entry,isM,ctx){
   if(isM?C.M.has(entry.n):C.T.has(entry.n))return {k:'have',label:'In build',cost:0};
   if(!isM&&isAvoid(entry.n))return {k:'block',label:'Avoided',cost:Infinity};
   {const caps=capsOf();if(Object.keys(caps).length){const al=reqAlts(entry.req,false);if(hasStats(al)&&!al.some(a=>altOkCaps(a,caps)))return {k:'block',label:'Above your stat limit',cost:Infinity}}}
-  const blk=(entry.req.x||[]).find(x=>C.T.has(x));if(blk)return {k:'block',label:'Blocked by '+blk,cost:Infinity};
+  if(!isM){const cf=conflictOf(entry.n,new Set(C.T.keys()));if(cf)return {k:'block',label:cf,cost:Infinity}}
+  else{const blk=(entry.req.x||[]).find(x=>C.T.has(x));if(blk)return {k:'block',label:'Blocked by '+blk,cost:Infinity}}
   const oathNeed=(entry.req.t||[]).find(n=>n.startsWith('Oath:')&&n!=='Oath: '+S.oath);if(oathNeed)return {k:'block',label:'Needs '+oathNeed.slice(6),cost:Infinity};
   if(!ctx._have)ctx._have=new Set([...C.T.keys(),...C.M.keys()]);if(!ctx._chain)ctx._chain=new Map();
   const alts=chainAlts(entry,ctx._have,ctx._chain);
@@ -4766,7 +4825,7 @@ function recommendations(ctx,limit){
 function autoPickList(ctx,only){
   const cn=counts(ctx.C);let room=cn.cap-cn.nTal;if(room<=0)return [];
   const added=new Set();const have=n=>ctx.C.T.has(n)||added.has(n);
-  const blockedBy=n=>{const t=TBY.get(n);if((t.req.x||[]).some(have))return true;for(const h of [...ctx.C.T.keys(),...added]){const ht=TBY.get(h);if(ht&&(ht.req.x||[]).includes(n))return true}return false};
+  const blockedBy=n=>!!conflictOf(n,new Set([...ctx.C.T.keys(),...added]));
   const pool=DB.T.filter(t=>(!only||only.has(t.n))&&t.k&&!isAvoid(t.n)&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&!t.n.startsWith('Oath:')&&!have(t.n));
   const ok=new Map();for(const t of pool){const st=statusOf(t,false,ctx);if(st.k==='fit')ok.set(t.n,st)}
   const out=[];
@@ -5298,13 +5357,19 @@ function renderMantraView(){
     <p style="margin:4px 0;font-size:14px">At your ${esc(statName(k)||k)} ${fin[k]||0} it's level ${L}${L<5?` (level ${L+1} at ${L*20})`:''}: <b>${at(md.lv[L-1]).toFixed(1)}</b> per hit vs 30% armor.</p>
     <p class="hint" style="margin:0">Scaling +${(s*100).toFixed(1)}% from ${esc(parts.join(', '))}; damage bonus +${(dm.m*100).toFixed(1)}%. Top row = base damage per level, small = with your stats.</p>`;
 }
+const apBad=b=>!b||b.impossible||b.free<0||(b.reup>0&&S.noReup!==false);
 function autoPick(){
   if(!last||!last.best){say('Build the stats first.');return}
-  const picks=autoPickList(ctxNow());
+  const picks=autoPickList(ctxNow());const wasBad=apBad(last.best);
   if(!picks.length){say('No free talent slots, or nothing else fits these stats.');return}
   pushUndo('Auto-pick');
   for(const p of picks){for(const x of p.pre)if(!S.sel.includes(x))S.sel.push(x);if(!S.sel.includes(p.n))S.sel.push(p.n)}
-  trimToCap();run();const syn=picks.filter(p=>p.sy>0).map(p=>p.n);
+  trimToCap();run();
+  {if(!wasBad&&apBad(last.best)){const bad=apBad;const C=closure();const mine=picks.map(p=>p.n).filter(n=>S.sel.includes(n)).sort((a,b)=>talentVal(a,C)-talentVal(b,C));let back=0;
+     for(const n of mine){if(!bad(last.best))break;S.sel=S.sel.filter(x=>x!==n);back++;run()}
+     if(back)picks.splice(0,picks.length,...picks.filter(p=>S.sel.includes(p.n)))}}
+  if(!picks.length){say('Nothing else fits these stats without breaking the point budget or raising a stat again after the shrine.');return}
+  const syn=picks.filter(p=>p.sy>0).map(p=>p.n);
   say(`Auto-picked ${picks.length} talent${picks.length>1?'s':''}${syn.length?`, including ${syn.length} synerg${syn.length>1?'ies':'y'} (${syn.slice(0,4).join(', ')}${syn.length>4?'…':''})`:''}. All fit your current stats.`);
 }
 function renderResults(res){
@@ -5386,20 +5451,25 @@ function renderResults(res){
   $('steps').innerHTML=steps.map(s=>`<li>${s}</li>`).join('');
   renderTalentChips();renderMantraChips();renderGear();renderFinal();renderPicked();renderStatus();renderReq();renderWeaponPanels();renderHelp();renderShrines();renderWishes();if($('otbl').closest('details').open)renderOathTable();save();
 }
-function run(){renderResults(compute({starts:2,iters:60,seedP:prevP()}))}
+function run(){const sp=S._seedP||prevP();delete S._seedP;renderResults(compute({starts:2,iters:60,seedP:sp}))}
 
 // Optimize: choose pre/post for each talent, tag stats, then optionally spend leftovers
 // optCore runs one optimization on the current state S (no rendering) and returns what it did
 function optCore(spend,noFill){
-      let dropped=[];{const R0=requirements();const cb=(R0.capBlocked||[]).filter(n=>S.sel.includes(n)&&!isReq(n));if(cb.length){S.sel=S.sel.filter(n=>!cb.includes(n));dropped.push(...cb)}}
+      let dropped=[];{const cf=dropConflicts();dropped.push(...cf)}
+      {const R0=requirements();const cb=(R0.capBlocked||[]).filter(n=>S.sel.includes(n)&&!isReq(n));if(cb.length){S.sel=S.sel.filter(n=>!cb.includes(n));dropped.push(...cb)}}
       dropped=dropped.concat(trimToCap());
       let res=compute({starts:18,iters:200,seedP:prevP()});
       if(res.best&&res.best.free<0&&!res.best.impossible){const tr=trimToBudget(res);dropped=dropped.concat(tr.dropped);res=compute({starts:18,iters:200,seedP:tr.res.best&&tr.res.best.P})}
       // still over: ease floors if required talents + floors alone don't fit, then rebuild the picks greedily
       let lowered={};
-      if(res.best&&res.best.free<0&&!res.best.impossible){const keep=S.sel;S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const base=compute({starts:4,iters:80});S.sel=keep;
-        if(base.best&&!base.best.impossible&&base.best.free<0){S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const ef=easeFloors();lowered=ef.lowered;S.sel=keep}
-        const rb=rebuildToBudget();dropped=dropped.concat(rb.dropped);res=compute({starts:18,iters:200,seedP:rb.res.best&&rb.res.best.P})}
+      // (also when there is no build at all: the floors alone are over the budget)
+      if(!res.best||(res.best.free<0&&!res.best.impossible)){const keep=S.sel;S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const base=compute({starts:4,iters:80});S.sel=keep;let efP=null;
+        if(!base.best||(!base.best.impossible&&base.best.free<0)){S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const ef=easeFloors();lowered=ef.lowered;efP=ef.res.best&&ef.res.best.P;S.sel=keep}
+        else efP=base.best.P;
+        const rb=rebuildToBudget(efP);dropped=dropped.concat(rb.dropped);res=compute({starts:18,iters:200,seedP:rb.res.best&&rb.res.best.P});
+        if(rb.res.best&&(!res.best||better(rb.res.best,res.best)))res=rb.res}
+      {const fx=fixReup(res);res=fx.res;dropped=dropped.concat(fx.dropped);Object.assign(lowered,fx.lowered)}
       const lw=Object.entries(lowered);
       const sb=sliderRebalance(res,noFill);res=sb.res;dropped=dropped.concat(sb.dropped);
       if(sb.notes.length||sb.added.length)res=compute({starts:18,iters:200,seedP:res.best.P});
@@ -5425,6 +5495,7 @@ function optCore(spend,noFill){
         // spending must never push the build over budget: retry with fewer points, else keep the unspent version
         let F=prevRes.best.free,ok=null;for(let tries=0;tries<4&&F>0;tries++){const r=spendTry(F);if(r.best&&!r.best.impossible&&r.best.free>=0){ok=r;break}F-=Math.max(2,r.best?-r.best.free+2:F)}
         if(ok)res=ok;else{S.wtarget=prevW;S.atts=prevA;S.mins=prevM;res=prevRes}
+        if(res.best&&res.best.reup){const fx=fixReup(res);res=fx.res;dropped=dropped.concat(fx.dropped)}
       }
       return {res,dropped,lw,sb,spend};
 }
@@ -5506,7 +5577,7 @@ function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
 // share links always point at the public website so anyone can open them
 const ARTIFACT_URL='https://itsmrchickenss.github.io/meta-builder/';
 function shareBase(){const h=location.hostname||'';const inClaude=/claude\.ai|anthropic|usercontent|claude\.site/.test(h)||!/^https?:$/.test(location.protocol);return inClaude?ARTIFACT_URL:location.href.split('#')[0]}
-function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function decodeBuild(raw){
   let code=String(raw||'').trim();const i=code.indexOf('#');if(i>=0)code=code.slice(i+1);
   if(!code.startsWith('dw1'))throw new Error('not a build code');
@@ -5517,6 +5588,7 @@ function decodeBuild(raw){
   next.atts={};for(const [k,v] of Object.entries(o.a||{}))if(ATT[k])next.atts[k]=num(v,80);
   for(const k of ['s','r','av'])if(Array.isArray(o[k]))o[k]=renameList(o[k]);if(o.n)for(const [a,b] of Object.entries(RENAMED_T))if(a in o.n){o.n[b]=o.n[a];delete o.n[a]}
   next.sel=(o.s||[]).filter(n=>TBY.has(n));next.mantras=(o.m||[]).filter(n=>MBY.has(n));
+  if(o.lp&&typeof o.lp==='object'){const sp={};for(const k of ALL)sp[k]=num(o.lp[k],0);next._seedP=sp}
   next.when={};for(const [k,v] of Object.entries(o.n||{}))if(v==='pre'||v==='post')next.when[k]=v;
   next.mins={};for(const [k,v] of Object.entries(o.i||{}))if(ATTR.includes(k))next.mins[k]=num(v,0);
   next.preMin={};for(const [k,v] of Object.entries(o.q||{}))if(ATTR.includes(k))next.preMin[k]=num(v,0);

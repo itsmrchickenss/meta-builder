@@ -173,6 +173,10 @@ Numbers from deepwoken.co on November 16, 2026 (same endpoints as above). Weapon
 - Not added: Ether Surge (Vow of Iron-only enchant). Test: `tests/browser/hallowtide26.py`.
 - deepwoken.co also lists about 100 older equippable items that aren't in `gear.txt` (Sorcerer's set, Hallowed Monastery, Corrupted items, many rings and earrings). Not part of this update; add them if the owner asks.
 
+## Full build check (November 17, 2026)
+
+`python3 tests/browser/full_check.py [seed] [scale]` runs about 180 builds (random presets x attunements x paths x stat changes, AI build maker descriptions, the 63 REF builds, every preset), Optimize and Auto-pick at several stages, the Summary and Armor tabs, and share link / Deepwoken text / build file round trips, checked by an independent checker (`window.__check`). About 35 minutes at scale 1. Fixed from its first report: Mind/Body weapon crash (`statName`), equipment optimizer restarts, `dropConflicts` / `conflictOf` (prerequisite path conflicts, Silentheart attunement mantras), shrine-skipped manual imports (`computeManual`: same stats before and after = no shrine), `easeFloors` with no build at all, `rebuildToBudget(seedP)`, `fixReup` + `better()` (a plan that fits without a re-raise always wins; `REUP_W`), Auto-pick taking back its picks, share codes carry `lp` (pre-shrine plan) used as the first seed.
+
 ## Ideas not done yet
 
 - Race and aspect stat bonuses, gear set bonuses, talent health bonuses, ether modelling.

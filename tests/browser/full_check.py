@@ -16,7 +16,7 @@ window.__check=function(){
   if(b.impossible)P.push('impossible build');
   const pre=b.P,fin=b.final;const sum=o=>ALL.reduce((s,k)=>s+(o[k]||0),0);
   for(const k of ALL){for(const [nm,o] of [['pre',pre],['final',fin]]){const v=o[k];if(!Number.isFinite(v)||v<0||v>100)P.push(`${nm} ${k} out of range: ${v}`)}}
-  const preSum=sum(pre);if(preSum>BUDGET)P.push('pre-shrine points over the budget: '+preSum);
+  const preSum=sum(pre);if(preSum>BUDGET&&!(b.noShrine&&b.manual))P.push('pre-shrine points over the budget: '+preSum);
   const mastery=S.mastery&&S.mastery.on;
   const useShrine=S.order!==false&&!b.noShrine;
   if(useShrine&&powerAt(preSum)<SHRINE_PWR)P.push('shrine used below Power 8 (pre '+preSum+')');
@@ -30,7 +30,7 @@ window.__check=function(){
     if(b.free!==BUDGET-used&&!b.capOver&&!b.reup)P.push(`free points shown ${b.free}, should be ${BUDGET-used}`)}
   // the owner's rule: pre-shrine is the peak for attributes
   if(useShrine&&!S.manual)for(const k of ATTR)if(pre[k]>1&&!(S.pin&&k in S.pin)&&fin[k]>sh.out[k])P.push(`${k} raised again after the shrine: ${pre[k]} -> ${sh.out[k]} -> ${fin[k]}`);
-  if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))W.push('Fortitude the same before and after: '+pre.FTD);
+  if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))P.push('Fortitude the same before and after: '+pre.FTD);
   const caps=capsOf();for(const [k,v] of Object.entries(caps))if(fin[k]>v)P.push(`${k} over its limit ${v}: ${fin[k]}`);
   for(const [k,v] of Object.entries(S.atts||{}))if(fin[k]<Math.min(+v||0,k in caps?caps[k]:100))P.push(`attunement ${k} ${fin[k]} under its target ${v}`);
   if(S.wtarget&&fin[S.wtype]<Math.min(S.wtarget,S.wtype in caps?caps[S.wtype]:100))P.push(`weapon ${S.wtype} ${fin[S.wtype]} under its target ${S.wtarget}`);
@@ -117,14 +117,18 @@ with sync_playwright() as p:
 
     def roundtrip(tag):
         before = pg.evaluate("JSON.stringify({o:S.oath,w:S.wtype,t:S.wtarget,a:S.atts,s:[...S.sel].sort(),m:[...S.mantras].sort(),r:[...S.req].sort(),p:S.weapon})")
-        stats = pg.evaluate("JSON.stringify({P:last.best.P,f:last.best.final})")
+        plan_before = pg.evaluate("JSON.stringify({P:last.best.P,f:last.best.final,free:last.best.free})")
         code = pg.evaluate("encodeBuild()")
         game = pg.evaluate("buildGameText()"); file = pg.evaluate("buildFileText()")
         # share link
         pg.evaluate("c=>{Object.assign(S,decodeBuild(c));renderInputs();run()}", code); pg.wait_for_timeout(100)
         after = pg.evaluate("JSON.stringify({o:S.oath,w:S.wtype,t:S.wtarget,a:S.atts,s:[...S.sel].sort(),m:[...S.mantras].sort(),r:[...S.req].sort(),p:S.weapon})")
         if after != before: problems.append(f'{tag}: share code round trip changed the build')
-        check(tag + ' share import')
+        plan_after = pg.evaluate("JSON.stringify({P:last.best.P,f:last.best.final,free:last.best.free})")
+        if plan_after != plan_before: problems.append(f'{tag}: share link opened with a different plan: {plan_before} -> {plan_after}')
+        res = pg.evaluate("__check()")
+        if json.loads(plan_before)['free'] < 0: res['P'] = [x for x in res['P'] if 'over the 330' not in x]
+        rec(tag + ' share import', res)
         # Deepwoken text and build file: import back, stats and talents must survive
         for kind, txt in [('Deepwoken text', game), ('build file', file)]:
             if not txt: problems.append(f'{tag}: {kind} export is empty'); continue
@@ -248,13 +252,7 @@ with sync_playwright() as p:
     print(f"\nbuilds {counts['builds']}, checks {counts['checks']}, {time.time()-t0:.0f}s")
     if kept_all: print(f"popular builds: optimize kept {100*sum(kept_all)/len(kept_all):.0f}% of their talents on average (min {100*min(kept_all):.0f}%)")
     print(f"WARNINGS {len(warns)}"); [print('  ', w) for w in warns[:40]]
-    KNOWN = [('raised again after the shrine', 'A: optimizer / auto-pick re-raise an attribute after the shrine'),
-             ('build file import: over', 'E: shrine-skipped builds re-import with the shrine applied'),
-             ('build file import: pre-shrine points over', 'E: shrine-skipped builds re-import with the shrine applied'),
-             ('mutually exclusive talents both taken', 'F: a talent whose prerequisite path conflicts with a picked path is not blocked'),
-             ('over the 330 budget', 'B: Optimize can end over the budget'), ('no result', 'C: no build when the floors alone are over 330'),
-             ('Silentheart with an attunement mantra', 'D: Silentheart keeps talents that need attunement mantras'),
-             ('build file import: over', 'E: shrine-skipped builds re-import with the shrine applied')]
+    KNOWN = []  # bugs A-F from the November 17, 2026 report are fixed; anything found now is new
     known = {}
     rest = []
     for x in problems:

@@ -17,11 +17,14 @@ console.log('talents',DB.T.length,'mantras',DB.M.length,'weapons',DB.W.length,'g
 // Same steps as the Optimize button: fit the talent cap, then drop talents until the stats fit the budget
 const opt=()=>{trimToCap();let r=compute({starts:4,iters:80});if(r.best&&r.best.free<0&&!r.best.impossible)r=trimToBudget(r).res;return r};
 const MAN=DB.M.filter(m=>m.ty==='N'&&!oathTagOf(m.n)&&!(m.req&&m.req.t&&m.req.t.length)).slice(0,6).map(m=>m.n);
-for(const P of PRESETS){for(const withM of [0,1]){S.oath=P.oath;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};S.preMin={...P.pre};S.mins={...P.post};S.sel=P.t.filter(n=>TBY.has(n));S.mantras=withM?MAN.slice():[];S.req=[];S.avoid=[];S.caps={};
+// presets with a split menu (Attunementless): every split x Fortitude option x weapon type
+const CASES=[];for(const P of PRESETS){CASES.push(P);if(P.variants)for(const v of P.variants)for(const f of v.ftd||P.ftdOpts||[null])for(const w of ['LHT','MED','HVY']){
+  const post={...v.post};if(f)post.FTD=f;CASES.push({...P,n:P.n+': '+v.n.split(' (')[0]+(f?' FTD '+f:'')+' '+w,pre:{...v.pre},post,wtype:w,oath:v.oath||(P.oathByW?P.oathByW[w]:P.oath),variants:null})}}
+for(const P of CASES){for(const withM of [0,1]){S.oath=P.oath;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};S.preMin={...P.pre};S.mins={...P.post};S.sel=P.t.filter(n=>TBY.has(n));S.mantras=withM?MAN.slice():[];S.req=[];S.avoid=[];S.caps={};
   const r=opt();const c=counts(closure());const ok=r.best&&!r.best.impossible&&r.best.free>=0&&c.nTal<=c.cap;if(!ok)fails++;
-  console.log((ok?'ok  ':'FAIL')+' '+(P.n+(withM?' +6 mantras':'')).padEnd(32)+' free '+String(r.best?r.best.free:'-').padStart(4)+'  talents '+c.nTal+'/'+c.cap)}}
+  console.log((ok?'ok  ':'FAIL')+' '+(P.n+(withM?' +6 mantras':'')).padEnd(60)+' free '+String(r.best?r.best.free:'-').padStart(4)+'  talents '+c.nTal+'/'+c.cap)}}
 // every preset's oath is met by its own stats after the shrine (attributes lose at most 25 at the shrine)
-for(const P of PRESETS){if(!P.oath||P.oath==='None')continue;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};
+for(const P of CASES){if(!P.oath||P.oath==='None')continue;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};
   const f={};ALL.forEach(k=>f[k]=Math.max(P.post[k]||0,P.atts[k]||0,k===P.wtype?P.wtarget:0,P.pre[k]?P.pre[k]-25:0));
   const al=oathAltsOf(findO(P.oath));const c=al?bestCost(al,f):0;const ok=c===0;if(!ok)fails++;
   console.log((ok?'ok  ':'FAIL')+' oath fits: '+P.n.padEnd(20)+' '+P.oath+(ok?'':' (short '+c+')'))}

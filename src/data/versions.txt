@@ -1,4 +1,7 @@
 ## v0.35 | unreleased
+- Presets with a weapon now start at 80 in a weapon of your choice: pick Light, Medium or Heavy with the buttons at the top of the preset window (Elder / Enmity keeps Medium 90 for the Shattered Katana; the mage presets stay weapon-free).
+- New Attunementless preset: pick Agility 100 + Strength 40 (Jetstriker), Strength 100 + Agility 65 (Starkindred) or Strength 100 + Agility 100 before the shrine, then Willpower 40, Fortitude 50 or 90 (Reinforced Armor) and 80 in your weapon after.
+- Loading a preset keeps exactly its stats: "More damage" no longer raises the weapon above what you picked until you press Optimize build.
 - 12 hand-picked builds (9 Chime of Conflict builds, weighted highest, and 3 gank builds) now count extra in talent popularity, take rates, recommendations and the AI build maker's oath choice.
 - The Chime preset now starts like those builds: Charisma, Strength and Agility 40 before the shrine, Fortitude 50 after, Medium 90.
 - New Diluvian preset (replaces Brick Wall Dawnwalker): Dawnwalker with Brick Wall, Fortitude and Willpower 100 before the shrine (75 after), and every talent those two stats unlock, already picked. Your weapon, attunements and the rest are up to you.

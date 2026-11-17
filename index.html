@@ -3984,6 +3984,7 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - Auto-pick takes back its own picks if they would put the build over budget.
 - Talents are blocked when one of their prerequisites conflicts with a path you picked (Eruption Path plus a Twisted Puppets talent used to bring in Wraith Path too). Optimize removes such conflicts.
 - Silentheart: talents that need an attunement mantra are blocked, and Optimize removes them.
+- Optimize keeps every stat inside the limits you set (the shrine could push a limited stat a little over), and removes any picked talent you've marked as avoided.
 - Builds that don't use the Shrine of Order (under Power 8) now import back correctly from the build file.
 - Share links open with the same stat plan the sender had.
 - Loading a preset no longer fills your talents on its own when "Optimizer favors" isn't Balanced (Bossraid used to start with 76 talents). Press Optimize build to get them.
@@ -4569,7 +4570,8 @@ function computeManual(){
 }
 const better=(a,b)=>{if(!b)return true;
   // owner's rule: a plan that fits without raising an attribute again after the shrine beats any that re-raises
-  const okA=a.free>=0&&!(a.reup>0&&S.noReup!==false),okB=b.free>=0&&!(b.reup>0&&S.noReup!==false);if(okA!==okB)return okA;
+  // (and keeps every stat inside its limit: the shrine can push a stat with 1 point before it over the limit)
+  const okA=a.free>=0&&!(a.reup>0&&S.noReup!==false)&&!a.capOver,okB=b.free>=0&&!(b.reup>0&&S.noReup!==false)&&!b.capOver;if(okA!==okB)return okA;
   const fa=a.free>=0,fb=b.free>=0;if(fa!==fb)return fa;if(!fa)return a.free>b.free;if(Math.abs(a.score-b.score)>1e-6)return a.score>b.score;return a.preSum<b.preSum};
 function searchStats(R,oathAlts,opt){
   const nStarts=opt&&opt.starts!=null?opt.starts:12,maxIt=opt&&opt.iters||120;
@@ -4663,6 +4665,7 @@ function sliderRebalance(res,noFill){const pr=(S.prio==null?50:S.prio)/100;const
 // Optimize: picks that can't be in the build (a prerequisite path that excludes another pick, or an attunement mantra under
 // Silentheart) are removed; required talents and earlier picks win
 function dropConflicts(){const out=[];const have=new Set();
+  {const av=S.sel.filter(n=>isAvoid(n));if(av.length){S.sel=S.sel.filter(n=>!av.includes(n));out.push(...av)}}
   for(const n of (S.req||[]).filter(n=>TBY.has(n)))prereqSet(n).T.forEach(x=>have.add(x));
   oathTalentPrereqs(findO(S.oath)).forEach(n=>prereqSet(n).T.forEach(x=>have.add(x)));
   const keep=[];for(const n of S.sel){if(isReq(n)||!TBY.has(n)){keep.push(n);continue}const ps=prereqSet(n);if(ps.T.size&&[...ps.T].every(x=>have.has(x))){keep.push(n);continue}

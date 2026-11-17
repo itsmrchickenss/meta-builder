@@ -10,6 +10,7 @@
 - Auto-pick takes back its own picks if they would put the build over budget.
 - Talents are blocked when one of their prerequisites conflicts with a path you picked (Eruption Path plus a Twisted Puppets talent used to bring in Wraith Path too). Optimize removes such conflicts.
 - Silentheart: talents that need an attunement mantra are blocked, and Optimize removes them.
+- Optimize keeps every stat inside the limits you set (the shrine could push a limited stat a little over), and removes any picked talent you've marked as avoided.
 - Builds that don't use the Shrine of Order (under Power 8) now import back correctly from the build file.
 - Share links open with the same stat plan the sender had.
 - Loading a preset no longer fills your talents on its own when "Optimizer favors" isn't Balanced (Bossraid used to start with 76 talents). Press Optimize build to get them.

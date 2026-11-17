@@ -8,6 +8,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 URL = (ROOT / 'index.html').as_uri()
 SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 1
 SCALE = float(sys.argv[2]) if len(sys.argv) > 2 else 1
+FROM = int(sys.argv[3]) if len(sys.argv) > 3 else None
+SECTIONS = FROM is None or FROM < 0  # FROM -1: skip the random builds, run every other section
+TO = int(sys.argv[4]) if len(sys.argv) > 4 else None
 from playwright.sync_api import sync_playwright
 
 CHECK = r"""
@@ -60,7 +63,8 @@ window.__badText=el=>{const t=(document.getElementById(el)||{innerText:''}).inne
 problems, warns, counts = [], [], {'builds': 0, 'checks': 0}
 def rec(tag, res, extra=None):
     counts['checks'] += 1
-    for x in res['P']: problems.append(f'{tag}: {x}')
+    for x in res['P']:
+        problems.append(f'{tag}: {x}'); print('PROBLEM', f'{tag}: {x}'[:400], flush=True)
     for x in res['W']: warns.append(f'{tag}: {x}')
 
 with sync_playwright() as p:
@@ -164,12 +168,12 @@ with sync_playwright() as p:
           const clash=n=>S.sel.some(h=>(TBY.get(h).req.x||[]).includes(n)||(TBY.get(n).req.x||[]).includes(h));for(let j=0;j<Math.floor(rnd()*20);j++){const t=pick(pool);if(!S.sel.includes(t.n)&&!clash(t.n))S.sel.push(t.n)}
           if(rnd()<.5){const ms=DB.M.filter(m=>m.ty==='N'&&!oathTagOf(m.n)&&m.at.some(a=>a in S.atts)&&!(m.req.t||[]).length);for(let j=0;j<3&&ms.length;j++){const m=pick(ms).n;if(!S.mantras.includes(m))S.mantras.push(m)}}
           if(rnd()<.15)S.caps={WLL:{on:true,max:pick([0,20,40])}};
-          if(rnd()<.1)S.avoid=[pick(pool).n];
+          if(rnd()<.1){const n=pick(pool).n;S.avoid=[n];S.sel=S.sel.filter(x=>x!==n)}
           if(rnd()<.15)S.allowOver=true;
           renderInputs();run();return P.n+' | '+S.wtype+' '+S.wtarget+' | '+JSON.stringify(S.atts)+' | '+(path[0]||'no path')+' | '+S.sel.length+' talents'}""", [i, SEED, ATT_SETS, PATHS])
 
     t0 = time.time()
-    for i in range(n_builds):
+    for i in (range(FROM, TO) if FROM is not None and FROM >= 0 else [] if FROM is not None else range(n_builds)):
         desc = setup(i); tag = f'build {i} [{desc}]'; counts['builds'] += 1
         wait(); opt(tag)
         autopick(tag)
@@ -180,10 +184,10 @@ with sync_playwright() as p:
         autopick(tag + ' second')
         if i % 4 == 0: tabs(tag)
         if i % 6 == 0: roundtrip(tag)
-        if i % 10 == 0: print(f'{i}/{n_builds} builds, {len(problems)} problems, {time.time()-t0:.0f}s', flush=True)
+        if i % 5 == 0: print(f'{i}/{n_builds} builds, {len(problems)} problems, {time.time()-t0:.0f}s', flush=True)
 
     # ---------- every preset through the wizard ----------
-    for n in presets:
+    for n in (presets if SECTIONS else []):
         if n == 'Clean Slate': continue
         pg.evaluate(f"openWizard(PRESETS.find(p=>p.n==={json.dumps(n)}))"); pg.wait_for_timeout(200); pg.click('#wz-go'); pg.wait_for_timeout(300); wait()
         tag = f'preset {n}'; check(tag + ' loaded'); counts['builds'] += 1
@@ -197,7 +201,7 @@ with sync_playwright() as p:
           'armor shredding heavy build', 'semi tanky light weapon chime build', 'reinforced armor tank', 'galebreathe pressure build with rapier',
           'blindseer willpower build', 'thundercall 100 frostdraw 40 mage', 'twisted puppets path', 'glass cannon dagger build', 'support charisma build',
           'specter path shadowcast', 'contractor bloodrend light weapon', 'lightning 80 flame 50 frost steam path', 'dual attunement flame thunder heavy']
-    for txt in AI[:max(6, int(len(AI) * SCALE))]:
+    for txt in (AI[:max(6, int(len(AI) * SCALE))] if SECTIONS else []):
         pg.evaluate("openAI()"); pg.fill('#aitext', txt); pg.click('#ai-go'); pg.wait_for_timeout(300)
         if pg.is_visible('#aiqs'): pg.click('#aiq-skip'); pg.wait_for_timeout(300)
         pg.click('#wz-go'); pg.wait_for_timeout(400); wait(); pg.wait_for_timeout(600); wait()
@@ -206,7 +210,7 @@ with sync_playwright() as p:
 
     # ---------- popular deepwoken.co builds (REF): load their talents, optimize, compare ----------
     refs = pg.evaluate("REF.length"); kept_all = []
-    for i in range(0, refs, max(1, int(3 / SCALE)) if SCALE < 3 else 1):
+    for i in (range(0, refs, max(1, int(3 / SCALE)) if SCALE < 3 else 1) if SECTIONS else []):
         r = pg.evaluate("""i=>{const r=REF[i];const ok=OATHS.some(o=>o.n===r.o);S.manual=false;S.allowOver=false;S.oath=ok?r.o:'None';S.wtype=['LHT','MED','HVY'].includes(r.w)?r.w:'MED';S.wtarget=75;S.weapon='';
           S.atts={};r.a.forEach((a,j)=>{const k=a.toUpperCase().slice(0,3);if(ATT[k])S.atts[k]=j?40:80});if(S.oath==='Silentheart')S.atts={};
           S.sel=[...r.t].filter(n=>TBY.has(n)&&TBY.get(n).r!=='O'&&!n.startsWith('Oath:'));S.req=[];S.avoid=[];S.caps={};S.mantras=[];S.when={};S.preMin={};S.mins={};S.pin={};S.prio=50;S.dsplit=50;

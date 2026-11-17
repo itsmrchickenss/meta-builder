@@ -1170,23 +1170,25 @@ const TEMPLATES=[
 
 
 // Starting presets: medians and most common pre-shrine peaks from 685 normal top-rated + most-viewed deepwoken.co builds
-// Presets are starting stats only (no talents): the defining stat floors, oath and weapon. Fortitude is never the same before
-// and after the shrine: either 1 before and the rest after, or high before and the shrine brings it down.
+// Presets are starting stats only: the defining stat floors and weapon. An oath is set only when the preset is built around it
+// (Jetstriker, Bladeharper for Elder / Enmity, Saintsworn for Bossraid Mage, Silentheart, Dawnwalker for Diluvian), and its stats
+// must meet that oath (tests/core-test.js checks). Talents only for Diluvian: every talent FTD 100 + WLL 100 unlock (diluvianTalents).
+// Fortitude is never the same before and after the shrine: 1 before and the rest after, or high before and the shrine brings it down.
 const PRESETS=[
  {n:'Clean Slate',d:'0 in everything · no oath, weapon, attunement, talents or equipment',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
- {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · Heavy 90',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'Silentheart',wtype:'HVY',wtarget:90,atts:{},dsplit:0,prio:30,t:[]},
- {n:'Bossraid Mage',d:'FTD 75 + WLL 50 + INT 40 before the shrine · attunement 100 of your choice, no weapon',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100},dsplit:100,prio:30,t:[]},
+ {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · Heavy 90 · oath up to you',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'None',wtype:'HVY',wtarget:90,atts:{},dsplit:0,prio:30,t:[]},
+ {n:'Bossraid Mage',d:'Saintsworn: FTD 75 + WLL 50 + INT 40 before the shrine · main attunement 100 of your choice, 15 in the other four elements (Saintsworn needs them) · no weapon',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100,FLM:15,LTN:15,WND:15,SDW:15},dsplit:100,prio:30,t:[]},
  {n:'Elder / Enmity',d:'Bladeharper Ironsing: CHA 40 before (shrinks down) · INT 1 before, 90 after · STR 25 · Ironsing 80, Shadowcast 20 · Shattered Katana',src:'top Elder / Enmity boss builds on deepwoken.co (Elderdon, elder wr)',pre:{CHA:40},post:{INT:90,STR:25},oath:'Bladeharper',wtype:'MED',wtarget:90,weapon:'Shattered Katana',outfit:"Prophet's Cloak",atts:{IRN:80,SDW:20},dsplit:25,prio:30,t:[]},
- {n:'Brick Wall Dawnwalker',d:'FTD 100 + WLL 100 before (Brick Wall), shrine brings them to 75 · Frostdraw 80 + Flamecharm 40, steam path · Gran Sudaruska',src:'top Brick Wall Dawnwalker PvE builds on deepwoken.co (Kratos, Gran Sudaruska Steam)',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},oath:'Dawnwalker',wtype:'HVY',wtarget:40,weapon:'Gran Sudaruska',atts:{ICE:80,FLM:40},dsplit:50,prio:30,req:['Brick Wall','Flashboil','Boiling Point'],t:['Brick Wall','Flashboil','Boiling Point']},
- {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 before · FTD 50 after (1 before)',src:'Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30},post:{FTD:50},oath:'Bladeharper',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[]},
- {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before)',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'LHT',wtarget:75,atts:{},t:[]},
- {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before)',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},t:[]},
- {n:'Jetstriker Agility',d:'AGL 75 + STR 40 before · AGL 50, FTD 50 after',src:'agility builds',pre:{AGL:75,STR:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{},t:[]},
- {n:'Willpower Tank',d:'WLL 100 + FTD 100 before · the shrine brings FTD down to about 75',src:'willpower tank builds',pre:{WLL:100,FTD:100},post:{FTD:75},oath:'Dawnwalker',wtype:'MED',wtarget:60,atts:{},t:[]},
- {n:'High Intelligence',d:'INT 90 + AGL 40 before · FTD 50 after (1 before)',src:'intelligence builds',pre:{INT:90,AGL:40},post:{FTD:50},oath:'Saltchemist',wtype:'LHT',wtarget:60,atts:{},t:[]},
- {n:'Reinforced Armor',d:'STR 40 + AGL 40 before · FTD 90 after (1 before)',src:'Reinforced Armor builds',pre:{STR:40,AGL:40},post:{FTD:90},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},t:[]},
- {n:'Mage',d:'CHA 55 + INT 30 + WLL 40 before · FTD 50 after (1 before) · attunement 100 of your choice',src:'mage builds',pre:{CHA:55,INT:30,WLL:40},post:{FTD:50},oath:'Soulbreaker',wtype:'MED',wtarget:0,atts:{FLM:100},dsplit:100,t:[]},
- {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after (1 before) · WLL 0',src:'no-willpower builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'Jetstriker',wtype:'LHT',wtarget:85,atts:{},caps:{WLL:{on:true,max:0}},t:[]},
+ {n:'Diluvian',d:'Dawnwalker with Brick Wall: FTD 100 + WLL 100 before the shrine (it brings them to 75) · every talent those two stats unlock, taken before the shrine · weapon, attunements and the rest are up to you',src:'Brick Wall Dawnwalker builds for the Diluvian Mechanism',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},oath:'Dawnwalker',wtype:'MED',wtarget:0,atts:{},prio:50,req:['Brick Wall'],diluvian:1,t:[]},
+ {n:'Silentheart',d:'Silentheart: STR 50 + AGL 50 before, at least 25 each after (Silentheart needs them) · FTD 50 after (1 before) · Medium 90 · no attunements (Silentheart can\'t use them)',src:'Silentheart builds',pre:{STR:50,AGL:50},post:{FTD:50,STR:25,AGL:25},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},dsplit:0,t:[]},
+ {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 before · FTD 50 after (1 before) · oath up to you',src:'Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30},post:{FTD:50},oath:'None',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[]},
+ {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before) · oath up to you',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:75,atts:{},t:[]},
+ {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before) · oath up to you',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:90,atts:{},t:[]},
+ {n:'Jetstriker Agility',d:'Jetstriker: AGL 75 + STR 40 before · AGL 50, FTD 50 after',src:'agility builds',pre:{AGL:75,STR:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{},t:[]},
+ {n:'High Intelligence',d:'INT 90 + AGL 40 before · FTD 50 after (1 before) · oath up to you',src:'intelligence builds',pre:{INT:90,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:60,atts:{},t:[]},
+ {n:'Reinforced Armor',d:'STR 40 + AGL 40 before · FTD 90 after (1 before) · oath up to you',src:'Reinforced Armor builds',pre:{STR:40,AGL:40},post:{FTD:90},oath:'None',wtype:'MED',wtarget:90,atts:{},t:[]},
+ {n:'Mage',d:'CHA 55 + INT 30 + WLL 40 before · FTD 50 after (1 before) · attunement 100 of your choice · oath up to you',src:'mage builds',pre:{CHA:55,INT:30,WLL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:0,atts:{FLM:100},dsplit:100,t:[]},
+ {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after (1 before) · WLL 0 · oath up to you',src:'no-willpower builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:85,atts:{},caps:{WLL:{on:true,max:0}},t:[]},
 ];
 
 // ================= look / themes =================
@@ -1497,7 +1499,7 @@ const talentVal=(n,C)=>{const md=DMG_MODS[n];const pr=(S.prio==null?50:S.prio)/1
 // Toward damage: weapon and attunement targets go up toward 100, paid for by the least useful non-damage talents, and open
 // slots get damage talents. Toward talent options: weapon/attunement targets come down (never below what the weapon needs)
 // and the freed points fill open slots with popular and synergy talents.
-function sliderRebalance(res){const pr=(S.prio==null?50:S.prio)/100;const out={res,notes:[],dropped:[],added:[]};
+function sliderRebalance(res,noFill){const pr=(S.prio==null?50:S.prio)/100;const out={res,notes:[],dropped:[],added:[]};
   if(Math.abs(pr-0.5)<0.15||!res.best||res.best.impossible)return out;
   const keep={w:S.wtarget,a:{...S.atts},sel:[...S.sel]};
   const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;const capL=capsOf();
@@ -1512,7 +1514,8 @@ function sliderRebalance(res){const pr=(S.prio==null?50:S.prio)/100;const out={r
   const fix=()=>{if(r.best&&r.best.free<0&&!r.best.impossible){const tr=trimToBudget(r);out.dropped.push(...tr.dropped);r=tr.res;if(r.best&&r.best.free<0&&!r.best.impossible){const rb=rebuildToBudget();out.dropped.push(...rb.dropped);r=rb.res}}};
   fix();
   // fill open talent slots with what the slider favors (each one fits the stats already)
-  if(r.best&&!r.best.impossible&&r.best.free>=0){const keepLast=last;last={best:r.best,R:r.R};const picks=autoPickList(ctxNow());last=keepLast;
+  // (not when a preset, AI build or import is being loaded: those start with only their own talents)
+  if(!noFill&&r.best&&!r.best.impossible&&r.best.free>=0){const keepLast=last;last={best:r.best,R:r.R};const picks=autoPickList(ctxNow());last=keepLast;
     for(const x of picks){x.pre.forEach(q=>{if(!S.sel.includes(q))S.sel.push(q)});if(!S.sel.includes(x.n)){S.sel.push(x.n);out.added.push(x.n)}}
     if(picks.length){r=compute({starts:8,iters:120,seedP:r.best.P});fix()}}
   // never leave the build worse off than it started: undo the trade if it can't be paid for
@@ -1798,6 +1801,12 @@ function comboEntries(C,caps){
     out.push({n:`⚔ ${c.a} → ${c.b}`,p:pts,alts:okA,pre:false,syn:0,combo:1})}
   out.sort((x,y)=>y.p-x.p||altCost(x.alts[0],{})-altCost(y.alts[0],{}));return out.slice(0,24)}
 const COMBO_PTS=10;
+// Diluvian preset: every talent FTD 100 + WLL 100 unlock on their own (prerequisites included), so new game data is picked up
+function statOnlyTalents(cap){const ok=t=>{if(!t.k||t.r==='Q'||t.r==='O'||t.req.q||t.n.startsWith('Oath:')||(t.req.m&&t.req.m.length))return false;
+  if((t.req.t||[]).some(x=>{const o=TBY.get(x);return !o||!ok(o)}))return false;const al=chainStatic(t);
+  return !!al&&al.some(a=>{const ks=Object.keys(a.min);return ks.length&&!(a.sum||[]).length&&ks.every(k=>k in cap&&a.min[k]<=cap[k])})};
+  const out=DB.T.filter(ok).map(t=>t.n);return out.filter(n=>!(TBY.get(n).req.x||[]).some(x=>out.includes(x)&&x<n))}
+for(const P of PRESETS)if(P.diluvian)P.t=statOnlyTalents(P.pre);
 // ================= UI =================
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2261,7 +2270,7 @@ function run(){renderResults(compute({starts:2,iters:60,seedP:prevP()}))}
 
 // Optimize: choose pre/post for each talent, tag stats, then optionally spend leftovers
 // optCore runs one optimization on the current state S (no rendering) and returns what it did
-function optCore(spend){
+function optCore(spend,noFill){
       let dropped=[];{const R0=requirements();const cb=(R0.capBlocked||[]).filter(n=>S.sel.includes(n)&&!isReq(n));if(cb.length){S.sel=S.sel.filter(n=>!cb.includes(n));dropped.push(...cb)}}
       dropped=dropped.concat(trimToCap());
       let res=compute({starts:18,iters:200,seedP:prevP()});
@@ -2272,7 +2281,7 @@ function optCore(spend){
         if(base.best&&!base.best.impossible&&base.best.free<0){S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const ef=easeFloors();lowered=ef.lowered;S.sel=keep}
         const rb=rebuildToBudget();dropped=dropped.concat(rb.dropped);res=compute({starts:18,iters:200,seedP:rb.res.best&&rb.res.best.P})}
       const lw=Object.entries(lowered);
-      const sb=sliderRebalance(res);res=sb.res;dropped=dropped.concat(sb.dropped);
+      const sb=sliderRebalance(res,noFill);res=sb.res;dropped=dropped.concat(sb.dropped);
       if(sb.notes.length||sb.added.length)res=compute({starts:18,iters:200,seedP:res.best.P});
       if(spend&&res.best&&res.best.free>0&&!res.best.impossible){
         // spend where weighted damage per point is highest: weapon -> M1, attunement -> mantras (aiming at 20-point mantra levels)
@@ -2367,7 +2376,7 @@ function useOptPlan(k){if(!OPTV)return;const v=OPTV.list.find(x=>x.k===k);if(!v|
 function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.value;if(de&&!de.disabled)S.dsplit=+de.value}if(S.manual){if(opts&&opts.after)opts.after();else say('Manual mode is on, so Optimize is off. Switch to Optimizer in the top bar to use it.');return}const spend=S.spend&&!(opts&&opts.noSpend);if(!(opts&&opts.noUndo))pushUndo('Optimize');
   const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});$('results').classList.add('busy');
   setTimeout(()=>{
-    try{const o=optCore(spend);renderInputs();renderResults(o.res);say(optMsg(o))}
+    try{const o=optCore(spend,!!(opts&&opts.noSpend));renderInputs();renderResults(o.res);say(optMsg(o))}
     finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
     if(opts&&opts.after)opts.after();
   },30);
@@ -2823,7 +2832,7 @@ function aiParse(txt,basePreset){
     if(!re.test(sAtt))continue;const n=aiNumNear(s,re);if(n){if(k==='FTD')p.post.FTD=n;else p.pre[k]=n;got.push(`${ANAME[k]} ${n}`)}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',50);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
   // oath (typos allowed)
   const oathN=by('oath')[0];const oath=oathN?findO(oathN):null;
-  if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base)p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
+  if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base||p.oath==='None')p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
   // attunements in order of mention (words that are part of a name don't count)
   const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
   // play-style words that mean an attunement ("burn" = Flamecharm, "armor shredding" = Ironsing…), after the ones named outright

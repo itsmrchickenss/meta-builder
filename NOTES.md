@@ -45,7 +45,7 @@ Pre-release numbering is **v0.x** (v0.32 now). The owner sets **v1.0 at release*
 - Never change Fortitude just because "favor health" is chosen for equipment.
 
 **Presets**
-- Presets are **starting stats only**: defining stat floors, oath, weapon type. No core talents, no auto-picked talents. Bossraid = FTD + WLL; Bossraid Mage = FTD + WLL + INT + 100 in an attunement of choice.
+- Presets are **starting stats only**: defining stat floors and weapon type. No core talents, no auto-picked talents (loading a preset, AI build or import never runs the slider's talent fill: `optimizeAll({noSpend})` → `sliderRebalance(res,noFill)`). **Oaths only where the preset is built around one** (owner, November 17, 2026): Jetstriker Agility (Jetstriker), Elder / Enmity (Bladeharper), Bossraid Mage (Saintsworn, so it has 15 in the other four elements), Silentheart, Diluvian (Dawnwalker); every other preset is `oath:'None'` and says "oath up to you". Each preset's stats must meet its oath; `tests/core-test.js` checks it. The AI build maker treats a starting point with no oath as "best fit". **Diluvian** is the one preset with talents: Dawnwalker, Brick Wall locked, FTD 100 + WLL 100 before the shrine (75 after), and every talent those two stats unlock on their own (`statOnlyTalents`, computed from the data); weapon and attunements are left to the person. Bossraid = FTD + WLL; Bossraid Mage = FTD + WLL + INT + 100 in an attunement of choice. Willpower Tank was removed (Diluvian covers it).
 
 **AI build maker**
 - Keep the oath the person names; otherwise use the starting point's default.
@@ -155,9 +155,9 @@ Data line formats: talent `name|category|rarity(+0 = not counted)|stats|o=alts|a
 
 deepwoken.co snapshot (October 2026), read in the Claude desktop app's built-in browser as JavaScript on a deepwoken.co page (same-origin fetches work there): `/api/proxy/get?type=all`, `/api/proxy/db/equipment|enchantments|oaths`, `/api/proxy/builds?sort=top&limit=50&page=N[&tags=…]`, `/api/proxy/builds/<id>`. Its builder bundle supplied the shrine, damage and EHP formulas. The fandom wiki blocks automated fetches except through WebFetch.
 
-## Presets (stats only)
+## Presets
 
-Clean Slate · Bossraid (FTD 75 + WLL 50 pre) · Bossraid Mage (FTD 75 + WLL 50 + INT 40, attunement 100) · Elder / Enmity (Bladeharper Ironsing: CHA 40 pre, INT 90 + STR 25 post, Ironsing 80, Shadowcast 20, Shattered Katana, Prophet's Cloak; real builds hit INT 100 but shrine below Power 8) · Brick Wall Dawnwalker (FTD/WLL 100 → 75, Frostdraw 80 + Flamecharm 40, steam talents locked, Gran Sudaruska) · Chime · High Charisma · High Strength · Jetstriker Agility · Willpower Tank · High Intelligence · Reinforced Armor · Mage · No Willpower.
+Clean Slate · Bossraid (FTD 75 + WLL 50 pre, Heavy 90) · Bossraid Mage (Saintsworn: FTD 75 + WLL 50 + INT 40 pre, attunement 100 + 15 in the other four elements) · Elder / Enmity (Bladeharper Ironsing: CHA 40 pre, INT 90 + STR 25 post, Ironsing 80, Shadowcast 20, Shattered Katana, Prophet's Cloak) · Diluvian (Dawnwalker, Brick Wall, FTD/WLL 100 → 75, all FTD/WLL talents) · Silentheart (STR 50 + AGL 50 pre, 25 each after, Medium 90, no attunements) · Chime · High Charisma · High Strength · Jetstriker Agility (Jetstriker) · High Intelligence · Reinforced Armor · Mage · No Willpower.
 
 ## Hallowtide 2026 (October 31, 2026): added in v0.34
 

@@ -20,5 +20,13 @@ const MAN=DB.M.filter(m=>m.ty==='N'&&!oathTagOf(m.n)&&!(m.req&&m.req.t&&m.req.t.
 for(const P of PRESETS){for(const withM of [0,1]){S.oath=P.oath;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};S.preMin={...P.pre};S.mins={...P.post};S.sel=P.t.filter(n=>TBY.has(n));S.mantras=withM?MAN.slice():[];S.req=[];S.avoid=[];S.caps={};
   const r=opt();const c=counts(closure());const ok=r.best&&!r.best.impossible&&r.best.free>=0&&c.nTal<=c.cap;if(!ok)fails++;
   console.log((ok?'ok  ':'FAIL')+' '+(P.n+(withM?' +6 mantras':'')).padEnd(32)+' free '+String(r.best?r.best.free:'-').padStart(4)+'  talents '+c.nTal+'/'+c.cap)}}
+// every preset's oath is met by its own stats after the shrine (attributes lose at most 25 at the shrine)
+for(const P of PRESETS){if(!P.oath||P.oath==='None')continue;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};
+  const f={};ALL.forEach(k=>f[k]=Math.max(P.post[k]||0,P.atts[k]||0,k===P.wtype?P.wtarget:0,P.pre[k]?P.pre[k]-25:0));
+  const al=oathAltsOf(findO(P.oath));const c=al?bestCost(al,f):0;const ok=c===0;if(!ok)fails++;
+  console.log((ok?'ok  ':'FAIL')+' oath fits: '+P.n.padEnd(20)+' '+P.oath+(ok?'':' (short '+c+')'))}
+// Diluvian: Brick Wall, Dawnwalker and the FTD/WLL talents
+{const D=PRESETS.find(p=>p.n==='Diluvian');const ok=D&&D.oath==='Dawnwalker'&&D.t.includes('Brick Wall')&&D.t.includes('Perseverance')&&D.t.length>=30&&!D.t.includes('Echoing Lunatic');if(!ok)fails++;
+  console.log((ok?'ok  ':'FAIL')+' Diluvian talents: '+(D?D.t.length:0))}
 `);
 process.exit(fails?1:0);

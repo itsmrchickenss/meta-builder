@@ -961,6 +961,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 
 <script type="text/plain" id="dwdata">@@DATA@@</script>
 <script type="text/plain" id="dwbuilds">@@BUILDS@@</script>
+<script type="text/plain" id="dwfeat">@@FEATURED@@</script>
 <script type="text/plain" id="dwwdmg">@@WDMG@@</script>
 <script type="text/plain" id="dwcond">@@COND@@</script>
 <script type="text/plain" id="dwpop">@@POP@@</script>
@@ -1181,7 +1182,7 @@ const PRESETS=[
  {n:'Elder / Enmity',d:'Bladeharper Ironsing: CHA 40 before (shrinks down) · INT 1 before, 90 after · STR 25 · Ironsing 80, Shadowcast 20 · Shattered Katana',src:'top Elder / Enmity boss builds on deepwoken.co (Elderdon, elder wr)',pre:{CHA:40},post:{INT:90,STR:25},oath:'Bladeharper',wtype:'MED',wtarget:90,weapon:'Shattered Katana',outfit:"Prophet's Cloak",atts:{IRN:80,SDW:20},dsplit:25,prio:30,t:[]},
  {n:'Diluvian',d:'Dawnwalker with Brick Wall: FTD 100 + WLL 100 before the shrine (it brings them to 75) · every talent those two stats unlock, taken before the shrine · weapon, attunements and the rest are up to you',src:'Brick Wall Dawnwalker builds for the Diluvian Mechanism',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},oath:'Dawnwalker',wtype:'MED',wtarget:0,atts:{},prio:50,req:['Brick Wall'],diluvian:1,t:[]},
  {n:'Silentheart',d:'Silentheart: STR 50 + AGL 50 before, at least 25 each after (Silentheart needs them) · FTD 50 after (1 before) · Medium 90 · no attunements (Silentheart can\'t use them)',src:'Silentheart builds',pre:{STR:50,AGL:50},post:{FTD:50,STR:25,AGL:25},oath:'Silentheart',wtype:'MED',wtarget:90,atts:{},dsplit:0,t:[]},
- {n:'Chime',d:'STR 40 + AGL 40 + WLL 30 before · FTD 50 after (1 before) · oath up to you',src:'Chime of Conflict builds',pre:{STR:40,AGL:40,WLL:30},post:{FTD:50},oath:'None',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[]},
+ {n:'Chime',d:'CHA 40 + STR 40 + AGL 40 before (WLL and FTD 1) · FTD 50 after · Medium 90 · oath up to you',src:'the owner\'s featured Chime of Conflict builds (src/data/featured.txt)',pre:{CHA:40,STR:40,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:90,atts:{},dsplit:0,prio:40,t:[]},
  {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before) · oath up to you',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:75,atts:{},t:[]},
  {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before) · oath up to you',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:90,atts:{},t:[]},
  {n:'Jetstriker Agility',d:'Jetstriker: AGL 75 + STR 40 before · AGL 50, FTD 50 after',src:'agility builds',pre:{AGL:75,STR:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{},t:[]},
@@ -1799,6 +1800,25 @@ function optimizeGear(final,focus){const o=typeof focus==='object'?focus:{a:1,mi
 // oath and prerequisites allowed it. 100 Strength talents are rare overall but most builds that reach 100 take them.
 const CONDD=new Map();for(const p of (document.getElementById('dwcond').textContent||'').trim().split(';')){const i=p.lastIndexOf(':');const km=p.slice(i+1).split('/');if(i>0&&km.length===2)CONDD.set(p.slice(0,i),{k:+km[0],m:+km[1],pct:+km[1]?100*km[0]/km[1]:0})}
 function condRate(n){return CONDD.get(n)||{k:0,m:0,pct:0}}
+// ================= featured builds (owner's picks, src/data/featured.txt) =================
+// Each one counts as `weight` ordinary top builds (chime 10, gank 5) in talent popularity (POP, 802 builds), take rates given
+// stats (CONDD) and the reference builds (REF) the AI build maker and recommendations compare against.
+const FEATURED=(function(){const out=[];const lowT=new Map(DB.T.map(t=>[t.n.toLowerCase(),t.n]));
+  const st=s=>{const o={};for(const m of (s||'').matchAll(/([A-Z]{3})(\d+)/g))o[m[1]]=+m[2];return o};
+  for(const l of (document.getElementById('dwfeat').textContent||'').split('\n')){if(!l.trim()||l[0]==='#')continue;
+    const f=l.split('|');if(f.length<12)continue;const [w,g,src,name,oath,wt,at,weapon,outfit,pre,fin,tal,man,eq]=f;
+    const t=[...new Set((tal||'').split(';').map(n=>{const k=n.trim().toLowerCase();return lowT.get(k)||lowT.get(k.replace(/^to the finish$/,'to the finish'))}).filter(Boolean))];
+    out.push({w:Math.max(1,+w||1),g,src,name,oath,wt,a:at?at.split('+'):[],weapon,outfit,pre:st(pre),fin:st(fin),t,m:(man||'').split(';').filter(n=>MBY.has(n)),eq:(eq||'').split(';').filter(Boolean)})}
+  return out})();
+{const N=802,W=FEATURED.reduce((s,b)=>s+b.w,0);
+ if(W){const has=new Map();for(const b of FEATURED)for(const n of b.t)has.set(n,(has.get(n)||0)+b.w);
+   for(const t of DB.T){const p=POP.get(t.n)||0,h=has.get(t.n)||0;if(p||h)POP.set(t.n,Math.min(100,(p*N/100+h)/(N+W)*100))}
+   // take rate among builds whose stats allow the talent: a featured build counts if its pre-shrine or final stats meet it
+   for(const t of DB.T){if(!t.k)continue;let k=0,m=0;const al=reqAlts(t.req,false);if(!hasStats(al))continue;
+     for(const b of FEATURED){const ok=al.some(a=>altCost(a,b.fin)===0||altCost(a,b.pre)===0);if(ok||b.t.includes(t.n)){m+=b.w;if(b.t.includes(t.n))k+=b.w}}
+     if(!m)continue;const c=CONDD.get(t.n)||{k:0,m:0};const K=c.k+k,M=c.m+m;CONDD.set(t.n,{k:K,m:M,pct:M?100*K/M:0})}
+   for(const b of FEATURED)for(let i=0;i<b.w;i++)REF.push({o:b.oath,w:b.wt,a:b.a,t:new Set(b.t),feat:b.src})}}
+
 // text for a talent's take rate: among builds that could take it, else across all top builds
 function rateTxt(n){const r=condRate(n);if(r.m>=5)return `${Math.round(r.pct)}% of builds that can take it (${r.k}/${r.m})`;const p=POP.get(n);return p?`${Math.round(p)}% of top builds`:''}
 const rateShort=n=>{const r=condRate(n);if(r.m>=5)return Math.round(r.pct)+'%';const p=POP.get(n);return p?Math.round(p)+'%':''};

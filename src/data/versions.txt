@@ -1,4 +1,6 @@
 ## v0.35 | unreleased
+- 12 hand-picked builds (9 Chime of Conflict builds, weighted highest, and 3 gank builds) now count extra in talent popularity, take rates, recommendations and the AI build maker's oath choice.
+- The Chime preset now starts like those builds: Charisma, Strength and Agility 40 before the shrine, Fortitude 50 after, Medium 90.
 - New Diluvian preset (replaces Brick Wall Dawnwalker): Dawnwalker with Brick Wall, Fortitude and Willpower 100 before the shrine (75 after), and every talent those two stats unlock, already picked. Your weapon, attunements and the rest are up to you.
 - Willpower Tank preset removed (Diluvian covers it).
 - Presets only set an oath when they're built around it: Jetstriker Agility, Elder / Enmity (Bladeharper), Bossraid Mage (Saintsworn), Diluvian (Dawnwalker) and a new Silentheart preset. The others leave the oath up to you, and the AI build maker picks the best fit for them.

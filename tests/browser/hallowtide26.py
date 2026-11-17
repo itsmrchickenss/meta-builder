@@ -35,6 +35,8 @@ with sync_playwright() as p:
         if 'Hypoferritinemia' in s['req']: fails.append('ai pulled Hypoferritinemia: '+txt)
     ai("ironsing bloodrend alloyblood path heavy build","Composite Path: Alloyblood")
     ai("sanguine blaze bloodrend flamecharm mage","Exotherm Path: Sanguine Blaze")
+    ai("black blood mage with flamecharm","Exotherm Path: Sanguine Blaze")
+    ai("pink flames build","Exotherm Path: Sanguine Blaze")
     # pick a new weapon and check the damage shows
     print('weaponOf',pg.evaluate("weaponOf(\"Silas's Cenotaph\")"))
     print('errs',errs);fails+= ['page error' for _ in errs]

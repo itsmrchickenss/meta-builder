@@ -1,4 +1,4 @@
-## v0.34 | unreleased
+## v0.34 | 2026-11-17
 - New "Download build file (.txt)" link in Share & export (and the Share dialog): saves the build as a text file in deepwoken.co's format, with pre-shrine stats, post-shrine stats and every talent, including the ones the game gives you for your stats (like Adept Ironsinger and Ironsing Unbounded) and your oath. Paste the file's text into Import to load the build again.
 - Hallowtide 2026: the talent Alloyblood is now called Iron Veins, as in the game. Builds, share links and imports that still say Alloyblood load as Iron Veins.
 - Hallowtide 2026 weapons: Corvidirge Severants (twinblade, Light 55 + Medium 55), Silas's Cenotaph (greatsword, Heavy 100 + Mind 50), Cursed Flames (Flamecharm sword), the Alloyblood Daggers, Spear and Axe (summoned by the Alloyblood mantras) and Infected. Ironcry (bow) can now be picked too.

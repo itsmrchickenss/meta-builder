@@ -244,6 +244,8 @@ dialog#wiz::backdrop{background:rgba(0,0,0,.6)}
 .wzw{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .wzw .rl{flex:1 1 100%;font-size:12.5px;color:var(--dim)}
 .wzw button{flex:1 1 0;min-width:0}
+.wzw[hidden]{display:none}
+.wq label.wzvar{grid-column:1/-1}
 .wzw button[aria-pressed="true"]{background:var(--brass);color:var(--brass-ink);border-color:var(--brass);font-weight:700}
 .wq6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 @media (max-width:520px){.wq6{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -529,7 +531,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.35</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.36</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -3995,7 +3997,12 @@ Pressure Bleed|Your vents turn pink, spraying explosive Black Puddles that ignit
 Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites them with pink fire.
 Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
 Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
-<script type="text/plain" id="dwvers">## v0.35 | 2026-11-17
+<script type="text/plain" id="dwvers">## v0.36 | unreleased
+- Every preset now has variations to pick from, like Attunementless: open a preset and choose a build shell at the top (for example High Strength: Strength 100 + Agility 40, Strength 100 + Agility 65 for Cheap Shot, or Strength 90 + Charisma 40). The first one is the preset as before.
+- A variation fills in the stats, Fortitude after the shrine (50, or 90 for Reinforced Armor where it fits), and for some presets the attunements, weapon level and damage focus. Change anything after picking one to make your own version.
+- Chime's variations come from the featured Chime of Conflict builds, including a caster version with an attunement at 100 and no weapon.
+- Diluvian can now start as a caster (no weapon, an attunement at 80), Elder / Enmity can swap Shadowcast 20 for Thundercall 20 or go Ironsing 60 + Shadowcast 40, and Mage has an 80 / 80 two-attunement version.
+## v0.35 | 2026-11-17
 - Mage builds with no weapon stats now get the Hero's Blade of their strongest element (Flame, Frost, Lightning, Wind or Shadow) automatically. Pick another weapon, or clear it, and your choice stays.
 - Presets with a weapon now start at 80 in a weapon of your choice: pick Light, Medium or Heavy with the buttons at the top of the preset window (Elder / Enmity keeps Medium 90 for the Shattered Katana; the mage presets stay weapon-free).
 - New Attunementless preset: pick Agility 100 + Strength 40 (Jetstriker), Strength 100 + Agility 65 (Starkindred) or Strength 100 + Agility 100 before the shrine, then Willpower 40, Fortitude 50 or 90 (Reinforced Armor) and 80 in your weapon after.
@@ -4325,28 +4332,75 @@ const TEMPLATES=[
 // (Jetstriker, Bladeharper for Elder / Enmity, Saintsworn for Bossraid Mage, Silentheart, Dawnwalker for Diluvian), and its stats
 // must meet that oath (tests/core-test.js checks). Talents only for Diluvian: every talent FTD 100 + WLL 100 unlock (diluvianTalents).
 // Fortitude is never the same before and after the shrine: 1 before and the rest after, or high before and the shrine brings it down.
+// Every preset (except Clean Slate) has `variants`: the build's shell. The first one is the preset itself ("Use preset as is").
+// A variant sets pre/post stats and may set wtype, oath, ftd (Fortitude-after options that fit the budget), atts, wtarget and dsplit;
+// anything it leaves out keeps the preset's value. The wizard fills the form from the picked variant, and everything stays editable.
+const F2=[50,90];
 const PRESETS=[
  {n:'Clean Slate',d:'0 in everything · no oath, weapon, attunement, talents or equipment',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
- {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · 80 in a weapon of your choice · oath up to you',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'None',wtype:'HVY',wtarget:80,atts:{},dsplit:0,prio:30,t:[]},
- {n:'Bossraid Mage',d:'Saintsworn: FTD 75 + WLL 50 + INT 40 before the shrine · main attunement 100 of your choice, 15 in the other four elements (Saintsworn needs them) · no weapon',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100,FLM:15,LTN:15,WND:15,SDW:15},dsplit:100,prio:30,t:[]},
- {n:'Elder / Enmity',d:'Bladeharper Ironsing: CHA 40 before (shrinks down) · INT 1 before, 90 after · STR 25 · Ironsing 80, Shadowcast 20 · Shattered Katana',src:'top Elder / Enmity boss builds on deepwoken.co (Elderdon, elder wr)',pre:{CHA:40},post:{INT:90,STR:25},oath:'Bladeharper',wtype:'MED',wtarget:90,weapon:'Shattered Katana',outfit:"Prophet's Cloak",atts:{IRN:80,SDW:20},dsplit:25,prio:30,t:[]},
- {n:'Diluvian',d:'Dawnwalker with Brick Wall: FTD 100 + WLL 100 before the shrine (it brings them to 75) · every talent those two stats unlock, taken before the shrine · 80 in a weapon of your choice · attunements and the rest are up to you',src:'Brick Wall Dawnwalker builds for the Diluvian Mechanism',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},oath:'Dawnwalker',wtype:'MED',wtarget:80,atts:{},prio:50,req:['Brick Wall'],diluvian:1,t:[]},
- {n:'Silentheart',d:'Silentheart: STR 50 + AGL 50 before, at least 25 each after (Silentheart needs them) · FTD 50 after (1 before) · 80 in a weapon of your choice · no attunements (Silentheart can\'t use them)',src:'Silentheart builds',pre:{STR:50,AGL:50},post:{FTD:50,STR:25,AGL:25},oath:'Silentheart',wtype:'MED',wtarget:80,atts:{},dsplit:0,t:[]},
+ {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'None',wtype:'HVY',wtarget:80,atts:{},dsplit:0,prio:30,t:[],
+   variants:[{n:'Fortitude 75 + Willpower 50 (the usual)',pre:{FTD:75,WLL:50},post:{}},
+     {n:'Fortitude 75 + Willpower 80 (Piercing Will, Emergency Reserves)',pre:{FTD:75,WLL:80},post:{}},
+     {n:'+ Strength 40 (Showstopper, block breaking)',pre:{FTD:75,WLL:50,STR:40},post:{}},
+     {n:'+ Agility 40 (Ghost, more mobile)',pre:{FTD:75,WLL:50,AGL:40},post:{}}]},
+ {n:'Bossraid Mage',d:'Saintsworn: FTD 75 + WLL 50 + INT 40 before the shrine · main attunement 100 of your choice, 15 in the other four elements (Saintsworn needs them) · no weapon · pick a variation',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100,FLM:15,LTN:15,WND:15,SDW:15},dsplit:100,prio:30,t:[],
+   variants:[{n:'Fortitude 75 + Willpower 50 + Intelligence 40 (the usual)',pre:{FTD:75,WLL:50,INT:40},post:{}},
+     {n:'Willpower 80 (Piercing Will, Emergency Reserves)',pre:{FTD:75,WLL:80,INT:40},post:{}},
+     {n:'+ Charisma 40 (Golden Tongue, Charm Caster)',pre:{FTD:75,WLL:50,INT:40,CHA:40},post:{}}]},
+ {n:'Elder / Enmity',d:'Bladeharper Ironsing: CHA 40 before (shrinks down) · INT 1 before, 90 after · STR 25 · Ironsing 80, Shadowcast 20 · Shattered Katana · pick a variation',src:'top Elder / Enmity boss builds on deepwoken.co (Elderdon, elder wr)',pre:{CHA:40},post:{INT:90,STR:25},oath:'Bladeharper',wtype:'MED',wtarget:90,weapon:'Shattered Katana',outfit:"Prophet's Cloak",atts:{IRN:80,SDW:20},dsplit:25,prio:30,t:[],
+   variants:[{n:'Ironsing 80 + Shadowcast 20 (the usual)',pre:{CHA:40},post:{INT:90,STR:25},atts:{IRN:80,SDW:20}},
+     {n:'Ironsing 80 + Thundercall 20 (like The Iron Samurai)',pre:{CHA:40},post:{INT:90,STR:25},atts:{IRN:80,LTN:20}},
+     {n:'Ironsing 60 + Shadowcast 40 (more Shadowcast mantras)',pre:{CHA:40},post:{INT:90,STR:25},atts:{IRN:60,SDW:40}}]},
+ {n:'Diluvian',d:'Dawnwalker with Brick Wall: FTD 100 + WLL 100 before the shrine (it brings them to 75) · every talent those two stats unlock, taken before the shrine · 80 in a weapon of your choice, or a caster · the rest is up to you',src:'Brick Wall Dawnwalker builds for the Diluvian Mechanism',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},oath:'Dawnwalker',wtype:'MED',wtarget:80,atts:{},prio:50,req:['Brick Wall'],diluvian:1,t:[],
+   variants:[{n:'Weapon 80 of your choice',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},wtarget:80,atts:{},dsplit:0},
+     {n:'Caster: no weapon, attunement 80 of your choice',pre:{FTD:100,WLL:100},post:{FTD:75,WLL:75},wtarget:0,atts:{FLM:80},dsplit:100}]},
+ {n:'Silentheart',d:'Silentheart: STR 50 + AGL 50 before, at least 25 each after (Silentheart needs them) · FTD 50 after (1 before) · 80 in a weapon of your choice · no attunements (Silentheart can\'t use them) · pick a variation',src:'Silentheart builds',pre:{STR:50,AGL:50},post:{FTD:50,STR:25,AGL:25},oath:'Silentheart',wtype:'MED',wtarget:80,atts:{},dsplit:0,t:[],
+   variants:[{n:'Strength 50 + Agility 50 (the usual)',pre:{STR:50,AGL:50},post:{STR:25,AGL:25},ftd:F2},
+     {n:'Strength 90 + Agility 50 (Million Ton Piercer, armor shredding)',pre:{STR:90,AGL:50},post:{STR:25,AGL:25},ftd:F2},
+     {n:'Agility 75 + Strength 50 (Cheap Shot, gank)',pre:{STR:50,AGL:75},post:{STR:25,AGL:25},ftd:F2},
+     {n:'+ Charisma 40 (Golden Tongue)',pre:{STR:50,AGL:50,CHA:40},post:{STR:25,AGL:25},ftd:F2}]},
  {n:'Attunementless',d:'no attunements · pick the split: AGL 100 + STR 40, STR 100 + AGL 65, or STR 100 + AGL 100 before the shrine · WLL 40 and FTD 50 or 90 after · 80 in a weapon of your choice · Jetstriker for the Agility split, Starkindred for the Strength split',src:'attunementless builds the owner shared',
    pre:{AGL:100,STR:40},post:{WLL:40,FTD:50},oath:'Jetstriker',wtype:'MED',wtarget:80,atts:{},dsplit:0,t:[],
-   oathByW:{LHT:'Jetstriker',MED:'Jetstriker',HVY:'Starkindred'},ftdOpts:[50,90],
+   oathByW:{LHT:'Jetstriker',MED:'Jetstriker',HVY:'Starkindred'},ftdOpts:F2,
    // a split's own oath wins (its stats only meet that one); oathByW is for the split that meets both. ftd: Fortitude options that fit the budget
-   variants:[{n:'Agility 100 + Strength 40 (usually Medium, Jetstriker)',pre:{AGL:100,STR:40},post:{WLL:40},wtype:'MED',oath:'Jetstriker',ftd:[50,90]},
-     {n:'Strength 100 + Agility 65 (usually Heavy, Starkindred)',pre:{STR:100,AGL:65},post:{WLL:40},wtype:'HVY',oath:'Starkindred',ftd:[50,90]},
+   variants:[{n:'Agility 100 + Strength 40 (usually Medium, Jetstriker)',pre:{AGL:100,STR:40},post:{WLL:40},wtype:'MED',oath:'Jetstriker',ftd:F2},
+     {n:'Strength 100 + Agility 65 (usually Heavy, Starkindred)',pre:{STR:100,AGL:65},post:{WLL:40},wtype:'HVY',oath:'Starkindred',ftd:F2},
      {n:'Strength 100 + Agility 100 (Jetstriker, or Starkindred with Heavy)',pre:{STR:100,AGL:100},post:{WLL:40},wtype:'MED',ftd:[50]}]},
- {n:'Chime',d:'CHA 40 + STR 40 + AGL 40 before (WLL and FTD 1) · FTD 50 after · 80 in a weapon of your choice · oath up to you',src:'the owner\'s featured Chime of Conflict builds',pre:{CHA:40,STR:40,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[]},
- {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:80,atts:{},t:[]},
- {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:80,atts:{},t:[]},
- {n:'Jetstriker Agility',d:'Jetstriker: AGL 75 + STR 40 before · AGL 50, FTD 50 after · 80 in a weapon of your choice',src:'agility builds',pre:{AGL:75,STR:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{},t:[]},
- {n:'High Intelligence',d:'INT 90 + AGL 40 before · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you',src:'intelligence builds',pre:{INT:90,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:80,atts:{},t:[]},
- {n:'Reinforced Armor',d:'STR 40 + AGL 40 before · FTD 90 after (1 before) · 80 in a weapon of your choice · oath up to you',src:'Reinforced Armor builds',pre:{STR:40,AGL:40},post:{FTD:90},oath:'None',wtype:'MED',wtarget:80,atts:{},t:[]},
- {n:'Mage',d:'CHA 55 + INT 30 + WLL 40 before · FTD 50 after (1 before) · attunement 100 of your choice · oath up to you',src:'mage builds',pre:{CHA:55,INT:30,WLL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:0,atts:{FLM:100},dsplit:100,t:[]},
- {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after (1 before) · WLL 0 · 80 in a weapon of your choice · oath up to you',src:'no-willpower builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:80,atts:{},caps:{WLL:{on:true,max:0}},t:[]},
+ // Chime variations come from the owner's featured Chime of Conflict builds (src/data/featured.txt)
+ {n:'Chime',d:'CHA 40 + STR 40 + AGL 40 before (WLL and FTD 1) · FTD 50 after · 80 in a weapon of your choice · oath up to you · pick a variation (taken from the featured Chime builds)',src:'the owner\'s featured Chime of Conflict builds',pre:{CHA:40,STR:40,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:80,atts:{},dsplit:0,prio:40,t:[],
+   variants:[{n:'Charisma 40 + Strength 40 + Agility 40 (most Chime builds)',pre:{CHA:40,STR:40,AGL:40},post:{},ftd:F2},
+     {n:'Charisma 55 + Strength 40 + Agility 25 (often Heavy)',pre:{CHA:55,STR:40,AGL:25},post:{},ftd:F2},
+     {n:'Charisma 40 + Strength 40 + Willpower 40 + Intelligence 25',pre:{CHA:40,STR:40,WLL:40,INT:25},post:{},ftd:F2},
+     {n:'Caster: Charisma 60 + Intelligence 30 + Willpower 35, attunement 100, no weapon',pre:{CHA:60,INT:30,WLL:35},post:{},ftd:[50],wtarget:0,atts:{ICE:100},dsplit:100}]},
+ {n:'High Charisma',d:'CHA 75 + AGL 40 before · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'charisma builds',pre:{CHA:75,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:80,atts:{},t:[],
+   variants:[{n:'Charisma 75 + Agility 40 (the usual)',pre:{CHA:75,AGL:40},post:{},ftd:F2},
+     {n:'Charisma 90 + Agility 40 (Cult of Personality)',pre:{CHA:90,AGL:40},post:{},ftd:F2},
+     {n:'Charisma 75 + Strength 40 (Showstopper)',pre:{CHA:75,STR:40},post:{},ftd:F2}]},
+ {n:'High Strength',d:'STR 100 + AGL 40 before · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'strength builds',pre:{STR:100,AGL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:80,atts:{},t:[],
+   variants:[{n:'Strength 100 + Agility 40 (the usual)',pre:{STR:100,AGL:40},post:{},ftd:F2},
+     {n:'Strength 100 + Agility 65 (Cheap Shot)',pre:{STR:100,AGL:65},post:{},ftd:F2},
+     {n:'Strength 90 + Charisma 40 (Million Ton Piercer, Golden Tongue)',pre:{STR:90,CHA:40},post:{},ftd:F2}]},
+ {n:'Jetstriker Agility',d:'Jetstriker: AGL 75 + STR 40 before · AGL 50, FTD 50 after · 80 in a weapon of your choice · pick a variation',src:'agility builds',pre:{AGL:75,STR:40},post:{FTD:50,AGL:50},oath:'Jetstriker',wtype:'LHT',wtarget:80,atts:{},t:[],
+   variants:[{n:'Agility 75 + Strength 40 (the usual)',pre:{AGL:75,STR:40},post:{AGL:50},ftd:F2},
+     {n:'Agility 90 + Strength 40 (Dustlunge, Pursuit)',pre:{AGL:90,STR:40},post:{AGL:65},ftd:F2},
+     {n:'Agility 100 + Strength 40 (None Left Behind)',pre:{AGL:100,STR:40},post:{AGL:75},ftd:F2}]},
+ {n:'High Intelligence',d:'INT 90 + AGL 40 before · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'intelligence builds',pre:{INT:90,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:80,atts:{},t:[],
+   variants:[{n:'Intelligence 90 + Agility 40 (the usual)',pre:{INT:90,AGL:40},post:{},ftd:F2},
+     {n:'Intelligence 100 + Agility 40 (Absolute Pitch)',pre:{INT:100,AGL:40},post:{},ftd:F2},
+     {n:'Intelligence 90 + Willpower 40 (Magical Resolve)',pre:{INT:90,WLL:40},post:{},ftd:F2}]},
+ {n:'Reinforced Armor',d:'STR 40 + AGL 40 before · FTD 90 after (1 before) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'Reinforced Armor builds',pre:{STR:40,AGL:40},post:{FTD:90},oath:'None',wtype:'MED',wtarget:80,atts:{},t:[],
+   variants:[{n:'Strength 40 + Agility 40 (the usual)',pre:{STR:40,AGL:40},post:{FTD:90}},
+     {n:'Strength 75 + Agility 40 (Showstopper, more damage)',pre:{STR:75,AGL:40},post:{FTD:90}},
+     {n:'Agility 65 + Strength 25 (Cheap Shot)',pre:{AGL:65,STR:25},post:{FTD:90}}]},
+ {n:'Mage',d:'CHA 55 + INT 30 + WLL 40 before · FTD 50 after (1 before) · attunement 100 of your choice · oath up to you · pick a variation',src:'mage builds',pre:{CHA:55,INT:30,WLL:40},post:{FTD:50},oath:'None',wtype:'MED',wtarget:0,atts:{FLM:100},dsplit:100,t:[],
+   variants:[{n:'Charisma 55 support (Charm Caster)',pre:{CHA:55,INT:30,WLL:40},post:{},ftd:F2,atts:{FLM:100}},
+     {n:'Intelligence 90 + Willpower 40 (Ether Overdrive, Critical Engine)',pre:{INT:90,WLL:40},post:{},ftd:F2,atts:{FLM:100}},
+     {n:'Willpower 80 + Intelligence 30 (Piercing Will, Emergency Reserves)',pre:{WLL:80,INT:30},post:{},ftd:F2,atts:{FLM:100}},
+     {n:'Two attunements at 80 / 80',pre:{CHA:55,INT:30,WLL:40},post:{},ftd:F2,atts:{FLM:80,ICE:80}}]},
+ {n:'No Willpower',d:'CHA 35 + AGL 40 before · FTD 50 after (1 before) · WLL 0 · 80 in a weapon of your choice · oath up to you · pick a variation',src:'no-willpower builds',pre:{CHA:35,AGL:40},post:{FTD:50},oath:'None',wtype:'LHT',wtarget:80,atts:{},caps:{WLL:{on:true,max:0}},t:[],
+   variants:[{n:'Charisma 35 + Agility 40 (the usual)',pre:{CHA:35,AGL:40},post:{},ftd:F2},
+     {n:'Strength 40 + Agility 40',pre:{STR:40,AGL:40},post:{},ftd:F2},
+     {n:'Agility 65 + Charisma 35 (Cheap Shot)',pre:{AGL:65,CHA:35},post:{},ftd:F2}]},
 ];
 
 // ================= look / themes =================
@@ -5780,8 +5834,8 @@ function openWizard(p){
   wizP=p;wizHSel=null;const atts=Object.entries(p.atts).sort((a,b)=>b[1]-a[1]);
   const statRow=(lab,id,src)=>`<span class="rl">${lab}</span>${ATTR.map(a=>`<select id="wz-${id}-${a}" data-wzstat="1" aria-label="${ANAME[a]} ${lab.toLowerCase()}">${lvlOpts(STEP5,snap5(src[a]||0),'No stats')}</select>`).join('')}`;
   $('wizform').innerHTML=`<h2 id="wiz-title">${esc(p.n)}</h2><p class="hint" style="margin:0">${esc(p.d)} · ${esc(p.src)}. Adjust anything below; these become your starting floors.</p>
-   ${p.variants?`<h3>Starting stats</h3><div class="wq"><label>Split<select id="wz-var">${p.variants.map((x,i)=>`<option value="${i}">${esc(x.n)}</option>`).join('')}</select></label>${p.ftdOpts?`<label>Fortitude after the shrine<select id="wz-ftd">${p.ftdOpts.map(f=>`<option value="${f}">${f>=90?f+' (Reinforced Armor)':f}</option>`).join('')}</select></label>`:''}</div>`:''}
-   ${p.wtarget>0&&!p.weapon?`<div class="wq wzw" role="group" aria-label="Weapon of choice"><span class="rl">Weapon of choice (${p.wtarget})</span>${WEPS.map(w=>`<button type="button" class="mini" data-wzw="${w}" aria-pressed="${w===p.wtype}">${WEP[w]}</button>`).join('')}</div>`:''}
+   ${p.variants?`<h3>Variation</h3><div class="wq"><label class="wzvar">Build shell<select id="wz-var">${p.variants.map((x,i)=>`<option value="${i}">${esc(x.n)}</option>`).join('')}</select></label>${wizFtdOpts(p).length?`<label>Fortitude after the shrine<select id="wz-ftd">${wizFtdOpts(p).map(f=>`<option value="${f}">${f>=90?f+' (Reinforced Armor)':f}</option>`).join('')}</select></label>`:''}</div><p class="hint" style="margin:.2em 0 0">Each variation fills in the stats below. Change anything after picking one to make your own version.</p>`:''}
+   ${(p.wtarget>0||(p.variants||[]).some(x=>x.wtarget>0))&&!p.weapon?`<div class="wq wzw" id="wz-wbtns" role="group" aria-label="Weapon of choice" ${p.wtarget>0?'':'hidden'}><span class="rl">Weapon of choice (${p.wtarget||80})</span>${WEPS.map(w=>`<button type="button" class="mini" data-wzw="${w}" aria-pressed="${w===p.wtype}">${WEP[w]}</button>`).join('')}</div>`:''}
    <h3>Preferred stats</h3>
    <div class="wqs"><span></span>${ATTR.map(a=>`<span class="ch">${a}</span>`).join('')}
     ${statRow('Before shrine','pre',p.pre)}
@@ -5814,8 +5868,16 @@ function openWizard(p){
 const wizVarNow=()=>{const p=wizP;return p&&p.variants&&$('wz-var')?p.variants[+$('wz-var').value]||p.variants[0]:null};
 function wizSetW(w){const p=wizP;if(!$('wz-wt'))return;$('wz-wt').value=w;document.querySelectorAll('[data-wzw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wzw===w)));
   const x=wizVarNow();const o=x&&x.oath?x.oath:p&&p.oathByW?p.oathByW[w]:null;if(o&&$('wz-oath'))$('wz-oath').value=o;wizHints()}
-function wizVariant(){const p=wizP;if(!p||!p.variants)return;const x=wizVarNow();
-  if($('wz-ftd')&&x.ftd){for(const o of $('wz-ftd').options){o.disabled=!x.ftd.includes(+o.value);o.textContent=(+o.value>=90?o.value+' (Reinforced Armor)':o.value)+(o.disabled?' (doesn\'t fit this split)':'')}
+// Fortitude-after options: the preset's own list, else every option its variations offer
+const wizFtdOpts=p=>p.ftdOpts||[...new Set((p.variants||[]).flatMap(x=>x.ftd||[]))].sort((a,b)=>a-b);
+function wizVariant(){const p=wizP;if(!p||!p.variants)return;const x=wizVarNow();const any=k=>p.variants.some(v=>v[k]!=null);
+  // a variation is the build's shell: attunements, weapon level and damage focus follow it when any variation sets them
+  if(any('atts')){const atts=Object.entries(x.atts||p.atts).sort((a,b)=>b[1]-a[1]);$('wz-atts').innerHTML=atts.map(([k,v])=>wizAttRow(k,v)).join('')}
+  if(any('wtarget')){const wt=x.wtarget!=null?x.wtarget:p.wtarget;const sel=$('wz-wv');if(sel){if(![...sel.options].some(o=>+o.value===wt))sel.add(new Option(String(wt),String(wt)));sel.value=String(wt)}
+    if($('wz-wbtns'))$('wz-wbtns').hidden=!(wt>0)}
+  if(any('dsplit')&&$('wz-ds')){const ds=x.dsplit!=null?x.dsplit:p.dsplit;if(ds!=null)$('wz-ds').value=String(ds)}
+  if($('wz-oath')&&!p.oathByW)$('wz-oath').value=x.oath||p.oath;
+  if($('wz-ftd')&&x.ftd){for(const o of $('wz-ftd').options){o.disabled=!x.ftd.includes(+o.value);o.textContent=(+o.value>=90?o.value+' (Reinforced Armor)':o.value)+(o.disabled?' (doesn\'t fit this variation)':'')}
     if(!x.ftd.includes(+$('wz-ftd').value))$('wz-ftd').value=String(x.ftd[0])}
   const ftd=$('wz-ftd')?+$('wz-ftd').value:null;
   const post={...x.post};if(ftd)post.FTD=ftd;

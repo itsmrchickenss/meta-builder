@@ -43,7 +43,7 @@ rows=[
 ('Equipment','All equipment pieces: slot, health/armor, pip slots, requirement, set, talents they give.'),
 ('Enchants','Weapon enchants and how each is counted.'),
 ('Oaths','Each oath\'s stat requirement options and notes.'),
-('Presets','The starting presets (stats only).'),
+('Presets','The starting presets (stats only) and each one\'s variations.'),
 ('Constants','Fixed numbers the formulas use (budget, shrine, armor, pip values...).'),
 ('',''),
 ('Colours','Yellow cell with blue text = an input you can change. Green cell = a result (formula). Everything else is reference data.'),

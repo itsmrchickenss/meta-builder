@@ -16,7 +16,8 @@ out.gear=GEAR.map(g=>({n:g.n,ty:g.ty,hp:g.hp,pp:g.pp,ep:g.ep,pips:(g.pips||[]).j
 out.gearSample=GEAR[0];out.outfitSample=OUTFITS[0];
 out.enchants=ENCHANTS.map(e=>({n:e.n,hit:e.hit||'',pen:e.pen||'',cond:e.cond||'',pt:e.pt||'',d:e.d||''}));
 out.oaths=OATHS.map(o=>({n:o.n,req:o.req?fmtReq(o.req):'',note:OATH_NOTES[o.n]||'',alts:(oathAltsOf(o)||[]).map(fmtAlt).join(' OR ')}));
-out.presets=PRESETS.map(p=>({n:p.n,d:p.d,oath:p.oath,w:p.wtype+' '+p.wtarget,atts:JSON.stringify(p.atts),pre:JSON.stringify(p.pre),post:JSON.stringify(p.post)}));
+out.presets=PRESETS.flatMap(p=>[{n:p.n,d:p.d,oath:p.oath,w:p.wtype+' '+p.wtarget,atts:JSON.stringify(p.atts),pre:JSON.stringify(p.pre),post:JSON.stringify(p.post)},
+  ...(p.variants||[]).map((v,i)=>({n:'  '+p.n+' · variation '+(i+1),d:v.n+(v.ftd?' · Fortitude after: '+v.ftd.join(' or '):''),oath:v.oath||p.oath,w:(v.wtype||p.wtype)+' '+(v.wtarget!=null?v.wtarget:p.wtarget),atts:JSON.stringify(v.atts||p.atts),pre:JSON.stringify(v.pre),post:JSON.stringify(v.post)}))]);
 out.pipv=PIPV;out.pen=PEN;out.armor=ARMOR;
 fs.writeFileSync(require('path').join(__dirname,'data.json'),JSON.stringify(out));
 console.log('talents',out.talents.length,'mantras',out.mantras.length,'weapons',out.weapons.length,'outfits',out.outfits.length,'gear',out.gear.length,'enchants',out.enchants.length,'oaths',out.oaths.length);

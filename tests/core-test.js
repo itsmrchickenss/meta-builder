@@ -17,9 +17,14 @@ console.log('talents',DB.T.length,'mantras',DB.M.length,'weapons',DB.W.length,'g
 // Same steps as the Optimize button: fit the talent cap, then drop talents until the stats fit the budget
 const opt=()=>{trimToCap();let r=compute({starts:4,iters:80});if(r.best&&r.best.free<0&&!r.best.impossible)r=trimToBudget(r).res;return r};
 const MAN=DB.M.filter(m=>m.ty==='N'&&!oathTagOf(m.n)&&!(m.req&&m.req.t&&m.req.t.length)).slice(0,6).map(m=>m.n);
-// presets with a split menu (Attunementless): every split x Fortitude option x weapon type
-const CASES=[];for(const P of PRESETS){CASES.push(P);if(P.variants)for(const v of P.variants)for(const f of v.ftd||P.ftdOpts||[null])for(const w of ['LHT','MED','HVY']){
-  const post={...v.post};if(f)post.FTD=f;CASES.push({...P,n:P.n+': '+v.n.split(' (')[0]+(f?' FTD '+f:'')+' '+w,pre:{...v.pre},post,wtype:w,oath:v.oath||(P.oathByW?P.oathByW[w]:P.oath),variants:null})}}
+// presets with variations (every preset but Clean Slate): every variation x Fortitude option x weapon type (one type when the variation has no weapon)
+const CASES=[];for(const P of PRESETS){CASES.push(P);if(P.variants)for(const v of P.variants){const wt=v.wtarget!=null?v.wtarget:P.wtarget;
+  for(const f of v.ftd||P.ftdOpts||[null])for(const w of (wt>0&&!P.weapon?['LHT','MED','HVY']:[v.wtype||P.wtype])){
+  const post={...v.post};if(f)post.FTD=f;CASES.push({...P,n:P.n+': '+v.n.split(' (')[0]+(f?' FTD '+f:'')+' '+w,pre:{...v.pre},post,wtype:w,wtarget:wt,atts:{...(v.atts||P.atts)},oath:v.oath||(P.oathByW?P.oathByW[w]:P.oath),variants:null})}}}
+// the first variation is the preset itself ("Use preset as is" loads the same stats)
+for(const P of PRESETS){if(!P.variants)continue;const v=P.variants[0];const post={...v.post};if(v.ftd)post.FTD=v.ftd[0];
+  const same=(a,b)=>JSON.stringify(Object.entries(a).sort())===JSON.stringify(Object.entries(b).sort());const ok=same(v.pre,P.pre)&&same(post,P.post)&&(!v.atts||same(v.atts,P.atts))&&(v.wtarget==null||v.wtarget===P.wtarget);
+  if(!ok)fails++;console.log((ok?'ok  ':'FAIL')+' first variation = preset: '+P.n)}
 for(const P of CASES){for(const withM of [0,1]){S.oath=P.oath;S.wtype=P.wtype;S.wtarget=P.wtarget;S.atts={...P.atts};S.preMin={...P.pre};S.mins={...P.post};S.sel=P.t.filter(n=>TBY.has(n));S.mantras=withM?MAN.slice():[];S.req=[];S.avoid=[];S.caps={};
   const r=opt();const c=counts(closure());const ok=r.best&&!r.best.impossible&&r.best.free>=0&&c.nTal<=c.cap;if(!ok)fails++;
   console.log((ok?'ok  ':'FAIL')+' '+(P.n+(withM?' +6 mantras':'')).padEnd(60)+' free '+String(r.best?r.best.free:'-').padStart(4)+'  talents '+c.nTal+'/'+c.cap)}}

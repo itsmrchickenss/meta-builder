@@ -4,7 +4,10 @@
 - When two plans cost the same, the one that uses the Shrine of Order and takes your required talents before it wins.
 - The optimizer also tries every combination of "tagged at 1", "at the target" and "target + 25, so the shrine brings it down to the target" for the stats you set, which covers weapon stats too (Heavy 100 before the shrine lands on 75, so an 80 target needs only 5 more after).
 - The AI build maker understands "the 100/100 talents" (100 weapon + 100 attunement): it requires every one for the attunements you named (Scorching Decay, Night Terror, Frozen Anchor, Silencer's Song, Torture Mastery) and plans weapon and attunement at 100. "100 flame 100 weapon" picks just that one.
+- With 100/100 talents on two attunements, the AI build maker takes them before the shrine (weapon and both attunements at 100 there) instead of planning 100 / 100 / 100 to the end, which can't fit. Example: an Umbrite Witherblade Bladeharper Twisted Puppets build with Scorching Decay and Night Terror went from 1 point left to 26.
 - "Black flames" (or dark / purple flames) means the Twisted Puppets path, and the AI build maker requires the whole path.
+- "Wanted" stats are now called "Must hit": at one point in the build the stat reaches that level, for its talents, before or after the shrine (the optimizer picks).
+- An attribute may go back up a little after the shrine: up to 5 points (like Strength 100 → 75 → 80 for a level), when that's cheaper. The results say when it happens. On the 15 featured builds this cut the talents that couldn't fit from 72 to 36.
 - Fixed: a mantra that needs a path your required talents rule out (Cauterize needs Sanguine Blaze, which Lava Serpent excludes) could put both paths in the build. Optimize now removes that mantra.
 - Fixed: two required talents that exclude each other (for example Azure Flames and the Sanguine Blaze path) could both end up in the build. The first one stays; Optimize removes the later one and says why.
 - Fixed: Fortitude could stay the same before and after the shrine when it had a before-shrine floor.

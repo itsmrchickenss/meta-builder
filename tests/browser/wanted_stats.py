@@ -1,4 +1,4 @@
-# Wanted stats (before or after the shrine, the optimizer picks) and the AI build maker's oath question.
+# Must-hit stats (reached at one point in the build: before or after the shrine, the optimizer picks) and the AI build maker's oath question.
 # python3 tests/browser/wanted_stats.py
 import pathlib,json
 ROOT=pathlib.Path(__file__).resolve().parents[2]
@@ -29,7 +29,7 @@ with sync_playwright() as p:
     pg.click('#wz-go');pg.wait_for_timeout(300);wait()
     st=pg.evaluate("JSON.stringify({want:S.want,at:last.best.wantAt,free:last.best.free})")
     check(json.loads(st)['want']=={'STR':40,'AGL':65,'CHA':40} and len(json.loads(st)['at'])==3 and json.loads(st)['free']>=0,'build keeps wanted stats '+st)
-    check('Wanted stats:' in pg.inner_text('#note'),'results note says where each wanted stat went')
+    check('Must-hit stats:' in pg.inner_text('#note'),'results note says where each wanted stat went')
     # share link round trip
     rt=pg.evaluate("JSON.stringify(decodeBuild(encodeBuild()).want)")
     check(json.loads(rt)=={'STR':40,'AGL':65,'CHA':40},'share link keeps wanted stats '+rt)
@@ -37,7 +37,7 @@ with sync_playwright() as p:
     # an old share code (no wanted stats) decodes to none
     pg.evaluate("S.want={};run()");wait()
     check(pg.evaluate("JSON.stringify(decodeBuild(encodeBuild()).want)")=='{}','no wanted stats: none after decode')
-    # Stats tab: the Wanted (either) row edits S.want
+    # Stats tab: the Must hit row edits S.want
     pg.evaluate("document.getElementById('floorsbox').open=true");pg.fill('#wn-STR','50');pg.dispatch_event('#wn-STR','input');pg.dispatch_event('#wn-STR','change');pg.wait_for_timeout(300);wait()
     check(pg.evaluate("S.want.STR")==50,'Stats tab Wanted row sets the wanted value')
     pg.close()

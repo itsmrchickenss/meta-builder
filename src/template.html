@@ -650,8 +650,8 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="fstats" id="fstats"></div>
     <div id="bstats"></div>
     <div class="hlist stathint" id="stathint" aria-live="polite"><span class="hint">Click a stat to see what raising it unlocks.</span></div>
-    <details id="floorsbox"><summary>Stat floors and wanted stats</summary>
-      <p class="hint">Before shrine: the least each stat should reach before you use the shrine. After shrine: the least it should end at (same as the “At least” column). Wanted (either): the value you want, and the optimizer decides whether to reach it before the shrine (talents taken early, the shrine shrinks it) or after it, whichever gets the most talents for the fewest points.</p>
+    <details id="floorsbox"><summary>Stat floors and must-hit stats</summary>
+      <p class="hint">Before shrine: the least each stat should reach before you use the shrine. After shrine: the least it should end at (same as the “At least” column). Must hit: at one point in the build this stat reaches the level, for its talents. The optimizer decides whether that point is before the shrine (talents taken early, then the shrine shrinks it) or after it, whichever gets the most talents for the fewest points.</p>
       <div class="floors" id="floors"></div>
     </details>
     <details><summary>Shrine breakdown, step by step</summary><div class="scroll" style="margin-top:10px"><table class="ledger" id="tbl"></table></div></details>
@@ -678,7 +678,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <p class="hint xh" id="dsplithelp" style="margin:0"></p>
     <details class="subopt"><summary>More optimizer options</summary><div>
     <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement</label>
-    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: attributes raised before the shrine get no points after it</label>
+    <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: attributes raised before the shrine get at most 5 points after it (a small step back up for a talent)</label>
     </div></details>
     <div class="verdict" id="verdict"></div>
     <div id="caps"></div>
@@ -1491,7 +1491,9 @@ function evaluate(P,R,oathAlts){
   // pre-shrine is the peak: an attribute (STR..CHA) invested before the shrine (more than 1) gets no points after it (weapon and
   // attunement stats may be re-raised, as top builds do with e.g. Ironsing 60 before -> 80 after): either ~1 before and the rest
   // after, or high before and the shrine brings it down. Never shrink a stat and then raise it again.
-  let reup=0;const reupK=[];if(S.noReup!==false&&!noShrine)for(const k of ATTR){if(P[k]>1&&!(S.pin&&k in S.pin)&&adds[k]>0){reup+=adds[k];reupK.push(k)}}
+  // pre-shrine is the peak, except a small step back up (owner, November 18, 2026: Strength 100 -> 75 -> 80 is fine, 5 points to
+  // reach a talent or mantra level): up to REUP_OK points per attribute after the shrine are allowed, more counts as a re-raise
+  let reup=0;const reupK=[],bumpK=[];if(S.noReup!==false&&!noShrine)for(const k of ATTR){if(P[k]>1&&!(S.pin&&k in S.pin)&&adds[k]>0){if(adds[k]<=REUP_OK)bumpK.push(k);else{reup+=adds[k];reupK.push(k)}}}
   // Shrine of Mastery after: take talents first, then refund up to 3 points
   let qmSum=0;for(const [k,v] of Object.entries(qm)){const d=Math.min(v,final[k]||0);final[k]-=d;qmSum+=d}
   const used=preSum-pmSum-sh.refund+postSum-Math.max(0,nAtt-1)-qmSum;
@@ -1500,7 +1502,7 @@ function evaluate(P,R,oathAlts){
   let tv=0;for(const v of R.val){if(v.alts.some(a=>altCost(a,final)===0)||(v.pre&&v.alts.some(a=>altCost(a,P)===0)))tv+=v.p}
   const pr=(S.prio==null?50:S.prio)/100;
   const damage=dmgPct;const score=(BUDGET-used)+2*(1-pr)*dmgPct+2*pr*tv/10;
-  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20-reup*REUP_W,impossible,damage,refund:sh.refund,oathAlt:oathPick,wantAt,preTaken,pmSum,qmSum,capOver,reup,reupK,noShrine};
+  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20-reup*REUP_W,impossible,damage,refund:sh.refund,oathAlt:oathPick,wantAt,preTaken,pmSum,qmSum,capOver,reup,reupK,bumpK,noShrine};
 }
 // ---- shrines ----
 const MASTERY_LIMIT=3;
@@ -1544,6 +1546,7 @@ const better=(a,b)=>{if(!b)return true;
   if(!!a.noShrine!==!!b.noShrine)return !a.noShrine;if((a.preTaken||[]).length!==(b.preTaken||[]).length)return (a.preTaken||[]).length>(b.preTaken||[]).length;
   return a.preSum<b.preSum};
 const EFF_TOL=3;
+const REUP_OK=5;
 // stats the shrine takes at most 25 from (attributes and weapon stats; attunements have no floor)
 const floorStat=k=>ATTR.includes(k)||!!WEP[k];
 function searchStats(R,oathAlts,opt){
@@ -1576,9 +1579,11 @@ function searchStats(R,oathAlts,opt){
   // every combination of the owner's options (November 18, 2026) for the stats that have a target or a wanted value: tagged at 1
   // before the shrine, at the target, or at target + 25 for a stat the shrine brings down at most 25 (attributes, weapon). The best
   // few are climbed from. At most 7 stats (3^7 = 2187 quick evaluations).
-  if(nStarts>=12||(opt&&opt.polish)){const tk=dims.filter(k=>(fin[k]||(R.want||{})[k])).slice(0,7);
-    const op=k=>{const f=Math.max(fin[k]||0,(R.want||{})[k]||0);return [...new Set([Math.max(R.pre[k],1),Math.max(R.pre[k],f),floorStat(k)?Math.max(R.pre[k],Math.min(100,f+25)):f])].filter(v=>v<=R.max[k])};
-    const O=tk.map(op);const top=[];const idx=tk.map(()=>0);
+  if(nStarts>=12||(opt&&opt.polish)){const tk=dims.filter(k=>(fin[k]||(R.want||{})[k])).concat(dims.filter(k=>!fin[k]&&!(R.want||{})[k]&&[...R.thr[k]].some(v=>v>=75&&v<=100))).slice(0,7);
+    // ...and the highest level a requirement needs before the shrine (the 100 for a 100/100 talent), when it is above the target
+    const tm=k=>[...R.thr[k]].filter(v=>v<=100).reduce((a,b)=>Math.max(a,b),0);
+    const op=k=>{const f=Math.max(fin[k]||0,(R.want||{})[k]||0);const t=tm(k);return [...new Set([Math.max(R.pre[k],1),Math.max(R.pre[k],f),floorStat(k)?Math.max(R.pre[k],Math.min(100,f+25)):f,...(t>f?[Math.max(R.pre[k],t)]:[])])].filter(v=>v<=R.max[k])};
+    let O=tk.map(op);while(O.length>1&&O.reduce((a,o)=>a*o.length,1)>3000){O.pop();tk.pop()}const top=[];const idx=tk.map(()=>0);
     for(;;){const P={...base};tk.forEach((k,i)=>P[k]=O[i][idx[i]]);const e=evaluate(P,R,oathAlts);
       if(e){top.push(e);if(top.length>8){top.sort((a,b)=>better(a,b)?-1:better(b,a)?1:0);top.length=4}}
       let i=0;while(i<tk.length&&++idx[i]>=O[i].length){idx[i]=0;i++}if(i>=tk.length)break}
@@ -1776,7 +1781,7 @@ function rebuildToBudget(seedP){const dropped=[];const C=closure();
 // If required talents and floors alone don't fit: lower the floors 5 at a time, biggest first (pins and required stay)
 function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iters:80});
   const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;
-  const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.want=S.want||{},a,0,ANAME[a]+' wanted']),...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
+  const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.want=S.want||{},a,0,ANAME[a]+' must hit']),...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
   while((!r.best||(!r.best.impossible&&r.best.free<0))&&guard-->0){
     const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin)&&!(S.keep||{})[k]);
     if(!ks.length)break;ks.sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));const [o,k,mn,label]=ks[0];
@@ -2122,7 +2127,7 @@ function renderInputs(){autoHeroBlade();renderTraits();
   $('floors').innerHTML='<span></span>'+ATTR.map(a=>`<span>${a}</span>`).join('')+
     '<span class="rowlabel">Before shrine</span>'+ATTR.map(a=>`<input type="number" id="pm-${a}" data-pm="${a}" min="0" max="100" step="5" value="${(S.preMin||{})[a]||0}" aria-label="${ANAME[a]} before shrine">`).join('')+
     '<span class="rowlabel">After shrine</span>'+ATTR.map(a=>`<input type="number" id="m-${a}" data-m="${a}" min="0" max="100" step="5" value="${S.mins[a]||0}" aria-label="${ANAME[a]} after shrine">`).join('')+
-    '<span class="rowlabel" title="Reach this before or after the shrine: the optimizer picks whichever gets more talents for fewer points">Wanted (either)</span>'+ATTR.map(a=>`<input type="number" id="wn-${a}" data-wn="${a}" min="0" max="100" step="5" value="${(S.want||{})[a]||0}" aria-label="${ANAME[a]} wanted, before or after the shrine">`).join('');
+    '<span class="rowlabel" title="At one point in the build this stat reaches the level, for its talents (before or after the shrine: the optimizer picks)">Must hit</span>'+ATTR.map(a=>`<input type="number" id="wn-${a}" data-wn="${a}" min="0" max="100" step="5" value="${(S.want||{})[a]||0}" aria-label="${ANAME[a]} must hit, at one point in the build">`).join('');
   $('oath').innerHTML=OATHS.map(o=>`<option value="${esc(o.n)}" ${o.n===S.oath?'selected':''}>${o.n==='None'?'No oath':esc(o.n)}</option>`).join('');
   const o=findO(S.oath);
   $('oathinfo').innerHTML=o.n==='None'?'':`<div class="item"><div class="nm">Needs ${esc(o.custom?o.custom.map(fmtAlt).join(' or '):fmtReq(o.req))}<small>Mantra slots +${esc(fmtSlots(o.slots)||'none')}${o.mantras.length?' · '+esc(o.mantras.join(', ')):''}</small></div></div>${OATH_NOTES[o.n]?`<p class="hint">${esc(OATH_NOTES[o.n])}</p>`:''}`;
@@ -2497,10 +2502,11 @@ function renderResults(res){
   if(latePre.length)note+=`<div class="callout warn">${esc(latePre.join(', '))} need${latePre.length>1?'':'s'} more Power than you'll have at the shrine (Power ${prePwr}).</div>`;
   if(R.capBlocked&&R.capBlocked.length)note+=`<div class="callout warn">Skipped because of your stat limits: ${esc(R.capBlocked.join(', '))}. Optimize removes those talents${R.capBlocked.some(n=>n.startsWith('Oath:'))?'; pick another oath (see Oath requirements)':''}, or untick a limit.</div>`;
   if(best.noShrine&&ALL.some(k=>best.P[k]>0))note+=`<div class="callout warn">The Shrine of Order needs Power ${SHRINE_PWR} (${SHRINE_PTS} points). This plan only reaches Power ${prePwr} (${best.preSum} points) first, so it skips the shrine. ${S.manual?'Raise your pre‑shrine stats to use it.':'Optimize looks for a plan that reaches it when that saves points.'}</div>`;
+  if(best.bumpK&&best.bumpK.length&&!best.reup)note+=`<div class="callout">Small step back up after the shrine: ${esc(best.bumpK.map(k=>`${statName(k)} ${best.P[k]} → ${best.sh.out[k]||0} → ${best.final[k]}`).join('; '))} (at most 5 points, cheaper than keeping it higher before the shrine).</div>`;
   if(best.reup)note+=`<div class="callout warn">${esc(best.reupK.map(k=>`${statName(k)} is ${best.P[k]} before the shrine, ${best.sh.out[k]||0} after it, then raised again to ${best.final[k]}`).join('; '))}. Your floors force a stat back up after the shrine; set it to 1 before the shrine (all points after) or high enough before it, pin it, or untick “Pre‑shrine is the peak”.</div>`;
   if(best.capOver)note+=`<div class="callout warn">Your floors or targets push a limited stat over its maximum by ${best.capOver}. Lower the floor or raise the limit.</div>`;
   if(best.manual&&best.unmet.length)note+=`<div class="callout warn">Not reached with these stats: ${esc(best.unmet.map(u=>u.n+' (+'+u.c+')').join(', '))}.</div>`;
-  {const wa=Object.entries(best.wantAt||{});if(wa.length&&!best.impossible&&!best.manual)note+=`<div class="callout">Wanted stats: ${wa.map(([k,w])=>`${esc(statName(k))} ${R.want[k]} ${w==='pre'?`before the shrine (${best.P[k]} → ${best.final[k]} after, its talents taken first)`:`after the shrine (${best.P[k]} before → ${best.final[k]})`}`).join(' · ')}. The optimizer picked these to get the most talents for the fewest points.</div>`}
+  {const wa=Object.entries(best.wantAt||{});if(wa.length&&!best.impossible&&!best.manual)note+=`<div class="callout">Must-hit stats: ${wa.map(([k,w])=>`${esc(statName(k))} ${R.want[k]} ${w==='pre'?`before the shrine (${best.P[k]} → ${best.final[k]} after, its talents taken first)`:`after the shrine (${best.P[k]} before → ${best.final[k]})`}`).join(' · ')}. Each is reached at that point for its talents; the optimizer picked where to get the most talents for the fewest points.</div>`}
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
   if(best.free>0&&!best.impossible&&!best.manual)note+=`<div class="callout">${best.free} points left. Optimize with “spend leftover” ticked to pour them into damage, or add a recommended talent.</div>`;
   {const wk=best&&!best.impossible?weakAfterShrine(best.final,[...C.T.keys()]):[];if(wk.length)note+=`<div class="callout warn">Weaker after the shrine: ${wk.map(x=>`${esc(x.n)} (${x.low.map(([k,v,f])=>`${esc(statName(k))} ${f}, full at ${v}`).join(', ')})`).join('; ')}. These still work below their requirement, just less${wk.some(x=>SCALE_MOD[x.n])?'; the damage numbers already count it':''}.</div>`}
@@ -2820,9 +2826,9 @@ function openWizard(p){
    <div class="wqs"><span></span>${ATTR.map(a=>`<span class="ch">${a}</span>`).join('')}
     ${statRow('Before shrine','pre',p.pre)}
     ${statRow('After shrine','post',p.post)}
-    ${statRow('Wanted (either)','want',p.want||{})}
+    ${statRow('Must hit','want',p.want||{})}
     <span class="rl">Raise it to</span>${ATTR.map(a=>`<button type="button" class="uh" id="wz-h-${a}" data-wzh="${a}" aria-controls="wz-hlist">…</button>`).join('')}</div>
-   <p class="hint" style="margin:.3em 0 0">Wanted (either): just say the value you want and the optimizer decides whether it goes before the shrine (talents taken early, then the shrine shrinks it) or after it, whichever gets the most talents for the fewest points.</p>
+   <p class="hint" style="margin:.3em 0 0">Must hit: at one point in the build this stat reaches the level, for its talents. The optimizer decides whether that is before the shrine (talents taken early, then the shrine shrinks it) or after it, whichever gets the most talents for the fewest points.</p>
    <div class="hlist" id="wz-hlist" aria-live="polite"><span class="hint">“Raise it to” shows the next level that unlocks new talents. Click one to see the talents.</span></div>
    <h3>Attunements</h3>
    <div id="wz-atts" class="wzatts">${atts.map(([k,v])=>wizAttRow(k,v)).join('')}</div>
@@ -2899,7 +2905,7 @@ function wizardApply(){
     run();
     // starting points must fit 330 points: ease the largest floors down 5 at a time until they do
     {const lowered={};let guard=40;
-      const knobs=()=>[[S.mins,'FTD',50,'Fortitude after'],[S,'wtarget',60,'Weapon'],...ATTR.map(a=>[S.want,a,25,ANAME[a]+' wanted']),...ATTR.filter(a=>a!=='FTD').map(a=>[S.preMin,a,a==='AGL'?25:40,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,a==='FTD'?50:25,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,40,ATT[k][0]])];
+      const knobs=()=>[[S.mins,'FTD',50,'Fortitude after'],[S,'wtarget',60,'Weapon'],...ATTR.map(a=>[S.want,a,25,ANAME[a]+' must hit']),...ATTR.filter(a=>a!=='FTD').map(a=>[S.preMin,a,a==='AGL'?25:40,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,a==='FTD'?50:25,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,40,ATT[k][0]])];
       while(last&&last.best&&last.best.free<0&&!last.best.impossible&&guard-->0){
         const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn).sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));
         if(!ks.length)break;const [o,k,mn,label]=ks[0];o[k]=Math.max(mn,(+o[k]||0)-5);lowered[label]=o[k];
@@ -3169,7 +3175,7 @@ function aiParse(txt,basePreset){
     // ("strength 40 before the shrine", "agility 25 post"). Fortitude stays after (health comes from the final value).
     if(n){const w=aiWhenOf(txt,re);for(const o of [p.pre,p.post,p.want])delete o[k];
       if(w==='pre'){p.pre[k]=n;got.push(`${ANAME[k]} ${n} before the shrine`)}else if(w==='post'||k==='FTD'){p.post[k]=n;got.push(`${ANAME[k]} ${n} after the shrine`)}
-      else{p.want[k]=n;got.push(`${ANAME[k]} ${n} (before or after the shrine: the optimizer picks)`)}}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',50);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
+      else{p.want[k]=n;got.push(`${ANAME[k]} ${n} must hit (at one point in the build, for its talents: the optimizer picks before or after the shrine)`)}}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',50);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
   // oath (typos allowed)
   // also catch an oath written as two words or with a dash ("jet striker", "silent heart", "blade-harper")
   const oathN=by('oath')[0]||(OATHS.find(o=>o.n!=='None'&&new RegExp('\\b'+o.n.toLowerCase().split('').join("[\\s'-]?")+'\\b').test(s))||{}).n;const oath=oathN?findO(oathN):null;
@@ -3214,17 +3220,25 @@ function aiParse(txt,basePreset){
   const tN=by('talent').filter(n=>!isAvoid(n));tN.forEach(n=>REQ.add(n));if(tN.length)got.push('talents: '+tN.join(', '));
   // "the 100/100 talents" / "100 flame 100 weapon": every talent that needs 100 in a weapon and 100 in an attunement you named
   // (Scorching Decay, Night Terror, Frozen Anchor, Silencer's Song, Torture Mastery) is required, with weapon and attunement at 100
-  const hAtts=[];
+  const hAtts=[];const hSet=new Set();
   if(has(/\b100\s+(?:[a-z]+\s+){0,3}100\b|\bdouble 100s?\b|\b100s? talents?\b/)){const named=new Set([...at.map(x=>x.k),...Object.keys(p.atts)]);
     const near=AI_ATT.filter(([k,re])=>new RegExp('\\b100\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)).map(([k])=>k);
     const want=near.length?new Set(near):named;
     const H=DB.T.filter(t=>t.k&&!isAvoid(t.n)&&Object.entries(t.req.s||{}).some(([k,v])=>v>=100&&(k==='WPN'||WEP[k]))&&Object.entries(t.req.s||{}).some(([k,v])=>v>=100&&ATT[k]&&want.has(k)));
-    if(H.length&&p.oath!=='Silentheart'){for(const t of H){REQ.add(t.n);for(const [k,v] of Object.entries(t.req.s))if(ATT[k]&&v>=100){p.atts[k]=100;hAtts.push(k)}}
-      if(p.attUp&&hAtts.includes(p.attUp))delete p.attUp;if(!caster||p.wtarget>0||wN)p.wtarget=100;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required (weapon 100, ${[...new Set(hAtts)].map(k=>ATT[k][0]+' 100').join(', ')})`)}
+    if(H.length&&p.oath!=='Silentheart'){for(const t of H){REQ.add(t.n);hSet.add(t.n);prereqSet(t.n).T.forEach(n=>hSet.add(n));for(const [k,v] of Object.entries(t.req.s))if(ATT[k]&&v>=100)hAtts.push(k)}
+      // one attunement: weapon and attunement 100 to the end fits. Two or more (owner, November 18, 2026): 100 / 100 / 100 after the
+      // shrine can't fit, so the talents are taken before it (weapon and attunements at 100 there) and the shrine brings them down;
+      // the after-shrine targets stay at what you typed or the usual 80 / 40 split, and the optimizer places the 100s
+      const dual=new Set(hAtts).size>=2;
+      for(const k of new Set(hAtts)){if(!dual)p.atts[k]=100;else if(!p.atts[k])p.atts[k]=40}
+      if(p.attUp&&hAtts.includes(p.attUp))delete p.attUp;
+      if(!dual){if(!caster||p.wtarget>0||wN)p.wtarget=100;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required (weapon 100, ${[...new Set(hAtts)].map(k=>ATT[k][0]+' 100').join(', ')})`)}
+      else{if(!caster||p.wtarget>0||wN)p.wtarget=Math.max(p.wtarget||0,80);p.hundredPre=1;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required, taken before the shrine (weapon and ${[...new Set(hAtts)].map(k=>ATT[k][0]).join(' + ')} at 100 there; with two attunements 100 / 100 / 100 can't fit after the shrine)`)}}
     else if(!H.length)got.push('100/100 talents: name the attunement too (they exist for Flamecharm, Shadowcast, Frostdraw, Galebreathe and Bloodrend)')}
   const mN=by('mantra').filter(n=>!oathTagOf(n));mN.forEach(n=>M.add(n));if(mN.length)got.push('mantras: '+mN.join(', '));
   // whatever the must-haves need: attunements are raised to their level, oath requirements are planned in
-  const needAtt={};for(const n of [...REQ,...M]){const e=TBY.get(n)||MBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])needAtt[k]=Math.max(needAtt[k]||0,v)}
+  // (100/100 talents with two attunements are taken before the shrine, so they don't set after-shrine attunement targets)
+  const needAtt={};for(const n of [...REQ,...M]){if(p.hundredPre&&hSet.has(n))continue;const e=TBY.get(n)||MBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])needAtt[k]=Math.max(needAtt[k]||0,v)}
   // Silentheart can't use attunement mantras, so attunement points do nothing for it except unlock gear
   if(p.oath==='Silentheart'){const attM=[...M].filter(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])});attM.forEach(n=>M.delete(n));
     const wa=p.weapon&&WBY.get(p.weapon);const keep=Object.keys(p.atts).filter(k=>wa&&wa.req.s[k]);
@@ -3250,6 +3264,12 @@ function aiParse(txt,basePreset){
   {const pn={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pn[k]=Math.max(pn[k]||0,v)}
     p._q={at:at.map(x=>x.k),explicit:[...new Set([...at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),...hAtts])],need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
   if(has(/\bglass cannon\b|\bsquishy\b/)){delete p.post.FTD;got.push('glass cannon: no Fortitude floor')}
+  // two-attunement 100/100 builds put 300 points into weapon + attunements before the shrine, and only 330 can go in before it:
+  // stats the description didn't give a number for become "must hit" (reached at some point for their talents, the optimizer
+  // picks when) instead of fixed before-shrine values
+  if(p.hundredPre){const mv=[];for(const k of Object.keys(p.pre)){if(!ATTR.includes(k))continue;const re=(AI_STAT.find(([x])=>x===k)||[])[1];if(re&&re.test(sAtt)&&aiNumNear(s,re))continue;
+      p.want[k]=Math.max(p.want[k]||0,p.pre[k]);delete p.pre[k];mv.push(`${ANAME[k]} ${p.want[k]}`)}
+    if(mv.length)got.push(`${mv.join(', ')}: must hit (before or after the shrine) so the 100s fit before it`)}
   p.d=got.length?'I read: '+got.join(' · '):'No build words found, so this is a balanced starting point (Agility 40 before, Fortitude 50 after).';
   return {p,got};
 }

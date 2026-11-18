@@ -32,7 +32,8 @@ window.__check=function(){
     if(BUDGET-used<0)(S.manual?W:P).push('over the 330 budget by '+(used-BUDGET));
     if(b.free!==BUDGET-used&&!b.capOver&&!b.reup)P.push(`free points shown ${b.free}, should be ${BUDGET-used}`)}
   // the owner's rule: pre-shrine is the peak for attributes
-  if(useShrine&&!S.manual)for(const k of ATTR)if(pre[k]>1&&!(S.pin&&k in S.pin)&&fin[k]>sh.out[k])P.push(`${k} raised again after the shrine: ${pre[k]} -> ${sh.out[k]} -> ${fin[k]}`);
+  // (a step back up of at most 5 points is allowed: owner, November 18, 2026)
+  if(useShrine&&!S.manual)for(const k of ATTR)if(pre[k]>1&&!(S.pin&&k in S.pin)&&fin[k]>sh.out[k]+5)P.push(`${k} raised again after the shrine: ${pre[k]} -> ${sh.out[k]} -> ${fin[k]}`);
   if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))(b.free<=0?W:P).push('Fortitude the same before and after: '+pre.FTD+(b.free<=0?' (no points to spare)':''));
   const caps=capsOf();for(const [k,v] of Object.entries(caps))if(fin[k]>v)P.push(`${k} over its limit ${v}: ${fin[k]}`);
   for(const [k,v] of Object.entries(S.atts||{}))if(fin[k]<Math.min(+v||0,k in caps?caps[k]:100))P.push(`attunement ${k} ${fin[k]} under its target ${v}`);

@@ -14,15 +14,19 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(2500)
     def wait(): pg.wait_for_function("!document.getElementById('results').classList.contains('busy')", timeout=120000); pg.wait_for_timeout(400)
-    parse = lambda t: pg.evaluate("t=>{const p=aiParse(t).p;return {oath:p.oath,w:p.weapon,wt:p.wtype,wv:p.wtarget,atts:p.atts,req:p.req,q:aiQuestions(p)}}", t)
+    parse = lambda t: pg.evaluate("t=>{const p=aiParse(t).p;return {oath:p.oath,w:p.weapon,wt:p.wtype,wv:p.wtarget,atts:p.atts,req:p.req,q:aiQuestions(p),hp:!!p.hundredPre,pre:p.pre,want:p.want}}", t)
     r = parse('umbrite witherblade bladeharper black flames flamecharm shadowcast with the 100 100 talents')
     need = {'Scorching Decay', 'Night Terror', 'Wraith Path: Twisted Puppets', 'Burning Puppets', 'Burning Sacrifice', 'Explosive Rage', 'Moths to a Flame'}
-    check(r['oath'] == 'Bladeharper' and r['w'] == 'Umbrite Witherblade' and r['wt'] == 'MED' and r['wv'] == 100, f"oath / weapon / Medium 100: {r['oath']} {r['w']} {r['wt']} {r['wv']}")
-    check(r['atts'].get('FLM') == 100 and r['atts'].get('SDW') == 100, f"Flamecharm and Shadowcast 100: {r['atts']}")
+    # two attunements (owner, November 18, 2026): 100 / 100 / 100 can't fit after the shrine, so the 100/100 talents are taken
+    # before it; after-shrine targets stay at the usual split, and no default stat is fixed before the shrine
+    check(r['oath'] == 'Bladeharper' and r['w'] == 'Umbrite Witherblade' and r['wt'] == 'MED' and r['wv'] == 80 and r['hp'], f"oath / weapon / Medium 80 after, 100s before the shrine: {r['oath']} {r['w']} {r['wt']} {r['wv']} {r['hp']}")
+    check(r['atts'].get('FLM', 0) < 100 and r['atts'].get('SDW', 0) < 100 and not r['pre'], f"after-shrine attunement targets below 100, nothing fixed before the shrine: {r['atts']} pre {r['pre']} must hit {r['want']}")
     check(need <= set(r['req']), f"required: {sorted(set(r['req']))}")
     check('att' not in r['q'] and 'oath' not in r['q'], f"no attunement or oath question: {r['q']}")
     r = parse('medium flamecharm build with the 100 flame 100 weapon talent')
     check(r['req'] == ['Scorching Decay'] and r['wv'] == 100 and r['atts'].get('FLM') == 100, f"100 flame 100 weapon -> Scorching Decay only: {r['req']} {r['wv']} {r['atts']}")
+    # the user's build: 100 / 100 / 100 before the shrine, the shrine spreads it, at least 15 points left
+
     r = parse('heavy frostdraw 100/100 talent'); check('Frozen Anchor' in r['req'], f"100/100 with Frostdraw -> Frozen Anchor: {r['req']}")
     r = parse('bladeharper shadowcast black flame build'); check('Wraith Path: Twisted Puppets' in r['req'], f"black flame -> Twisted Puppets path: {r['req']}")
     r = parse('jetstriker light 100 100 talents'); check(not r['req'], f"100/100 with no attunement named: nothing required, a note instead: {r['req']}")
@@ -33,7 +37,8 @@ with sync_playwright() as p:
     pg.click('#wz-go'); pg.wait_for_timeout(300); wait()
     st = pg.evaluate("""(()=>{const b=last.best,C=closure();return {free:b.free,impossible:b.impossible,P:Object.fromEntries(ALL.filter(k=>b.P[k]).map(k=>[k,b.P[k]])),
       fin:Object.fromEntries(ALL.filter(k=>b.final[k]).map(k=>[k,b.final[k]])),req:S.req,missing:S.req.filter(n=>!C.T.has(n)&&!C.M.has(n)),odd:ALL.filter(k=>oddPre(k,last.R,b))}})()""")
-    check(st['free'] >= 0 and not st['impossible'], f"fits: {st['free']} points left, before {st['P']}, final {st['fin']}")
+    check(st['free'] >= 15 and not st['impossible'], f"fits with room to spare (was 1 point left): {st['free']} points left, before {st['P']}, final {st['fin']}")
+    check(st['P'].get('MED') == 100 and st['P'].get('FLM') == 100 and st['P'].get('SDW') == 100, f"Medium, Flamecharm and Shadowcast 100 before the shrine: {st['P']}")
     check(not st['missing'], f"required talents all in: missing {st['missing']}")
     check(not st['odd'], f"no odd pre-shrine values: {st['odd']}")
     # (with semi tanky on top the budget can't keep all three at 100 after the shrine: they reach 100 before it, where the

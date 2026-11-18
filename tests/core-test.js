@@ -33,6 +33,12 @@ for(const P of CASES){if(!P.oath||P.oath==='None')continue;S.wtype=P.wtype;S.wta
   const f={};ALL.forEach(k=>f[k]=Math.max(P.post[k]||0,P.atts[k]||0,k===P.wtype?P.wtarget:0,P.pre[k]?P.pre[k]-25:0));
   const al=oathAltsOf(findO(P.oath));const c=al?bestCost(al,f):0;const ok=c===0;if(!ok)fails++;
   console.log((ok?'ok  ':'FAIL')+' oath fits: '+P.n.padEnd(20)+' '+P.oath+(ok?'':' (short '+c+')'))}
+// wanted stats: each one is reached before the shrine or after it (the optimizer picks), within budget, never re-raised after the shrine
+for(const [W,wt,mins] of [[{STR:40,AGL:65,CHA:40},'MED',{FTD:50}],[{STR:100,AGL:40},'HVY',{FTD:50}],[{INT:90,WLL:40},'LHT',{FTD:50}],[{AGL:65},'LHT',{AGL:50,FTD:50}],[{CHA:90,STR:40,AGL:40},'MED',{FTD:50}]]){
+  S.oath='None';S.wtype=wt;S.wtarget=80;S.atts={};S.preMin={};S.mins={...mins};S.want={...W};S.sel=[];S.mantras=[];S.req=[];S.avoid=[];S.caps={};
+  const r=opt();const b=r.best;const met=b&&Object.entries(W).every(([k,v])=>b.P[k]>=v||b.final[k]>=v);const ok=b&&!b.impossible&&b.free>=0&&met&&!b.reup&&Object.keys(b.wantAt||{}).length===Object.keys(W).length;if(!ok)fails++;
+  console.log((ok?'ok  ':'FAIL')+' wanted '+JSON.stringify(W).padEnd(30)+' '+Object.entries(b?b.wantAt:{}).map(([k,w])=>k+' '+w+' ('+b.P[k]+'->'+b.final[k]+')').join(', ')+'  free '+(b?b.free:'-'))}
+S.want={};
 // Diluvian: Brick Wall, Dawnwalker and the FTD/WLL talents
 {const D=PRESETS.find(p=>p.n==='Diluvian');const ok=D&&D.oath==='Dawnwalker'&&D.t.includes('Brick Wall')&&D.t.includes('Perseverance')&&D.t.length>=30&&!D.t.includes('Echoing Lunatic');if(!ok)fails++;
   console.log((ok?'ok  ':'FAIL')+' Diluvian talents: '+(D?D.t.length:0))}

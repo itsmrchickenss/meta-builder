@@ -3,6 +3,11 @@
 - A variation fills in the stats, Fortitude after the shrine (50, or 90 for Reinforced Armor where it fits), and for some presets the attunements, weapon level and damage focus. Change anything after picking one to make your own version.
 - Chime's variations come from the featured Chime of Conflict builds, including a caster version with an attunement at 100 and no weapon.
 - Diluvian can now start as a caster (no weapon, an attunement at 80), Elder / Enmity can swap Shadowcast 20 for Thundercall 20 or go Ironsing 60 + Shadowcast 40, and Mage has an 80 / 80 two-attunement version.
+- New "Wanted (either)" stats: list the values you want (for example Strength 40, Agility 65) and the optimizer decides whether each one goes before the shrine (its talents taken early, then the shrine shrinks it) or after it, whichever gets the most talents for the fewest points. It's a new row in the preset window and under Stat floors on the Stats tab, and the results say where each one went.
+- The AI build maker treats the numbers you type as wanted stats too, so it picks before or after the shrine for you. Say "before the shrine" or "after" (or "pre" / "post") to choose yourself. Fortitude still goes after the shrine, since your health comes from the final value.
+- The AI build maker no longer asks which oath you want when you've already named one, even written as two words ("blade harper", "jet striker", "silent heart") or when your linked build has one.
+- Dropdown menus have a cleaner, modern look: rounded, a slim arrow, and a highlight on hover and focus, in every theme.
+
 ## v0.35 | 2026-11-17
 - Mage builds with no weapon stats now get the Hero's Blade of their strongest element (Flame, Frost, Lightning, Wind or Shadow) automatically. Pick another weapon, or clear it, and your choice stays.
 - Presets with a weapon now start at 80 in a weapon of your choice: pick Light, Medium or Heavy with the buttons at the top of the preset window (Elder / Enmity keeps Medium 90 for the Shattered Katana; the mage presets stay weapon-free).

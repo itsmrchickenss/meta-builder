@@ -46,9 +46,21 @@ h3 small{font-family:var(--f-mono);letter-spacing:0;text-transform:none;margin-l
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .spread{justify-content:space-between}
 label.small{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
-select,input[type=number],input[type=text],input[type=search]{background:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:4px;padding:7px 9px;font:inherit;min-width:0}
+select,input[type=number],input[type=text],input[type=search]{background-color:var(--abyss);color:var(--bone);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit;min-width:0;transition:border-color .15s,box-shadow .15s,background-color .15s}
+/* dropdowns: no native bevel, a thin chevron drawn with two gradients (follows the theme colors), soft hover and focus ring */
+select{-webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;padding-right:30px;text-overflow:ellipsis;
+  background-color:var(--trench);box-shadow:0 1px 0 rgba(0,0,0,.12);
+  background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 52%,calc(100% - 11px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+select:hover:not(:disabled),input[type=number]:hover,input[type=text]:hover,input[type=search]:hover{border-color:var(--brass);background-color:var(--kelp)}
+select:hover:not(:disabled){background-image:linear-gradient(45deg,transparent 50%,var(--brass) 50%),linear-gradient(135deg,var(--brass) 50%,transparent 50%)}
+select:disabled{opacity:.55;cursor:not-allowed}
+select option,select optgroup{background:var(--trench);color:var(--bone)}
+select option:disabled{color:var(--dim)}
 input[type=number]{width:72px;font-family:var(--f-mono)}
 select:focus,input:focus,button:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+select:focus-visible,input:focus-visible{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-wash),0 0 0 1px var(--brass)}
+[data-cb="hc"] select:focus-visible,[data-cb="hc"] input:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
 button{font:inherit;cursor:pointer;border-radius:4px;border:1px solid var(--line);background:var(--kelp);color:var(--bone);padding:7px 12px}
 button:hover{border-color:var(--brass)}
 button:disabled{cursor:default;opacity:.5}
@@ -90,7 +102,7 @@ table.ratio td:last-child{text-align:left;font-family:var(--f-body);font-size:12
 .item .nm{min-width:0}
 .item .nm small{display:block;font-family:var(--f-mono);font-size:11px;color:var(--dim);overflow-wrap:anywhere}
 .item .acts{display:flex;gap:6px;align-items:center}
-.item select{padding:3px 6px;font-size:13px}
+.item select{padding:3px 24px 3px 8px;font-size:13px;background-position:calc(100% - 13px) 52%,calc(100% - 9px) 52%;background-size:4px 4px,4px 4px}
 .item.auto{border-style:dashed}
 .results-pop{max-height:240px;overflow:auto;display:flex;flex-direction:column;gap:4px}
 .pick{display:flex;justify-content:space-between;gap:10px;text-align:left;background:var(--abyss);padding:6px 10px}
@@ -202,7 +214,7 @@ dialog#som::backdrop{background:rgba(0,0,0,.6)}
 .hlist .th{font-family:var(--f-mono);color:var(--ok);margin-right:4px}
 .hlist .th small,.hlist .tn small{color:var(--dim)}
 .hlist .tn{padding:1px 7px;border:1px solid var(--line);border-radius:999px;background:var(--trench)}
-.helpchk select{padding:3px 6px;font-size:12.5px}
+.helpchk select{padding:3px 24px 3px 8px;font-size:12.5px;background-position:calc(100% - 13px) 52%,calc(100% - 9px) 52%;background-size:4px 4px,4px 4px}
 
 .helpchk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--bone);white-space:nowrap}
 #undo{padding:7px 11px}
@@ -214,7 +226,8 @@ dialog#som::backdrop{background:rgba(0,0,0,.6)}
 .wqs{display:grid;grid-template-columns:auto repeat(6,minmax(0,1fr));gap:6px;align-items:center}
 .wqs .ch{text-align:center;font-size:12px;color:var(--dim);font-weight:700}
 .wqs .rl{font-size:12px;color:var(--dim);white-space:nowrap}
-.wqs select{width:100%;min-width:0;padding-left:4px;padding-right:2px}
+.wqs select{width:100%;min-width:0;padding-left:6px;padding-right:16px;background-position:calc(100% - 10px) 52%,calc(100% - 6px) 52%;background-size:4px 4px,4px 4px}
+@media (max-width:520px){.wqs select{background-image:none!important;padding:6px 3px;text-align:center;text-align-last:center;font-size:13.5px}}
 .wqs .uh{font-size:10.5px;line-height:1.25;color:var(--ok);font-family:var(--f-mono);text-align:center;cursor:help}
 @media (max-width:560px){.wqs{grid-template-columns:repeat(6,minmax(0,1fr))}.wqs .rl{grid-column:1/-1;margin-top:4px}.wqs>span:first-child{display:none}}
 .wzatts{display:flex;flex-direction:column;gap:6px}
@@ -637,8 +650,8 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <div class="fstats" id="fstats"></div>
     <div id="bstats"></div>
     <div class="hlist stathint" id="stathint" aria-live="polite"><span class="hint">Click a stat to see what raising it unlocks.</span></div>
-    <details><summary>Before‑shrine floors (minimums instead of exact values)</summary>
-      <p class="hint">Before shrine: the least each stat should reach before you use the shrine. After shrine: the least it should end at (same as the “At least” column).</p>
+    <details id="floorsbox"><summary>Stat floors and wanted stats</summary>
+      <p class="hint">Before shrine: the least each stat should reach before you use the shrine. After shrine: the least it should end at (same as the “At least” column). Wanted (either): the value you want, and the optimizer decides whether to reach it before the shrine (talents taken early, the shrine shrinks it) or after it, whichever gets the most talents for the fewest points.</p>
       <div class="floors" id="floors"></div>
     </details>
     <details><summary>Shrine breakdown, step by step</summary><div class="scroll" style="margin-top:10px"><table class="ledger" id="tbl"></table></div></details>
@@ -1306,7 +1319,7 @@ function paintRanges(){document.querySelectorAll('input[type=range]').forEach(r=
 document.addEventListener('input',e=>{if(e.target.type==='range')paintRanges()});
 
 // ================= state =================
-let S={prio:50,dsplit:50,wtype:'HVY',wtarget:90,atts:{FLM:80},sel:[],mantras:[],when:{},mins:{},preMin:{},oath:'Oathless',weapon:'',tfilter:'fit',mfilter:'fit',spend:true,gear:{outfit:'',slots:{},focus:'bal'},req:[],avoid:[],caps:{},pin:{},order:true,mastery:{on:false,pre:{},post:{}},manual:false,man:{pre:{},fin:{}},enchant:'None',wcmp:'',mview:''};
+let S={prio:50,dsplit:50,wtype:'HVY',wtarget:90,atts:{FLM:80},sel:[],mantras:[],when:{},mins:{},preMin:{},want:{},oath:'Oathless',weapon:'',tfilter:'fit',mfilter:'fit',spend:true,gear:{outfit:'',slots:{},focus:'bal'},req:[],avoid:[],caps:{},pin:{},order:true,mastery:{on:false,pre:{},post:{}},manual:false,man:{pre:{},fin:{}},enchant:'None',wcmp:'',mview:''};
 // talents the game renamed (Hallowtide 2026: Alloyblood → Iron Veins); old names keep loading everywhere
 const RENAMED_T={'Alloyblood':'Iron Veins'};const RENAMED_LOW=Object.fromEntries(Object.entries(RENAMED_T).map(([a,b])=>[a.toLowerCase(),b]));const renameT=n=>RENAMED_T[n]||RENAMED_LOW[String(n).toLowerCase()]||n;const renameList=l=>Array.isArray(l)?[...new Set(l.map(renameT))]:l;
 function renameState(o){if(!o)return o;for(const k of ['sel','req','avoid'])if(Array.isArray(o[k]))o[k]=renameList(o[k]);if(o.when)for(const [a,b] of Object.entries(RENAMED_T))if(a in o.when){o.when[b]=o.when[a];delete o.when[a]}return o}
@@ -1404,11 +1417,14 @@ function requirements(){
   const max={};ALL.forEach(k=>max[k]=100);for(const [k,v] of Object.entries(S.pin||{}))if(k in max){max[k]=v;pre[k]=v}
   // a limited stat ignores its pre-shrine floor (any points there get averaged up by the shrine) and its targets are clamped
   for(const [k,v] of Object.entries(caps)){max[k]=Math.min(max[k],v);pre[k]=Math.min(pre[k],v,(S.pin||{})[k]!=null?v:0);fixed[k]=Math.min(fixed[k],v)}
+  // wanted stats: reach the value before the shrine OR after it, whichever the search finds better (more talents for fewer points)
+  const want={};for(const a of ATTR){let v=+(S.want||{})[a]||0;if(a in caps)v=Math.min(v,caps[a]);if(v>0&&v>fixed[a]&&v>pre[a])want[a]=v}
   for(const it of forced){let best=null,bc=Infinity;for(const a of it.alts){const c=altCost(a,pre);if(c<bc){bc=c;best=a}}for(const [k,v] of Object.entries(best.min))pre[k]=Math.min(max[k],Math.max(pre[k],v))}
   items.sort((a,b)=>a.alts.length-b.alts.length);
   // requirement levels per stat: jump targets for the search
   const thr={};ALL.forEach(k=>thr[k]=new Set());
   for(const it of items)if(it.mode!=='post')for(const a of it.alts)for(const [k,v] of Object.entries(a.min))if(v<=100)thr[k].add(v);
+  for(const [k,v] of Object.entries(want))thr[k].add(v);
   const names=[...C.T.keys(),...C.M.keys()];
   const blocked=new Set(names.flatMap(n=>(TBY.get(n)||{req:{x:[]}}).req.x||[]));
   const val=[];const cand=new Set([...POP.keys()]);for(const n of names)for(const s of SYN.get(n)||[])cand.add(s.o);
@@ -1418,7 +1434,7 @@ function requirements(){
     const alts=reqAlts(tt.req,false).filter(a=>altOkCaps(a,caps));if(!alts.length||!hasStats(alts))continue;val.push({n,p,alts,pre:canPre(alts),syn:sy})}
   if(S.comboOpt!==false)val.push(...comboEntries(C,caps));
   let oathAlts=oathAltsOf(findO(S.oath));if(oathAlts){const ok=oathAlts.filter(a=>altOkCaps(a,caps));if(ok.length)oathAlts=ok;else{capBlocked.push('Oath: '+S.oath);oathAlts=null}}
-  return {pre,max,fixed,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked};
+  return {pre,max,fixed,want,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked};
 }
 function oathAltsOf(o){if(!o||!o.req)return null;return o.custom||reqAlts(o.req,false)}
 
@@ -1464,6 +1480,8 @@ function evaluate(P,R,oathAlts){
   const noShrine=S.order!==false&&powerAt(preSum)<SHRINE_PWR;const sh=noShrine?{out:{...Pm},refund:0}:shrineStep(Pm);
   const final={...sh.out},adds={};ALL.forEach(k=>adds[k]=0);
   for(const [k,v] of Object.entries(R.fixed)){if(final[k]<v){adds[k]+=v-final[k];final[k]=v}}
+  // a wanted stat is met if the pre-shrine value reaches it (its talents are taken before the shrine); otherwise it is raised after
+  const wantAt={};for(const [k,v] of Object.entries(R.want||{})){if(P[k]>=v){wantAt[k]='pre';continue}wantAt[k]='post';if(final[k]<v){adds[k]+=v-final[k];final[k]=v}}
   let impossible=false;let oathPick=null;
   const items=oathAlts?[...post,{name:'oath',alts:oathAlts}]:post;
   for(const it of items){let best=null,bc=Infinity;for(const a of it.alts){const c=altCost(a,final);if(c<bc){bc=c;best=a}}
@@ -1482,7 +1500,7 @@ function evaluate(P,R,oathAlts){
   let tv=0;for(const v of R.val){if(v.alts.some(a=>altCost(a,final)===0)||(v.pre&&v.alts.some(a=>altCost(a,P)===0)))tv+=v.p}
   const pr=(S.prio==null?50:S.prio)/100;
   const damage=dmgPct;const score=(BUDGET-used)+2*(1-pr)*dmgPct+2*pr*tv/10;
-  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20-reup*REUP_W,impossible,damage,refund:sh.refund,oathAlt:oathPick,preTaken,pmSum,qmSum,capOver,reup,reupK,noShrine};
+  return {score,dm,tv,P:{...P},sh,final,adds,preSum,postSum,used,free:BUDGET-used-(impossible?1000:0)-capOver*20-reup*REUP_W,impossible,damage,refund:sh.refund,oathAlt:oathPick,wantAt,preTaken,pmSum,qmSum,capOver,reup,reupK,noShrine};
 }
 // ---- shrines ----
 const MASTERY_LIMIT=3;
@@ -1524,6 +1542,7 @@ function searchStats(R,oathAlts,opt){
     {...base,...Object.fromEntries(dims.map(k=>[k,ATTR.includes(k)?R.pre[k]:tag(k)]))},
     {...base,...Object.fromEntries(dims.map(k=>[k,ATTR.includes(k)?thrMax(k):tag(k)]))},
     {...base,...Object.fromEntries(ATTR.map(a=>[a,Math.max(R.pre[a],fin[a])]))}];
+  const W=R.want||{};if(Object.keys(W).length){starts.push({...base,...Object.fromEntries(Object.entries(W).map(([k,v])=>[k,Math.max(R.pre[k],v)]))},{...base,...Object.fromEntries(Object.keys(W).map(k=>[k,Math.max(R.pre[k],1)]))})}
   // start from the previous answer too, so re-optimizing never does worse than what is on screen
   if(opt&&opt.seedP){const sp={...base};for(const k of ALL)sp[k]=Math.max(R.pre[k],Math.min(100,opt.seedP[k]||0));if(opt.onlySeed)starts.length=0;starts.unshift(sp)}
   let seed=12345;const rnd=()=>{seed=(seed*1103515245+12345)%2147483648;return seed/2147483648};
@@ -1536,7 +1555,7 @@ function searchStats(R,oathAlts,opt){
     for(let it=0;it<maxIt;it++){
       let imp=null;
       for(const k of dims){const v0=cur.P[k];
-        const cands=new Set([v0-10,v0-5,v0-1,v0+1,v0+5,v0+10,R.pre[k],fin[k],cur.final[k]||0,0,1,...R.thr[k]]);
+        const cands=new Set([v0-10,v0-5,v0-1,v0+1,v0+5,v0+10,R.pre[k],fin[k],cur.final[k]||0,0,1,...R.thr[k],...(W[k]?[W[k],W[k]+25]:[])]);
         for(const v of cands){if(v===v0||v<0||v>100)continue;const e=evaluate({...cur.P,[k]:v},R,oathAlts);if(e&&better(e,imp||cur))imp=e}}
       if(!imp)break;cur=imp;
     }
@@ -1545,7 +1564,7 @@ function searchStats(R,oathAlts,opt){
   return best;
 }
 function noShrineFree(R){
-  const final={},adds={};ALL.forEach(k=>{final[k]=Math.max(R.pre[k],R.fixed[k]);adds[k]=final[k]});
+  const final={},adds={};ALL.forEach(k=>{final[k]=Math.max(R.pre[k],R.fixed[k],(R.want||{})[k]||0);adds[k]=final[k]});
   for(const it of (R.oathAlts?[...R.items,{alts:R.oathAlts}]:R.items)){let b=null,bc=Infinity;for(const a of it.alts){const c=altCost(a,final);if(c<bc){bc=c;b=a}}if(b&&bc<Infinity)applyAlt(b,final,adds)}
   const nAtt=ATTS.filter(k=>final[k]>0).length;return BUDGET-(ALL.reduce((s,k)=>s+adds[k],0)-Math.max(0,nAtt-1));
 }
@@ -1650,7 +1669,7 @@ function rebuildToBudget(seedP){const dropped=[];const C=closure();
 // If required talents and floors alone don't fit: lower the floors 5 at a time, biggest first (pins and required stay)
 function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iters:80});
   const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;
-  const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
+  const knobs=()=>[[S,'wtarget',wNeed,'Weapon'],...ATTR.map(a=>[S.want=S.want||{},a,0,ANAME[a]+' wanted']),...ATTR.map(a=>[S.preMin,a,0,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,0,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,1,ATT[k][0]])];
   while((!r.best||(!r.best.impossible&&r.best.free<0))&&guard-->0){
     const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin)&&!(S.keep||{})[k]);
     if(!ks.length)break;ks.sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));const [o,k,mn,label]=ks[0];
@@ -1993,7 +2012,8 @@ function renderInputs(){autoHeroBlade();renderTraits();
   $('presets').innerHTML=`<button data-ai="1" class="aicard"><b>✨ AI build maker</b><span>Type in what you want for your build and we will make it for you (the more specific you are the better!)</span></button>`+PRESETS.map((p,i)=>`<button data-preset="${i}"><b>${esc(p.n)}</b><span>${esc(p.d)}</span><span class="mono" style="font-size:11px">${esc(p.oath)} · ${esc(p.src)}</span></button>`).join('');
   $('floors').innerHTML='<span></span>'+ATTR.map(a=>`<span>${a}</span>`).join('')+
     '<span class="rowlabel">Before shrine</span>'+ATTR.map(a=>`<input type="number" id="pm-${a}" data-pm="${a}" min="0" max="100" step="5" value="${(S.preMin||{})[a]||0}" aria-label="${ANAME[a]} before shrine">`).join('')+
-    '<span class="rowlabel">After shrine</span>'+ATTR.map(a=>`<input type="number" id="m-${a}" data-m="${a}" min="0" max="100" step="5" value="${S.mins[a]||0}" aria-label="${ANAME[a]} after shrine">`).join('');
+    '<span class="rowlabel">After shrine</span>'+ATTR.map(a=>`<input type="number" id="m-${a}" data-m="${a}" min="0" max="100" step="5" value="${S.mins[a]||0}" aria-label="${ANAME[a]} after shrine">`).join('')+
+    '<span class="rowlabel" title="Reach this before or after the shrine: the optimizer picks whichever gets more talents for fewer points">Wanted (either)</span>'+ATTR.map(a=>`<input type="number" id="wn-${a}" data-wn="${a}" min="0" max="100" step="5" value="${(S.want||{})[a]||0}" aria-label="${ANAME[a]} wanted, before or after the shrine">`).join('');
   $('oath').innerHTML=OATHS.map(o=>`<option value="${esc(o.n)}" ${o.n===S.oath?'selected':''}>${o.n==='None'?'No oath':esc(o.n)}</option>`).join('');
   const o=findO(S.oath);
   $('oathinfo').innerHTML=o.n==='None'?'':`<div class="item"><div class="nm">Needs ${esc(o.custom?o.custom.map(fmtAlt).join(' or '):fmtReq(o.req))}<small>Mantra slots +${esc(fmtSlots(o.slots)||'none')}${o.mantras.length?' · '+esc(o.mantras.join(', ')):''}</small></div></div>${OATH_NOTES[o.n]?`<p class="hint">${esc(OATH_NOTES[o.n])}</p>`:''}`;
@@ -2371,6 +2391,7 @@ function renderResults(res){
   if(best.reup)note+=`<div class="callout warn">${esc(best.reupK.map(k=>`${statName(k)} is ${best.P[k]} before the shrine, ${best.sh.out[k]||0} after it, then raised again to ${best.final[k]}`).join('; '))}. Your floors force a stat back up after the shrine; set it to 1 before the shrine (all points after) or high enough before it, pin it, or untick “Pre‑shrine is the peak”.</div>`;
   if(best.capOver)note+=`<div class="callout warn">Your floors or targets push a limited stat over its maximum by ${best.capOver}. Lower the floor or raise the limit.</div>`;
   if(best.manual&&best.unmet.length)note+=`<div class="callout warn">Not reached with these stats: ${esc(best.unmet.map(u=>u.n+' (+'+u.c+')').join(', '))}.</div>`;
+  {const wa=Object.entries(best.wantAt||{});if(wa.length&&!best.impossible&&!best.manual)note+=`<div class="callout">Wanted stats: ${wa.map(([k,w])=>`${esc(statName(k))} ${R.want[k]} ${w==='pre'?`before the shrine (${best.P[k]} → ${best.final[k]} after, its talents taken first)`:`after the shrine (${best.P[k]} before → ${best.final[k]})`}`).join(' · ')}. The optimizer picked these to get the most talents for the fewest points.</div>`}
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
   if(best.free>0&&!best.impossible&&!best.manual)note+=`<div class="callout">${best.free} points left. Optimize with “spend leftover” ticked to pour them into damage, or add a recommended talent.</div>`;
   {const wk=best&&!best.impossible?weakAfterShrine(best.final,[...C.T.keys()]):[];if(wk.length)note+=`<div class="callout warn">Weaker after the shrine: ${wk.map(x=>`${esc(x.n)} (${x.low.map(([k,v,f])=>`${esc(statName(k))} ${f}, full at ${v}`).join(', ')})`).join('; ')}. These still work below their requirement, just less${wk.some(x=>SCALE_MOD[x.n])?'; the damage numbers already count it':''}.</div>`}
@@ -2561,7 +2582,7 @@ function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
 // share links always point at the public website so anyone can open them
 const ARTIFACT_URL='https://itsmrchickenss.github.io/meta-builder/';
 function shareBase(){const h=location.hostname||'';const inClaude=/claude\.ai|anthropic|usercontent|claude\.site/.test(h)||!/^https?:$/.test(location.protocol);return inClaude?ARTIFACT_URL:location.href.split('#')[0]}
-function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined,wa:S.weaponAuto?1:undefined,nw:S.noAutoW?1:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,wn:S.want&&Object.keys(S.want).length?S.want:undefined,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined,wa:S.weaponAuto?1:undefined,nw:S.noAutoW?1:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function decodeBuild(raw){
   let code=String(raw||'').trim();const i=code.indexOf('#');if(i>=0)code=code.slice(i+1);
   if(!code.startsWith('dw1'))throw new Error('not a build code');
@@ -2577,6 +2598,7 @@ function decodeBuild(raw){
   next.when={};for(const [k,v] of Object.entries(o.n||{}))if(v==='pre'||v==='post')next.when[k]=v;
   next.mins={};for(const [k,v] of Object.entries(o.i||{}))if(ATTR.includes(k))next.mins[k]=num(v,0);
   next.preMin={};for(const [k,v] of Object.entries(o.q||{}))if(ATTR.includes(k))next.preMin[k]=num(v,0);
+  next.want={};if(o.wn&&typeof o.wn==='object')for(const [k,v] of Object.entries(o.wn))if(ATTR.includes(k)&&num(v,0)>0)next.want[k]=num(v,0);
   next.oath=OATHS.some(x=>x.n===o.o)?o.o:'None';next.weapon=WBY.has(o.p)?o.p:'';
   next.req=(o.r||[]).filter(n=>TBY.has(n)||MBY.has(n));next.enchant=ENBY.has(o.e)?o.e:'None';if(o.sn&&typeof o.sn==='object'){next.snap={};for(const ph of ['pre','post'])if(o.sn[ph]){next.snap[ph]={};for(const k of ALL)next.snap[ph][k]=num(o.sn[ph][k],0)}}next.avoid=(o.av||[]).filter(n=>TBY.has(n));next.caps={};for(const [k,v] of Object.entries(o.cp||{}))if(ATTR.includes(k)&&v&&typeof v==='object')next.caps[k]={on:!!v.on,max:num(v.max,25)};next.pin={};for(const [k,v] of Object.entries(o.x||{}))if(ALL.includes(k))next.pin[k]=num(v,0);
   next.traits={};{let left=TRAIT_TOTAL;for(const [k] of TRAITS){const v=Math.max(0,Math.min(TRAIT_MAX,Math.round(+((o.tr||{})[k])||0),left));if(v){next.traits[k]=v;left-=v}}}
@@ -2667,7 +2689,7 @@ function unlocks(prof,k,maxUp,skip){
 function unlockText(u,max){if(!u.length)return 'nothing new within reach';let cum=0;return u.slice(0,max||2).map(x=>{cum+=x.list.length;return `${x.th} (+${x.up}): ${cum} talent${cum>1?'s':''}`}).join(' · ')}
 function unlockTitle(u){return u.slice(0,3).map(x=>`At ${x.th}: ${x.list.slice(0,6).map(t=>t.n+(t.p?` ${Math.round(t.p)}%`:'')).join(', ')}${x.list.length>6?` +${x.list.length-6} more`:''}`).join('\n')}
 function wizProfile(){const v=id=>{const el=$(id);return el?+el.value:0};const prof={};ALL.forEach(k=>prof[k]=0);
-  ATTR.forEach(a=>prof[a]=Math.max(v('wz-pre-'+a),v('wz-post-'+a)));
+  ATTR.forEach(a=>prof[a]=Math.max(v('wz-pre-'+a),v('wz-post-'+a),v('wz-want-'+a)));
   document.querySelectorAll('#wz-atts .wzatt').forEach(r=>{const k=r.querySelector('select').value;const lv=+r.querySelectorAll('select')[1].value;if(k)prof[k]=Math.max(prof[k],lv)});
   const wt=$('wz-wt')?$('wz-wt').value:S.wtype;prof[wt]=Math.max(prof[wt],v('wz-wv'));return prof}
 function wizHints(){const prof=wizProfile();
@@ -2689,7 +2711,9 @@ function openWizard(p){
    <div class="wqs"><span></span>${ATTR.map(a=>`<span class="ch">${a}</span>`).join('')}
     ${statRow('Before shrine','pre',p.pre)}
     ${statRow('After shrine','post',p.post)}
+    ${statRow('Wanted (either)','want',p.want||{})}
     <span class="rl">Raise it to</span>${ATTR.map(a=>`<button type="button" class="uh" id="wz-h-${a}" data-wzh="${a}" aria-controls="wz-hlist">…</button>`).join('')}</div>
+   <p class="hint" style="margin:.3em 0 0">Wanted (either): just say the value you want and the optimizer decides whether it goes before the shrine (talents taken early, then the shrine shrinks it) or after it, whichever gets the most talents for the fewest points.</p>
    <div class="hlist" id="wz-hlist" aria-live="polite"><span class="hint">“Raise it to” shows the next level that unlocks new talents. Click one to see the talents.</span></div>
    <h3>Attunements</h3>
    <div id="wz-atts" class="wzatts">${atts.map(([k,v])=>wizAttRow(k,v)).join('')}</div>
@@ -2730,20 +2754,20 @@ function wizVariant(){const p=wizP;if(!p||!p.variants)return;const x=wizVarNow()
     if(!x.ftd.includes(+$('wz-ftd').value))$('wz-ftd').value=String(x.ftd[0])}
   const ftd=$('wz-ftd')?+$('wz-ftd').value:null;
   const post={...x.post};if(ftd)post.FTD=ftd;
-  for(const a of ATTR){const pr=$('wz-pre-'+a),po=$('wz-post-'+a);if(pr)pr.value=String(snap5(x.pre[a]||0));if(po)po.value=String(snap5(post[a]||0))}
+  for(const a of ATTR){const pr=$('wz-pre-'+a),po=$('wz-post-'+a),wn=$('wz-want-'+a);if(pr)pr.value=String(snap5(x.pre[a]||0));if(po)po.value=String(snap5(post[a]||0));if(wn)wn.value=String(snap5((x.want||{})[a]||0))}
   wizSetW(x.wtype||$('wz-wt').value)}
 function closeWizard(){const d=$('wiz');if(d.close)d.close();else d.removeAttribute('open')}
 function wizardApply(){
   const p=wizP;if(!p)return;const v=id=>$(id).value;
   pushUndo('preset '+p.n);
-  const pre={},post={};ATTR.forEach(a=>{const x=+v('wz-pre-'+a);if(x)pre[a]=x;const y=+v('wz-post-'+a);if(y)post[a]=y});
+  const pre={},post={},want={};ATTR.forEach(a=>{const x=+v('wz-pre-'+a);if(x)pre[a]=x;const y=+v('wz-post-'+a);if(y)post[a]=y;const w=+v('wz-want-'+a);if(w)want[a]=w});
   const atts={};document.querySelectorAll('#wz-atts .wzatt').forEach(r=>{const s=r.querySelectorAll('select');const k=s[0].value,lv=+s[1].value;if(k&&!(k in atts))atts[k]=lv});
   const autoOath=v('wz-oath')==='__auto';
-  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.weaponAuto=false;S.noAutoW=false;S.atts=atts;S.preMin=pre;S.mins=post;S.pin={};S.mantras=[];S.when={};
+  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.weaponAuto=false;S.noAutoW=false;S.atts=atts;S.preMin=pre;S.mins=post;S.want=want;S.pin={};S.mantras=[];S.when={};
   // a new build starts clean: required talents, equipment and enchant from the previous build don't carry over
   S.req=[];S.keep={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
   if(S.oath==='Silentheart'){const wa=p.weapon&&WBY.get(p.weapon);for(const k of Object.keys(S.atts))if(!(wa&&wa.req.s[k]))delete S.atts[k]}
-  const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
+  const prof={};ALL.forEach(k=>prof[k]=Math.max(pre[k]||0,post[k]||0,want[k]||0,atts[k]||0,k===S.wtype?S.wtarget:0));
   // talents the AI build maker was asked for are always kept; preset core talents are kept when these targets reach them
   S.sel=$('wz-core').checked?p.t.filter(n=>{const tt=TBY.get(n);if(!tt||isAvoid(n))return false;if(p.src==='AI build maker')return true;const alts=reqAlts(tt.req,false);return !hasStats(alts)||bestCost(alts,prof)===0}):[];
   if($('wz-core').checked){S.mantras=(p.m||[]).filter(n=>MBY.has(n)&&MBY.get(n).ty==='N'&&!oathTagOf(n));
@@ -2766,7 +2790,7 @@ function wizardApply(){
     run();
     // starting points must fit 330 points: ease the largest floors down 5 at a time until they do
     {const lowered={};let guard=40;
-      const knobs=()=>[[S.mins,'FTD',50,'Fortitude after'],[S,'wtarget',60,'Weapon'],...ATTR.filter(a=>a!=='FTD').map(a=>[S.preMin,a,a==='AGL'?25:40,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,a==='FTD'?50:25,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,40,ATT[k][0]])];
+      const knobs=()=>[[S.mins,'FTD',50,'Fortitude after'],[S,'wtarget',60,'Weapon'],...ATTR.map(a=>[S.want,a,25,ANAME[a]+' wanted']),...ATTR.filter(a=>a!=='FTD').map(a=>[S.preMin,a,a==='AGL'?25:40,ANAME[a]+' before']),...ATTR.map(a=>[S.mins,a,a==='FTD'?50:25,ANAME[a]+' after']),...Object.keys(S.atts).map(k=>[S.atts,k,40,ATT[k][0]])];
       while(last&&last.best&&last.best.free<0&&!last.best.impossible&&guard-->0){
         const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn).sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));
         if(!ks.length)break;const [o,k,mn,label]=ks[0];o[k]=Math.max(mn,(+o[k]||0)-5);lowered[label]=o[k];
@@ -2817,7 +2841,7 @@ function closeMastery(){const d=$('som');if(d.close)d.close();else d.removeAttri
 function setMode(man){if(!!S.manual===man)return;pushUndo(man?'switch to Manual':'switch to Optimizer');
   if(man&&last&&last.best){const b=last.best;S.man={pre:{},fin:{}};ALL.forEach(k=>{if(b.P[k])S.man.pre[k]=b.P[k];const f=(b.sh.out[k]||0)+(b.adds[k]||0);if(f)S.man.fin[k]=f})}
   S.manual=man;run();renderShrines();say(man?'Manual mode: the stats are yours to set. Optimize, auto-pick and automatic stat raising are off.':'Optimizer mode: press Optimize build to let it plan the stats again.')}
-function manualFromTargets(){const pre={...S.preMin},fin={...S.mins};if(S.wtarget>0){fin[S.wtype]=Math.max(fin[S.wtype]||0,S.wtarget);pre[S.wtype]=Math.max(pre[S.wtype]||0,1)}
+function manualFromTargets(){const pre={...S.preMin},fin={...S.mins};for(const [k,v] of Object.entries(S.want||{}))fin[k]=Math.max(fin[k]||0,v);if(S.wtarget>0){fin[S.wtype]=Math.max(fin[S.wtype]||0,S.wtarget);pre[S.wtype]=Math.max(pre[S.wtype]||0,1)}
   for(const [k,v] of Object.entries(S.atts)){fin[k]=Math.max(fin[k]||0,v);pre[k]=Math.max(pre[k]||0,1)}S.man={pre,fin}}
 
 // ---- apply the Order shrine now, and save / load stat snapshots ----
@@ -2987,6 +3011,9 @@ const AI_ARCH_ATT=[['FLM',/\b(burn\w*|damage over time|dot|explosions?|explosive
   ['IRN+BLD',/\b(group fights?|multiple (people|enemies|players)|1 ?v ?[2-9]|outnumbered|multi ?target)\b/,'fighting several people']];
 const AI_STAT=[['STR',/\b(strength|str)\b/],['FTD',/\b(fortitude|fort|ftd)\b/],['AGL',/\b(agility|agi|agl)\b/],['INT',/\b(intelligence|int)\b/],['WLL',/\b(willpower|will|wll)\b/],['CHA',/\b(charisma|cha)\b/]];
 // the number that goes with a stat word: "flame 50" first; "60 flame" only when that number isn't already "lightning 60"
+// which side of the shrine the words put a stat on: 'pre', 'post' or '' (the clause around the stat, split at commas / and / with)
+function aiWhenOf(txt,re){for(const c of String(txt||'').toLowerCase().split(/[,;\n.]|\band\b|\bwith\b|\bplus\b|\bthen\b/)){const t=nrm(c);if(!re.test(t)||aiNumNear(t,re)==null)continue;
+    if(/\b(pre ?shrine|pre|before)\b/.test(t))return 'pre';if(/\b(post ?shrine|post|after)\b/.test(t))return 'post';return ''}return ''}
 function aiNumNear(s,re){const w=re.source.replace(/\\b/g,'');let m=s.match(new RegExp('(?:'+w+')\\s*(\\d{1,3})(?!\\d)'));if(m)return Math.max(1,Math.min(100,+m[m.length-1]));
   const statWord=/(?:flame ?charm\w*|flame|fire|frost ?draw\w*|frost|ice|thunder ?call\w*|thunder|lightning|electric\w*|gale ?breath\w*|wind|gale|shadow ?cast\w*|shadow|iron ?sing\w*|metal|iron|blood ?rend\w*|blood|strength|str|fortitude|fort|ftd|agility|agi|agl|intelligence|int|willpower|will|wll|charisma|cha|heavy|medium|light|weapon)\s*$/;
   const g=new RegExp('(\\d{1,3})\\s*(?:'+w+')','g');let x;while((x=g.exec(s))){if(!statWord.test(s.slice(0,x.index)))return Math.max(1,Math.min(100,+x[1]))}return null}
@@ -3002,7 +3029,7 @@ function aiParse(txt,basePreset){
     else if(pvp){base=PRESETS.find(p=>p.n==='Chime');got.push((has(/\bgank\w*/)?'ganking':'PvP')+' starting point')}}
   else got.push('your linked build as the base');
   const p=base?JSON.parse(JSON.stringify(base)):{n:'Your build',d:'',src:'AI build maker',pre:{AGL:40},post:{FTD:50},oath:'__auto',wtype:'MED',wtarget:75,atts:{},t:[]};
-  p.n='Your build';p.src='AI build maker';p.pre=p.pre||{};p.post=p.post||{};p.atts=p.atts||{};
+  p.n='Your build';p.src='AI build maker';p.pre=p.pre||{};p.post=p.post||{};p.want={...(p.want||{})};p.atts=p.atts||{};
   const T=new Set(p.t||[]);const REQ=new Set(p.req||[]);const M=new Set(p.m||[]);const add=(...ns)=>ns.forEach(n=>{if(TBY.has(n)&&!isAvoid(n))T.add(n)});
   const up=(o,k,v)=>{o[k]=Math.max(o[k]||0,v)};
   // play styles
@@ -3027,10 +3054,16 @@ function aiParse(txt,basePreset){
   if(has(/\bsmart\b|\bint build\b|\bintelligence build\b/)){up(p.pre,'INT',75);add('Neuroplasticity','Eureka','Approaching Singularity');got.push('Intelligence 75')}
   if(has(/\bbrute\b|\bstrength build\b|\bstr build\b|\bhard hitting\b/)){up(p.pre,'STR',75);add('Unwavering Resolve','Showstopper');got.push('Strength 75')}
   const caster=has(/\b(mage|caster|mantra build|spellcaster|no weapon)\b/);
-  for(const [k,re] of AI_STAT){if(new RegExp('\\bno\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)){delete p.pre[k];delete p.post[k];got.push('no '+ANAME[k]);continue}
-    if(!re.test(sAtt))continue;const n=aiNumNear(s,re);if(n){if(k==='FTD')p.post.FTD=n;else p.pre[k]=n;got.push(`${ANAME[k]} ${n}`)}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',50);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
+  for(const [k,re] of AI_STAT){if(new RegExp('\\bno\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)){delete p.pre[k];delete p.post[k];delete p.want[k];got.push('no '+ANAME[k]);continue}
+    if(!re.test(sAtt))continue;const n=aiNumNear(s,re);
+    // a typed number is a wanted value: the optimizer decides before or after the shrine, unless the words say which
+    // ("strength 40 before the shrine", "agility 25 post"). Fortitude stays after (health comes from the final value).
+    if(n){const w=aiWhenOf(txt,re);for(const o of [p.pre,p.post,p.want])delete o[k];
+      if(w==='pre'){p.pre[k]=n;got.push(`${ANAME[k]} ${n} before the shrine`)}else if(w==='post'||k==='FTD'){p.post[k]=n;got.push(`${ANAME[k]} ${n} after the shrine`)}
+      else{p.want[k]=n;got.push(`${ANAME[k]} ${n} (before or after the shrine: the optimizer picks)`)}}else if(!(k in p.pre)&&!(k in p.post)){if(k==='FTD')up(p.post,'FTD',50);else up(p.pre,k,60);got.push(`more ${ANAME[k]}`)}}
   // oath (typos allowed)
-  const oathN=by('oath')[0];const oath=oathN?findO(oathN):null;
+  // also catch an oath written as two words or with a dash ("jet striker", "silent heart", "blade-harper")
+  const oathN=by('oath')[0]||(OATHS.find(o=>o.n!=='None'&&new RegExp('\\b'+o.n.toLowerCase().split('').join("[\\s'-]?")+'\\b').test(s))||{}).n;const oath=oathN?findO(oathN):null;
   if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base||p.oath==='None')p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
   // attunements in order of mention (words that are part of a name don't count)
   const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
@@ -3096,7 +3129,7 @@ function aiParse(txt,basePreset){
       const pre=oathTalentPrereqs(o);if(parts.length||pre.length)got.push(`${o.n} needs ${[...parts,...pre].join(', ')}: planned in${OATH_NOTES[o.n]?' ('+OATH_NOTES[o.n]+')':''}`)}}
   p.t=[...new Set([...T,...REQ])].filter(n=>TBY.has(n));p.req=[...REQ].filter(n=>TBY.has(n));p.m=[...M].filter(n=>MBY.has(n));
   {const pn={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pn[k]=Math.max(pn[k]||0,v)}
-    p._q={at:at.map(x=>x.k),explicit:at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
+    p._q={at:at.map(x=>x.k),explicit:at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
   if(has(/\bglass cannon\b|\bsquishy\b/)){delete p.post.FTD;got.push('glass cannon: no Fortitude floor')}
   p.d=got.length?'I read: '+got.join(' · '):'No build words found, so this is a balanced starting point (Agility 40 before, Fortitude 50 after).';
   return {p,got};
@@ -3138,7 +3171,7 @@ function dwbFromGameText(txt){
 function applyDwb(b){
   pushUndo('Import '+b.name);const fin=b.fin||{};
   const wt=WEPS.slice().sort((x,y)=>(fin[y]||0)-(fin[x]||0))[0];S.wtype=b.weapon&&wType(b.weapon)?(WEPS.find(k=>k in (WBY.get(b.weapon).req.s||{}))||wt):wt;S.wtarget=fin[S.wtype]||0;
-  S.atts={};for(const k of ATTS)if(fin[k]>0)S.atts[k]=fin[k];S.mins={};for(const k of ATTR)if(fin[k])S.mins[k]=fin[k];S.preMin={};S.pin={};S.when={};
+  S.atts={};for(const k of ATTS)if(fin[k]>0)S.atts[k]=fin[k];S.mins={};for(const k of ATTR)if(fin[k])S.mins[k]=fin[k];S.preMin={};S.want={};S.pin={};S.when={};
   S.oath=b.oath||'None';S.weapon=b.weapon||'';S.weaponAuto=false;S.noAutoW=!S.weapon;if(b.outfit)S.gear.outfit=b.outfit;if(b.traits&&Object.values(b.traits).some(v=>v>0))S.traits={...b.traits};
   const otal=new Set(OATHS.flatMap(o=>[...(o.mantras||[])]));
   S.sel=[...new Set(b.talents)].filter(n=>TBY.has(n)&&!n.startsWith('Oath:')&&TBY.get(n).r!=='O');S.mantras=[...new Set(b.mantras)].filter(n=>MBY.has(n)&&!oathTagOf(n)&&!otal.has(n));
@@ -3439,16 +3472,16 @@ function statHint(k){const b=last&&last.best;if(!b){$('stathint').textContent=''
   $('stathint').innerHTML=unlockListHtml(statName(k),u)}
 function applyPreset(p){
   pushUndo(p.clean?'Clean Slate':'preset '+p.n);
-  if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.traits={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
+  if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.want={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.traits={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
     renderInputs();{const R=requirements();const Z=Object.fromEntries(ALL.map(k=>[k,0]));renderResults({R,best:evaluate(Z,R,R.oathAlts)||compute({starts:2,iters:60}).best,baseFree:noShrineFree(R)})}sayUndo('Clean slate: every stat at 0, no oath, attunement, talents, mantras or equipment.');return}
-  S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.weaponAuto=false;S.noAutoW=false;S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.pin={};
+  S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.weaponAuto=false;S.noAutoW=false;S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.want={...(p.want||{})};S.pin={};
   S.sel=p.t.filter(n=>TBY.has(n));S.mantras=[];S.when={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));
   if(S.manual)manualFromTargets();
   renderInputs();optimizeAll({noSpend:true,noUndo:true});say(`Loaded the ${p.n} preset. ${p.src} on deepwoken.co start like this. Add talents, then press Optimize build.`);
 }
 function applyTemplate(t){pushUndo('example build '+t.n);
   S.oath=t.oath;S.wtype=t.wtype;S.wtarget=t.wtarget;S.weapon=WBY.has(t.weapon)?t.weapon:'';S.weaponAuto=false;S.noAutoW=false;S.atts={...t.atts};
-  S.sel=t.t.split(';').filter(n=>TBY.has(n)&&TBY.get(n).r!=='O');S.mantras=t.m.split(';').filter(n=>MBY.has(n)&&MBY.get(n).ty==='N');S.when={};S.mins={};S.preMin={};
+  S.sel=t.t.split(';').filter(n=>TBY.has(n)&&TBY.get(n).r!=='O');S.mantras=t.m.split(';').filter(n=>MBY.has(n)&&MBY.get(n).ty==='N');S.when={};S.mins={};S.preMin={};S.want={};
   renderInputs();optimizeAll();
 }
 let timer=null;const runSoon=()=>{clearTimeout(timer);timer=setTimeout(run,60)};
@@ -3548,6 +3581,7 @@ document.addEventListener('change',e=>{
   if(d.a){const k=d.a;if(t.checked)S.atts[k]=+$('av-'+k).value||80;else delete S.atts[k];renderInputs();runSoon()}
   else if(d.av){S.atts[d.av]=Math.max(0,Math.min(100,+t.value||0));runSoon()}
   else if(d.m){S.mins[d.m]=Math.max(0,Math.min(100,+t.value||0));runSoon()}
+  else if(d.wn){S.want=S.want||{};const v=Math.max(0,Math.min(100,+t.value||0));if(v)S.want[d.wn]=v;else delete S.want[d.wn];runSoon()}
   else if(d.pm){S.preMin=S.preMin||{};S.preMin[d.pm]=Math.max(0,Math.min(100,+t.value||0));runSoon()}
   else if(d.font){LOOK[d.font]=t.value;LOOK.theme='custom';applyLook();renderLook()}
   else if(d.when){const n=decodeURIComponent(d.when);if(t.value==='auto')delete S.when[n];else S.when[n]=t.value;runSoon()}

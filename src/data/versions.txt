@@ -1,4 +1,6 @@
 ## v0.38 | unreleased
+- Fixed: pressing an arrow key or the spinner on an empty stat box (one that shows the optimizer's number in grey) started from 0, so one stray click could lock Medium Weapon at 0 and move your weapon points to Heavy. The box now starts from the number it shows.
+- If you lock your weapon type low and the build has to carry its weapon points in another type, the results now tell you and how to undo it.
 - Advanced talents like Volcanic Glass can now use a path you unroll later: take Eruption, get Volcanic Glass, unroll Eruption and take Twisted Puppets. The talent stays, and the path's stats are still planned.
 
 ## v0.37 | 2026-11-18

@@ -2550,6 +2550,9 @@ function renderResults(res){
   {const wa=Object.entries(best.wantAt||{});if(wa.length&&!best.impossible&&!best.manual)note+=`<div class="callout">Must-hit stats: ${wa.map(([k,w])=>`${esc(statName(k))} ${R.want[k]} ${w==='pre'?`before the shrine (${best.P[k]} → ${best.final[k]} after, its talents taken first)`:`after the shrine (${best.P[k]} before → ${best.final[k]})`}`).join(' · ')}. Each is reached at that point for its talents; the optimizer picked where to get the most talents for the fewest points.</div>`}
   {const C=closure();const un=[...C.M.entries(),...C.T.entries()].filter(([n,e])=>e.unroll).map(([n,e])=>`${esc(n)}: take ${e.unroll.map(esc).join(', ')} to ${MBY.has(n)&&!TBY.has(n)?'learn':'get'} it, then unroll it (the ${MBY.has(n)&&!TBY.has(n)?'mantra':'talent'} stays)`);
     if(un.length)note+=`<div class="callout">${un.join('<br>')}. The path's stats are still planned for it; the path itself doesn't stay in your talents.</div>`}
+  // a weapon type the user didn't choose ends up carrying the weapon points (Medium locked at 0, Bladeharper still needs 90 weapon)
+  {const fb=best.final||{};const oth=WEPS.filter(k=>k!==S.wtype&&(fb[k]||0)>(fb[S.wtype]||0)&&(fb[k]||0)>1);const cp=(S.caps||{})[S.wtype];
+    if(oth.length&&cp&&cp.on)note+=`<div class="callout warn">${esc(WEP[S.wtype])} weapon is locked at ${+cp.max}, so the weapon points went to ${oth.map(k=>esc(WEP[k])+' '+fb[k]).join(', ')}. Clear the ${esc(WEP[S.wtype])} Final box on the Stats tab to go back.</div>`}
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
   if(best.free>0&&!best.impossible&&!best.manual)note+=`<div class="callout">${best.free} points left. Optimize with “spend leftover” ticked to pour them into damage, or add a recommended talent.</div>`;
   {const wk=best&&!best.impossible?weakAfterShrine(best.final,[...C.T.keys()]):[];if(wk.length)note+=`<div class="callout warn">Weaker after the shrine: ${wk.map(x=>`${esc(x.n)} (${x.low.map(([k,v,f])=>`${esc(statName(k))} ${f}, full at ${v}`).join(', ')})`).join('; ')}. These still work below their requirement, just less${wk.some(x=>SCALE_MOD[x.n])?'; the damage numbers already count it':''}.</div>`}
@@ -3760,8 +3763,14 @@ document.addEventListener('click',e=>{
   else if(t.id==='xhtml'){if(!last||!last.best){say('Nothing to export yet.');return}saveFile(`deepwoken-${slug()}.html`,buildSheet(),'text/html').then(m=>linkToast(m))}
   else if(t.id==='xload'&&false){try{Object.assign(S,decodeBuild($('ximport').value));$('ximport').value='';renderInputs();run();say('Build imported.')}catch(err){say('That isn\'t a build link or code from this planner.')}}
 });
+// an empty stat box shows the optimizer's number in grey (placeholder). The arrow keys or spinner on an empty box used to start
+// from 0, so one accidental click locked Medium Weapon at 0 and the build moved to Heavy (owner, November 18, 2026). Now the box
+// starts from the number it shows; leaving it untouched clears it again
+document.addEventListener('focusin',e=>{const t=e.target;if(t.tagName!=='INPUT'||t.type!=='number'||t.value!==''||!/^\d+$/.test(t.placeholder||''))return;
+  if(!(t.dataset.fin||t.dataset.pin||t.dataset.tgt))return;t.value=t.placeholder;t.dataset.prefill=t.placeholder;try{t.select()}catch(_){}});
+document.addEventListener('focusout',e=>{const t=e.target;if(t.dataset&&t.dataset.prefill!=null){if(t.value===t.dataset.prefill)t.value='';delete t.dataset.prefill}});
 document.addEventListener('change',e=>{
-  const t=e.target;const d=t.dataset;
+  const t=e.target;const d=t.dataset;if(d.prefill!=null)delete d.prefill;
   if(d.a){const k=d.a;if(t.checked)S.atts[k]=+$('av-'+k).value||80;else delete S.atts[k];renderInputs();runSoon()}
   else if(d.av){S.atts[d.av]=Math.max(0,Math.min(100,+t.value||0));runSoon()}
   else if(d.m){S.mins[d.m]=Math.max(0,Math.min(100,+t.value||0));runSoon()}

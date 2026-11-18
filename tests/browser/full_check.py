@@ -34,7 +34,7 @@ window.__check=function(){
   // the owner's rule: pre-shrine is the peak for attributes
   // (a step back up of at most 5 points is allowed: owner, November 18, 2026)
   if(useShrine&&!S.manual)for(const k of ATTR)if(pre[k]>1&&!(S.pin&&k in S.pin)&&fin[k]>sh.out[k]+5)P.push(`${k} raised again after the shrine: ${pre[k]} -> ${sh.out[k]} -> ${fin[k]}`);
-  if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))(b.free<=0?W:P).push('Fortitude the same before and after: '+pre.FTD+(b.free<=0?' (no points to spare)':''));
+  if(useShrine&&!S.manual&&pre.FTD>1&&pre.FTD===fin.FTD&&!(S.pin&&'FTD' in S.pin))(b.free<=0?W:P).push('Fortitude the same before and after: '+pre.FTD+(b.free<=0?' (no points to spare)':'')+' [FTD needs: '+(()=>{try{const R=requirements();return R.items.filter(it=>it.alts.some(a=>'FTD' in a.min||(a.sum||[]).some(([ks])=>ks.includes('FTD')))).map(it=>it.name+' '+it.mode+' '+it.alts.map(fmtAlt).join('/')).join('; ')+' | preMin '+JSON.stringify(S.preMin)+' mins '+JSON.stringify(S.mins)+' want '+JSON.stringify(S.want)}catch(e){return e}})()+']');
   const caps=capsOf();for(const [k,v] of Object.entries(caps))if(fin[k]>v)P.push(`${k} over its limit ${v}: ${fin[k]}`);
   for(const [k,v] of Object.entries(S.atts||{}))if(fin[k]<Math.min(+v||0,k in caps?caps[k]:100))P.push(`attunement ${k} ${fin[k]} under its target ${v}`);
   if(S.wtarget&&fin[S.wtype]<Math.min(S.wtarget,S.wtype in caps?caps[S.wtype]:100))P.push(`weapon ${S.wtype} ${fin[S.wtype]} under its target ${S.wtarget}`);

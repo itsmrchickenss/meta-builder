@@ -1385,8 +1385,16 @@ function closure(){
   // of the talents, and its stat requirement is folded into the mantra's own (chainAlts), so the stats are still planned
   const addM=(n,by)=>{if(M.has(n))return;const m=MBY.get(n);if(!m)return;const e={by};M.set(n,e);
     m.req.t.forEach(p=>{if(isPathT(p)&&!T.has(p)&&conflictOf(p,new Set(T.keys()),null,true)){e.unroll=(e.unroll||[]).concat(p);return}addT(p,n)});m.req.m.forEach(p=>addM(p,n))};
-  (S.req||[]).forEach(n=>TBY.has(n)?addT(n,null):addM(n,null));
-  S.sel.forEach(n=>addT(n,null));S.mantras.forEach(n=>addM(n,null));
+  // the same for an advanced talent (Volcanic Glass needs the Eruption path; Twisted Puppets excludes Eruption): take the path,
+  // get the advanced talent, unroll the path (deepwoken.co builds do this). Advanced talents go last so the paths they could
+  // clash with are already in
+  const addA=(n,by)=>{if(T.has(n))return;if(by===null&&isAvoid(n))return;const t=TBY.get(n);if(!t)return;const e={by};T.set(n,e);
+    t.req.t.forEach(p=>{if(isPathT(p)&&!T.has(p)&&conflictOf(p,new Set(T.keys()),null,true)){e.unroll=(e.unroll||[]).concat(p);return}addT(p,n)});t.req.m.forEach(p=>addM(p,n))};
+  const isAdv=n=>{const t=TBY.get(n);return !!t&&t.r==='A'};
+  (S.req||[]).filter(n=>!isAdv(n)).forEach(n=>TBY.has(n)?addT(n,null):addM(n,null));
+  S.sel.filter(n=>!isAdv(n)).forEach(n=>addT(n,null));
+  [...(S.req||[]),...S.sel].filter(isAdv).forEach(n=>addA(n,null));
+  S.mantras.forEach(n=>addM(n,null));
   oathTalentPrereqs(findO(S.oath)).forEach(n=>addT(n,'Oath: '+S.oath));
   return {T,M};
 }
@@ -1405,7 +1413,7 @@ const silentNo=mn=>{const m=MBY.get(mn);return !!m&&m.ty==='N'&&m.at.some(a=>ATT
 const SHOP_FREE=new Set(['Observation','Safety Dance']);
 const isPathT=n=>/Path:/.test(n)||n==='Flashboil';
 function conflictOf(n,have,oath,userPick,unroll){const ps=prereqSet(n);const free=(a,b)=>userPick&&(SHOP_FREE.has(a)||SHOP_FREE.has(b));
-  for(const a of ps.T){if(unroll&&MBY.has(n)&&isPathT(a))continue;const ta=TBY.get(a);const via=a===n?'':` (it needs ${a})`;
+  for(const a of ps.T){if(unroll&&(MBY.has(n)||(TBY.get(n)||{}).r==='A')&&isPathT(a))continue;const ta=TBY.get(a);const via=a===n?'':` (it needs ${a})`;
     for(const x of ta.req.x||[])if(have.has(x)&&!ps.T.has(x)&&!free(a,x))return 'Blocked by '+x+via;
     for(const h of have){if(ps.T.has(h))continue;const th=TBY.get(h);if(th&&(th.req.x||[]).includes(a)&&!free(a,h))return 'Blocked by '+h+via}}
   if((oath||S.oath)==='Silentheart')for(const mn of ps.M)if(silentNo(mn))return `Needs ${mn}: Silentheart can't use attunement mantras`;
@@ -1428,7 +1436,7 @@ function requirements(){
   for(const n of C.T.keys())add(n,TBY.get(n).req,false);
   for(const n of C.M.keys())add(n,MBY.get(n).req,false);
   // an unrolled path still has to be learned once: its stats are a requirement (before or after the shrine), the talent doesn't stay
-  for(const e of C.M.values())for(const p of e.unroll||[])if(!items.some(i=>i.name===p))add(p,TBY.get(p).req,false);
+  for(const e of [...C.M.values(),...C.T.values()])for(const p of e.unroll||[])if(!items.some(i=>i.name===p))add(p,TBY.get(p).req,false);
   const wp=WBY.get(S.weapon);if(wp)add(wp.n,wp.req,true);
   const forced=items.filter(i=>i.mode==='pre').sort((a,b)=>a.alts.length-b.alts.length);
   ATTR.forEach(a=>pre[a]=Math.max(pre[a],+(S.preMin||{})[a]||0));
@@ -1766,9 +1774,13 @@ function dropConflicts(){const out=[];const have=new Set();
   // required talents that exclude each other (Azure Flames and the Sanguine Blaze path): the first one stays, a later one goes
   {const keepR=[];for(const n of S.req||[]){if(!TBY.has(n)&&!MBY.has(n)){keepR.push(n);continue}const cf=conflictOf(n,have,null,true);if(cf){out.push(n+' (required, but '+cf.replace(/^Blocked by /,'it conflicts with ')+')');S.sel=S.sel.filter(x=>x!==n);S.mantras=S.mantras.filter(x=>x!==n);continue}keepR.push(n);prereqSet(n).T.forEach(x=>have.add(x))}S.req=keepR}
   oathTalentPrereqs(findO(S.oath)).forEach(n=>prereqSet(n).T.forEach(x=>have.add(x)));
-  const keep=[];for(const n of S.sel){if(isReq(n)||!TBY.has(n)){keep.push(n);continue}const ps=prereqSet(n);if(ps.T.size&&[...ps.T].every(x=>have.has(x))){keep.push(n);continue}
+  const adv=n=>(TBY.get(n)||{}).r==='A'&&!isReq(n);
+  const keep=[];for(const n of S.sel.filter(n=>!adv(n))){if(isReq(n)||!TBY.has(n)){keep.push(n);continue}const ps=prereqSet(n);if(ps.T.size&&[...ps.T].every(x=>have.has(x))){keep.push(n);continue}
     if(conflictOf(n,have,null,true))out.push(n);else{keep.push(n);ps.T.forEach(x=>have.add(x))}}
-  S.sel=keep;
+  // advanced talents last: a prerequisite path that clashes with the picks so far is taken and unrolled (closure), not a conflict
+  for(const n of S.sel.filter(adv)){if(conflictOf(n,have,null,true,true)){out.push(n);continue}keep.push(n);
+    for(const x of prereqSet(n).T)if(!(isPathT(x)&&conflictOf(x,have,null,true)))have.add(x)}
+  S.sel=S.sel.filter(n=>keep.includes(n));
   // a mantra that needs a path you can't take next to a required or earlier pick (Cauterize needs Sanguine Blaze, which a
   // required Lava Serpent excludes) is removed too
   {const keepM=[];for(const m of S.mantras){if(isReq(m)||!MBY.has(m)){keepM.push(m);continue}if(conflictOf(m,have,null,false,true))out.push(m);else{keepM.push(m);prereqSet(m).T.forEach(x=>have.add(x))}}S.mantras=keepM}
@@ -2536,7 +2548,7 @@ function renderResults(res){
   if(best.capOver)note+=`<div class="callout warn">Your floors or targets push a limited stat over its maximum by ${best.capOver}. Lower the floor or raise the limit.</div>`;
   if(best.manual&&best.unmet.length)note+=`<div class="callout warn">Not reached with these stats: ${esc(best.unmet.map(u=>u.n+' (+'+u.c+')').join(', '))}.</div>`;
   {const wa=Object.entries(best.wantAt||{});if(wa.length&&!best.impossible&&!best.manual)note+=`<div class="callout">Must-hit stats: ${wa.map(([k,w])=>`${esc(statName(k))} ${R.want[k]} ${w==='pre'?`before the shrine (${best.P[k]} → ${best.final[k]} after, its talents taken first)`:`after the shrine (${best.P[k]} before → ${best.final[k]})`}`).join(' · ')}. Each is reached at that point for its talents; the optimizer picked where to get the most talents for the fewest points.</div>`}
-  {const C=closure();const un=[...C.M.entries()].filter(([n,e])=>e.unroll).map(([n,e])=>`${esc(n)}: take ${e.unroll.map(esc).join(', ')} to learn it, then unroll it (the mantra stays)`);
+  {const C=closure();const un=[...C.M.entries(),...C.T.entries()].filter(([n,e])=>e.unroll).map(([n,e])=>`${esc(n)}: take ${e.unroll.map(esc).join(', ')} to ${MBY.has(n)&&!TBY.has(n)?'learn':'get'} it, then unroll it (the ${MBY.has(n)&&!TBY.has(n)?'mantra':'talent'} stays)`);
     if(un.length)note+=`<div class="callout">${un.join('<br>')}. The path's stats are still planned for it; the path itself doesn't stay in your talents.</div>`}
   if(best.pmSum||best.qmSum)note+=`<div class="callout">Shrine of Mastery refunds ${best.pmSum+best.qmSum} point${best.pmSum+best.qmSum>1?'s':''}.</div>`;
   if(best.free>0&&!best.impossible&&!best.manual)note+=`<div class="callout">${best.free} points left. Optimize with “spend leftover” ticked to pour them into damage, or add a recommended talent.</div>`;

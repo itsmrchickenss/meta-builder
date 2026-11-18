@@ -1,3 +1,6 @@
+## v0.38 | unreleased
+- Advanced talents like Volcanic Glass can now use a path you unroll later: take Eruption, get Volcanic Glass, unroll Eruption and take Twisted Puppets. The talent stays, and the path's stats are still planned.
+
 ## v0.37 | 2026-11-18
 - Smarter stat placement: the optimizer now puts points where they save the most. A stat goes before the shrine at the level a talent needs (or its full value, like Medium 100 and Flamecharm 100 for a 100/100 talent), or it's tagged at 1 and raised after the shrine. No more odd splits like Medium 66 before the shrine and 100 after.
 - The optimizer no longer trades away spare points for stats you didn't ask for. In testing, some builds went from 1 point left to 51 with the same talents (a Bladeharper Twisted Puppets build) and a Saintsworn heavy build from 29 to 116.

@@ -514,6 +514,13 @@ details.combos>summary::-webkit-details-marker{display:none}
 details summary{cursor:pointer;color:var(--dim);font-size:13px}
 .mono{font-family:var(--f-mono)}
 .busy{opacity:.6;pointer-events:none}
+.optpop{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);z-index:1000;padding:16px}
+.optpop[hidden]{display:none}
+.optpop-card{display:flex;gap:14px;align-items:center;max-width:420px;background:var(--trench);color:var(--bone);border:1px solid var(--brass);border-radius:12px;padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.optspin{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brass);animation:optspin 0.9s linear infinite}
+@keyframes optspin{to{transform:rotate(360deg)}}
+.optwait{display:flex;gap:10px;align-items:center;margin:.4em 0}.optwait[hidden]{display:none}.optwait .optspin{width:18px;height:18px;border-width:2px}
+@media (prefers-reduced-motion:reduce){.optspin{animation:none;border-top-color:var(--brass)}}
 #optimize{font-size:1.15em;padding:10px 24px;border-radius:6px;letter-spacing:.04em;box-shadow:0 0 0 3px var(--brass-wash),0 8px 22px -8px var(--brass);transition:transform .15s,box-shadow .15s}
 #optimize:hover{transform:translateY(-1px);box-shadow:0 0 0 4px var(--brass-wash),0 12px 28px -8px var(--brass)}
 .optbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 14px;margin:-4px -4px 0;background:var(--brass-wash);border:1px solid var(--brass);border-radius:6px}
@@ -585,6 +592,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <p class="hint toast" id="copied" aria-live="polite"></p>
 <div class="helpbox" id="help" hidden></div>
 
+<div id="optpop" class="optpop" role="status" aria-live="polite" hidden><div class="optpop-card"><span class="optspin" aria-hidden="true"></span><div><b>Optimizing your build…</b><br><span class="hint">This may take a little time: it's trying many ways to place your stats to fit the most talents in the fewest points.</span></div></div></div>
 <div id="results">
 <!-- ============ IMPORT ============ -->
 <div class="tabpane grid" id="tab-imp" role="tabpanel" aria-labelledby="t-imp" hidden>
@@ -947,7 +955,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <dialog id="optpick" aria-labelledby="optpick-title"><form method="dialog" class="dlgform">
   <h2 id="optpick-title">Pick a stat plan</h2>
   <p class="hint" style="margin:0" id="optpick-sub">Three ways to fix your stats, each built from your current talents, limits and required picks. Numbers compare against your build right now.</p>
-  <div class="opbar" id="optpick-bar"><i></i></div>
+  <div id="optpick-wait"><div class="opbar" id="optpick-bar"><i></i></div><p class="hint optwait" id="optpick-msg"><span class="optspin" aria-hidden="true"></span> Optimizing… this may take a little time: each plan tries many ways to place your stats so the most talents fit in the fewest points.</p></div>
   <div class="opcards" id="optpick-cards"></div>
   <div class="wizact"><button value="cancel" formnovalidate>Keep my current build</button></div>
 </form></dialog>
@@ -4018,6 +4026,9 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - The AI build maker understands "the 100/100 talents" (100 weapon + 100 attunement): it requires every one for the attunements you named (Scorching Decay, Night Terror, Frozen Anchor, Silencer's Song, Torture Mastery) and plans weapon and attunement at 100. "100 flame 100 weapon" picks just that one.
 - With 100/100 talents on two attunements, the AI build maker takes them before the shrine (weapon and both attunements at 100 there) instead of planning 100 / 100 / 100 to the end, which can't fit. Example: an Umbrite Witherblade Bladeharper Twisted Puppets build with Scorching Decay and Night Terror went from 1 point left to 26.
 - "Black flames" (or dark / purple flames) means the Twisted Puppets path, and the AI build maker requires the whole path.
+- Fortitude is tagged at 1 before the shrine and raised to its target after. It only goes higher before the shrine to take a Fortitude talent there (To The Finish 50, Mythic Stability 85, Reinforced Armor 90). It never goes 75 just to land on 50; that wastes points. The Bossraid presets now do Fortitude 50 after the shrine this way.
+- "More Fortitude" / "tankier" in Adjustments now go to the next level that unlocks something (50, then 90 for Reinforced Armor) instead of 75, which unlocks nothing.
+- Optimize now searches harder (twice as many starting plans, longer polishing). It can take a few seconds longer, and the Optimize window says so while it works ("Optimizing… this may take a little time"); a popup shows the same when a preset or AI build is being set up.
 - "Wanted" stats are now called "Must hit": at one point in the build the stat reaches that level, for its talents, before or after the shrine (the optimizer picks).
 - An attribute may go back up a little after the shrine: up to 5 points (like Strength 100 → 75 → 80 for a level), when that's cheaper. The results say when it happens. On the 15 featured builds this cut the talents that couldn't fit from 72 to 36.
 - Fixed: a mantra that needs a path your required talents rule out (Cauterize needs Sanguine Blaze, which Lava Serpent excludes) could put both paths in the build. Optimize now removes that mantra.
@@ -4371,15 +4382,15 @@ const TEMPLATES=[
 const F2=[50,90];
 const PRESETS=[
  {n:'Clean Slate',d:'0 in everything · no oath, weapon, attunement, talents or equipment',src:'start from scratch',clean:1,pre:{},post:{},oath:'None',wtype:'MED',wtarget:0,atts:{},t:[]},
- {n:'Bossraid',d:'FTD 75 + WLL 50 before the shrine (it brings FTD down) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'heavy boss-raid builds',pre:{FTD:75,WLL:50},post:{},oath:'None',wtype:'HVY',wtarget:80,atts:{},dsplit:0,prio:30,t:[],
-   variants:[{n:'Fortitude 75 + Willpower 50 (the usual)',pre:{FTD:75,WLL:50},post:{}},
-     {n:'Fortitude 75 + Willpower 80 (Piercing Will, Emergency Reserves)',pre:{FTD:75,WLL:80},post:{}},
-     {n:'+ Strength 40 (Showstopper, block breaking)',pre:{FTD:75,WLL:50,STR:40},post:{}},
-     {n:'+ Agility 40 (Ghost, more mobile)',pre:{FTD:75,WLL:50,AGL:40},post:{}}]},
- {n:'Bossraid Mage',d:'Saintsworn: FTD 75 + WLL 50 + INT 40 before the shrine · main attunement 100 of your choice, 15 in the other four elements (Saintsworn needs them) · no weapon · pick a variation',src:'caster boss-raid builds',pre:{FTD:75,WLL:50,INT:40},post:{},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100,FLM:15,LTN:15,WND:15,SDW:15},dsplit:100,prio:30,t:[],
-   variants:[{n:'Fortitude 75 + Willpower 50 + Intelligence 40 (the usual)',pre:{FTD:75,WLL:50,INT:40},post:{}},
-     {n:'Willpower 80 (Piercing Will, Emergency Reserves)',pre:{FTD:75,WLL:80,INT:40},post:{}},
-     {n:'+ Charisma 40 (Golden Tongue, Charm Caster)',pre:{FTD:75,WLL:50,INT:40,CHA:40},post:{}}]},
+ {n:'Bossraid',d:'WLL 50 before the shrine · FTD 50 after (1 before) · 80 in a weapon of your choice · oath up to you · pick a variation',src:'heavy boss-raid builds',pre:{WLL:50},post:{FTD:50},oath:'None',wtype:'HVY',wtarget:80,atts:{},dsplit:0,prio:30,t:[],
+   variants:[{n:'Willpower 50, Fortitude 50 after (the usual)',pre:{WLL:50},post:{FTD:50}},
+     {n:'Willpower 80 (Piercing Will, Emergency Reserves)',pre:{WLL:80},post:{FTD:50}},
+     {n:'+ Strength 40 (Showstopper, block breaking)',pre:{WLL:50,STR:40},post:{FTD:50}},
+     {n:'+ Agility 40 (Ghost, more mobile)',pre:{WLL:50,AGL:40},post:{FTD:50}}]},
+ {n:'Bossraid Mage',d:'Saintsworn: WLL 50 + INT 40 before the shrine · FTD 50 after (1 before) · main attunement 100 of your choice, 15 in the other four elements (Saintsworn needs them) · no weapon · pick a variation',src:'caster boss-raid builds',pre:{WLL:50,INT:40},post:{FTD:50},oath:'Saintsworn',wtype:'MED',wtarget:0,atts:{ICE:100,FLM:15,LTN:15,WND:15,SDW:15},dsplit:100,prio:30,t:[],
+   variants:[{n:'Willpower 50 + Intelligence 40, Fortitude 50 after (the usual)',pre:{WLL:50,INT:40},post:{FTD:50}},
+     {n:'Willpower 80 (Piercing Will, Emergency Reserves)',pre:{WLL:80,INT:40},post:{FTD:50}},
+     {n:'+ Charisma 40 (Golden Tongue, Charm Caster)',pre:{WLL:50,INT:40,CHA:40},post:{FTD:50}}]},
  {n:'Elder / Enmity',d:'Bladeharper Ironsing: CHA 40 before (shrinks down) · INT 1 before, 90 after · STR 25 · Ironsing 80, Shadowcast 20 · Shattered Katana · pick a variation',src:'top Elder / Enmity boss builds on deepwoken.co (Elderdon, elder wr)',pre:{CHA:40},post:{INT:90,STR:25},oath:'Bladeharper',wtype:'MED',wtarget:90,weapon:'Shattered Katana',outfit:"Prophet's Cloak",atts:{IRN:80,SDW:20},dsplit:25,prio:30,t:[],
    variants:[{n:'Ironsing 80 + Shadowcast 20 (the usual)',pre:{CHA:40},post:{INT:90,STR:25},atts:{IRN:80,SDW:20}},
      {n:'Ironsing 80 + Thundercall 20 (like The Iron Samurai)',pre:{CHA:40},post:{INT:90,STR:25},atts:{IRN:80,LTN:20}},
@@ -4596,6 +4607,10 @@ function requirements(){
   const thr={};ALL.forEach(k=>thr[k]=new Set());
   for(const it of items)if(it.mode!=='post')for(const a of it.alts)for(const [k,v] of Object.entries(a.min))if(v<=100)thr[k].add(v);
   for(const [k,v] of Object.entries(want))thr[k].add(v);
+  // Fortitude before the shrine (owner, November 18, 2026): tagged at 1 and raised after, never 75 just to land on 50 (that wastes
+  // points). Higher only to take a Fortitude talent before the shrine (To The Finish 50, Mythic Stability 85, Reinforced Armor 90),
+  // or when you set a before-shrine floor or pin
+  const ftdPre=Math.max(1,pre.FTD||0,(S.pin&&S.pin.FTD)||0,...[...thr.FTD].filter(v=>v<=100));
   const names=[...C.T.keys(),...C.M.keys()];
   const blocked=new Set(names.flatMap(n=>(TBY.get(n)||{req:{x:[]}}).req.x||[]));
   const val=[];const cand=new Set([...POP.keys()]);for(const n of names)for(const s of SYN.get(n)||[])cand.add(s.o);
@@ -4605,7 +4620,7 @@ function requirements(){
     const alts=reqAlts(tt.req,false).filter(a=>altOkCaps(a,caps));if(!alts.length||!hasStats(alts))continue;val.push({n,p,alts,pre:canPre(alts),syn:sy})}
   if(S.comboOpt!==false)val.push(...comboEntries(C,caps));
   let oathAlts=oathAltsOf(findO(S.oath));if(oathAlts){const ok=oathAlts.filter(a=>altOkCaps(a,caps));if(ok.length)oathAlts=ok;else{capBlocked.push('Oath: '+S.oath);oathAlts=null}}
-  return {pre,max,fixed,want,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked};
+  return {pre,max,fixed,want,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked,ftdPre};
 }
 function oathAltsOf(o){if(!o||!o.req)return null;return o.custom||reqAlts(o.req,false)}
 
@@ -4642,6 +4657,7 @@ function applyAlt(alt,final,adds){
 }
 function evaluate(P,R,oathAlts){
   for(const k of ALL){if(P[k]<R.pre[k]||P[k]>R.max[k])return null}
+  if(R.ftdPre!=null&&P.FTD>R.ftdPre)return null;
   const preSum=ALL.reduce((s,k)=>s+P[k],0);if(preSum>BUDGET)return null;
   const preTaken=[],post=[];
   for(const it of R.items){if(it.mode!=='post'&&it.alts.some(a=>altCost(a,P)===0))preTaken.push(it.name);else post.push(it)}
@@ -4719,9 +4735,10 @@ const better=(a,b)=>{if(!b)return true;
 const EFF_TOL=3;
 const REUP_OK=5;
 // stats the shrine takes at most 25 from (attributes and weapon stats; attunements have no floor)
-const floorStat=k=>ATTR.includes(k)||!!WEP[k];
+const floorStat=k=>(ATTR.includes(k)&&k!=='FTD')||!!WEP[k];
 function searchStats(R,oathAlts,opt){
-  const nStarts=opt&&opt.starts!=null?opt.starts:12,maxIt=opt&&opt.iters||120;
+  // deep mode (Optimize button, preset / AI build start): full searches get twice the starts (owner, November 18, 2026: slower is fine if it's better)
+  const nStarts0=opt&&opt.starts!=null?opt.starts:12;const nStarts=OPT_DEEP&&nStarts0>=12?nStarts0*2:nStarts0,maxIt=opt&&opt.iters||120;
   const dims=[...new Set([...ATTR,S.wtype,...Object.keys(S.atts),...ALL.filter(k=>R.pre[k]>0||R.thr[k].size)])];
   const fin=R.fixed;const Z=Object.fromEntries(ALL.map(k=>[k,0]));
   const base={...Z,...R.pre};
@@ -4734,7 +4751,7 @@ function searchStats(R,oathAlts,opt){
   // the owner's two canonical plans (November 18, 2026): every target reached before the shrine (attributes at target + 25 so the
   // shrine brings them down to it), and weapon / attunements at their target before with attributes tagged at 1
   {const mx={...base},wa={...base};for(const k of dims){const f=Math.max(fin[k]||0,(R.want||{})[k]||0);if(!f){wa[k]=Math.max(R.pre[k],1);continue}
-      if(ATTR.includes(k)){mx[k]=Math.max(R.pre[k],Math.min(100,f+25));wa[k]=Math.max(R.pre[k],1)}else{mx[k]=Math.max(R.pre[k],WEP[k]?Math.min(100,f+25):f);wa[k]=Math.max(R.pre[k],f)}}
+      if(ATTR.includes(k)){mx[k]=Math.max(R.pre[k],k==='FTD'?1:Math.min(100,f+25));wa[k]=Math.max(R.pre[k],1)}else{mx[k]=Math.max(R.pre[k],WEP[k]?Math.min(100,f+25):f);wa[k]=Math.max(R.pre[k],f)}}
     // (full searches only: the quick ones inside Optimize's trimming loops start from the previous answer)
     // third: attributes as in the first, weapon / attunements tagged at 1 so the shrine averages points into them (owner: "1 before
     // the shrine, then raise it to the maximum")
@@ -4786,10 +4803,12 @@ function searchStats(R,oathAlts,opt){
 // Kicks (November 18, 2026): restart from the best plan with two or three stats moved to random requirement levels (or 1),
 // hill-climb and polish again; keep anything better. Finds plans that need several stats to change at once. Time-boxed.
 const KICK_MS=500;
+// set while the person pressed Optimize (or started a preset / AI build): bigger search, longer polish and kicks, a popup says it may take a moment
+let OPT_DEEP=false;const kickMs=()=>OPT_DEEP?1600:KICK_MS,polishMs=()=>OPT_DEEP?1500:POLISH_MS;
 function kickPlan(best,R,oathAlts,dims,rnd){const t0=Date.now();let cur=best;
   const lv=k=>{const t=[0,1,R.pre[k],R.fixed[k]||0,(R.want||{})[k]||0,...R.thr[k]];if(floorStat(k)&&R.fixed[k])t.push(Math.min(100,R.fixed[k]+25));return [...new Set(t)].filter(v=>v>=R.pre[k]&&v<=R.max[k]&&v<=100)};
   const L=Object.fromEntries(dims.map(k=>[k,lv(k)]));
-  while(Date.now()-t0<KICK_MS){const P={...cur.P};const n=2+Math.floor(rnd()*2);
+  while(Date.now()-t0<kickMs()){const P={...cur.P};const n=2+Math.floor(rnd()*2);
     for(let i=0;i<n;i++){const k=dims[Math.floor(rnd()*dims.length)];const l=L[k];P[k]=l[Math.floor(rnd()*l.length)]}
     // keep Power 8 if the best plan had it: top up the largest non-required stat
     let e=evaluate(P,R,oathAlts);if(!e)continue;
@@ -4804,7 +4823,7 @@ function polishPlan(best,R,oathAlts,dims){let cur=best;const lv=k=>{const t=new 
   const L=Object.fromEntries(dims.map(k=>[k,lv(k)]));const t0=Date.now();
   // the levels nearest the current value (and 0 / 1), so builds with many stats stay quick
   const near=(k,v)=>{const a=L[k].filter(x=>x>1).sort((x,y)=>Math.abs(x-v)-Math.abs(y-v)).slice(0,4);return [...new Set([0,1,...a])].filter(x=>x>=R.pre[k])};
-  for(let pass=0;pass<6&&Date.now()-t0<POLISH_MS;pass++){let imp=null;const P=cur.P;
+  for(let pass=0;pass<6&&Date.now()-t0<polishMs();pass++){let imp=null;const P=cur.P;
     const tryP=P2=>{const e=evaluate(P2,R,oathAlts);if(e&&okMove(e,cur)&&better(e,imp||cur))imp=e};
     for(const i of dims)for(const j of dims){if(i===j)continue;
       // move d points from i to j (same Power before the shrine)
@@ -4812,7 +4831,7 @@ function polishPlan(best,R,oathAlts,dims){let cur=best;const lv=k=>{const t=new 
       // i to one of its levels, j takes up the difference
       for(const x of L[i]){if(x===P[i])continue;const b=P[j]+(P[i]-x);if(b<R.pre[j]||b>Math.min(100,R.max[j]))continue;tryP({...P,[i]:x,[j]:b})}
       // both to requirement levels
-      if(i<j&&Date.now()-t0<POLISH_MS)for(const x of near(i,P[i]))for(const y of near(j,P[j])){if(x===P[i]&&y===P[j])continue;tryP({...P,[i]:x,[j]:y})}}
+      if(i<j&&Date.now()-t0<polishMs())for(const x of near(i,P[i]))for(const y of near(j,P[j])){if(x===P[i]&&y===P[j])continue;tryP({...P,[i]:x,[j]:y})}}
     if(!imp)break;cur=imp}
   return cur}
 // Tidy (owner, November 18, 2026): a stat before the shrine is 0, 1 (tagged, the shrine averages points into it), a level a
@@ -5823,14 +5842,14 @@ function optimizeChoices(){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
   const base=optSnap();const cur=last&&last.best?optSum(last.best,last.R):null;const hasAtt=Object.keys(S.atts||{}).length>0;
   const keys=[hasAtt?'att':'bal','wep','tal'];OPTV={base,cur,list:keys.map(k=>({k,p:OPT_PLANS[k],done:false}))};
   const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});
-  $('optpick-bar').hidden=false;renderOptCards();dlg.showModal();
-  const token=OPTV;let i=0;const step=()=>{if(OPTV!==token||!dlg.open){optRestore(base);btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});return}
+  $('optpick-bar').hidden=false;$('optpick-msg').hidden=false;renderOptCards();dlg.showModal();
+  const token=OPTV;let i=0;const step=()=>{if(OPTV!==token||!dlg.open){optRestore(base);$('optpick-msg').hidden=true;btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});return}
     const v=OPTV.list[i];
     try{optRestore(base);S.prio=v.p.prio;if(v.p.dsplit!=null)S.dsplit=v.p.dsplit;optShape(v.k);
-      const o=optCore(S.spend);v.msg=optMsg(o);v.res=o.res;v.sum=optSum(o.res.best,o.res.R);v.state=optSnap()}
+      OPT_DEEP=true;let o;try{o=optCore(S.spend)}finally{OPT_DEEP=false}v.msg=optMsg(o);v.res=o.res;v.sum=optSum(o.res.best,o.res.R);v.state=optSnap()}
     catch(e){v.err=String(e&&e.message||e)}finally{optRestore(base)}
     v.done=true;renderOptCards();i++;
-    if(i<OPTV.list.length)setTimeout(step,20);else{$('optpick-bar').hidden=true;btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false})}};
+    if(i<OPTV.list.length)setTimeout(step,20);else{$('optpick-bar').hidden=true;$('optpick-msg').hidden=true;btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false})}};
   setTimeout(step,40)}
 function renderOptCards(){if(!OPTV)return;const cur=OPTV.cur;const done=OPTV.list.filter(v=>v.sum);
   const top=f=>{if(done.length<2)return null;const m=Math.max(...done.map(v=>f(v.sum)));const w=done.filter(v=>f(v.sum)>m-1e-6);return w.length===1&&m>0?w[0].k:null};
@@ -5857,9 +5876,11 @@ function useOptPlan(k){if(!OPTV)return;const v=OPTV.list.find(x=>x.k===k);if(!v|
   OPTV=null;$('optpick').close();renderInputs();renderResults(v.res);sayUndo(v.p.t+': '+v.msg.replace(/^(Damage|Talent-options) focus: /,''))}
 function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.value;if(de&&!de.disabled)S.dsplit=+de.value}if(S.manual){if(opts&&opts.after)opts.after();else say('Manual mode is on, so Optimize is off. Switch to Optimizer in the top bar to use it.');return}const spend=S.spend&&!(opts&&opts.noSpend);if(!(opts&&opts.noUndo))pushUndo('Optimize');
   const btns=[...document.querySelectorAll('[data-optimize]')];btns.forEach(b=>{b.textContent='Optimizing…';b.disabled=true});$('results').classList.add('busy');
+  const pop=$('optpop');if(pop)pop.hidden=false;
   setTimeout(()=>{
+    OPT_DEEP=true;
     try{const o=optCore(spend,!!(opts&&opts.noSpend));renderInputs();renderResults(o.res);say(optMsg(o))}
-    finally{btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy')}
+    finally{OPT_DEEP=false;btns.forEach(b=>{b.textContent='Optimize build';b.disabled=false});$('results').classList.remove('busy');if(pop)pop.hidden=true}
     if(opts&&opts.after)opts.after();
   },30);
 }
@@ -6168,7 +6189,7 @@ function applyWish(txt){
     m=s.match(new RegExp(` (?:${w}) (?:under|below|max|at most|less than|no more than) (\\d{1,3}) `))||s.match(new RegExp(` (?:under|below|max|at most|less than|no more than) (\\d{1,3}) (?:${w}) `))||s.match(new RegExp(` (?:keep|cap|limit) (?:${w}) (?:at |to |under |below )?(\\d{1,3}) `));
     if(m){S.caps[k]={on:true,max:Math.min(100,+m[1])};did.push(`${ANAME[k]} at most ${m[1]}`);continue}
     if(new RegExp(` (?:low|little|minimal|less) (?:${w}) | (?:keep|cap|limit) (?:${w}) low `).test(s)){S.caps[k]={on:true,max:25};did.push(`${ANAME[k]} at most 25`);continue}
-    m=s.match(new RegExp(` (?:more|high|max|lots of) (?:${w}) `));if(m){if(S.caps[k])S.caps[k].on=false;if(k==='FTD')S.mins.FTD=Math.max(+S.mins.FTD||0,75);else S.preMin[k]=Math.max(+S.preMin[k]||0,60);did.push(`more ${ANAME[k]}`)}}
+    m=s.match(new RegExp(` (?:more|high|max|lots of) (?:${w}) `));if(m){if(S.caps[k])S.caps[k].on=false;if(k==='FTD')S.mins.FTD=(+S.mins.FTD||0)<50?50:90;else S.preMin[k]=Math.max(+S.preMin[k]||0,60);did.push(`more ${ANAME[k]}`)}}
   if(/ more damage | max damage | damage /.test(s)&&!/ mantra damage | weapon damage | m1 /.test(s)){S.prio=20;did.push('favor damage')}
   if(/ more talents | talent options | options /.test(s)){S.prio=80;did.push('favor talent options')}
   if(/ mantra damage | mantras /.test(s)){S.dsplit=100;did.push('mantra damage')}
@@ -6676,7 +6697,7 @@ function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase(
   for(const [k,w] of Object.entries(STW)){const r=rel(w);if(r!=null){const v=lock(k,(fin[k]||0)+r);did.push(`${ANAME[k]} ${r>0?'raised':'lowered'} to ${v}`);handled.add(k);continue}
     const n=num(w);if(n!=null&&n<=100){lock(k,n);did.push(`${ANAME[k]} set to ${n} after the shrine`);handled.add(k);continue}
     // "more agility" / "less charisma": about 15 up or down from where it ends now
-    if(new RegExp(` (?:more|higher|extra|bit more) (?:${w}) `).test(s)){const v=lock(k,(fin[k]||0)+15);if(S.caps[k])S.caps[k].on=false;did.push(`more ${ANAME[k]}: ${v} after the shrine`);handled.add(k);continue}
+    if(new RegExp(` (?:more|higher|extra|bit more) (?:${w}) `).test(s)){const v=lock(k,k==='FTD'?((fin[k]||0)<50?50:90):(fin[k]||0)+15);if(S.caps[k])S.caps[k].on=false;did.push(`more ${ANAME[k]}: ${v} after the shrine`);handled.add(k);continue}
     if(new RegExp(` (?:less|lower|bit less|reduce) (?:${w}) `).test(s)){const v=lock(k,(fin[k]||0)-15);did.push(`less ${ANAME[k]}: ${v} after the shrine`);handled.add(k)}}
   for(const [k,w] of Object.entries(ATW)){if(handled.has(k))continue;
     if(new RegExp(` (?:no|remove|drop|without|lose) (?:${w}) `).test(s)&&k in S.atts){delete S.atts[k];did.push(`${ATT[k][0]} removed`);continue}
@@ -6697,7 +6718,7 @@ function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase(
       if(before(h,/(?:remove|drop|no|without|lose|get rid of|not|avoid|skip) $/)){if(isT){S.sel=S.sel.filter(x=>x!==n);S.req=S.req.filter(x=>x!==n);if(/avoid|no $|not $|skip $/.test(nrm(raw).slice(Math.max(0,h.at-24),h.at))&&!(S.avoid||[]).includes(n))S.avoid=[...(S.avoid||[]),n]}else S.mantras=S.mantras.filter(x=>x!==n);did.push('removed '+n)}
       else{if(isT){S.avoid=(S.avoid||[]).filter(x=>x!==n);if(!S.sel.includes(n)&&!S.req.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);did.push('added '+n)}}}
   // 4. play styles
-  if(/ tankier | more tanky | more tank | more health | survive more /.test(s)){S.mins.FTD=Math.min(100,Math.max(+S.mins.FTD||0,(fin.FTD||0)+25,50));if(S.caps.FTD)S.caps.FTD.on=false;keep('FTD');did.push(`tankier: Fortitude ${S.mins.FTD} after the shrine`)}
+  if(/ tankier | more tanky | more tank | more health | survive more /.test(s)){S.mins.FTD=Math.max(+S.mins.FTD||0,(fin.FTD||0)<50?50:90);if(S.caps.FTD)S.caps.FTD.on=false;keep('FTD');did.push(`tankier: Fortitude ${S.mins.FTD} after the shrine`)}
   if(/ glass cannon | less tanky | no fortitude /.test(s)){S.caps.FTD={on:true,max:/no fortitude/.test(s)?0:25};delete S.mins.FTD;did.push(`Fortitude kept at ${S.caps.FTD.max} or less`)}
   if(/ more mobile | faster | more mobility | more speed /.test(s)){S.preMin.AGL=Math.max(+S.preMin.AGL||0,45);keep('AGL');did.push('more mobile: Agility 45 before the shrine')}
   // 5. everything else the "What you want" box understands (limits, more/less, damage vs talents, require/avoid)

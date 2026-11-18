@@ -73,6 +73,8 @@ window.__one=function(seed){const c=__gen(seed);__setup(c);const t0=performance.
       for(const it of R.items)for(const a of it.alts)if(a.min[k])t.add(a.min[k]);return t};
     for(const k of ALL){const v=b.P[k];if(v>1&&!lv(k).has(v)){let save=null;for(const x of lv(k)){if(x<R.pre[k]||x>R.max[k])continue;const e=evaluate({...b.P,[k]:x},R,R.oathAlts);if(okMove(e,b)&&e.free>=b.free)save=Math.max(save??-99,e.free-b.free)}
       if(save!=null)out.P.push(`odd pre-shrine ${k} ${v} (${b.sh.out[k]} after the shrine, ${b.final[k]} final): ${save>0?'snapping saves '+save+' points':'a clean value costs the same'}`);else out.W.push(`odd pre-shrine ${k} ${v} needed (filler for Power 8 or a sum requirement)`)}}
+    // owner, November 18, 2026: Fortitude before the shrine is 1 unless a Fortitude talent taken there (or a floor / pin) needs more
+    if(!b.noShrine&&b.P.FTD>1){const lv=new Set([R.pre.FTD,(S.pin||{}).FTD,(R.want||{}).FTD]);for(const it of R.items)for(const a of it.alts)if(a.min.FTD)lv.add(a.min.FTD);if(!lv.has(b.P.FTD))out.P.push(`Fortitude ${b.P.FTD} before the shrine with no Fortitude talent needing it (${b.final.FTD} final)`)}
     // deeper search on the same build
     const deep=searchStats(R,R.oathAlts,{starts:50,iters:300});
     if(deep&&okMove(deep,b)&&deep.free>=b.free+3)out.P.push(`missed ${deep.free-b.free} points: deeper search found ${JSON.stringify(Object.fromEntries(ALL.filter(k=>deep.P[k]).map(k=>[k,deep.P[k]])))} free ${deep.free} vs ${JSON.stringify(out.preP)} free ${b.free}`)}

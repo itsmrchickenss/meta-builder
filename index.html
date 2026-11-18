@@ -544,7 +544,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.36</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.37</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -4010,7 +4010,18 @@ Pressure Bleed|Your vents turn pink, spraying explosive Black Puddles that ignit
 Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites them with pink fire.
 Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
 Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
-<script type="text/plain" id="dwvers">## v0.36 | 2026-11-17
+<script type="text/plain" id="dwvers">## v0.37 | unreleased
+- Smarter stat placement: the optimizer now puts points where they save the most. A stat goes before the shrine at the level a talent needs (or its full value, like Medium 100 and Flamecharm 100 for a 100/100 talent), or it's tagged at 1 and raised after the shrine. No more odd splits like Medium 66 before the shrine and 100 after.
+- The optimizer no longer trades away spare points for stats you didn't ask for. In testing, some builds went from 1 point left to 51 with the same talents (a Bladeharper Twisted Puppets build) and a Saintsworn heavy build from 29 to 116.
+- When two plans cost the same, the one that uses the Shrine of Order and takes your required talents before it wins.
+- The AI build maker understands "the 100/100 talents" (100 weapon + 100 attunement): it requires every one for the attunements you named (Scorching Decay, Night Terror, Frozen Anchor, Silencer's Song, Torture Mastery) and plans weapon and attunement at 100. "100 flame 100 weapon" picks just that one.
+- "Black flames" (or dark / purple flames) means the Twisted Puppets path, and the AI build maker requires the whole path.
+- Fixed: a mantra that needs a path your required talents rule out (Cauterize needs Sanguine Blaze, which Lava Serpent excludes) could put both paths in the build. Optimize now removes that mantra.
+- Fixed: two required talents that exclude each other (for example Azure Flames and the Sanguine Blaze path) could both end up in the build. The first one stays; Optimize removes the later one and says why.
+- Fixed: Fortitude could stay the same before and after the shrine when it had a before-shrine floor.
+- Optimizing builds with an impossible wish list (for example two 100/100 talents, Collapsed Lung and Saintsworn together) is faster: floors come down in bigger steps when the build is far over budget.
+
+## v0.36 | 2026-11-17
 - Every preset now has variations to pick from, like Attunementless: open a preset and choose a build shell at the top (for example High Strength: Strength 100 + Agility 40, Strength 100 + Agility 65 for Cheap Shot, or Strength 90 + Charisma 40). The first one is the preset as before.
 - A variation fills in the stats, Fortitude after the shrine (50, or 90 for Reinforced Armor where it fits), and for some presets the attunements, weapon level and damage focus. Change anything after picking one to make your own version.
 - Chime's variations come from the featured Chime of Conflict builds, including a caster version with an attunement at 100 and no weapon.
@@ -4686,7 +4697,20 @@ const better=(a,b)=>{if(!b)return true;
   // owner's rule: a plan that fits without raising an attribute again after the shrine beats any that re-raises
   // (and keeps every stat inside its limit: the shrine can push a stat with 1 point before it over the limit)
   const okA=a.free>=0&&!(a.reup>0&&S.noReup!==false)&&!a.capOver,okB=b.free>=0&&!(b.reup>0&&S.noReup!==false)&&!b.capOver;if(okA!==okB)return okA;
-  const fa=a.free>=0,fb=b.free>=0;if(fa!==fb)return fa;if(!fa)return a.free>b.free;if(Math.abs(a.score-b.score)>1e-6)return a.score>b.score;return a.preSum<b.preSum};
+  const fa=a.free>=0,fb=b.free>=0;if(fa!==fb)return fa;if(!fa)return a.free>b.free;
+  // efficiency first (owner, November 18, 2026): a plan that leaves clearly more points free wins. Talent options and damage only
+  // decide between plans that cost about the same: spare points can buy those later (Auto-pick, the slider, spend leftover),
+  // so trading 50 points for stats nobody asked for is never better
+  // (compared in bands of EFF_TOL points so the order is consistent: "within 3 points" alone isn't transitive and made the
+  // hill climb go round in circles)
+  const ba=Math.floor(a.free/EFF_TOL),bb=Math.floor(b.free/EFF_TOL);if(ba!==bb)return ba>bb;
+  // about the same cost: a plan that uses the Shrine of Order beats one that skips it (its "before" stats mean something)
+  if(!!a.noShrine!==!!b.noShrine)return !a.noShrine;
+  if(Math.abs(a.score-b.score)>1e-6)return a.score>b.score;
+  // same cost and value: use the shrine, take more requirements before it (the 100/100 talent at its peak), then fewer points before it
+  if(!!a.noShrine!==!!b.noShrine)return !a.noShrine;if((a.preTaken||[]).length!==(b.preTaken||[]).length)return (a.preTaken||[]).length>(b.preTaken||[]).length;
+  return a.preSum<b.preSum};
+const EFF_TOL=3;
 function searchStats(R,oathAlts,opt){
   const nStarts=opt&&opt.starts!=null?opt.starts:12,maxIt=opt&&opt.iters||120;
   const dims=[...new Set([...ATTR,S.wtype,...Object.keys(S.atts),...ALL.filter(k=>R.pre[k]>0||R.thr[k].size)])];
@@ -4698,6 +4722,22 @@ function searchStats(R,oathAlts,opt){
     {...base,...Object.fromEntries(dims.map(k=>[k,ATTR.includes(k)?R.pre[k]:tag(k)]))},
     {...base,...Object.fromEntries(dims.map(k=>[k,ATTR.includes(k)?thrMax(k):tag(k)]))},
     {...base,...Object.fromEntries(ATTR.map(a=>[a,Math.max(R.pre[a],fin[a])]))}];
+  // the owner's two canonical plans (November 18, 2026): every target reached before the shrine (attributes at target + 25 so the
+  // shrine brings them down to it), and weapon / attunements at their target before with attributes tagged at 1
+  {const mx={...base},wa={...base};for(const k of dims){const f=Math.max(fin[k]||0,(R.want||{})[k]||0);if(!f){wa[k]=Math.max(R.pre[k],1);continue}
+      if(ATTR.includes(k)){mx[k]=Math.max(R.pre[k],Math.min(100,f+25));wa[k]=Math.max(R.pre[k],1)}else{mx[k]=Math.max(R.pre[k],f);wa[k]=Math.max(R.pre[k],f)}}
+    // (full searches only: the quick ones inside Optimize's trimming loops start from the previous answer)
+    // third: attributes as in the first, weapon / attunements tagged at 1 so the shrine averages points into them (owner: "1 before
+    // the shrine, then raise it to the maximum")
+    const mt={...mx};for(const k of dims)if(!ATTR.includes(k))mt[k]=Math.max(R.pre[k],1);
+    if(nStarts>=12||(opt&&opt.polish))starts.push(mx,wa,mt);
+    // Power 8 needs 135 points before the shrine: if the plan with weapon / attunements at target, attributes at the levels their
+    // talents need and the rest tagged at 1 is short, try the filler in each stat in turn (which one is cheapest varies)
+    const th={...base};for(const k of dims)th[k]=ATTR.includes(k)?Math.max(R.pre[k],[...R.thr[k]].filter(v=>v<=100).reduce((a,b)=>Math.max(a,b),0)||1):wa[k];
+    // (at most 6: the stats with a target or wanted value first, then the attributes; builds with many attunements stay quick)
+    if(nStarts>=12||(opt&&opt.polish))for(const pl of [th,{...th,...Object.fromEntries(dims.filter(k=>!ATTR.includes(k)).map(k=>[k,Math.max(R.pre[k],1)]))}]){const sum=ALL.reduce((a,k)=>a+pl[k],0);
+      if(sum<SHRINE_PTS){const ks=dims.filter(k=>(fin[k]||(R.want||{})[k])).concat(dims.filter(k=>ATTR.includes(k)&&!fin[k]&&!(R.want||{})[k])).slice(0,6);
+        for(const k of ks){const v=Math.min(100,pl[k]+SHRINE_PTS-sum);if(v<=R.max[k])starts.push({...pl,[k]:v})}}}}
   const W=R.want||{};if(Object.keys(W).length){starts.push({...base,...Object.fromEntries(Object.entries(W).map(([k,v])=>[k,Math.max(R.pre[k],v)]))},{...base,...Object.fromEntries(Object.keys(W).map(k=>[k,Math.max(R.pre[k],1)]))})}
   // start from the previous answer too, so re-optimizing never does worse than what is on screen
   if(opt&&opt.seedP){const sp={...base};for(const k of ALL)sp[k]=Math.max(R.pre[k],Math.min(100,opt.seedP[k]||0));if(opt.onlySeed)starts.length=0;starts.unshift(sp)}
@@ -4717,8 +4757,68 @@ function searchStats(R,oathAlts,opt){
     }
     if(better(cur,best))best=cur;
   }
-  return best;
+  if(!best)return best;
+  const full=nStarts>=12||(opt&&opt.polish);
+  if(full){best=polishPlan(best,R,oathAlts,dims);best=kickPlan(best,R,oathAlts,dims,rnd)}
+  return tidyPlan(best,R,oathAlts,dims);
 }
+// Kicks (November 18, 2026): restart from the best plan with two or three stats moved to random requirement levels (or 1),
+// hill-climb and polish again; keep anything better. Finds plans that need several stats to change at once. Time-boxed.
+const KICK_MS=500;
+function kickPlan(best,R,oathAlts,dims,rnd){const t0=Date.now();let cur=best;
+  const lv=k=>{const t=[0,1,R.pre[k],R.fixed[k]||0,(R.want||{})[k]||0,...R.thr[k]];if(ATTR.includes(k)&&R.fixed[k])t.push(Math.min(100,R.fixed[k]+25));return [...new Set(t)].filter(v=>v>=R.pre[k]&&v<=R.max[k]&&v<=100)};
+  const L=Object.fromEntries(dims.map(k=>[k,lv(k)]));
+  while(Date.now()-t0<KICK_MS){const P={...cur.P};const n=2+Math.floor(rnd()*2);
+    for(let i=0;i<n;i++){const k=dims[Math.floor(rnd()*dims.length)];const l=L[k];P[k]=l[Math.floor(rnd()*l.length)]}
+    // keep Power 8 if the best plan had it: top up the largest non-required stat
+    let e=evaluate(P,R,oathAlts);if(!e)continue;
+    for(let it=0;it<40;it++){let imp=null;for(const k of dims){const v0=e.P[k];for(const v of new Set([v0-10,v0-5,v0-1,v0+1,v0+5,v0+10,...L[k]])){if(v===v0||v<0||v>100)continue;const x=evaluate({...e.P,[k]:v},R,oathAlts);if(x&&better(x,imp||e))imp=x}}if(!imp)break;e=imp}
+    if(okMove(e,cur)&&better(e,cur))cur=polishPlan(e,R,oathAlts,dims)}
+  return cur}
+// Polish (November 18, 2026): the hill climb moves one stat at a time, so it can stall where two must move together (Charisma 30
+// down and Intelligence 40 up to 45 for Master Craftsman keeps the same Power, but each move alone is worse). Try moving points
+// from one stat to another, and setting two stats to requirement levels at once, until nothing is better.
+const POLISH_MS=600;
+function polishPlan(best,R,oathAlts,dims){let cur=best;const lv=k=>{const t=new Set([0,1,R.pre[k],R.fixed[k]||0,(R.want||{})[k]||0,...R.thr[k]]);if(ATTR.includes(k)&&(R.fixed[k]||(R.want||{})[k]))t.add(Math.min(100,Math.max(R.fixed[k]||0,(R.want||{})[k]||0)+25));return [...t].filter(v=>v>=R.pre[k]&&v<=R.max[k]&&v<=100)};
+  const L=Object.fromEntries(dims.map(k=>[k,lv(k)]));const t0=Date.now();
+  // the levels nearest the current value (and 0 / 1), so builds with many stats stay quick
+  const near=(k,v)=>{const a=L[k].filter(x=>x>1).sort((x,y)=>Math.abs(x-v)-Math.abs(y-v)).slice(0,4);return [...new Set([0,1,...a])].filter(x=>x>=R.pre[k])};
+  for(let pass=0;pass<6&&Date.now()-t0<POLISH_MS;pass++){let imp=null;const P=cur.P;
+    const tryP=P2=>{const e=evaluate(P2,R,oathAlts);if(e&&okMove(e,cur)&&better(e,imp||cur))imp=e};
+    for(const i of dims)for(const j of dims){if(i===j)continue;
+      // move d points from i to j (same Power before the shrine)
+      for(const d of [1,5,10,15,25]){const a=P[i]-d,b=P[j]+d;if(a<R.pre[i]||b>Math.min(100,R.max[j]))continue;tryP({...P,[i]:a,[j]:b})}
+      // i to one of its levels, j takes up the difference
+      for(const x of L[i]){if(x===P[i])continue;const b=P[j]+(P[i]-x);if(b<R.pre[j]||b>Math.min(100,R.max[j]))continue;tryP({...P,[i]:x,[j]:b})}
+      // both to requirement levels
+      if(i<j&&Date.now()-t0<POLISH_MS)for(const x of near(i,P[i]))for(const y of near(j,P[j])){if(x===P[i]&&y===P[j])continue;tryP({...P,[i]:x,[j]:y})}}
+    if(!imp)break;cur=imp}
+  return cur}
+// Tidy (owner, November 18, 2026): a stat before the shrine is 0, 1 (tagged, the shrine averages points into it), a level a
+// requirement needs, the target itself, or target + 25 for an attribute the shrine brings down. An odd value like Medium 66
+// before the shrine and 100 after is snapped to one of those whenever that costs no points (or saves some).
+function tidyLevels(k,R,cur){const t=new Set([0,1,R.pre[k],...R.thr[k],R.fixed[k]||0,(R.want||{})[k]||0,100]);for(const it of R.items)for(const a of it.alts)if(a.min[k])t.add(a.min[k]);
+  if(ATTR.includes(k)){const f=Math.max(R.fixed[k]||0,(R.want||{})[k]||0,cur.final[k]||0);if(f>1)t.add(Math.min(100,f+25))}
+  return [...t].filter(v=>v>=R.pre[k]&&v<=R.max[k]&&v<=100)}
+function oddPre(k,R,cur){const v=cur.P[k];if(v<=1||v===R.pre[k]||(S.pin&&k in S.pin))return false;return !tidyLevels(k,R,cur).includes(v)}
+const TIDY_TOL=1;
+// a plan the tidy / polish steps may move to: fits, no re-raise, inside limits, keeps the shrine, and Fortitude is not the same
+// before and after (owner's rule) unless it was already, or is pinned / floored before the shrine
+const ftdSame=e=>!e.noShrine&&e.P.FTD>1&&e.P.FTD===e.final.FTD&&!(S.pin&&'FTD' in S.pin);
+const okMove=(e,cur)=>e&&e.free>=0&&!(e.reup>0&&S.noReup!==false)&&!e.capOver&&!(e.noShrine&&!cur.noShrine)&&!(ftdSame(e)&&!ftdSame(cur));
+function tidyPlan(best,R,oathAlts,dims){let cur=best;
+  for(let pass=0;pass<3;pass++){let changed=false;
+    for(const k of dims){if(!oddPre(k,R,cur))continue;let pick=null;
+      for(const v of tidyLevels(k,R,cur)){const e=evaluate({...cur.P,[k]:v},R,oathAlts);if(!e)continue;const okE=okMove(e,cur);
+        // at most 1 point worse (a clean plan is worth that); ties go to more points free, then the better score
+        if(okE&&e.free>=cur.free-TIDY_TOL&&(!pick||e.free>pick.free||(e.free===pick.free&&e.score>pick.score)))pick=e}
+      // the odd value may be filler that keeps the shrine at Power 8: move those points to another tagged stat's level instead
+      if(!pick){for(const v of tidyLevels(k,R,cur))for(const j of dims){if(j===k)continue;const d=cur.P[k]-v;const nj=cur.P[j]+d;if(nj<0||nj>100||nj<R.pre[j]||nj>R.max[j])continue;
+          const P2={...cur.P,[k]:v,[j]:nj};if(!tidyLevels(j,R,{...cur,P:P2}).includes(nj)&&nj>1)continue;const e=evaluate(P2,R,oathAlts);if(!e)continue;
+          const okE=okMove(e,cur);if(okE&&e.free>=cur.free-TIDY_TOL&&(!pick||e.free>pick.free||(e.free===pick.free&&e.score>pick.score)))pick=e}}
+      if(pick){cur=pick;changed=true}}
+    if(!changed)break}
+  return cur}
 function noShrineFree(R){
   const final={},adds={};ALL.forEach(k=>{final[k]=Math.max(R.pre[k],R.fixed[k],(R.want||{})[k]||0);adds[k]=final[k]});
   for(const it of (R.oathAlts?[...R.items,{alts:R.oathAlts}]:R.items)){let b=null,bc=Infinity;for(const a of it.alts){const c=altCost(a,final);if(c<bc){bc=c;b=a}}if(b&&bc<Infinity)applyAlt(b,final,adds)}
@@ -4782,11 +4882,15 @@ function sliderRebalance(res,noFill){const pr=(S.prio==null?50:S.prio)/100;const
 // Silentheart) are removed; required talents and earlier picks win
 function dropConflicts(){const out=[];const have=new Set();
   {const av=S.sel.filter(n=>isAvoid(n));if(av.length){S.sel=S.sel.filter(n=>!av.includes(n));out.push(...av)}}
-  for(const n of (S.req||[]).filter(n=>TBY.has(n)))prereqSet(n).T.forEach(x=>have.add(x));
+  // required talents that exclude each other (Azure Flames and the Sanguine Blaze path): the first one stays, a later one goes
+  {const keepR=[];for(const n of S.req||[]){if(!TBY.has(n)&&!MBY.has(n)){keepR.push(n);continue}const cf=conflictOf(n,have);if(cf){out.push(n+' (required, but '+cf.replace(/^Blocked by /,'it conflicts with ')+')');S.sel=S.sel.filter(x=>x!==n);S.mantras=S.mantras.filter(x=>x!==n);continue}keepR.push(n);prereqSet(n).T.forEach(x=>have.add(x))}S.req=keepR}
   oathTalentPrereqs(findO(S.oath)).forEach(n=>prereqSet(n).T.forEach(x=>have.add(x)));
   const keep=[];for(const n of S.sel){if(isReq(n)||!TBY.has(n)){keep.push(n);continue}const ps=prereqSet(n);if(ps.T.size&&[...ps.T].every(x=>have.has(x))){keep.push(n);continue}
     if(conflictOf(n,have))out.push(n);else{keep.push(n);ps.T.forEach(x=>have.add(x))}}
   S.sel=keep;
+  // a mantra that needs a path you can't take next to a required or earlier pick (Cauterize needs Sanguine Blaze, which a
+  // required Lava Serpent excludes) is removed too
+  {const keepM=[];for(const m of S.mantras){if(isReq(m)||!MBY.has(m)){keepM.push(m);continue}if(conflictOf(m,have))out.push(m);else{keepM.push(m);prereqSet(m).T.forEach(x=>have.add(x))}}S.mantras=keepM}
   if(S.oath==='Silentheart'){const bad=S.mantras.filter(m=>silentNo(m)&&!isReq(m));if(bad.length){S.mantras=S.mantras.filter(m=>!bad.includes(m));out.push(...bad)}}
   return out}
 // points taken off per point an attribute is raised again after the shrine (fixReup raises it to rule the plan out)
@@ -4808,9 +4912,9 @@ function fixReup(res){const dropped=[];let guard=12;
     for(const k of b.reupK)if((+S.mins[k]||0)>(b.sh.out[k]||0)&&!(S.keep||{})[k]&&!(S.pin&&k in S.pin)){S.mins[k]=b.sh.out[k]||0;if(!S.mins[k])delete S.mins[k];lowered[ANAME[k]+' after']=S.mins[k]||0;did=true}
     if(did){const t=compute({starts:18,iters:200,seedP:b.P});if(t.best&&better(t.best,b))res=t}}
   // Fortitude 50 -> 50: put it after the shrine instead (1 before) when that still fits
-  const b=res.best;if(b&&!b.impossible&&!b.noShrine&&!b.manual&&b.P.FTD>1&&b.P.FTD===b.final.FTD&&!(S.pin&&'FTD' in S.pin)&&!((S.preMin||{}).FTD>1)){
+  const b=res.best;if(b&&!b.impossible&&!b.noShrine&&!b.manual&&b.P.FTD>1&&b.P.FTD===b.final.FTD&&!(S.pin&&'FTD' in S.pin)){const fl=+(S.preMin||{}).FTD||0;
     // 1 before (all after), else a little more or less before so the shrine moves it; keep the first that fits
-    const tryF=()=>{const b=res.best;for(const v of [1,b.P.FTD+5,b.P.FTD+10,b.P.FTD-5,b.P.FTD+15,b.P.FTD-10,b.P.FTD+20]){if(v<1||v>100)continue;
+    const tryF=()=>{const b=res.best;for(const v of [1,b.P.FTD+5,b.P.FTD+10,b.P.FTD-5,b.P.FTD+15,b.P.FTD-10,b.P.FTD+20,b.P.FTD+25]){if(v<Math.max(1,fl)||v>100)continue;
       const e=evaluate({...b.P,FTD:v},res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0&&e.P.FTD!==e.final.FTD){res={...res,best:e};return true}}return false};
     // (with no points to spare the budget wins: moving Fortitude can change whether the shrine is reachable at all)
     tryF()}
@@ -4829,7 +4933,9 @@ function easeFloors(){const lowered={};let guard=80;let r=compute({starts:4,iter
   while((!r.best||(!r.best.impossible&&r.best.free<0))&&guard-->0){
     const ks=knobs().filter(([o,k,mn])=>(+o[k]||0)>mn&&!((S.caps||{})[k]&&S.caps[k].on&&o!==S.preMin)&&!(S.keep||{})[k]);
     if(!ks.length)break;ks.sort((x,y)=>((+y[0][y[1]]||0)-y[2])-((+x[0][x[1]]||0)-x[2]));const [o,k,mn,label]=ks[0];
-    o[k]=Math.max(mn,(+o[k]||0)-5);if(o!==S&&!o[k])delete o[k];lowered[label]=o[k]||0;r=compute({starts:3,iters:60,seedP:r.best&&r.best.P})}
+    // far over: bigger steps (10 or 15) so an impossible wish list doesn't take a hundred searches
+    const step=!r.best?10:r.best.free<-60?15:r.best.free<-25?10:5;
+    o[k]=Math.max(mn,(+o[k]||0)-step);if(o!==S&&!o[k])delete o[k];lowered[label]=o[k]||0;r=compute({starts:3,iters:60,seedP:r.best&&r.best.P})}
   return {res:r,lowered}}
 // After a mantra is added (each one takes 2 talent slots), drop the least valuable talents so the cap still holds
 function fitCap(){const d=trimToCap();if(d.length)say(`That mantra takes 2 talent slots, so ${d.length} talent${d.length>1?'s were':' was'} dropped to stay under the cap: ${d.slice(0,5).join(', ')}${d.length>5?'…':''}. Undo brings ${d.length>1?'them':'it'} back.`);return d}
@@ -6155,7 +6261,7 @@ function aiNames(){if(AI_NAMES)return AI_NAMES;
   for(const m of DB.M)if(!m.at[0].startsWith('Origin'))out.push([m.n,{k:'mantra',n:m.n}]);
   AI_NAMES=out;return out}
 // talent families people call "paths"
-const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter'],['alloyblood|composite|plasma','Alloyblood'],['sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)','Exotherm','sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)']];
+const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets','black flames?|dark flames?|purple flames?|shadow ?flames?'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter'],['alloyblood|composite|plasma','Alloyblood'],['sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)','Exotherm','sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)']];
 const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast','insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
 const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
@@ -6259,6 +6365,16 @@ function aiParse(txt,basePreset){
     // keep the path's own talents that don't need an attunement you didn't ask for (beyond what the path itself needs)
     ts.forEach(t=>{REQ.add(t.n);pathT.push(t.n)});got.push(`${cat} path: ${ts.map(t=>t.n).join(', ')}`)}}
   const tN=by('talent').filter(n=>!isAvoid(n));tN.forEach(n=>REQ.add(n));if(tN.length)got.push('talents: '+tN.join(', '));
+  // "the 100/100 talents" / "100 flame 100 weapon": every talent that needs 100 in a weapon and 100 in an attunement you named
+  // (Scorching Decay, Night Terror, Frozen Anchor, Silencer's Song, Torture Mastery) is required, with weapon and attunement at 100
+  const hAtts=[];
+  if(has(/\b100\s+(?:[a-z]+\s+){0,3}100\b|\bdouble 100s?\b|\b100s? talents?\b/)){const named=new Set([...at.map(x=>x.k),...Object.keys(p.atts)]);
+    const near=AI_ATT.filter(([k,re])=>new RegExp('\\b100\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)).map(([k])=>k);
+    const want=near.length?new Set(near):named;
+    const H=DB.T.filter(t=>t.k&&!isAvoid(t.n)&&Object.entries(t.req.s||{}).some(([k,v])=>v>=100&&(k==='WPN'||WEP[k]))&&Object.entries(t.req.s||{}).some(([k,v])=>v>=100&&ATT[k]&&want.has(k)));
+    if(H.length&&p.oath!=='Silentheart'){for(const t of H){REQ.add(t.n);for(const [k,v] of Object.entries(t.req.s))if(ATT[k]&&v>=100){p.atts[k]=100;hAtts.push(k)}}
+      if(p.attUp&&hAtts.includes(p.attUp))delete p.attUp;if(!caster||p.wtarget>0||wN)p.wtarget=100;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required (weapon 100, ${[...new Set(hAtts)].map(k=>ATT[k][0]+' 100').join(', ')})`)}
+    else if(!H.length)got.push('100/100 talents: name the attunement too (they exist for Flamecharm, Shadowcast, Frostdraw, Galebreathe and Bloodrend)')}
   const mN=by('mantra').filter(n=>!oathTagOf(n));mN.forEach(n=>M.add(n));if(mN.length)got.push('mantras: '+mN.join(', '));
   // whatever the must-haves need: attunements are raised to their level, oath requirements are planned in
   const needAtt={};for(const n of [...REQ,...M]){const e=TBY.get(n)||MBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])needAtt[k]=Math.max(needAtt[k]||0,v)}
@@ -6285,7 +6401,7 @@ function aiParse(txt,basePreset){
       const pre=oathTalentPrereqs(o);if(parts.length||pre.length)got.push(`${o.n} needs ${[...parts,...pre].join(', ')}: planned in${OATH_NOTES[o.n]?' ('+OATH_NOTES[o.n]+')':''}`)}}
   p.t=[...new Set([...T,...REQ])].filter(n=>TBY.has(n));p.req=[...REQ].filter(n=>TBY.has(n));p.m=[...M].filter(n=>MBY.has(n));
   {const pn={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pn[k]=Math.max(pn[k]||0,v)}
-    p._q={at:at.map(x=>x.k),explicit:at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
+    p._q={at:at.map(x=>x.k),explicit:[...new Set([...at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),...hAtts])],need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
   if(has(/\bglass cannon\b|\bsquishy\b/)){delete p.post.FTD;got.push('glass cannon: no Fortitude floor')}
   p.d=got.length?'I read: '+got.join(' · '):'No build words found, so this is a balanced starting point (Agility 40 before, Fortitude 50 after).';
   return {p,got};

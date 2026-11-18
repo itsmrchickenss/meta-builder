@@ -1,3 +1,14 @@
+## v0.37 | unreleased
+- Smarter stat placement: the optimizer now puts points where they save the most. A stat goes before the shrine at the level a talent needs (or its full value, like Medium 100 and Flamecharm 100 for a 100/100 talent), or it's tagged at 1 and raised after the shrine. No more odd splits like Medium 66 before the shrine and 100 after.
+- The optimizer no longer trades away spare points for stats you didn't ask for. In testing, some builds went from 1 point left to 51 with the same talents (a Bladeharper Twisted Puppets build) and a Saintsworn heavy build from 29 to 116.
+- When two plans cost the same, the one that uses the Shrine of Order and takes your required talents before it wins.
+- The AI build maker understands "the 100/100 talents" (100 weapon + 100 attunement): it requires every one for the attunements you named (Scorching Decay, Night Terror, Frozen Anchor, Silencer's Song, Torture Mastery) and plans weapon and attunement at 100. "100 flame 100 weapon" picks just that one.
+- "Black flames" (or dark / purple flames) means the Twisted Puppets path, and the AI build maker requires the whole path.
+- Fixed: a mantra that needs a path your required talents rule out (Cauterize needs Sanguine Blaze, which Lava Serpent excludes) could put both paths in the build. Optimize now removes that mantra.
+- Fixed: two required talents that exclude each other (for example Azure Flames and the Sanguine Blaze path) could both end up in the build. The first one stays; Optimize removes the later one and says why.
+- Fixed: Fortitude could stay the same before and after the shrine when it had a before-shrine floor.
+- Optimizing builds with an impossible wish list (for example two 100/100 talents, Collapsed Lung and Saintsworn together) is faster: floors come down in bigger steps when the build is far over budget.
+
 ## v0.36 | 2026-11-17
 - Every preset now has variations to pick from, like Attunementless: open a preset and choose a build shell at the top (for example High Strength: Strength 100 + Agility 40, Strength 100 + Agility 65 for Cheap Shot, or Strength 90 + Charisma 40). The first one is the preset as before.
 - A variation fills in the stats, Fortitude after the shrine (50, or 90 for Reinforced Armor where it fits), and for some presets the attunements, weapon level and damage focus. Change anything after picking one to make your own version.

@@ -46,7 +46,8 @@ window.__check=function(){
     if(!okPre&&!okFin&&!blocked.has(n))(S.manual?W:P).push('talent requirement not met: '+n+' ('+fmtReq(t.req)+')');
     else if(!okFin&&S.when[n]==='post')P.push('talent set to after the shrine but only the pre-shrine stats meet it: '+n);
     for(const x of t.req.t||[])if(x.startsWith('Oath:')&&x!=='Oath: '+S.oath)P.push('talent of another oath: '+n);
-    for(const x of t.req.x||[])if(C.T.has(x)&&n<x)P.push('mutually exclusive talents both taken: '+n+' / '+x)}
+    // (Observation / Safety Dance also come from the shop with no exclusives: allowed next to Risky Moves, November 18, 2026)
+    for(const x of t.req.x||[])if(C.T.has(x)&&n<x&&!(typeof SHOP_FREE!=='undefined'&&(SHOP_FREE.has(n)||SHOP_FREE.has(x))))P.push('mutually exclusive talents both taken: '+n+' / '+x)}
   for(const n of C.M.keys()){const m=MBY.get(n);if(!met(m.req,false,pre)&&!met(m.req,false,fin))P.push('mantra requirement not met: '+n);
     if(S.oath==='Silentheart'&&m.at.some(a=>ATT[a])&&!oathTagOf(n))P.push('Silentheart with an attunement mantra: '+n)}
   if(S.weapon&&!blocked.has(S.weapon)){const w=WBY.get(S.weapon);if(w&&!met(w.req,true,fin))P.push('weapon requirement not met: '+S.weapon+' ('+fmtReq(w.req)+')')}

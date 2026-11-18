@@ -1,4 +1,4 @@
-## v0.37 | unreleased
+## v0.37 | 2026-11-18
 - Smarter stat placement: the optimizer now puts points where they save the most. A stat goes before the shrine at the level a talent needs (or its full value, like Medium 100 and Flamecharm 100 for a 100/100 talent), or it's tagged at 1 and raised after the shrine. No more odd splits like Medium 66 before the shrine and 100 after.
 - The optimizer no longer trades away spare points for stats you didn't ask for. In testing, some builds went from 1 point left to 51 with the same talents (a Bladeharper Twisted Puppets build) and a Saintsworn heavy build from 29 to 116.
 - When two plans cost the same, the one that uses the Shrine of Order and takes your required talents before it wins.
@@ -7,6 +7,7 @@
 - With 100/100 talents on two attunements, the AI build maker takes them before the shrine (weapon and both attunements at 100 there) instead of planning 100 / 100 / 100 to the end, which can't fit. Example: an Umbrite Witherblade Bladeharper Twisted Puppets build with Scorching Decay and Night Terror went from 1 point left to 26.
 - "Black flames" (or dark / purple flames) means the Twisted Puppets path, and the AI build maker requires the whole path.
 - Fortitude is tagged at 1 before the shrine and raised to its target after. It only goes higher before the shrine to take a Fortitude talent there (To The Finish 50, Mythic Stability 85, Reinforced Armor 90). It never goes 75 just to land on 50; that wastes points. The Bossraid presets now do Fortitude 50 after the shrine this way.
+- A mantra learned from a path the rest of your build excludes (like Crystal Impale, from the Glass path, in a Steam build) now stays: the builder plans the path's stats so you can take it, learn the mantra and unroll the path, and the results say so.
 - Observation and Safety Dance can now stay next to Risky Moves when you pick them or import a build with them: their shop version (Flame Worshipper memento, Power 5) has no conflict. Auto-picks still keep them apart.
 - "More Fortitude" / "tankier" in Adjustments now go to the next level that unlocks something (50, then 90 for Reinforced Armor) instead of 75, which unlocks nothing.
 - Optimize now searches harder (twice as many starting plans, longer polishing). It can take a few seconds longer, and the Optimize window says so while it works ("Optimizing… this may take a little time"); a popup shows the same when a preset or AI build is being set up.

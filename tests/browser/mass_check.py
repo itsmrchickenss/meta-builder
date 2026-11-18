@@ -69,7 +69,7 @@ window.__one=function(seed){const c=__gen(seed);__setup(c);const t0=performance.
   const R=o.res.R;out.preP=Object.fromEntries(ALL.filter(k=>b.P[k]).map(k=>[k,b.P[k]]));out.fin=Object.fromEntries(ALL.filter(k=>b.final[k]).map(k=>[k,b.final[k]]));out.noShrine=!!b.noShrine;
   if(!b.impossible&&b.free>=0){
     // odd pre-shrine values: anything a level, a target, 0 or 1 explains is fine; for the rest see whether snapping it saves points
-    const lv=k=>{const t=new Set([0,1,R.pre[k],R.fixed[k]||0,(R.want||{})[k]||0,100,...R.thr[k]]);if(ATTR.includes(k)){const f=Math.max(R.fixed[k]||0,(R.want||{})[k]||0,b.final[k]||0);if(f>1)t.add(Math.min(100,f+25))}
+    const lv=k=>{const t=new Set([0,1,R.pre[k],R.fixed[k]||0,(R.want||{})[k]||0,100,...R.thr[k]]);if(ATTR.includes(k)||WEP[k]){const f=Math.max(R.fixed[k]||0,(R.want||{})[k]||0);if(f>1)t.add(Math.min(100,f+25))}
       for(const it of R.items)for(const a of it.alts)if(a.min[k])t.add(a.min[k]);return t};
     for(const k of ALL){const v=b.P[k];if(v>1&&!lv(k).has(v)){let save=null;for(const x of lv(k)){if(x<R.pre[k]||x>R.max[k])continue;const e=evaluate({...b.P,[k]:x},R,R.oathAlts);if(okMove(e,b)&&e.free>=b.free)save=Math.max(save??-99,e.free-b.free)}
       if(save!=null)out.P.push(`odd pre-shrine ${k} ${v} (${b.sh.out[k]} after the shrine, ${b.final[k]} final): ${save>0?'snapping saves '+save+' points':'a clean value costs the same'}`);else out.W.push(`odd pre-shrine ${k} ${v} needed (filler for Power 8 or a sum requirement)`)}}

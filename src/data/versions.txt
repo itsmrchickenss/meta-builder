@@ -1,3 +1,11 @@
+## v0.40 | unreleased
+- 100/100 talents (Scorching Decay, Night Terror, Frozen Anchor…) are planned like the top builds on deepwoken.co: weapon and attunement 100 before the shrine, everything else tagged at 1, then the weapon stays at the 75 the shrine leaves and the attunement goes to 80. They're no longer raised back to 100 after the shrine (example: a Twisted Puppets + Scorching Decay build went from 0–14 points left to 36).
+- A second attunement that's only there for a path (Shadowcast for Twisted Puppets, Frostdraw for steam) is used for the path and isn't raised again after the shrine, unless a mantra you asked for needs it. No more "Shadowcast 45 before, 40 after".
+- Adjustments: two or more changes in one line all go through. "more agility and strength", "remove Ghost and Speed Demon", "raise flame and frost by 10", "set agility and willpower to 40", "less flame, more frost". "Remove A and B" used to add B.
+- Adjustments understand everyday words: "bump up int", "take out frost", "a heavier weapon", "get rid of Ghost", and "more"/"less" work for attunements too.
+- AI build maker understands everyday descriptions: "hard to kill", "doesn't die", "heal my friends", "mostly spells, don't want to M1", "from behind", "zooms around", "destroy armor", "steals life", "big sword", "daggers", "hit really hard" / "max damage" (favors damage), "my M1s" (weapon damage).
+- AI build maker: "I don't want any charisma or intelligence" now leaves them out. It used to add Charisma 75 and Intelligence 60.
+
 ## v0.39 | 2026-11-18
 - AI build maker: a number between two stat words now goes to the right one. "shadowcast 100 flame 100 weapon talent" means Flamecharm 100 and weapon 100 (Scorching Decay), with Shadowcast at 40; it used to read "shadowcast 100" and plan two attunements at 100, which doesn't fit. "flame 50 shadow 40" still works the usual way.
 - "Flame charm" written as two words is Flamecharm, not a Charisma build (it used to add Charisma 75).

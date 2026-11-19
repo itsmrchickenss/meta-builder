@@ -551,7 +551,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
 <div class="wrap">
 <header class="topbar">
   <div>
-    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.39</button></h1>
+    <h1>Meta <span>Builder</span><button type="button" class="ver" id="verbtn" title="See what changed in each version" aria-haspopup="dialog">v0.40</button></h1>
     <p>Deepwoken Shrine of Order planner: build, optimize, check damage, then gear up.</p>
   </div>
   <div class="toptools"><label class="helptgl" title="Show the explanations under each section and suggestions for your build"><input type="checkbox" id="helpon"> Help mode</label>
@@ -4018,7 +4018,15 @@ Pressure Bleed|Your vents turn pink, spraying explosive Black Puddles that ignit
 Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites them with pink fire.
 Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
 Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
-<script type="text/plain" id="dwvers">## v0.39 | 2026-11-18
+<script type="text/plain" id="dwvers">## v0.40 | unreleased
+- 100/100 talents (Scorching Decay, Night Terror, Frozen Anchor…) are planned like the top builds on deepwoken.co: weapon and attunement 100 before the shrine, everything else tagged at 1, then the weapon stays at the 75 the shrine leaves and the attunement goes to 80. They're no longer raised back to 100 after the shrine (example: a Twisted Puppets + Scorching Decay build went from 0–14 points left to 36).
+- A second attunement that's only there for a path (Shadowcast for Twisted Puppets, Frostdraw for steam) is used for the path and isn't raised again after the shrine, unless a mantra you asked for needs it. No more "Shadowcast 45 before, 40 after".
+- Adjustments: two or more changes in one line all go through. "more agility and strength", "remove Ghost and Speed Demon", "raise flame and frost by 10", "set agility and willpower to 40", "less flame, more frost". "Remove A and B" used to add B.
+- Adjustments understand everyday words: "bump up int", "take out frost", "a heavier weapon", "get rid of Ghost", and "more"/"less" work for attunements too.
+- AI build maker understands everyday descriptions: "hard to kill", "doesn't die", "heal my friends", "mostly spells, don't want to M1", "from behind", "zooms around", "destroy armor", "steals life", "big sword", "daggers", "hit really hard" / "max damage" (favors damage), "my M1s" (weapon damage).
+- AI build maker: "I don't want any charisma or intelligence" now leaves them out. It used to add Charisma 75 and Intelligence 60.
+
+## v0.39 | 2026-11-18
 - AI build maker: a number between two stat words now goes to the right one. "shadowcast 100 flame 100 weapon talent" means Flamecharm 100 and weapon 100 (Scorching Decay), with Shadowcast at 40; it used to read "shadowcast 100" and plan two attunements at 100, which doesn't fit. "flame 50 shadow 40" still works the usual way.
 - "Flame charm" written as two words is Flamecharm, not a Charisma build (it used to add Charisma 75).
 - Numbers stuck to a stat name ("flamecharm80") are read too.
@@ -6361,8 +6369,29 @@ function aiNames(){if(AI_NAMES)return AI_NAMES;
 const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets','black flames?|dark flames?|purple flames?|shadow ?flames?'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter'],['alloyblood|composite|plasma','Alloyblood'],['sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)','Exotherm','sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)']];
 const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast','insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
 // (the short stat names players type count too: flm, ltn, wnd, sdw, irn, bld; "100 flm 100 wep" = Scorching Decay)
+// everyday ways people describe a build, turned into the words the reader below knows (owner, November 19, 2026: "make what
+// people ask sound more human like if they ask indirectly for things"). Each line keeps the meaning, never adds a stat by itself.
+const AI_EVERYDAY=[
+  [/\b(hard to kill|(doesn'?t|dont|does not|won'?t|never) die|(lots|lot|tons) of (health|hp)|high (health|hp)|(bad|not good) at parry\w*|survive (a lot|more|longer)|unkillable|take a lot of (hits|damage))\b/g,' tanky '],
+  [/\b(a bit|kinda|somewhat|slightly) (tanky|tanks?|beefy)\b/g,' semi tanky '],
+  [/\b(mostly|only|just|all) (spells?|magic|mantras?)\b|\b(don'?t|dont|do not|never) (really )?(want to |wanna )?m1\w*|\bno m1s?\b|\bspell ?caster\b/g,' mage '],
+  [/\b(from behind|backstab\w*|invisible|go(es)? invis\w*|vanish\w*)\b/g,' stealth '],
+  [/\b(zoom\w*|run(s|ning)? around|zip\w* around|quick|speedy)\b/g,' mobile '],
+  [/\b(destroy\w*|break\w*|wreck\w*|shatter\w*) (their |people'?s |enemy |enemies'? )?armou?r\b|\banti ?armou?r\b/g,' armor shredding '],
+  [/\bsteal\w* (life|health|hp)\b|\bheal\w* (myself|off (my )?(hits|damage))\b/g,' lifesteal '],
+  [/\b(big|huge|giant|massive|large) (sword|axe|hammer|weapon)s?\b/g,' heavy '],
+  [/\b(small|little|tiny) (sword|blade|weapon)s?\b/g,' light '],
+  [/\b(hit\w* (really |very |super |so )?hard|max(imum)? damage|most damage|highest damage|high damage|big damage|one ?shot\w*|delete people|burst damage)\b/g,' damage focus '],
+  [/\b(m1s?|basic attacks?|weapon hits?|melee)\b(?! ?(build)? ?(only|less))/g,' m1 '],
+  [/\bsamurai\b/g,' samurai medium ']];
+function aiEveryday(s){let o=s;for(const [re,w] of AI_EVERYDAY)o=o.replace(re,w);return o.replace(/\s+/g,' ')}
+// stats the words say to leave out: "no X", "without X", "don't want (any) X (or Y)", "not X", "zero X", "skip X"
+function aiNegated(s){const out=new Set();const words=[...AI_STAT,...AI_ATT];
+  for(const c0 of String(s).toLowerCase().split(/[,.;!?]| but | though | however | just | only | instead | i want | i'd like | i like | and (?:i )?(?:want|need|like) /)){const c=aiEveryday(nrm(c0));const m=c.match(/\b(no|without|don'?t (want|need|like|use)( any)?|dont (want|need|like|use)( any)?|do not (want|need|use)( any)?|not|zero|skip|avoid|never)\b/);if(!m)continue;
+    const tail=c.slice(m.index+m[0].length);for(const [k,re] of words)if(re.test(tail))out.add(k);if(/\bcharm\w*/.test(tail))out.add('CHA')}
+  return out}
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire|flm)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*|ltn)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale|wnd)\b/],['SDW',/\b(shadow ?cast\w*|shadow|sdw)\b/],['IRN',/\b(iron ?sing\w*|metal|iron|irn)\b/],['BLD',/\b(blood ?rend\w*|blood|bld)\b/]];
-const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
+const AI_WEP=[['HVY',/\b(heavy|greatswords?|greataxes?|greathammers?|great ?swords?|great ?axes?|hammers?|scythes?|halberds?)\b/],['LHT',/\b(light weapon|light|daggers?|fists?|cestus|katanas?|knives|knife)\b/],['MED',/\b(medium|swords?|spears?|rapiers?|longswords?)\b/]];
 const AI_ARCH_ATT=[['FLM',/\b(burn\w*|damage over time|dot|explosions?|explosive|pyro\w*)\b/,'burn'],['ICE',/\b(freez\w*|slows|slowing|crippl\w*)\b/,'freezing / slows'],
   ['LTN',/\b(stun\w*|lock ?down|zon(e|ing)|crowd control)\b/,'stuns / lockdown'],['WND',/\b(high pressure|pressure)\b/,'pressure'],
   ['SDW',/\b(ether drain\w*|drain\w* ether|anti ?mage|blind\w*|darkness)\b/,'ether drain / blind'],
@@ -6392,7 +6421,10 @@ function aiNumNear(s,re){const T=aiToks(s);const hit=t=>t&&t.ty==='S'&&re.test('
   return null}
 const cheapAlt=alts=>alts.slice().sort((a,b)=>altCost(a,{})-altCost(b,{}))[0];
 function aiParse(txt,basePreset){
-  const s=nrm(txt);const got=[];const has=re=>re.test(s);
+  const s=aiEveryday(nrm(txt));const got=[];const has=re=>re.test(s);
+  // "I don't want any charisma or intelligence", "no fire", "without int": those stats are left out, never planned
+  // (owner, November 19, 2026: it put Charisma 75 in a build that said it didn't want Charisma)
+  const negK=aiNegated(txt);
   // the attunement words inside names ("flame worshipper", "orbital ice") must not count as attunement picks on their own
   // an attunement word ("flamecharm") is not a typo of a talent ("Flamecharmer")
   const found=findNames(s,aiNames()).filter(h=>!((h.n.k==='talent'||h.n.k==='mantra')&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+s.slice(h.at,h.end)+' '))));let sAtt=s;for(const h of found)sAtt=sAtt.slice(0,h.at)+' '.repeat(h.end-h.at)+sAtt.slice(h.end);
@@ -6411,7 +6443,7 @@ function aiParse(txt,basePreset){
   if(semi||has(/\btank\w*|\bbeefy\b|\bsurviv\w*|\bdurable\b|\bmore health\b|\bhp\b/)){up(p.post,'FTD',50);add('Exoskeleton','To The Finish',...(semi?[]:['Brassneck','Ready or Not','Padded Armor','Steel Scales']));
     p.gear={w:semi?35:20,minhp:semi?550:620};got.push((semi?'semi tanky':'tanky')+' → Fortitude 50 after the shrine, equipment favors health (Fortitude is not pushed higher for gear)')}
   // "flame charm" (Flamecharm written as two words) is an attunement, not a Charisma build
-  if(has(/\b(?<!flame )charm\w*|\bcharisma\w*|\bcha\b/)){up(p.pre,'CHA',75);add('Charismatic Cast','Tough Love','Lasting Charisma','Manipulator');got.push('charm → Charisma 75')}
+  if(!negK.has('CHA')&&has(/\b(?<!flame )charm\w*|\bcharisma\w*|\bcha\b/)){up(p.pre,'CHA',75);add('Charismatic Cast','Tough Love','Lasting Charisma','Manipulator');got.push('charm → Charisma 75')}
   const mobile=has(/\bgank\w*|\bmobil\w*|\bmovement\b|\bspeed\w*|\bfast\b|\bdodg\w*|\bagile\b|\bagility mantras?\b/);const gank=has(/\bgank\w*/);
   // ganking builds run high Agility (Cheap Shot at 65); other mobile builds 45
   if(mobile){const a=gank?65:has(/\bvery (fast|mobile)\b/)?60:45;up(p.pre,'AGL',a);add('Speed Demon','Swift Rebound','Evasive Expert','Kick Off',...(gank?['Risky Moves','Ghost','Cheap Shot']:[]));M.add('Agile Dash');got.push(gank?'gank → high Agility (65 for Cheap Shot), Ghost, Agile Dash and speed talents':`mobile → Agility ${a}, Agile Dash and speed talents`)}
@@ -6420,7 +6452,7 @@ function aiParse(txt,basePreset){
   if(shred){up(p.pre,'STR',90);add('Million Ton Piercer','Berserk','Unwavering Resolve','Showstopper','Exposed Durability','Metal Thief','Piercing Metal');got.push('armor shredding / high penetration → Strength 90 + Ironsing (Million Ton Piercer removes the PEN cap)')}
   if(has(/\bstealth\w*|\bassassin\w*|\bsneak\w*|\binvisib\w*/)){up(p.pre,'AGL',40);add('Risky Moves','Swift Rebound','Evasive Expert','Ghost');got.push('stealth → Agility 40 for Ghost (Ghost and the Butterfly talents are taken before the shrine)')}
   if(has(/\bblock ?break\w*|\bguard ?break\w*/)){up(p.pre,'STR',40);add('Bulldozer','Unwavering Resolve','Showstopper');got.push('block breaking → Strength 40')}
-  if(has(/\bsupport\w*|\bhealer\b|\bbuff (my )?(allies|team)\b/)){up(p.pre,'CHA',55);add('Charismatic Cast');got.push('support → Charisma 55 (the whole Charm Caster tree)')}
+  if(has(/\bsupport\w*|\bhealer\b|\bheal\w* (my |the )?(friends|allies|team|teammates|party|people|others)\b|\bbuff (my )?(allies|team|friends)\b/)){up(p.pre,'CHA',55);add('Charismatic Cast');got.push('support → Charisma 55 (the whole Charm Caster tree)')}
   if(has(/\balchem\w*|\bcrafting\b|\bcrafter\b|\bpotions?\b/)){up(p.pre,'INT',45);add('Master Craftsman');got.push('alchemy / crafting → Intelligence 45 (Master Craftsman)')}
   // Fortitude: most builds stop at 50; 90 only when Reinforced Armor is asked for
   if(has(/\breinforced armou?r\b/)){p.post.FTD=Math.max(p.post.FTD||0,90);REQ.add('Reinforced Armor');got.push('Reinforced Armor → Fortitude 90 after the shrine (only because you asked; most builds stop at 50)')}
@@ -6428,7 +6460,7 @@ function aiParse(txt,basePreset){
   if(has(/\bsmart\b|\bint build\b|\bintelligence build\b/)){up(p.pre,'INT',75);add('Neuroplasticity','Eureka','Approaching Singularity');got.push('Intelligence 75')}
   if(has(/\bbrute\b|\bstrength build\b|\bstr build\b|\bhard hitting\b/)){up(p.pre,'STR',75);add('Unwavering Resolve','Showstopper');got.push('Strength 75')}
   const caster=has(/\b(mage|caster|mantra build|spellcaster|no weapon)\b/);
-  for(const [k,re] of AI_STAT){if(new RegExp('\\bno\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)){delete p.pre[k];delete p.post[k];delete p.want[k];got.push('no '+ANAME[k]);continue}
+  for(const [k,re] of AI_STAT){if(negK.has(k)||new RegExp('\\bno\\s+(?:'+re.source.replace(/\\b/g,'')+')').test(s)){delete p.pre[k];delete p.post[k];delete p.want[k];got.push('no '+ANAME[k]);continue}
     if(!re.test(sAtt))continue;const n=aiNumNear(s,re);
     // a typed number is a wanted value: the optimizer decides before or after the shrine, unless the words say which
     // ("strength 40 before the shrine", "agility 25 post"). Fortitude stays after (health comes from the final value).
@@ -6439,8 +6471,11 @@ function aiParse(txt,basePreset){
   // also catch an oath written as two words or with a dash ("jet striker", "silent heart", "blade-harper")
   const oathN=by('oath')[0]||(OATHS.find(o=>o.n!=='None'&&new RegExp('\\b'+o.n.toLowerCase().split('').join("[\\s'-]?")+'\\b').test(s))||{}).n;const oath=oathN?findO(oathN):null;
   if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base||p.oath==='None')p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
+  // "100 flame 100 weapon (talent)" names a 100/100 talent: those numbers are not after-shrine targets (owner, November 18, 2026)
+  const H100=new RegExp('\\b100\\s+(?:'+AI_SW+')(?:\\s+(?:'+AI_SW+'))?\\s+100\\s+(?:'+AI_SW+')(?:\\s+talents?)?','g');
+  const sNum=sAtt.replace(H100,m=>/\b(weapons?|wep|wpn|heavy|medium|light)\b/.test(m)||/talents?$/.test(m)?' '.repeat(m.length):m);
   // attunements in order of mention (words that are part of a name don't count)
-  const at=AI_ATT.map(([k,re])=>{const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
+  const at=AI_ATT.map(([k,re])=>{if(negK.has(k))return null;const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);
   // play-style words that mean an attunement ("burn" = Flamecharm, "armor shredding" = Ironsing…), after the ones named outright
   if(!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){const extra=[];for(const [k,re,why] of AI_ARCH_ATT){const m=sAtt.match(re);if(!m)continue;
     for(const kk of k.split('+'))if(!at.some(x=>x.k===kk)&&!extra.some(x=>x.k===kk))extra.push({k:kk,i:1000+m.index,re:/(?!)/,why})}
@@ -6450,9 +6485,9 @@ function aiParse(txt,basePreset){
   // one main attunement (the first named): 80, or 100 for a mage. Two: 80/80 for a mage or when asked ("dual",
   // "both 80"), else 80/40 and the second goes to 80 if the points allow. Three or more: the main one high, the rest 40.
   if(at.length&&!has(/\bsilentheart\b|\bno mantras\b|\bno attunement\b/)){if(!basePreset)p.atts={};const dual=at.length===2&&(caster||has(/\bdual\b|\bdouble\b|\bboth\b|\b80 ?\/ ?80\b|\bequal\b/));
-    at.forEach((x,i)=>{const n=aiNumNear(sAtt,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):at.length===2&&dual?80:40))});
-    if(at.length===2&&!dual&&!aiNumNear(sAtt,at[1].re))p.attUp=at[1].k;
-    got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + ')+(at.length>=3&&!at.slice(1).some(x=>aiNumNear(sAtt,x.re))?` (main ${ATT[at[0].k][0]}, the others 40)`:p.attUp?` (${ATT[p.attUp][0]} goes to 80 if the points allow)`:''))}
+    at.forEach((x,i)=>{const n=aiNumNear(sNum,x.re);p.atts[x.k]=Math.max(p.atts[x.k]||0,n||(i===0?(caster?100:80):at.length===2&&dual?80:40))});
+    if(at.length===2&&!dual&&!aiNumNear(sNum,at[1].re))p.attUp=at[1].k;
+    got.push(at.map(x=>`${ATT[x.k][0]} ${p.atts[x.k]}`).join(' + ')+(at.length>=3&&!at.slice(1).some(x=>aiNumNear(sNum,x.re))?` (main ${ATT[at[0].k][0]}, the others 40)`:p.attUp?` (${ATT[p.attUp][0]} goes to 80 if the points allow)`:''))}
   // weapon, outfit, gear by name
   let wN=by('weapon').sort((a,b)=>b.length-a.length)[0];
   // "hero blade" / "heros blade" without the full name: the element comes from the attunement mentioned (Flame if none)
@@ -6466,7 +6501,7 @@ function aiParse(txt,basePreset){
   if(caster&&!Object.keys(p.atts).length)got.push('no attunement named: add one below (a mage needs one), or say e.g. "mage with flamecharm"');
   const wm=AI_WEP.find(([k,re])=>re.test(sAtt));
   if(shred&&!wm&&!wN&&!caster){p.wtype='HVY';p.wtarget=Math.max(90,p.wtarget||0);got.push('Heavy weapon 90 (highest penetration)')}
-  if(wm&&!wN){p.wtype=wm[0];const n=aiNumNear(sAtt,wm[1]);p.wtarget=n||(wm[0]==='HVY'?90:80);got.push(`${WEP[wm[0]]} weapon ${p.wtarget}`)}else if(caster&&!wN){p.wtarget=0;got.push('no weapon points (caster)')}
+  if(wm&&!wN){p.wtype=wm[0];const n=aiNumNear(sNum,wm[1]);p.wtarget=n||(wm[0]==='HVY'?90:80);got.push(`${WEP[wm[0]]} weapon ${p.wtarget}`)}else if(caster&&!wN){p.wtarget=0;got.push('no weapon points (caster)')}
   const oN=by('outfit')[0];if(oN){p.outfit=oN;got.push('outfit '+oN)}
   const gN=by('gear');if(gN.length){p.gearItems=gN;got.push('equipment '+gN.join(', '))}
   // talent paths ("steam path") and named talents / mantras: these are must-haves
@@ -6485,14 +6520,16 @@ function aiParse(txt,basePreset){
     const want=near.length?new Set(near):named;
     const H=DB.T.filter(t=>t.k&&!isAvoid(t.n)&&Object.entries(t.req.s||{}).some(([k,v])=>v>=100&&(k==='WPN'||WEP[k]))&&Object.entries(t.req.s||{}).some(([k,v])=>v>=100&&ATT[k]&&want.has(k)));
     if(H.length&&p.oath!=='Silentheart'){for(const t of H){REQ.add(t.n);hSet.add(t.n);prereqSet(t.n).T.forEach(n=>hSet.add(n));for(const [k,v] of Object.entries(t.req.s))if(ATT[k]&&v>=100)hAtts.push(k)}
-      // one attunement: weapon and attunement 100 to the end fits. Two or more (owner, November 18, 2026): 100 / 100 / 100 after the
-      // shrine can't fit, so the talents are taken before it (weapon and attunements at 100 there) and the shrine brings them down;
-      // the after-shrine targets stay at what you typed or the usual 80 / 40 split, and the optimizer places the 100s
-      const dual=new Set(hAtts).size>=2;
-      for(const k of new Set(hAtts)){if(!dual)p.atts[k]=100;else if(!p.atts[k])p.atts[k]=40}
+      // top builds (deepwoken.co top rated, November 18, 2026: Title Slot, Withered Mike Pike, Vento, infinite GB, Night Terror
+      // Starkindred…) take the 100/100 talent before the shrine with weapon + attunement at 100 and every other stat tagged at 1.
+      // After the shrine the weapon stays at the 75 the shrine leaves and the attunement goes to its usual level (80 main, 40
+      // others); it is never raised back to 100 (owner, November 18, 2026: "100 med 100 flame pre then back up to 100 post" is a waste).
+      // Numbers you type ("flamecharm 100 after the shrine") still win.
+      for(const k of new Set(hAtts))if(!p.atts[k])p.atts[k]=40;
       if(p.attUp&&hAtts.includes(p.attUp))delete p.attUp;
-      if(!dual){if(!caster||p.wtarget>0||wN)p.wtarget=100;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required (weapon 100, ${[...new Set(hAtts)].map(k=>ATT[k][0]+' 100').join(', ')})`)}
-      else{if(!caster||p.wtarget>0||wN)p.wtarget=Math.max(p.wtarget||0,80);p.hundredPre=1;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required, taken before the shrine (weapon and ${[...new Set(hAtts)].map(k=>ATT[k][0]).join(' + ')} at 100 there; with two attunements 100 / 100 / 100 can't fit after the shrine)`)}}
+      const wTyped=wm&&aiNumNear(sNum,wm[1]);const wNeed=wN?(WBY.get(wN).req.s[p.wtype]||0):0;
+      if(!caster||p.wtarget>0||wN){if(!wTyped)p.wtarget=Math.max(75,wNeed)}
+      p.hundredPre=1;got.push(`100/100 talents: ${H.map(t=>t.n).join(', ')} required, taken before the shrine (weapon and ${[...new Set(hAtts)].map(k=>ATT[k][0]).join(' + ')} at 100 there, everything else tagged at 1); after it the weapon stays at ${p.wtarget} and ${[...new Set(hAtts)].map(k=>ATT[k][0]+' '+p.atts[k]).join(', ')}, like the top builds`)}
     else if(!H.length)got.push('100/100 talents: name the attunement too (they exist for Flamecharm, Shadowcast, Frostdraw, Galebreathe and Bloodrend)')}
   const mN=by('mantra').filter(n=>!oathTagOf(n));mN.forEach(n=>M.add(n));if(mN.length)got.push('mantras: '+mN.join(', '));
   // whatever the must-haves need: attunements are raised to their level, oath requirements are planned in
@@ -6509,20 +6546,28 @@ function aiParse(txt,basePreset){
   // a path that needs other attunements (steam = Flamecharm + Frostdraw…): those secondary attunements go only as high as
   // the talents you asked for need, and the main attunement is the first one named that the path doesn't need
   {const pathNeed={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pathNeed[k]=Math.max(pathNeed[k]||0,v)}
-    if(Object.keys(pathNeed).length&&p.oath!=='Silentheart'){const explicit=new Set(at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k));
+    if(Object.keys(pathNeed).length&&p.oath!=='Silentheart'){const explicit=new Set(at.filter(x=>aiNumNear(sNum,x.re)).map(x=>x.k));
       const mainX=at.find(x=>!(x.k in pathNeed))||at[0];const main=mainX&&mainX.k;
       if(main&&!explicit.has(main))p.atts[main]=Math.max(p.atts[main]||0,caster?100:80);
-      const low=[];for(const k of Object.keys(pathNeed)){if(k===main||explicit.has(k))continue;const v=Math.max(needAtt[k]||0,pathNeed[k]);if(p.atts[k]!==v){p.atts[k]=v;low.push(`${ATT[k][0]} ${v}`)}}
+      // top builds with a two-attunement path (Black Flames Palace Tachi, Wyrmtooth Twisted, crypt blade twisted, So Like Steam
+      // Path…) reach the path's level before the shrine, take the path there and let the other attunement drop after it (about
+      // 20): its after-shrine target is just tagged (1), unless a mantra you asked for needs more (owner, November 18, 2026:
+      // "45 shadowcast before and 40 after" is a waste). The required path talents still make the optimizer reach the level.
+      const mNeed={};for(const n of M){const e=MBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])mNeed[k]=Math.max(mNeed[k]||0,v)}
+      const low=[];for(const k of Object.keys(pathNeed)){if(k===main||explicit.has(k))continue;const v=mNeed[k]||1;if(p.atts[k]!==v){p.atts[k]=v;low.push(`${ATT[k][0]} ${pathNeed[k]} for the path before the shrine${v>1?`, ${v} after for your mantras`:', then it can drop'}`)}}
       if(p.attUp&&p.attUp in pathNeed)delete p.attUp;
-      if(low.length)got.push(`path attunements kept to what the talents need: ${low.join(', ')}${main?` (main ${ATT[main][0]} ${p.atts[main]})`:''}`)}}
+      if(low.length)got.push(`path attunements only as high as the path needs: ${low.join(', ')}${main?` (main ${ATT[main][0]} ${p.atts[main]})`:''}`)}}
   if(mobile&&p.oath!=='Silentheart'){const mob=DB.M.filter(m=>m.c==='M'&&m.ty==='N'&&m.at.length===1&&ATT[m.at[0]]&&m.at[0] in p.atts).sort((a,b)=>bestCost(reqAlts(a.req,false),{})-bestCost(reqAlts(b.req,false),{}))[0];if(mob){M.add(mob.n);got.push('mobility mantra '+mob.n)}}
   if(p.oath&&p.oath!=='__auto'&&p.oath!=='None'){const o=findO(p.oath);const oa=oathAltsOf(o);const a=oa&&cheapAlt(oa);
     if(a){const parts=Object.entries(a.min).map(([k,v])=>`${statName(k)||k} ${v}`);for(const [k,v] of Object.entries(a.min))if(ATTR.includes(k))up(p.post,k,v);
       const pre=oathTalentPrereqs(o);if(parts.length||pre.length)got.push(`${o.n} needs ${[...parts,...pre].join(', ')}: planned in${OATH_NOTES[o.n]?' ('+OATH_NOTES[o.n]+')':''}`)}}
   p.t=[...new Set([...T,...REQ])].filter(n=>TBY.has(n));p.req=[...REQ].filter(n=>TBY.has(n));p.m=[...M].filter(n=>MBY.has(n));
   {const pn={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pn[k]=Math.max(pn[k]||0,v)}
-    p._q={at:at.map(x=>x.k),explicit:[...new Set([...at.filter(x=>aiNumNear(sAtt,x.re)).map(x=>x.k),...hAtts])],need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
+    p._q={at:at.map(x=>x.k),explicit:[...new Set([...at.filter(x=>aiNumNear(sNum,x.re)).map(x=>x.k),...hAtts])],need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
   if(has(/\bglass cannon\b|\bsquishy\b/)){delete p.post.FTD;got.push('glass cannon: no Fortitude floor')}
+  // "hit really hard", "max damage": the optimizer favors damage; "m1s", "melee": the damage comes from the weapon
+  if(has(/\bdamage focus\b/)){p.prio=20;got.push('most damage → the optimizer favors damage over talent options')}
+  if(has(/\bm1\b/)&&!caster&&p.wtarget>0){p.dsplit=0;got.push('M1 damage → damage counted from your weapon')}
   // two-attunement 100/100 builds put 300 points into weapon + attunements before the shrine, and only 330 can go in before it:
   // stats the description didn't give a number for become "must hit" (reached at some point for their talents, the optimizer
   // picks when) instead of fixed before-shrine values
@@ -6747,7 +6792,25 @@ async function sendBug(){const what=$('bugwhat').value.trim();const msg=$('bugms
 // ================= Adjustments (after the AI build maker) =================
 // Plain-language changes to the current build, then Optimize rearranges the stats. Builds on applyWish
 // (limits, more/less, damage vs talents, tanky, require/avoid) and adds exact values, swaps and names.
-function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase().replace(/[’`]/g,"'").replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' ';const did=[];
+// "more agility and strength" = "more agility and more strength": a word that applies to a list is copied to every item in it, so
+// two changes in one line both go through (owner, November 19, 2026: "sometimes when I ask for 2 things only one goes through")
+const ADJ_WORDS='strength|str|fortitude|fort|ftd|agility|agi|agl|intelligence|int|willpower|will|wll|charisma|cha|flamecharm|flame charm|flame|fire|flm|frostdraw|frost draw|frost|ice|thundercall|thunder call|thunder|lightning|ltn|galebreathe|gale breathe|gale|wind|wnd|shadowcast|shadow cast|shadow|sdw|ironsing|iron sing|iron|metal|irn|bloodrend|blood rend|blood|bld';
+function adjSpread(s){const W=ADJ_WORDS,MOD='bit more|bit less|a lot more|more|less|higher|lower|extra|no|without';
+  let o=s,prev;
+  // "raise flame and frost by 10" -> "raise flame by 10 and raise frost by 10"; "set agility and willpower to 40" -> each to 40
+  const rel=new RegExp(` (raise|increase|up|boost|lower|decrease|reduce|drop|cut) (?:the )?((?:(?:${W})(?: and| or| plus|)? )+)by (\\d{1,3}) `,'g');
+  o=o.replace(rel,(m,v,list,n)=>' '+list.trim().split(/ (?:and|or|plus) | (?=(?:\S))/).join(' ').match(new RegExp(`(?:${W})`,'g')).map(w=>`${v} ${w} by ${n}`).join(' and ')+' ');
+  const set=new RegExp(` (?:set |make |put |change )?((?:(?:${W})(?: and| or| plus|)? ){2,})(?:to|at|=) (\\d{1,3}) `,'g');
+  o=o.replace(set,(m,list,n)=>' '+list.match(new RegExp(`(?:${W})`,'g')).map(w=>`${w} ${n}`).join(' and ')+' ');
+  // everyday words: "bump up int", "boost flame" (no number) = more; "take out frost", "get rid of ghost" = remove
+  o=o.replace(/ (?:take out|get rid of|take away|ditch|lose) /g,' remove ').replace(/ (?:a bit|a little|slightly|way|much|a lot) (more|less) /g,' $1 ');
+  o=o.replace(new RegExp(` (?:bump up|bump|boost|raise|increase|up|pump|pump up|buff) (?:the |my )?(${W})(?= )(?! (?:by|to) \\d)`,'g'),' more $1').replace(new RegExp(` (?:reduce|decrease|cut|nerf|tone down) (?:the |my )?(${W})(?= )(?! (?:by|to) \\d)`,'g'),' less $1');
+  o=o.replace(/ (?:heavier|bigger) weapon /g,' switch to heavy ').replace(/ (?:lighter|faster|smaller) weapon /g,' switch to light ');
+  // "more agility and strength", "less cha and int", "no charisma, intelligence"
+  const lst=new RegExp(` (${MOD}) (${W})((?:(?: and| or| plus|) (?!${MOD} )(?:${W}))+) `);
+  do{prev=o;o=o.replace(lst,(m,mod,w1,rest)=>` ${mod} ${w1}`+rest.replace(new RegExp(`(?: and| or| plus|) (${W})`,'g'),(x,w)=>` and ${mod} ${w}`)+' ')}while(o!==prev);
+  return o}
+function applyAdjust(txt){const raw=String(txt||'');const s=adjSpread(' '+raw.toLowerCase().replace(/[’`]/g,"'").replace(/&/g,' and ').replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ')+' ');const did=[];
   const b=last&&last.best;const fin=b?b.final:{};S.caps=S.caps||{};
   const STW={STR:'strength|str',FTD:'fortitude|fort|ftd',AGL:'agility|agi|agl',INT:'intelligence|int',WLL:'willpower|will|wll',CHA:'charisma|cha'};
   const ATW={FLM:'flamecharm|flame charm|flame|fire',ICE:'frostdraw|frost draw|frost|ice',LTN:'thundercall|thunder call|thunder|lightning',WND:'galebreathe|gale breathe|gale|wind',SDW:'shadowcast|shadow cast|shadow',IRN:'ironsing|iron sing|iron|metal',BLD:'bloodrend|blood rend|blood'};
@@ -6767,9 +6830,12 @@ function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase(
     if(new RegExp(` (?:more|higher|extra|bit more) (?:${w}) `).test(s)){const v=lock(k,k==='FTD'?((fin[k]||0)<50?50:90):(fin[k]||0)+15);if(S.caps[k])S.caps[k].on=false;did.push(`more ${ANAME[k]}: ${v} after the shrine`);handled.add(k);continue}
     if(new RegExp(` (?:less|lower|bit less|reduce) (?:${w}) `).test(s)){const v=lock(k,(fin[k]||0)-15);did.push(`less ${ANAME[k]}: ${v} after the shrine`);handled.add(k)}}
   for(const [k,w] of Object.entries(ATW)){if(handled.has(k))continue;
-    if(new RegExp(` (?:no|remove|drop|without|lose) (?:${w}) `).test(s)&&k in S.atts){delete S.atts[k];did.push(`${ATT[k][0]} removed`);continue}
+    if(new RegExp(` (?:no|remove|drop|without|lose|stop using) (?:${w}) `).test(s)&&k in S.atts){delete S.atts[k];did.push(`${ATT[k][0]} removed`);continue}
     const r=rel(w);if(r!=null){const v=lock(k,(S.atts[k]||fin[k]||0)+r);did.push(`${ATT[k][0]} ${r>0?'raised':'lowered'} to ${v}`);continue}
     const n=num(w);if(n!=null&&n<=100){lock(k,n);did.push(`${ATT[k][0]} set to ${n}`);continue}
+    // "more frost" / "less flame": about 15 up or down (to 100 at most)
+    if(new RegExp(` (?:more|higher|extra|bit more|a lot more) (?:${w}) `).test(s)){const v=lock(k,(S.atts[k]||fin[k]||0)+(k in S.atts||fin[k]?15:40));did.push(`more ${ATT[k][0]}: ${v}`);continue}
+    if(new RegExp(` (?:less|lower|bit less) (?:${w}) `).test(s)&&(k in S.atts||fin[k])){const v=lock(k,Math.max(1,(S.atts[k]||fin[k]||0)-15));did.push(`less ${ATT[k][0]}: ${v}`);continue}
     if(new RegExp(` (?:add|use|with|also|plus|and) (?:${w}) `).test(s)&&!(k in S.atts)){S.atts[k]=40;keep(k);did.push(`${ATT[k][0]} added at 40`)}}
   for(const [k,w] of Object.entries(WPW)){const m=s.match(new RegExp(` (?:${w}) (?:weapon|wep)s?(?: (?:to |at )?(\\d{1,3}))? | (?:switch|change|go) to (?:${w}) `));if(m){const v=m[1]?+m[1]:Math.max(S.wtarget||0,k==='HVY'?90:80);if(S.weapon&&!(k in (WBY.get(S.weapon).req.s||{})))S.weapon='';lock(k,v);did.push(`${WEP[k]} weapon ${v}`)}}
   {const r=s.match(/ weapon (?:to |at )?(\d{1,3}) | (\d{1,3}) weapon /);if(r&&!did.some(d=>/weapon/.test(d))){const v=+(r[1]||r[2]);lock(S.wtype,v);did.push(`${WEP[S.wtype]} weapon ${v}`)}}
@@ -6777,12 +6843,15 @@ function applyAdjust(txt){const raw=String(txt||'');const s=' '+raw.toLowerCase(
   // 3. names: oath, weapon, talents and mantras to add or remove
   const found=findNames(nrm(raw),aiNames()).filter(h=>!(h.n.k==='talent'&&!h.ex&&AI_ATT.some(([,re])=>re.test(' '+nrm(raw).slice(h.at,h.end)+' '))));
   const before=(h,re)=>re.test(nrm(raw).slice(Math.max(0,h.at-24),h.at));
-  for(const h of found){const n=h.n.n;
+  let lastAct=null,lastEnd=-1;const nr=nrm(raw);
+  found.sort((x,y)=>x.at-y.at);
+  for(const h of found){const n=h.n.n;const listed=lastEnd>=0&&/^\s*(?:,|and|&|or|plus|\s)*$/.test(nr.slice(lastEnd,h.at));
     if(h.n.k==='oath'){S.oath=n;did.push('oath '+n)}
     else if(h.n.k==='weapon'){const w=WBY.get(n);S.weapon=n;S.weaponAuto=false;S.noAutoW=false;const wt=WEPS.find(k=>k in w.req.s);if(wt){S.wtype=wt;S.wtarget=Math.max(S.wtarget||0,w.req.s[wt]);keep(wt)}did.push('weapon '+n)}
     else if(h.n.k==='outfit'){S.gear.outfit=n;did.push('outfit '+n)}
     else if(h.n.k==='talent'||h.n.k==='mantra'){const isT=h.n.k==='talent';
-      if(before(h,/(?:remove|drop|no|without|lose|get rid of|not|avoid|skip) $/)){if(isT){S.sel=S.sel.filter(x=>x!==n);S.req=S.req.filter(x=>x!==n);if(/avoid|no $|not $|skip $/.test(nrm(raw).slice(Math.max(0,h.at-24),h.at))&&!(S.avoid||[]).includes(n))S.avoid=[...(S.avoid||[]),n]}else S.mantras=S.mantras.filter(x=>x!==n);did.push('removed '+n)}
+      const rm=before(h,/(?:remove|drop|no|without|lose|get rid of|take out|not|avoid|skip|ditch) $/)||(listed&&(lastAct==='rm'||lastAct==='avoid'));const av=/avoid|no $|not $|skip $/.test(nr.slice(Math.max(0,h.at-24),h.at))||(listed&&lastAct==='avoid');lastAct=av?'avoid':rm?'rm':'add';lastEnd=h.end;
+      if(rm){if(isT){S.sel=S.sel.filter(x=>x!==n);S.req=S.req.filter(x=>x!==n);if(av&&!(S.avoid||[]).includes(n))S.avoid=[...(S.avoid||[]),n]}else S.mantras=S.mantras.filter(x=>x!==n);did.push((av&&isT?'avoided ':'removed ')+n)}
       else{if(isT){S.avoid=(S.avoid||[]).filter(x=>x!==n);if(!S.sel.includes(n)&&!S.req.includes(n))S.sel.push(n)}else if(!S.mantras.includes(n))S.mantras.push(n);did.push('added '+n)}}}
   // 4. play styles
   if(/ tankier | more tanky | more tank | more health | survive more /.test(s)){S.mins.FTD=Math.max(+S.mins.FTD||0,(fin.FTD||0)<50?50:90);if(S.caps.FTD)S.caps.FTD.on=false;keep('FTD');did.push(`tankier: Fortitude ${S.mins.FTD} after the shrine`)}
@@ -6800,7 +6869,7 @@ function runAdjust(){const txt=$('adjtext').value.trim();const msg=$('adjmsg');i
   optimizeAll({noUndo:true,noSpend:true,after:()=>{const bb=last&&last.best;
     // a change that can't be paid for even after removing talents is rolled back
     if(!bb||bb.impossible||bb.free<0){const over=bb&&!bb.impossible?-bb.free:null;undo();msg.textContent=`That doesn't fit${over?`: it needs ${over} more points than the build has, even after removing talents`:''}, so nothing was changed. Lower something else first (e.g. “weapon 75” or “less charisma”), then try again.`;$('adjlog').firstElementChild&&$('adjlog').firstElementChild.insertAdjacentHTML('beforeend',' <b>(didn\'t fit, undone)</b>');return}
-    const asked=new Set(did.filter(d=>d.startsWith('removed ')).map(d=>d.slice(8)));const gone=[...selBefore].filter(n=>!S.sel.includes(n)&&!asked.has(n));
+    const asked=new Set(did.filter(d=>/^(removed|avoided) /.test(d)).map(d=>d.replace(/^(removed|avoided) /,'')));const gone=[...selBefore].filter(n=>!S.sel.includes(n)&&!asked.has(n));
     msg.textContent='Changes: '+did.join(' · ')+'.'+(gone.length?` To make room, ${gone.length} talent${gone.length>1?'s were':' was'} removed: ${gone.slice(0,6).join(', ')}${gone.length>6?'…':''}.`:'')+` ${bb.free} points left. Undo reverses it.`}})}
 function showAdj(on){S.aiAdj=!!on;$('adjpanel').hidden=!S.aiAdj;save()}
 

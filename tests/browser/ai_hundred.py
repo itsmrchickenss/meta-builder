@@ -19,12 +19,14 @@ with sync_playwright() as p:
     need = {'Scorching Decay', 'Night Terror', 'Wraith Path: Twisted Puppets', 'Burning Puppets', 'Burning Sacrifice', 'Explosive Rage', 'Moths to a Flame'}
     # two attunements (owner, November 18, 2026): 100 / 100 / 100 can't fit after the shrine, so the 100/100 talents are taken
     # before it; after-shrine targets stay at the usual split, and no default stat is fixed before the shrine
-    check(r['oath'] == 'Bladeharper' and r['w'] == 'Umbrite Witherblade' and r['wt'] == 'MED' and r['wv'] == 80 and r['hp'], f"oath / weapon / Medium 80 after, 100s before the shrine: {r['oath']} {r['w']} {r['wt']} {r['wv']} {r['hp']}")
+    check(r['oath'] == 'Bladeharper' and r['w'] == 'Umbrite Witherblade' and r['wt'] == 'MED' and r['wv'] == 75 and r['hp'], f"oath / weapon / Medium 75 after (what the shrine leaves), 100s before the shrine: {r['oath']} {r['w']} {r['wt']} {r['wv']} {r['hp']}")
     check(r['atts'].get('FLM', 0) < 100 and r['atts'].get('SDW', 0) < 100 and not r['pre'], f"after-shrine attunement targets below 100, nothing fixed before the shrine: {r['atts']} pre {r['pre']} must hit {r['want']}")
     check(need <= set(r['req']), f"required: {sorted(set(r['req']))}")
     check('att' not in r['q'] and 'oath' not in r['q'], f"no attunement or oath question: {r['q']}")
     r = parse('medium flamecharm build with the 100 flame 100 weapon talent')
-    check(r['req'] == ['Scorching Decay'] and r['wv'] == 100 and r['atts'].get('FLM') == 100, f"100 flame 100 weapon -> Scorching Decay only: {r['req']} {r['wv']} {r['atts']}")
+    # top builds (owner, November 18, 2026): the 100/100 talent is taken before the shrine; after it the weapon stays at 75 and the
+    # attunement at its usual 80, never raised back to 100
+    check(r['req'] == ['Scorching Decay'] and r['wv'] == 75 and r['atts'].get('FLM') == 80 and r['hp'], f"100 flame 100 weapon -> Scorching Decay only, taken before the shrine, Medium 75 / Flamecharm 80 after: {r['req']} {r['wv']} {r['atts']}")
     # the user's build: 100 / 100 / 100 before the shrine, the shrine spreads it, at least 15 points left
 
     r = parse('black flames flamecharm shadowcast umbrite witherblade bladeharper 100 flm 100 wep talent')
@@ -32,13 +34,24 @@ with sync_playwright() as p:
     # owner, November 18, 2026: "shadowcast 100 flame 100 weapon" is 100 flame + 100 weapon, not Shadowcast 100 (that planned two
     # attunements at 100); a number between two stat words goes to the one the rest of the phrase points at
     r = parse('make me a black flames flamecharm shadowcast 100 flame 100 weapon talent with bladeharper and umbrite witherblade')
-    check(r['atts'] == {'FLM': 100, 'SDW': 40} and r['wv'] == 100 and r['req'][-1] == 'Scorching Decay' and 'Night Terror' not in r['req'], f"shadowcast 100 flame 100 weapon -> Flamecharm 100, Shadowcast 40, weapon 100: {r['atts']} {r['wv']} {r['req']}")
+    check(r['atts'] == {'FLM': 80, 'SDW': 1} and r['wv'] == 75 and r['req'][-1] == 'Scorching Decay' and 'Night Terror' not in r['req'], f"shadowcast 100 flame 100 weapon -> Scorching Decay before the shrine, Flamecharm 80 after, Shadowcast only for the path: {r['atts']} {r['wv']} {r['req']}")
     r = parse('flame 50 shadow 40 medium'); check(r['atts'] == {'FLM': 50, 'SDW': 40}, f"flame 50 shadow 40 still reads after the word: {r['atts']}")
     r = parse('frost draw 80 flame charm 40 heavy'); check(r['atts'] == {'ICE': 80, 'FLM': 40} and 'CHA' not in r['pre'], f"two-word attunement names, and flame charm is not a Charisma build: {r['atts']} {r['pre']}")
     r = parse('flamecharm80 shadowcast40'); check(r['atts'] == {'FLM': 80, 'SDW': 40}, f"numbers stuck to the word: {r['atts']}")
     r = parse('heavy frostdraw 100/100 talent'); check('Frozen Anchor' in r['req'], f"100/100 with Frostdraw -> Frozen Anchor: {r['req']}")
     r = parse('bladeharper shadowcast black flame build'); check('Wraith Path: Twisted Puppets' in r['req'], f"black flame -> Twisted Puppets path: {r['req']}")
     r = parse('jetstriker light 100 100 talents'); check(not r['req'], f"100/100 with no attunement named: nothing required, a note instead: {r['req']}")
+    # the owner's build end to end (November 18, 2026): Medium and Flamecharm 100 before the shrine, not raised back to 100 after;
+    # Shadowcast never put in before the shrine only to sit lower after (45 -> 40)
+    pg.evaluate("openAI()"); pg.fill('#aitext', 'make me a black flames flamecharm shadowcast 100 flame 100 weapon talent with bladeharper and umbrite witherblade')
+    pg.click('#ai-go'); pg.wait_for_timeout(600)
+    if pg.evaluate("!$('aiqs').hidden"): pg.click('#aiq-go'); pg.wait_for_timeout(400)
+    pg.click('#wz-go'); pg.wait_for_timeout(300); wait()
+    st = pg.evaluate("""(()=>{const b=last.best,C=closure();return {free:b.free,P:Object.fromEntries(ALL.filter(k=>b.P[k]).map(k=>[k,b.P[k]])),fin:Object.fromEntries(ALL.filter(k=>b.final[k]).map(k=>[k,b.final[k]])),missing:S.req.filter(n=>!C.T.has(n)&&!C.M.has(n))}})()""")
+    P, F = st['P'], st['fin']
+    check(not st['missing'] and st['free'] >= 20, f"fits with points to spare: {st['free']} left, missing {st['missing']}, before {P}, after {F}")
+    check(not [k for k in ['MED', 'FLM', 'SDW'] if P.get(k, 0) >= 100 and F.get(k, 0) >= 100], f"nothing at 100 before the shrine goes back to 100 after: before {P}, after {F}")
+    check(not [k for k in ['FLM', 'SDW', 'ICE', 'LTN', 'WND', 'IRN', 'BLD'] if 1 < P.get(k, 0) < 100 and 0 < F.get(k, 0) <= P.get(k, 0) and P.get(k, 0) - F.get(k, 0) <= 10], f"no attunement put in before the shrine only to end a little lower (45 -> 40): before {P}, after {F}")
     # whole flow: AI build maker -> wizard -> build; every required talent in, plan within budget, no odd pre-shrine values
     pg.evaluate("openAI()"); pg.fill('#aitext', 'umbrite witherblade bladeharper black flames flamecharm shadowcast with the 100 100 talents, semi tanky')
     pg.click('#ai-go'); pg.wait_for_timeout(600)

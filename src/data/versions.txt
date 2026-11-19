@@ -4,7 +4,7 @@
 - Adjustments: two or more changes in one line all go through. "more agility and strength", "remove Ghost and Speed Demon", "raise flame and frost by 10", "set agility and willpower to 40", "less flame, more frost". "Remove A and B" used to add B.
 - Adjustments understand everyday words: "bump up int", "take out frost", "a heavier weapon", "get rid of Ghost", and "more"/"less" work for attunements too.
 - AI build maker understands everyday descriptions: "hard to kill", "doesn't die", "heal my friends", "mostly spells, don't want to M1", "from behind", "zooms around", "destroy armor", "steals life", "big sword", "daggers", "hit really hard" / "max damage" (favors damage), "my M1s" (weapon damage).
-- AI build maker: "I don't want any charisma or intelligence" now leaves them out. It used to add Charisma 75 and Intelligence 60.
+- AI build maker: "I don't want any charisma or intelligence" and "I hate charisma builds" now leave them out. They used to add Charisma 75 (and Intelligence 60). "Nothing tanky" means no Fortitude floor (it used to be read as tanky), and "the 100/100 frost talent" works with the slash.
 - Auto-pick no longer adds weapon-class talents your weapon can't use (Spear, Club, Rifle, Twinblade talents on a sword build). Compared with your featured builds, auto-pick now picks 76% of the same talents (was 66%).
 - Fortitude: when the optimizer needed points before the shrine to reach Power 8 and used Fortitude 50 for it (then 50 again after), it now tags Fortitude at 1 and puts those points into a stat you raise after the shrine anyway.
 - No more odd before-shrine numbers left behind by the last steps of optimizing (like Galebreathe 59): a final tidy-up snaps them to a clean level when that costs nothing.

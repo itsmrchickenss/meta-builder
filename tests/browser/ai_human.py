@@ -26,6 +26,10 @@ CASES = [
     ("i want to destroy armor with a heavy weapon", lambda r: r['wt'] == 'HVY' and r['atts'].get('IRN') and r['pre'].get('STR') == 90),
     ("a sneaky assassin that goes invisible", lambda r: r['pre'].get('AGL', 0) >= 40),
     ("give me a support build for my friends", lambda r: r['pre'].get('CHA') == 55),
+    ("i hate charisma builds, give me a strength build with a greataxe", lambda r: 'CHA' not in r['pre'] and r['pre'].get('STR') == 75 and r['wt'] == 'HVY'),
+    ("i want a really fast light build with wind, nothing tanky", lambda r: 'FTD' not in r['post'] and r['wt'] == 'LHT'),
+    ("he has a big hammer and lightning and never dies", lambda r: r['post'].get('FTD') == 50 and r['wt'] == 'HVY' and r['atts'].get('LTN')),
+    ("give me the 100/100 frost talent with a heavy weapon please", lambda r: r['atts'].get('ICE') == 80 and r['wv'] == 75),
 ]
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(); errs = []

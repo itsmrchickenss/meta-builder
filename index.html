@@ -4024,7 +4024,7 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - Adjustments: two or more changes in one line all go through. "more agility and strength", "remove Ghost and Speed Demon", "raise flame and frost by 10", "set agility and willpower to 40", "less flame, more frost". "Remove A and B" used to add B.
 - Adjustments understand everyday words: "bump up int", "take out frost", "a heavier weapon", "get rid of Ghost", and "more"/"less" work for attunements too.
 - AI build maker understands everyday descriptions: "hard to kill", "doesn't die", "heal my friends", "mostly spells, don't want to M1", "from behind", "zooms around", "destroy armor", "steals life", "big sword", "daggers", "hit really hard" / "max damage" (favors damage), "my M1s" (weapon damage).
-- AI build maker: "I don't want any charisma or intelligence" now leaves them out. It used to add Charisma 75 and Intelligence 60.
+- AI build maker: "I don't want any charisma or intelligence" and "I hate charisma builds" now leave them out. They used to add Charisma 75 (and Intelligence 60). "Nothing tanky" means no Fortitude floor (it used to be read as tanky), and "the 100/100 frost talent" works with the slash.
 - Auto-pick no longer adds weapon-class talents your weapon can't use (Spear, Club, Rifle, Twinblade talents on a sword build). Compared with your featured builds, auto-pick now picks 76% of the same talents (was 66%).
 - Fortitude: when the optimizer needed points before the shrine to reach Power 8 and used Fortitude 50 for it (then 50 again after), it now tags Fortitude at 1 and puts those points into a stat you raise after the shrine anyway.
 - No more odd before-shrine numbers left behind by the last steps of optimizing (like Galebreathe 59): a final tidy-up snaps them to a clean level when that costs nothing.
@@ -6441,7 +6441,8 @@ const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast',
 // everyday ways people describe a build, turned into the words the reader below knows (owner, November 19, 2026: "make what
 // people ask sound more human like if they ask indirectly for things"). Each line keeps the meaning, never adds a stat by itself.
 const AI_EVERYDAY=[
-  [/\b(hard to kill|(doesn'?t|dont|does not|won'?t|never) die|(lots|lot|tons) of (health|hp)|high (health|hp)|(bad|not good) at parry\w*|survive (a lot|more|longer)|unkillable|take a lot of (hits|damage))\b/g,' tanky '],
+  [/\b(nothing|not|no|don'?t need|dont need|don'?t want|dont want|without|never) (too |super |very |really |that |being |to be )?(tank\w*|beefy)\b/g,' squishy '],
+  [/\b(hard to kill|(doesn'?t|dont|does not|won'?t|never) dies?|(lots|lot|tons) of (health|hp)|high (health|hp)|(bad|not good) at parry\w*|survive (a lot|more|longer)|unkillable|take a lot of (hits|damage))\b/g,' tanky '],
   [/\b(a bit|kinda|somewhat|slightly) (tanky|tanks?|beefy)\b/g,' semi tanky '],
   [/\b(mostly|only|just|all) (spells?|magic|mantras?)\b|\b(don'?t|dont|do not|never) (really )?(want to |wanna )?m1\w*|\bno m1s?\b|\bspell ?caster\b/g,' mage '],
   [/\b(from behind|backstab\w*|invisible|go(es)? invis\w*|vanish\w*)\b/g,' stealth '],
@@ -6456,7 +6457,7 @@ const AI_EVERYDAY=[
 function aiEveryday(s){let o=s;for(const [re,w] of AI_EVERYDAY)o=o.replace(re,w);return o.replace(/\s+/g,' ')}
 // stats the words say to leave out: "no X", "without X", "don't want (any) X (or Y)", "not X", "zero X", "skip X"
 function aiNegated(s){const out=new Set();const words=[...AI_STAT,...AI_ATT];
-  for(const c0 of String(s).toLowerCase().split(/[,.;!?]| but | though | however | just | only | instead | i want | i'd like | i like | and (?:i )?(?:want|need|like) /)){const c=aiEveryday(nrm(c0));const m=c.match(/\b(no|without|don'?t (want|need|like|use)( any)?|dont (want|need|like|use)( any)?|do not (want|need|use)( any)?|not|zero|skip|avoid|never)\b/);if(!m)continue;
+  for(const c0 of String(s).toLowerCase().replace(/\b(hate|hates|dislike|can'?t stand|not into|no need for|not a fan of)\b/g,' no ').split(/[,.;!?]| but | though | however | just | only | instead | i want | i'd like | i like | and (?:i )?(?:want|need|like) /)){const c=aiEveryday(nrm(c0));const m=c.match(/\b(no|without|don'?t (want|need|like|use)( any)?|dont (want|need|like|use)( any)?|do not (want|need|use)( any)?|not|zero|skip|avoid|never)\b/);if(!m)continue;
     const tail=c.slice(m.index+m[0].length);for(const [k,re] of words)if(re.test(tail))out.add(k);if(/\bcharm\w*/.test(tail))out.add('CHA')}
   return out}
 const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire|flm)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*|ltn)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale|wnd)\b/],['SDW',/\b(shadow ?cast\w*|shadow|sdw)\b/],['IRN',/\b(iron ?sing\w*|metal|iron|irn)\b/],['BLD',/\b(blood ?rend\w*|blood|bld)\b/]];
@@ -6541,7 +6542,7 @@ function aiParse(txt,basePreset){
   const oathN=by('oath')[0]||(OATHS.find(o=>o.n!=='None'&&new RegExp('\\b'+o.n.toLowerCase().split('').join("[\\s'-]?")+'\\b').test(s))||{}).n;const oath=oathN?findO(oathN):null;
   if(oath){p.oath=oath.n;got.push('oath '+oath.n);if(oath.n==='Silentheart')p.atts={}}else if(has(/\bno oath\b/)){p.oath='None';got.push('no oath')}else if(!base||p.oath==='None')p.oath='__auto';else if(p.oath&&p.oath!=='__auto')got.push(`oath ${p.oath==='None'?'none':p.oath} (the starting point's default; name an oath to change it)`);
   // "100 flame 100 weapon (talent)" names a 100/100 talent: those numbers are not after-shrine targets (owner, November 18, 2026)
-  const H100=new RegExp('\\b100\\s+(?:'+AI_SW+')(?:\\s+(?:'+AI_SW+'))?\\s+100\\s+(?:'+AI_SW+')(?:\\s+talents?)?','g');
+  const H100=new RegExp('\\b100\\s+(?:'+AI_SW+')(?:\\s+(?:'+AI_SW+'))?\\s+100\\s+(?:'+AI_SW+')(?:\\s+talents?)?|\\b100\\s+100\\s+(?:(?:'+AI_SW+')\\s+)?talents?|\\b100\\s+100\\s+(?:'+AI_SW+')\\s+talents?','g');
   const sNum=sAtt.replace(H100,m=>/\b(weapons?|wep|wpn|heavy|medium|light)\b/.test(m)||/talents?$/.test(m)?' '.repeat(m.length):m);
   // attunements in order of mention (words that are part of a name don't count)
   const at=AI_ATT.map(([k,re])=>{if(negK.has(k))return null;const m=sAtt.match(re);return m?{k,i:m.index,re}:null}).filter(Boolean).sort((a,b)=>a.i-b.i);

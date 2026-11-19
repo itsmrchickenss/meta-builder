@@ -3182,13 +3182,26 @@ const AI_ARCH_ATT=[['FLM',/\b(burn\w*|damage over time|dot|explosions?|explosive
   ['BLD',/\b(life ?steal\w*|bleed\w*|poison\w*|vampir\w*|drain\w* health)\b/,'lifesteal / blood poison'],
   ['IRN+BLD',/\b(group fights?|multiple (people|enemies|players)|1 ?v ?[2-9]|outnumbered|multi ?target)\b/,'fighting several people']];
 const AI_STAT=[['STR',/\b(strength|str)\b/],['FTD',/\b(fortitude|fort|ftd)\b/],['AGL',/\b(agility|agi|agl)\b/],['INT',/\b(intelligence|int)\b/],['WLL',/\b(willpower|will|wll)\b/],['CHA',/\b(charisma|cha)\b/]];
-// the number that goes with a stat word: "flame 50" first; "60 flame" only when that number isn't already "lightning 60"
 // which side of the shrine the words put a stat on: 'pre', 'post' or '' (the clause around the stat, split at commas / and / with)
 function aiWhenOf(txt,re){for(const c of String(txt||'').toLowerCase().split(/[,;\n.]|\band\b|\bwith\b|\bplus\b|\bthen\b/)){const t=nrm(c);if(!re.test(t)||aiNumNear(t,re)==null)continue;
     if(/\b(pre ?shrine|pre|before)\b/.test(t))return 'pre';if(/\b(post ?shrine|post|after)\b/.test(t))return 'post';return ''}return ''}
-function aiNumNear(s,re){const w=re.source.replace(/\\b/g,'');let m=s.match(new RegExp('(?:'+w+')\\s*(\\d{1,3})(?!\\d)'));if(m)return Math.max(1,Math.min(100,+m[m.length-1]));
-  const statWord=/(?:flame ?charm\w*|flame|fire|frost ?draw\w*|frost|ice|thunder ?call\w*|thunder|lightning|electric\w*|gale ?breath\w*|wind|gale|shadow ?cast\w*|shadow|iron ?sing\w*|metal|iron|blood ?rend\w*|blood|strength|str|fortitude|fort|ftd|agility|agi|agl|intelligence|int|willpower|will|wll|charisma|cha|heavy|medium|light|weapon)\s*$/;
-  const g=new RegExp('(\\d{1,3})\\s*(?:'+w+')','g');let x;while((x=g.exec(s))){if(!statWord.test(s.slice(0,x.index)))return Math.max(1,Math.min(100,+x[1]))}return null}
+// stat words a typed number can belong to (short names too); two-word names are joined first ("flame charm" -> one word)
+const AI_SW='flame ?charm\\w*|flame|fire|flm|frost ?draw\\w*|frost|ice|thunder ?call\\w*|thunder|lightning|electric\\w*|ltn|gale ?breath\\w*|galebreathe|wind|gale|wnd|shadow ?cast\\w*|shadow|sdw|iron ?sing\\w*|metal|iron|irn|blood ?rend\\w*|blood|bld|strength|str|fortitude|fort|ftd|agility|agi|agl|intelligence|int|willpower|will|wll|charisma|cha|heavy|medium|light|weapons?|wep|wpn';
+const AI_SWX=new RegExp('^(?:'+AI_SW.replace(/ \?/g,'_?')+')$');
+function aiToks(s){const j=String(s).replace(/\b(flame|frost|thunder|gale|shadow|iron|blood) (charm|draw|call|breath\w*|cast|sing|rend)/g,(m,a,b)=>a+'_'+b).replace(/([a-z])(\d)/g,'$1 $2').replace(/(\d)([a-z])/g,'$1 $2');
+  const out=[];const r=/\S+/g;let m;while((m=r.exec(j)))out.push({t:m[0],at:m.index,ty:/^\d{1,3}$/.test(m[0])?'N':AI_SWX.test(m[0])?'S':'O'});return out}
+// which stat word a number between two stat words belongs to: "flame 50 shadow 40" -> the word before it (the chain ends in a
+// number); "100 flame 100 weapon" or "shadowcast 100 flame 100 weapon talent" -> the word after it (the chain ends in a stat word
+// and starts with a number, or is followed by "talent"). Owner, November 18, 2026: "shadowcast 100 flame 100 weapon" was read as
+// Shadowcast 100, which planned two attunements at 100.
+function aiNumOwner(T,i){const L=T[i-1]&&T[i-1].ty==='S',R=T[i+1]&&T[i+1].ty==='S';if(!L&&!R)return 0;if(L!==R)return L?-1:1;
+  let j=i+1,rEnd='S';while(T[j+1]&&T[j+1].ty==='N'){if(T[j+2]&&T[j+2].ty==='S')j+=2;else{rEnd='N';break}}
+  let k=i-1,lEnd='S';while(T[k-1]&&T[k-1].ty==='N'){if(T[k-2]&&T[k-2].ty==='S')k-=2;else{lEnd='N';break}}
+  if(rEnd==='N')return -1;if(lEnd==='N')return 1;return T[j+1]&&/^talents?$/.test(T[j+1].t)?1:-1}
+// the number that goes with a stat word: "flame 50" first, then "60 flame"; a number between two stat words goes to one of them only
+function aiNumNear(s,re){const T=aiToks(s);const hit=t=>t&&t.ty==='S'&&re.test(' '+t.t.replace(/_/g,' ')+' ');
+  for(const side of [-1,1])for(let i=0;i<T.length;i++)if(T[i].ty==='N'&&aiNumOwner(T,i)===side&&hit(T[i+side]))return Math.max(1,Math.min(100,+T[i].t));
+  return null}
 const cheapAlt=alts=>alts.slice().sort((a,b)=>altCost(a,{})-altCost(b,{}))[0];
 function aiParse(txt,basePreset){
   const s=nrm(txt);const got=[];const has=re=>re.test(s);
@@ -3209,7 +3222,8 @@ function aiParse(txt,basePreset){
   const semi=has(/\bsemi ?tank\w*|\b(bit|little|kinda|somewhat|slightly) tank\w*|\bsemi ?beefy\b/);
   if(semi||has(/\btank\w*|\bbeefy\b|\bsurviv\w*|\bdurable\b|\bmore health\b|\bhp\b/)){up(p.post,'FTD',50);add('Exoskeleton','To The Finish',...(semi?[]:['Brassneck','Ready or Not','Padded Armor','Steel Scales']));
     p.gear={w:semi?35:20,minhp:semi?550:620};got.push((semi?'semi tanky':'tanky')+' → Fortitude 50 after the shrine, equipment favors health (Fortitude is not pushed higher for gear)')}
-  if(has(/\bcharm\w*|\bcharisma\w*|\bcha\b/)){up(p.pre,'CHA',75);add('Charismatic Cast','Tough Love','Lasting Charisma','Manipulator');got.push('charm → Charisma 75')}
+  // "flame charm" (Flamecharm written as two words) is an attunement, not a Charisma build
+  if(has(/\b(?<!flame )charm\w*|\bcharisma\w*|\bcha\b/)){up(p.pre,'CHA',75);add('Charismatic Cast','Tough Love','Lasting Charisma','Manipulator');got.push('charm → Charisma 75')}
   const mobile=has(/\bgank\w*|\bmobil\w*|\bmovement\b|\bspeed\w*|\bfast\b|\bdodg\w*|\bagile\b|\bagility mantras?\b/);const gank=has(/\bgank\w*/);
   // ganking builds run high Agility (Cheap Shot at 65); other mobile builds 45
   if(mobile){const a=gank?65:has(/\bvery (fast|mobile)\b/)?60:45;up(p.pre,'AGL',a);add('Speed Demon','Swift Rebound','Evasive Expert','Kick Off',...(gank?['Risky Moves','Ghost','Cheap Shot']:[]));M.add('Agile Dash');got.push(gank?'gank → high Agility (65 for Cheap Shot), Ghost, Agile Dash and speed talents':`mobile → Agility ${a}, Agile Dash and speed talents`)}

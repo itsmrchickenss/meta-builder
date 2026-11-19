@@ -1,3 +1,8 @@
+## v0.39 | unreleased
+- AI build maker: a number between two stat words now goes to the right one. "shadowcast 100 flame 100 weapon talent" means Flamecharm 100 and weapon 100 (Scorching Decay), with Shadowcast at 40; it used to read "shadowcast 100" and plan two attunements at 100, which doesn't fit. "flame 50 shadow 40" still works the usual way.
+- "Flame charm" written as two words is Flamecharm, not a Charisma build (it used to add Charisma 75).
+- Numbers stuck to a stat name ("flamecharm80") are read too.
+
 ## v0.38 | 2026-11-18
 - The AI build maker understands short stat names: "100 flm 100 wep talent" now means Scorching Decay (it used to add every 100/100 talent, or none).
 - Charisma follows the Fortitude rule: before the shrine it stays at 1 and goes up after, unless a talent or mantra in your build, your oath or a value you set needs it there. No more Charisma 75 just to drop to 50, or for talents you didn't pick.

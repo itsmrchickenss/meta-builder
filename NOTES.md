@@ -58,6 +58,7 @@ Pre-release numbering is **v0.x** (v0.35 released November 17, 2026). The owner 
 - Keep the oath the person names; otherwise use the starting point's default.
 - A mage gets **no attunement unless asked**.
 - Attunements: one → 80 (mage 100); two → 80/40, or 80/80 when the points allow (mage or "dual" → 80/80); three+ → one main at 80 (mage 100), the rest 40.
+- **Numbers go to one stat word** (owner, November 18, 2026): a number between two stat words (`aiNumOwner`) belongs to the word after it when the phrase ends in a stat word and starts with a number, or is followed by "talent" ("shadowcast 100 flame 100 weapon talent" = Flamecharm 100 + weapon 100, Shadowcast stays the second attunement at 40); otherwise the word before it ("flame 50 shadow 40"). Two attunements are never planned at 100 from one misread number. "Flame charm" (two words) is Flamecharm, never a Charisma build. Checked in `tests/browser/ai_hundred.py`.
 - A talent path that needs other attunements (steam = Flamecharm + Frostdraw): those secondary attunements go **only as high as the requested talents need** (e.g. "lightning steam path" → Thundercall 80, Flamecharm 30, Frostdraw 30). The main attunement is the first one named that the path doesn't need. Numbers the person types always win ("flame 50").
 - Silentheart makes attunement points useless: never auto-pick it for attunement or mage builds; warn when a weapon (Hero's Blade) still needs attunement.
 - A new build must not inherit anything from the previous one (required talents, equipment, enchant, caps).

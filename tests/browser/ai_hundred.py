@@ -29,6 +29,13 @@ with sync_playwright() as p:
 
     r = parse('black flames flamecharm shadowcast umbrite witherblade bladeharper 100 flm 100 wep talent')
     check('Scorching Decay' in r['req'] and 'Night Terror' not in r['req'], f"short names: 100 flm 100 wep -> Scorching Decay, not Night Terror: {r['req']}")
+    # owner, November 18, 2026: "shadowcast 100 flame 100 weapon" is 100 flame + 100 weapon, not Shadowcast 100 (that planned two
+    # attunements at 100); a number between two stat words goes to the one the rest of the phrase points at
+    r = parse('make me a black flames flamecharm shadowcast 100 flame 100 weapon talent with bladeharper and umbrite witherblade')
+    check(r['atts'] == {'FLM': 100, 'SDW': 40} and r['wv'] == 100 and r['req'][-1] == 'Scorching Decay' and 'Night Terror' not in r['req'], f"shadowcast 100 flame 100 weapon -> Flamecharm 100, Shadowcast 40, weapon 100: {r['atts']} {r['wv']} {r['req']}")
+    r = parse('flame 50 shadow 40 medium'); check(r['atts'] == {'FLM': 50, 'SDW': 40}, f"flame 50 shadow 40 still reads after the word: {r['atts']}")
+    r = parse('frost draw 80 flame charm 40 heavy'); check(r['atts'] == {'ICE': 80, 'FLM': 40} and 'CHA' not in r['pre'], f"two-word attunement names, and flame charm is not a Charisma build: {r['atts']} {r['pre']}")
+    r = parse('flamecharm80 shadowcast40'); check(r['atts'] == {'FLM': 80, 'SDW': 40}, f"numbers stuck to the word: {r['atts']}")
     r = parse('heavy frostdraw 100/100 talent'); check('Frozen Anchor' in r['req'], f"100/100 with Frostdraw -> Frozen Anchor: {r['req']}")
     r = parse('bladeharper shadowcast black flame build'); check('Wraith Path: Twisted Puppets' in r['req'], f"black flame -> Twisted Puppets path: {r['req']}")
     r = parse('jetstriker light 100 100 talents'); check(not r['req'], f"100/100 with no attunement named: nothing required, a note instead: {r['req']}")

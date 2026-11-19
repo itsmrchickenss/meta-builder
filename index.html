@@ -4019,6 +4019,7 @@ Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites the
 Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
 Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
 <script type="text/plain" id="dwvers">## v0.38 | unreleased
+- Charisma follows the Fortitude rule: before the shrine it stays at 1 and goes up after, unless a talent or mantra in your build, your oath or a value you set needs it there. No more Charisma 75 just to drop to 50, or for talents you didn't pick.
 - Fixed: pressing an arrow key or the spinner on an empty stat box (one that shows the optimizer's number in grey) started from 0, so one stray click could lock Medium Weapon at 0 and move your weapon points to Heavy. The box now starts from the number it shows.
 - If you lock your weapon type low and the build has to carry its weapon points in another type, the results now tell you and how to undo it.
 - Advanced talents like Volcanic Glass can now use a path you unroll later: take Eruption, get Volcanic Glass, unroll Eruption and take Twisted Puppets. The talent stays, and the path's stats are still planned.
@@ -4647,8 +4648,15 @@ function requirements(){
     const sy=synW(synOf(n,C));const p=(POP.get(n)||0)+sy*SYN_PTS;if(p<=0)continue;
     const alts=reqAlts(tt.req,false).filter(a=>altOkCaps(a,caps));if(!alts.length||!hasStats(alts))continue;val.push({n,p,alts,pre:canPre(alts),syn:sy})}
   if(S.comboOpt!==false)val.push(...comboEntries(C,caps));
+  // Charisma before the shrine (owner, November 18, 2026): same rule as Fortitude. 1 and raised after, or exactly a level something
+  // in the build asks for (its talents and mantras, the oath, your before / must-hit / floor value or a pin). Never 75 just to land
+  // on 50, and not for optional talents you didn't pick (Command: Live, Unnecessary Theatrics at 75): that was the "no reason" 75
+  const lvPre={};for(const k of ['CHA']){const L=new Set([0,1,pre[k]||0,(S.pin&&S.pin[k])||0,fixed[k]||0,...[...thr[k]].filter(v=>v<=100)]);
+    for(const a of oathAltsOf(findO(S.oath))||[])if(a.min[k]!=null)L.add(a.min[k]);
+    let inSum=false;for(const it of items)for(const a of it.alts)for(const [ks] of a.sum||[])if(ks.includes(k))inSum=true;
+    if(!inSum)lvPre[k]=L}
   let oathAlts=oathAltsOf(findO(S.oath));if(oathAlts){const ok=oathAlts.filter(a=>altOkCaps(a,caps));if(ok.length)oathAlts=ok;else{capBlocked.push('Oath: '+S.oath);oathAlts=null}}
-  return {pre,max,fixed,want,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked,ftdPre,ftdLv};
+  return {pre,max,fixed,want,items,C,thr,names:new Set(names),val,oathAlts,caps,capBlocked,ftdPre,ftdLv,lvPre};
 }
 function oathAltsOf(o){if(!o||!o.req)return null;return o.custom||reqAlts(o.req,false)}
 
@@ -4686,6 +4694,7 @@ function applyAlt(alt,final,adds){
 function evaluate(P,R,oathAlts){
   for(const k of ALL){if(P[k]<R.pre[k]||P[k]>R.max[k])return null}
   if(R.ftdPre!=null&&(P.FTD>R.ftdPre||(R.ftdLv&&!R.ftdLv.has(P.FTD))))return null;
+  if(R.lvPre)for(const k in R.lvPre)if((P[k]||0)>1&&!R.lvPre[k].has(P[k]))return null;
   const preSum=ALL.reduce((s,k)=>s+P[k],0);if(preSum>BUDGET)return null;
   const preTaken=[],post=[];
   for(const it of R.items){if(it.mode!=='post'&&it.alts.some(a=>altCost(a,P)===0))preTaken.push(it.name);else post.push(it)}

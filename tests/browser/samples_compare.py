@@ -2,7 +2,7 @@
 # (owner, November 19, 2026: "create more builds and compare them to some of the sample builds i gave you").
 #  - stats: given the same final stats, oath, weapon, talents and mantras, the optimizer must fit them with at least as many
 #    points left as the real build (within 1), without odd before-shrine values. Builds whose own before-shrine total is under
-#    135 (Power 8) aren't compared: they use the shrine below Power 8, which the game doesn't allow.
+#    135 (Power 8) are compared with the Shrine of Blasphemy setting on (Power 5 = 90 points), as the owner explained.
 #  - auto-pick: given the same before-shrine and final stats and no talents, auto-pick must choose at least 70% of the real
 #    build's talents overall, and never a weapon-class talent (Spear, Club, Rifle…) the build's weapon can't use.
 # python3 tests/browser/samples_compare.py
@@ -19,8 +19,8 @@ def check(ok, msg):
 SETUP = """c=>{for(const k of Object.keys(S))if(k!=='tab')delete S[k];applyPreset({clean:1});
   S.oath=OATHS.some(o=>o.n===c.oath)?c.oath:'None';S.wtype=c.wt||'MED';S.wtarget=c.wv;S.weapon=WBY.has(c.weapon)?c.weapon:'';S.noAutoW=!S.weapon;
   S.atts={...c.atts};S.mins={...c.mins};S.preMin=c.usePre?Object.fromEntries(Object.entries(c.pre).filter(([k,v])=>ATTR.includes(k)&&v>1)):{};
-  S.sel=c.tal.filter(n=>TBY.has(n));S.mantras=c.man.filter(n=>MBY.has(n));S.req=[];renderInputs();optimizeAll({noUndo:true,noSpend:true});return 1}"""
-THEIRS = """c=>{const R=requirements();const P={};for(const k of ALL)P[k]=c.pre[k]||0;const e=evaluate(P,R,R.oathAlts);return e&&!e.impossible?e.free:null}"""
+  S.blasphemy=!!c.bl;S.sel=c.tal.filter(n=>TBY.has(n));S.mantras=c.man.filter(n=>MBY.has(n));S.req=[];renderInputs();optimizeAll({noUndo:true,noSpend:true});return 1}"""
+THEIRS = """c=>{S.blasphemy=!!c.bl;const R=requirements();const P={};for(const k of ALL)P[k]=c.pre[k]||0;const e=evaluate(P,R,R.oathAlts);return e&&!e.impossible?e.free:null}"""
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={'width': 1280, 'height': 900}); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)))
@@ -31,8 +31,8 @@ with sync_playwright() as p:
         name, oath, wt, weapon = r[3], r[4], r[5], r[7]; pre, fin = st(r[9]), st(r[10])
         tal = [t for t in r[11].split(';') if t]
         cfg = {'oath': oath, 'wt': wt, 'wv': fin.get(wt, 0), 'weapon': weapon, 'atts': {k: v for k, v in fin.items() if k in ATTS},
-               'mins': {k: v for k, v in fin.items() if k not in ATTS + WEPS}, 'tal': tal, 'man': [m for m in r[12].split(';') if m], 'pre': pre, 'usePre': False}
-        if sum(pre.values()) >= 135:
+               'mins': {k: v for k, v in fin.items() if k not in ATTS + WEPS}, 'tal': tal, 'man': [m for m in r[12].split(';') if m], 'pre': pre, 'usePre': False, 'bl': 90 <= sum(pre.values()) < 135}
+        if sum(pre.values()) >= 90:  # under 135 = the Shrine of Blasphemy first (owner, November 19, 2026)
             pg.evaluate(SETUP, cfg); wait()
             theirs = pg.evaluate(THEIRS, cfg)
             o = pg.evaluate("""c=>{const b=last.best;const C=closure();return {free:b.free,kept:c.tal.filter(n=>TBY.has(n)&&C.T.has(n)).length,asked:c.tal.filter(n=>TBY.has(n)).length,odd:ALL.filter(k=>oddPre(k,last.R,b)),

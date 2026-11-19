@@ -51,11 +51,14 @@ window.__gen=function(seed){const r=__rng(seed*7919+13);const pick=a=>a[Math.flo
   if(chance(.3))c.req.push(pick(keyT));
   const mats=Object.keys(c.atts);if(mats.length&&chance(.6)&&c.oath!=='Silentheart'){const ms=DB.M.filter(m=>m.ty==='N'&&m.at.some(a=>mats.includes(a))&&!oathTagOf(m.n));for(let i=0;i<pick([1,2,3]);i++)c.m.push(pick(ms).n)}
   if(c.wtarget>0&&chance(.3)){const ws=DB.W.filter(w=>(w.req.s[c.wtype]||0)>0&&(w.req.s[c.wtype]||0)<=c.wtarget);if(ws.length)c.weapon=pick(ws).n}
+  // the owner's November 19, 2026 rules: Wisp mantras (Will o' Wisp when 2+ or no slot) and the Shrine of Blasphemy (shrine from Power 5)
+  if(mats.length&&chance(.25)&&c.oath!=='Silentheart'){const ws=DB.M.filter(m=>m.c==='W'&&m.at.some(a=>mats.includes(a)));for(let i=0;i<pick([1,1,2]);i++){const m=pick(ws);if(m&&!c.m.includes(m.n))c.m.push(m.n)}}
+  c.bl=chance(.2)?1:0;
   if(c.oath==='Silentheart'){c.atts={};c.m=[]}
   c.t=[...new Set(c.t)];c.req=[...new Set(c.req)];return c};
 
 window.__setup=function(c){
-  S.manual=false;S.order=true;S.noReup=true;S.mastery={on:false,pre:{},post:{}};S.oath=c.oath||'None';S.wtype=c.wtype||'MED';S.wtarget=c.wtarget||0;S.weapon=c.weapon&&WBY.has(c.weapon)?c.weapon:'';S.weaponAuto=false;S.noAutoW=!c.weapon;
+  S.manual=false;S.order=true;S.noReup=true;S.blasphemy=!!c.bl;S.mastery={on:false,pre:{},post:{}};S.oath=c.oath||'None';S.wtype=c.wtype||'MED';S.wtarget=c.wtarget||0;S.weapon=c.weapon&&WBY.has(c.weapon)?c.weapon:'';S.weaponAuto=false;S.noAutoW=!c.weapon;
   S.atts={...(c.atts||{})};S.preMin={...(c.pre||{})};S.mins={...(c.post||{})};S.want={...(c.want||{})};S.pin={};S.sel=[...(c.t||[])].filter(n=>TBY.has(n));S.req=[...(c.req||[])].filter(n=>TBY.has(n)||MBY.has(n));
   S.mantras=[...(c.m||[])].filter(n=>MBY.has(n));S.when={};S.avoid=[];S.caps={};S.keep={};S.prio=c.prio==null?50:c.prio;S.dsplit=c.dsplit==null?50:c.dsplit;S.spend=false;S.traits={};S.allowOver=false;S.gear={outfit:'',slots:{},focus:'bal'};S.enchant='None';
   last=null};

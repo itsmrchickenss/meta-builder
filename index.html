@@ -700,6 +700,7 @@ details summary{cursor:pointer;color:var(--dim);font-size:13px}
     <p class="hint xh" id="dsplithelp" style="margin:0"></p>
     <details class="subopt"><summary>More optimizer options</summary><div>
     <label class="hint"><input type="checkbox" id="spend"> Spend leftover points on weapon and attunement</label>
+    <label class="hint"><input type="checkbox" id="blasphemy"> Use the Shrine of Blasphemy first: the Shrine of Order from Power 5 (90 points) instead of Power 8 (135)</label>
     <label class="hint"><input type="checkbox" id="noreup"> Pre‑shrine is the peak: attributes raised before the shrine get at most 5 points after it (a small step back up for a talent)</label>
     </div></details>
     <div class="verdict" id="verdict"></div>
@@ -4019,6 +4020,11 @@ Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites the
 Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
 Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
 <script type="text/plain" id="dwvers">## v0.40 | unreleased
+- Shrine of Blasphemy: new optimizer setting "Use the Shrine of Blasphemy first". It lets the Shrine of Order be used from Power 5 (90 points) instead of Power 8 (135). Imported builds that use the shrine below 135 points switch it on, and the AI build maker turns it on when you say "blasphemy".
+- Fortitude at a talent's level (Concussion needs Fortitude 15) is no longer left the same before and after the shrine. The optimizer tries your three ways out and keeps the best: both stats maxed before the shrine, the other stat moved after the shrine too, or skip those talents and tag Fortitude at 1.
+- Will o' Wisp is taken when the build runs two or more Wisps, or when its Wisp has no slot left (support slot taken, no wildcard free), and it adds a Wisp mantra slot.
+- After 100 before the shrine, the weapon or attunement isn't pushed past 80 after it (the damage slider, the Optimize focus plans and leftover spending). Those points go to talents or a lower attunement instead. Numbers you type still win.
+- Mages (AI build maker mages, the Mage and Bossraid Mage presets) don't get a Hero's Blade automatically, and the AI build maker no longer gives them an oath that needs weapon points (Bladeharper).
 - 100/100 talents (Scorching Decay, Night Terror, Frozen Anchor…) are planned like the top builds on deepwoken.co: weapon and attunement 100 before the shrine, everything else tagged at 1, then the weapon stays at the 75 the shrine leaves and the attunement goes to 80. They're no longer raised back to 100 after the shrine (example: a Twisted Puppets + Scorching Decay build went from 0–14 points left to 36).
 - A second attunement that's only there for a path (Shadowcast for Twisted Puppets, Frostdraw for steam) is used for the path and isn't raised again after the shrine, unless a mantra you asked for needs it. No more "Shadowcast 45 before, 40 after".
 - Adjustments: two or more changes in one line all go through. "more agility and strength", "remove Ghost and Speed Demon", "raise flame and frost by 10", "set agility and willpower to 40", "less flame, more frost". "Remove A and B" used to add B.
@@ -4599,8 +4605,17 @@ function closure(){
   [...(S.req||[]),...S.sel].filter(isAdv).forEach(n=>addA(n,null));
   S.mantras.forEach(n=>addM(n,null));
   oathTalentPrereqs(findO(S.oath)).forEach(n=>addT(n,'Oath: '+S.oath));
+  // Will o' Wisp (+1 Wisp mantra slot) is taken when the build runs more than one Wisp, or when its Wisp has no slot left: the
+  // support slot is taken and no wildcard slot is free (owner, November 19, 2026). Unless you avoided it.
+  if(!T.has("Will o' Wisp")&&!isAvoid("Will o' Wisp")&&wispNeedsWill([...M.keys()],T))addT("Will o' Wisp",'Wisps');
   return {T,M};
 }
+function wispNeedsWill(mantras,T){const o=findO(S.oath);const all=[...mantras,...(o.mantras||[])].filter(n=>MBY.has(n));
+  const wisps=all.filter(n=>MBY.get(n).c==='W');if(!wisps.length)return false;if(wisps.length>1)return true;
+  const cap={...BASESLOTS};for(const [k,v] of Object.entries(o.slots||{}))cap[k]=(cap[k]||0)+v;if(T&&T.has('Neuroplasticity'))cap.X++;
+  const used={C:0,M:0,S:0,W:0,X:0};const order=[...all.filter(n=>MBY.get(n).c!=='W'),...wisps];
+  for(const n of order){const l=MBY.get(n).c;if(used[l]<(cap[l]||0))used[l]++;else if(l==='W'&&used.S<cap.S)used.S++;else if(used.X<cap.X)used.X++;else if(l==='W')return true}
+  return false}
 const reqOf=n=>(TBY.get(n)||MBY.get(n)).req;
 // a talent or mantra plus every prerequisite it pulls in
 function prereqSet(n,acc){acc=acc||{T:new Set(),M:new Set()};const t=TBY.get(n),m=t?null:MBY.get(n);const e=t||m;if(!e)return acc;
@@ -4705,7 +4720,10 @@ function shrine(P){
   return {out,refund:w};
 }
 const powerAt=t=>Math.max(0,Math.min(20,Math.floor((t-15)/15)));
-const SHRINE_PWR=8,SHRINE_PTS=15*SHRINE_PWR+15; // Power 8 = 135 points before the shrine
+// Power 8 = 135 points before the shrine. With the Shrine of Blasphemy first (+3 levels without points) it can be used from
+// Power 5 = 90 points (owner, November 19, 2026; 35 of 262 top deepwoken.co builds do this). Optimizer setting S.blasphemy.
+Object.defineProperty(globalThis,'SHRINE_PWR',{get:()=>(typeof S!=='undefined'&&S&&S.blasphemy)?5:8,configurable:true});
+Object.defineProperty(globalThis,'SHRINE_PTS',{get:()=>15*SHRINE_PWR+15,configurable:true});
 
 // ================= evaluation & search =================
 function fillPriority(stats,final){const att=Object.keys(S.atts);return [...stats].sort((a,b)=>{const r=k=>k===S.wtype?0:att.includes(k)?1:WSCALE[S.wtype].includes(k)?2:3;return r(a)-r(b)||(final[b]||0)-(final[a]||0)})}
@@ -4757,6 +4775,9 @@ const MASTERY_LIMIT=3;
 function masteryOf(ph){const m=S.mastery;if(!m||!m.on)return {};return m[ph]||{}}
 function shrineStep(P){return S.order===false?{out:{...P},refund:0}:shrine(P)}
 // ---- manual mode: the user sets pre-shrine and final stats; nothing is raised or chosen automatically ----
+// an imported build that uses the shrine below Power 8 (but at Power 5 or more) went through the Shrine of Blasphemy first
+function autoBlasphemy(){const m=S.man;if(!m||!m.pre)return;const sum=ALL.reduce((t,k)=>t+(+m.pre[k]||0),0);const same=ALL.every(k=>(+m.pre[k]||0)===(+(m.fin||{})[k]||0));
+  if(!same&&powerAt(sum)<8&&powerAt(sum)>=5)S.blasphemy=true}
 function computeManual(){
   const R=requirements();const man=S.man||{pre:{},fin:{}};
   const P={};ALL.forEach(k=>P[k]=Math.max(0,Math.min(100,+(man.pre||{})[k]||0)));
@@ -4971,7 +4992,10 @@ function sliderRebalance(res,noFill){const pr=(S.prio==null?50:S.prio)/100;const
   if(noFill||Math.abs(pr-0.5)<0.15||!res.best||res.best.impossible)return out;
   const keep={w:S.wtarget,a:{...S.atts},sel:[...S.sel]};
   const wNeed=S.weapon&&WBY.get(S.weapon)?(WBY.get(S.weapon).req.s[S.wtype]||0):0;const capL=capsOf();
-  const lim=k=>k in capL?capL[k]:100;const locked=k=>!!((S.caps||{})[k]&&S.caps[k].on);const r5=x=>Math.round(x/5)*5;
+  const lim0=k=>k in capL?capL[k]:100;const locked=k=>!!((S.caps||{})[k]&&S.caps[k].on);const r5=x=>Math.round(x/5)*5;
+  // a weapon or attunement at 100 before the shrine (for a 100/100 talent) isn't pushed past 80 after it: level 5 mantras come at
+  // 80 and its talents were taken before the shrine, so those 20 points buy more as talents or a lower attunement (owner, November 19, 2026)
+  const lim=k=>Math.min(lim0(k),(res.best.P[k]||0)>=100?80:100);
   if(pr<0.5){const f=(0.5-pr)*2;const ms=Object.keys(S.atts).length?(S.dsplit==null?50:S.dsplit)/100:0;
     if(!locked(S.wtype)&&(S.wtarget>0||S.weapon)&&ms<1){const nw=Math.min(lim(S.wtype),r5(S.wtarget+(100-S.wtarget)*f*(1-ms*0.5)));if(nw>S.wtarget){out.notes.push(`${WEP[S.wtype]} ${S.wtarget} → ${nw}`);S.wtarget=nw}}
     if(ms>0)for(const k of Object.keys(S.atts)){if(locked(k))continue;const v=S.atts[k];const nv=Math.min(lim(k),r5(v+(100-v)*f*ms));if(nv>v){out.notes.push(`${ATT[k][0]} ${v} → ${nv}`);S.atts[k]=nv}}}
@@ -4979,6 +5003,10 @@ function sliderRebalance(res,noFill){const pr=(S.prio==null?50:S.prio)/100;const
     if(!locked(S.wtype)&&S.wtarget>wNeed){const nw=Math.max(wNeed,r5(S.wtarget-(S.wtarget-wNeed)*f*0.6));if(nw<S.wtarget){out.notes.push(`${WEP[S.wtype]} ${S.wtarget} → ${nw}`);S.wtarget=nw}}
     for(const k of Object.keys(S.atts)){if(locked(k))continue;const v=S.atts[k];if(v<=40)continue;const nv=Math.max(40,r5(v-(v-40)*f*0.6));if(nv<v){out.notes.push(`${ATT[k][0]} ${v} → ${nv}`);S.atts[k]=nv}}}
   let r=compute({starts:8,iters:120,seedP:res.best.P});
+  // the plan this lands on can put the weapon / an attunement at 100 before the shrine: then the push stops at 80 (owner rule)
+  {let ch=false;if(r.best&&!r.best.impossible){if(S.wtarget>80&&keep.w<=80&&(r.best.P[S.wtype]||0)>=100){S.wtarget=Math.max(80,keep.w);ch=true}
+    for(const k of Object.keys(S.atts))if(S.atts[k]>80&&(keep.a[k]||0)<=80&&(r.best.P[k]||0)>=100){S.atts[k]=Math.max(80,keep.a[k]||0);ch=true}
+    if(ch){out.notes=out.notes.map(n=>n);r=compute({starts:8,iters:120,seedP:r.best.P})}}}
   const fix=()=>{if(r.best&&r.best.free<0&&!r.best.impossible){const tr=trimToBudget(r);out.dropped.push(...tr.dropped);r=tr.res;if(r.best&&r.best.free<0&&!r.best.impossible){const rb=rebuildToBudget();out.dropped.push(...rb.dropped);r=rb.res}}};
   fix();
   // fill open talent slots with what the slider favors (each one fits the stats already)
@@ -5041,7 +5069,24 @@ function fixReup(res){const dropped=[];let guard=12;
         if(best){const t=tidyPlan(best,res.R,res.R.oathAlts,ALL);if(t&&!t.impossible&&t.free>=0&&!t.reup&&!ftdSame(t))best=t;res={...res,best};return true}}}
       return false};
     // (with no points to spare the budget wins: moving Fortitude can change whether the shrine is reachable at all)
-    tryF()}
+    // Still the same: Fortitude sits at the level a talent taken before the shrine needs (Concussion: Fortitude 15 + Strength 20).
+    // The owner's three ways out (November 19, 2026), whichever leaves the better build; rules have exceptions, so when none fits
+    // the plan stays as it is: (1) both stats to the max before the shrine, (2) the other stat after the shrine too, so both are
+    // after-shrine stats, (3) don't take those talents and tag Fortitude at 1
+    if(!tryF()&&res.best&&ftdSame(res.best)){const b=res.best,R=res.R,lv=b.P.FTD;const okE=e=>e&&!e.impossible&&!e.reup&&e.free>=0&&!ftdSame(e);let pick=null;
+      const take=e=>{if(!okE(e))return;const t=tidyPlan(e,R,R.oathAlts,ALL);if(okE(t)&&t.free>=e.free)e=t;if(!pick||better(e,pick))pick=e};
+      const its=R.items.filter(it=>it.alts.some(a=>a.min&&a.min.FTD===lv));
+      const others=[...new Set(its.flatMap(it=>it.alts.flatMap(a=>Object.keys(a.min||{}))))].filter(k=>k!=='FTD'&&ATTR.includes(k)&&(b.P[k]||0)>1&&!(S.pin&&k in S.pin));
+      const fill=P=>{let need=SHRINE_PTS-ALL.reduce((x,k)=>x+(P[k]||0),0);if(need<=0)return P;const room=ALL.filter(k=>k!=='FTD'&&!others.includes(k)&&(b.final[k]||0)>(P[k]||0)).sort((x,y)=>((b.final[y]||0)-(P[y]||0))-((b.final[x]||0)-(P[x]||0)));
+        for(const k of room){if(need<=0)break;const cap=Math.min(100,(b.final[k]||0)+(floorStat(k)?25:0));const add=Math.min(need,Math.max(0,cap-(P[k]||0)));P[k]=(P[k]||0)+add;need-=add}return need>0?null:P};
+      // (1) both to the max before the shrine
+      {const P={...b.P};for(const k of ['FTD',...others])P[k]=Math.min(100,R.max[k]??100);take(evaluate(P,R,R.oathAlts))}
+      // (2) the other stat after the shrine too
+      {const P={...b.P,FTD:Math.max(1,+(S.preMin||{}).FTD||0)};for(const k of others)P[k]=1;const F=fill(P);if(F){take(evaluate(F,R,R.oathAlts));const t=compute({starts:6,iters:160,seedP:F});if(t.best&&t.best.P.FTD<lv)take(t.best)}}
+      if(pick){res={...res,best:pick}}
+      // (3) leave those talents out (never ones you required) and tag Fortitude at 1
+      else{const names=its.map(it=>it.name).filter(n=>TBY.has(n)&&S.sel.includes(n)&&!isReq(n));if(names.length){const keep=S.sel;S.sel=S.sel.filter(n=>!names.includes(n));
+        const t=compute({starts:8,iters:160,seedP:{...b.P,FTD:1}});if(okE(t.best)){res=t;dropped.push(...names)}else S.sel=keep}}}}
   return {res,dropped}}
 function rebuildToBudget(seedP){const dropped=[];const C=closure();
   const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n)).sort((a,b)=>talentVal(b,C)-talentVal(a,C));
@@ -5099,7 +5144,7 @@ function counts(C){
 }
 function slotUse(C){
   const o=findO(S.oath);const cap={...BASESLOTS};for(const [k,v] of Object.entries(o.slots||{}))cap[k]=(cap[k]||0)+v;
-  if(C.T.has('Neuroplasticity'))cap.X++;
+  if(C.T.has('Neuroplasticity'))cap.X++;if(C.T.has("Will o' Wisp"))cap.W++;
   const used={C:0,M:0,S:0,W:0,X:0};let over=0;
   for(const n of [...C.M.keys(),...(o.mantras||[])]){const m=MBY.get(n);if(!m)continue;const l=m.c;let u;
     if(used[l]<(cap[l]||0))u=l;else if(l==='W'&&used.S<cap.S)u='S';else if(used.X<cap.X)u='X';else{u=l;over++}used[u]++}
@@ -5379,6 +5424,7 @@ function addMyPreset(name){name=String(name||'').trim().slice(0,60);if(!name){sa
   if(saveMyPresets(l.slice(0,50))){renderMyPresets();say(i>=0?`Updated your preset “${name}”.`:`Saved “${name}” to your presets on this computer.`)}else say('This browser blocked saving. Use Share → Copy link to keep the build instead.')}
 // owner (November 17, 2026): a build with no weapon stats (a mage) always gets a Hero's Blade for its strongest element, unless
 // the person picked a weapon, cleared it, or imported a build without one. S.weaponAuto = we picked it; S.noAutoW = leave it empty.
+// Mages (the AI build maker's mage builds, the Mage and Bossraid Mage presets) don't get one automatically either (owner, November 19, 2026).
 const HERO_EL={FLM:'Flame',ICE:'Frost',LTN:'Lightning',WND:'Wind',SDW:'Shadow'};
 function autoHeroBlade(){if(S.manual)return;
   if(+S.wtarget>0||S.oath==='Silentheart'){if(S.weaponAuto){S.weapon='';S.weaponAuto=false}return}
@@ -5405,7 +5451,7 @@ function renderInputs(){autoHeroBlade();renderTraits();
   $('oath').innerHTML=OATHS.map(o=>`<option value="${esc(o.n)}" ${o.n===S.oath?'selected':''}>${o.n==='None'?'No oath':esc(o.n)}</option>`).join('');
   const o=findO(S.oath);
   $('oathinfo').innerHTML=o.n==='None'?'':`<div class="item"><div class="nm">Needs ${esc(o.custom?o.custom.map(fmtAlt).join(' or '):fmtReq(o.req))}<small>Mantra slots +${esc(fmtSlots(o.slots)||'none')}${o.mantras.length?' · '+esc(o.mantras.join(', ')):''}</small></div></div>${OATH_NOTES[o.n]?`<p class="hint">${esc(OATH_NOTES[o.n])}</p>`:''}`;
-  $('spend').checked=!!S.spend;$('noreup').checked=S.noReup!==false;
+  $('spend').checked=!!S.spend;if($('blasphemy'))$('blasphemy').checked=!!S.blasphemy;$('noreup').checked=S.noReup!==false;
   $('prio').value=S.prio==null?50:S.prio;
   $('dsplit').value=S.dsplit==null?50:S.dsplit;$('dsplit').disabled=!Object.keys(S.atts).length;paintRanges();
   {const v=S.dsplit==null?50:S.dsplit;$('dsplithelp').textContent=!Object.keys(S.atts).length?'Damage from: locked because you have no attunement, so all your damage comes from your weapon (M1). Tick an attunement on the Stats tab to use it.':`Damage from tells the optimizer which damage to grow when it spends points: your weapon stat (M1 hits) or your attunement (mantra hits). Slide left for a weapon build, right for a caster. Now: ${v===0?'weapon only':v===100?'mantras only':`${100-v}% weapon, ${v}% mantras`}.`}
@@ -5896,13 +5942,18 @@ function optCore(spend,noFill){autoHeroBlade();
         const keys=[...(S.wtarget>0||!S.weapon?[S.wtype]:[]),...Object.keys(S.atts),...ATTR];
         const nextTh=(k,f)=>{let m=Infinity;for(const v of RV)for(const a of v.alts){const x=a.min&&a.min[k];if(x>f[k]&&x<m)m=x}return m===Infinity?0:m-f[k]};
         while(free>0){let best=null;const v0=val(fin);
-          const lim=capsOf();for(const k of keys){const opts=new Set([1,5,ATT[k]?(Math.floor(fin[k]/20)+1)*20-fin[k]:0,nextTh(k,fin)].filter(x=>x>0&&x<=free&&fin[k]+x<=(k in lim?lim[k]:100)));
+          const lim=capsOf();const hiPre=k=>(prevRes.best.P[k]||0)>=100;for(const k of keys){const opts=new Set([1,5,ATT[k]?(Math.floor(fin[k]/20)+1)*20-fin[k]:0,nextTh(k,fin)].filter(x=>x>0&&x<=free&&fin[k]+x<=Math.min(k in lim?lim[k]:100,hiPre(k)?Math.max(80,prevRes.best.final[k]||0):100)));
             for(const s of opts){const g=(val({...fin,[k]:fin[k]+s})-v0)/s;if(!best||g>best.g)best={k,s,g}}}
           if(!best||best.g<=0)break;fin[best.k]+=best.s;free-=best.s}
         if(fin[S.wtype]>(+S.wtarget||0))S.wtarget=fin[S.wtype];
         for(const k of Object.keys(S.atts))if(fin[k]>S.atts[k])S.atts[k]=fin[k];
         for(const k of ATTR)if(fin[k]>prevRes.best.final[k]&&fin[k]>(+S.mins[k]||0))S.mins[k]=fin[k];
-        return compute({starts:18,iters:200,seedP:prevRes.best.P})};
+        let rr=compute({starts:18,iters:200,seedP:prevRes.best.P});
+        // spent points that land on a stat the plan puts at 100 before the shrine stop at 80 (owner rule)
+        if(rr.best&&!rr.best.impossible){let ch=false;if(S.wtarget>80&&prevW<=80&&(rr.best.P[S.wtype]||0)>=100){S.wtarget=Math.max(80,prevW);ch=true}
+          for(const k of Object.keys(S.atts))if(S.atts[k]>80&&(prevA[k]||0)<=80&&(rr.best.P[k]||0)>=100){S.atts[k]=Math.max(80,prevA[k]||0);ch=true}
+          if(ch)rr=compute({starts:18,iters:200,seedP:rr.best.P})}
+        return rr};
         // spending must never push the build over budget: keep the unspent version if it does
         // spending must never push the build over budget: retry with fewer points, else keep the unspent version
         let F=prevRes.best.free,ok=null;for(let tries=0;tries<4&&F>0;tries++){const r=spendTry(F);if(r.best&&!r.best.impossible&&r.best.free>=0){ok=r;break}F-=Math.max(2,r.best?-r.best.free+2:F)}
@@ -6018,7 +6069,7 @@ function optimizeAll(opts){{const pe=$('prio'),de=$('dsplit');if(pe)S.prio=+pe.v
 // share links always point at the public website so anyone can open them
 const ARTIFACT_URL='https://itsmrchickenss.github.io/meta-builder/';
 function shareBase(){const h=location.hostname||'';const inClaude=/claude\.ai|anthropic|usercontent|claude\.site/.test(h)||!/^https?:$/.test(location.protocol);return inClaude?ARTIFACT_URL:location.href.split('#')[0]}
-function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,wn:S.want&&Object.keys(S.want).length?S.want:undefined,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined,wa:S.weaponAuto?1:undefined,nw:S.noAutoW?1:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encodeBuild(){const o={v:1,w:S.wtype,t:S.wtarget,a:S.atts,s:S.sel,m:S.mantras,n:S.when,i:S.mins,q:S.preMin,wn:S.want&&Object.keys(S.want).length?S.want:undefined,o:S.oath,p:S.weapon,g:S.gear,r:S.req,e:S.enchant,x:S.pin,sn:S.snap,av:S.avoid,cp:S.caps,tr:S.traits,lp:last&&last.best&&!S.manual?last.best.P:undefined,wa:S.weaponAuto?1:undefined,nw:S.noAutoW?1:undefined,bl:S.blasphemy?1:undefined};const bytes=new TextEncoder().encode(JSON.stringify(o));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return 'dw1'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function decodeBuild(raw){
   let code=String(raw||'').trim();const i=code.indexOf('#');if(i>=0)code=code.slice(i+1);
   if(!code.startsWith('dw1'))throw new Error('not a build code');
@@ -6029,7 +6080,7 @@ function decodeBuild(raw){
   next.atts={};for(const [k,v] of Object.entries(o.a||{}))if(ATT[k])next.atts[k]=num(v,80);
   for(const k of ['s','r','av'])if(Array.isArray(o[k]))o[k]=renameList(o[k]);if(o.n)for(const [a,b] of Object.entries(RENAMED_T))if(a in o.n){o.n[b]=o.n[a];delete o.n[a]}
   next.sel=(o.s||[]).filter(n=>TBY.has(n));next.mantras=(o.m||[]).filter(n=>MBY.has(n));
-  next.weaponAuto=!!o.wa;next.noAutoW=!!o.nw;
+  next.weaponAuto=!!o.wa;next.noAutoW=!!o.nw;next.blasphemy=!!o.bl;
   if(o.lp&&typeof o.lp==='object'){const sp={};for(const k of ALL)sp[k]=num(o.lp[k],0);next._seedP=sp}
   next.when={};for(const [k,v] of Object.entries(o.n||{}))if(v==='pre'||v==='post')next.when[k]=v;
   next.mins={};for(const [k,v] of Object.entries(o.i||{}))if(ATTR.includes(k))next.mins[k]=num(v,0);
@@ -6199,7 +6250,7 @@ function wizardApply(){
   const pre={},post={},want={};ATTR.forEach(a=>{const x=+v('wz-pre-'+a);if(x)pre[a]=x;const y=+v('wz-post-'+a);if(y)post[a]=y;const w=+v('wz-want-'+a);if(w)want[a]=w});
   const atts={};document.querySelectorAll('#wz-atts .wzatt').forEach(r=>{const s=r.querySelectorAll('select');const k=s[0].value,lv=+s[1].value;if(k&&!(k in atts))atts[k]=lv});
   const autoOath=v('wz-oath')==='__auto';
-  S.oath=autoOath?'None':v('wz-oath');S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.weaponAuto=false;S.noAutoW=false;S.atts=atts;S.preMin=pre;S.mins=post;S.want=want;S.pin={};S.mantras=[];S.when={};
+  S.oath=autoOath?'None':v('wz-oath');S.blasphemy=!!p.blasphemy;S.wtype=v('wz-wt');S.wtarget=+v('wz-wv');S.weapon=p.weapon&&WBY.has(p.weapon)?p.weapon:'';S.weaponAuto=false;S.noAutoW=!S.weapon&&!!(p._q&&p._q.caster)&&!(+v('wz-wv')>0);S.atts=atts;S.preMin=pre;S.mins=post;S.want=want;S.pin={};S.mantras=[];S.when={};
   // a new build starts clean: required talents, equipment and enchant from the previous build don't carry over
   S.req=[];S.keep={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));S.enchant='None';S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
   if(S.oath==='Silentheart'){const wa=p.weapon&&WBY.get(p.weapon);for(const k of Object.keys(S.atts))if(!(wa&&wa.req.s[k]))delete S.atts[k]}
@@ -6221,7 +6272,8 @@ function wizardApply(){
     const notes=[];
     if(autoOath&&last&&last.best){
       const at=Object.keys(S.atts);const pop={};for(const r of REF){const w=1+(r.w===S.wtype?1:0)+(at.length?2*at.filter(a=>r.a.includes(a)).length/at.length:(!S.wtarget&&!S.weapon)?(r.a.length?2:0):(r.a.length?0:1));pop[r.o]=(pop[r.o]||0)+w}
-      const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless'&&!(o.n==='Silentheart'&&(at.length||(!S.wtarget&&!S.weapon)||S.mantras.some(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])})))).map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
+      // a build with no weapon (a mage) isn't given an oath that needs weapon points (Bladeharper: weapon 75) (owner, November 19, 2026)
+      const ranked=OATHS.filter(o=>o.n!=='None'&&o.n!=='Oathless'&&!(o.n==='Silentheart'&&(at.length||(!S.wtarget&&!S.weapon)||S.mantras.some(n=>{const m=MBY.get(n);return m&&m.at.some(a=>ATT[a])})))&&!(!S.wtarget&&!S.weapon&&(oathAltsOf(o)||[]).length&&oathAltsOf(o).every(al=>WEPS.some(w=>((al.min||{})[w]||0)>1)||(al.sum||[]).some(([ks,v])=>v>1&&ks.every(k=>WEPS.includes(k)))))).map(o=>({o,b:evaluate(last.best.P,last.R,oathAltsOf(o)),p:pop[o.n]||0})).filter(x=>x.b&&!x.b.impossible&&x.b.free>=0).sort((a,b)=>(b.p-a.p)||(b.b.free-a.b.free));
       if(ranked.length){S.oath=ranked[0].o.n;notes.push(`picked ${S.oath} (fits, and is the most common oath in similar top builds)`)}else notes.push('no oath fits these stats yet, so none is set')}
     run();
     // starting points must fit 330 points: ease the largest floors down 5 at a time until they do
@@ -6634,6 +6686,7 @@ function aiParse(txt,basePreset){
   p.t=[...new Set([...T,...REQ])].filter(n=>TBY.has(n));p.req=[...REQ].filter(n=>TBY.has(n));p.m=[...M].filter(n=>MBY.has(n));
   {const pn={};for(const n of pathT){const e=TBY.get(n);if(!e)continue;const a=cheapAlt(chainStatic(e));if(!a)continue;for(const [k,v] of Object.entries(a.min))if(ATT[k])pn[k]=Math.max(pn[k]||0,v)}
     p._q={at:at.map(x=>x.k),explicit:[...new Set([...at.filter(x=>aiNumNear(sNum,x.re)).map(x=>x.k),...hAtts])],need:{...needAtt},pathNeed:pn,caster,oathNamed:!!oath||has(/\bno oath\b/)||!!(basePreset&&basePreset.oath&&basePreset.oath!=='__auto'),weaponNamed:!!(wN||wm||caster||p.weapon),durNamed:has(/\btank\w*|\bbeefy\b|\bglass cannon\b|\bsurviv\w*|\bbalanced\b|\bsquishy\b/)}}
+  if(has(/\bblasphemy\b/)){p.blasphemy=1;got.push('Shrine of Blasphemy first: the Shrine of Order from Power 5')}
   if(has(/\bglass cannon\b|\bsquishy\b/)){delete p.post.FTD;got.push('glass cannon: no Fortitude floor')}
   // "hit really hard", "max damage": the optimizer favors damage; "m1s", "melee": the damage comes from the weapon
   if(has(/\bdamage focus\b/)){p.prio=20;got.push('most damage → the optimizer favors damage over talent options')}
@@ -6688,7 +6741,7 @@ function applyDwb(b){
   S.oath=b.oath||'None';S.weapon=b.weapon||'';S.weaponAuto=false;S.noAutoW=!S.weapon;if(b.outfit)S.gear.outfit=b.outfit;if(b.traits&&Object.values(b.traits).some(v=>v>0))S.traits={...b.traits};
   const otal=new Set(OATHS.flatMap(o=>[...(o.mantras||[])]));
   S.sel=[...new Set(b.talents)].filter(n=>TBY.has(n)&&!n.startsWith('Oath:')&&TBY.get(n).r!=='O');S.mantras=[...new Set(b.mantras)].filter(n=>MBY.has(n)&&!oathTagOf(n)&&!otal.has(n));
-  if(b.pre){S.manual=true;S.man={pre:{},fin:{}};for(const k of ALL){if(b.pre[k])S.man.pre[k]=b.pre[k];if(fin[k])S.man.fin[k]=fin[k]}}else S.manual=false;
+  if(b.pre){S.manual=true;S.man={pre:{},fin:{}};for(const k of ALL){if(b.pre[k])S.man.pre[k]=b.pre[k];if(fin[k])S.man.fin[k]=fin[k]}autoBlasphemy()}else S.manual=false;
   renderInputs();run();if(!b.pre)optimizeAll({noSpend:true,noUndo:true});renderShrines();
   return `Imported “${b.name}” from ${b.src}: ${S.sel.length} talents, ${S.mantras.length} mantras${S.weapon?', '+S.weapon:''}${S.oath!=='None'?', '+S.oath:''}.`+(b.pre?' Its exact pre‑shrine and final stats are loaded in Manual mode; switch to Optimizer to replan them.':' Only final stats come with this format, so the optimizer planned the pre‑shrine stats.')+(b.unknown.length?` Not found here: ${b.unknown.slice(0,6).join(', ')}${b.unknown.length>6?'…':''}.`:'')}
 function presetFromDwb(b){const fin=b.fin||{},pre=b.pre||{};const wt=WEPS.slice().sort((x,y)=>(fin[y]||0)-(fin[x]||0))[0];const p={n:b.name,src:'AI build maker',pre:{},post:{},oath:b.oath||'__auto',wtype:wt,wtarget:fin[wt]||0,weapon:b.weapon||'',atts:{},t:[...b.talents],m:[...b.mantras],outfit:b.outfit||''};
@@ -7011,7 +7064,7 @@ function applyPreset(p){
   pushUndo(p.clean?'Clean Slate':'preset '+p.n);
   if(p.clean){S.man={pre:{},fin:{}};S.mastery={on:false,pre:{},post:{}};S.order=true;S.oath='None';S.wtype='MED';S.wtarget=0;S.weapon='';S.atts={};S.preMin={};S.mins={};S.want={};S.pin={};S.sel=[];S.mantras=[];S.when={};S.enchant='None';S.req=[];S.avoid=[];S.caps={};S.traits={};S.gear={outfit:'',slots:{},focus:(S.gear&&S.gear.focus)||'bal'};
     renderInputs();{const R=requirements();const Z=Object.fromEntries(ALL.map(k=>[k,0]));renderResults({R,best:evaluate(Z,R,R.oathAlts)||compute({starts:2,iters:60}).best,baseFree:noShrineFree(R)})}sayUndo('Clean slate: every stat at 0, no oath, attunement, talents, mantras or equipment.');return}
-  S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.weaponAuto=false;S.noAutoW=false;S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.want={...(p.want||{})};S.pin={};
+  S.oath=p.oath;S.wtype=p.wtype;S.wtarget=p.wtarget;S.weapon='';S.weaponAuto=false;S.noAutoW=/\bMage\b/.test(p.n||'');S.atts={...p.atts};S.preMin={...p.pre};S.mins={...p.post};S.want={...(p.want||{})};S.pin={};
   S.sel=p.t.filter(n=>TBY.has(n));S.mantras=[];S.when={};S.caps=JSON.parse(JSON.stringify(p.caps||{}));
   if(S.manual)manualFromTargets();
   renderInputs();optimizeAll({noSpend:true,noUndo:true});say(`Loaded the ${p.n} preset. ${p.src} on deepwoken.co start like this. Add talents, then press Optimize build.`);
@@ -7132,6 +7185,7 @@ document.addEventListener('change',e=>{
   else if(t.id==='oath'){S.oath=t.value;renderInputs();runSoon()}
   else if(t.id==='spend'){S.spend=t.checked;save()}
   else if(t.id==='noreup'){S.noReup=t.checked;runSoon()}
+  else if(t.id==='blasphemy'){S.blasphemy=t.checked;save();runSoon()}
   else if(t.id==='comboopt'){S.comboOpt=t.checked;runSoon()}
   else if(t.id==='prio'){S.prio=+t.value;runSoon()}
   else if(t.id==='dsplit'){S.dsplit=+t.value;renderInputs();runSoon()}

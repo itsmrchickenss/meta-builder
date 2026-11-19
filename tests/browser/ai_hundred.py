@@ -27,6 +27,8 @@ with sync_playwright() as p:
     check(r['req'] == ['Scorching Decay'] and r['wv'] == 100 and r['atts'].get('FLM') == 100, f"100 flame 100 weapon -> Scorching Decay only: {r['req']} {r['wv']} {r['atts']}")
     # the user's build: 100 / 100 / 100 before the shrine, the shrine spreads it, at least 15 points left
 
+    r = parse('black flames flamecharm shadowcast umbrite witherblade bladeharper 100 flm 100 wep talent')
+    check('Scorching Decay' in r['req'] and 'Night Terror' not in r['req'], f"short names: 100 flm 100 wep -> Scorching Decay, not Night Terror: {r['req']}")
     r = parse('heavy frostdraw 100/100 talent'); check('Frozen Anchor' in r['req'], f"100/100 with Frostdraw -> Frozen Anchor: {r['req']}")
     r = parse('bladeharper shadowcast black flame build'); check('Wraith Path: Twisted Puppets' in r['req'], f"black flame -> Twisted Puppets path: {r['req']}")
     r = parse('jetstriker light 100 100 talents'); check(not r['req'], f"100/100 with no attunement named: nothing required, a note instead: {r['req']}")

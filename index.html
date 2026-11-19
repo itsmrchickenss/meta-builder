@@ -4018,7 +4018,8 @@ Pressure Bleed|Your vents turn pink, spraying explosive Black Puddles that ignit
 Critical Mass|Landing a Critical Attack on an enemy with Black Blood ignites them with pink fire.
 Exothermic Finish|Igniting an enemy with Black Blood now flourishes them instead of knocking them back, activating all flourish talents.
 Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to a maximum of 12%.</script>
-<script type="text/plain" id="dwvers">## v0.38 | unreleased
+<script type="text/plain" id="dwvers">## v0.38 | 2026-11-18
+- The AI build maker understands short stat names: "100 flm 100 wep talent" now means Scorching Decay (it used to add every 100/100 talent, or none).
 - Charisma follows the Fortitude rule: before the shrine it stays at 1 and goes up after, unless a talent or mantra in your build, your oath or a value you set needs it there. No more Charisma 75 just to drop to 50, or for talents you didn't pick.
 - Fixed: pressing an arrow key or the spinner on an empty stat box (one that shows the optimizer's number in grey) started from 0, so one stray click could lock Medium Weapon at 0 and move your weapon points to Heavy. The box now starts from the number it shows.
 - If you lock your weapon type low and the build has to carry its weapon points in another type, the results now tell you and how to undo it.
@@ -6354,7 +6355,8 @@ function aiNames(){if(AI_NAMES)return AI_NAMES;
 // talent families people call "paths"
 const AI_PATHS=[['steam|vapou?r|vaporborne|flashboil','Vaporborne'],['lava|eruption|magma','Lava Serpent'],['glass|crystal','Glassdancer'],['puppet|wraith','Twisted Puppets','black flames?|dark flames?|purple flames?|shadow ?flames?'],['scrap|gilded|scrapsinger','Scrapsinger'],['surge|capacitor','Unstable Capacitor'],['specter|spectre|haunted','Specter'],['alloyblood|composite|plasma','Alloyblood'],['sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)','Exotherm','sanguine blaze|exotherm\\w*|black blood|pink (?:flames?|fire)']];
 const AI_EX=['armor shredding heavy build','stealth gank build with shadowcast','insanity build with flamecharm','semi tanky heavy weapon bossraid','charisma mage with frostdraw and thundercall','fast light weapon chime build','Silentheart strength build'];
-const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale)\b/],['SDW',/\b(shadow ?cast\w*|shadow)\b/],['IRN',/\b(iron ?sing\w*|metal|iron)\b/],['BLD',/\b(blood ?rend\w*|blood)\b/]];
+// (the short stat names players type count too: flm, ltn, wnd, sdw, irn, bld; "100 flm 100 wep" = Scorching Decay)
+const AI_ATT=[['FLM',/\b(flame ?charm\w*|flame|fire|flm)\b/],['ICE',/\b(frost ?draw\w*|frost|ice)\b/],['LTN',/\b(thunder ?call\w*|thunder|lightning|electric\w*|ltn)\b/],['WND',/\b(gale ?breath\w*|galebreathe|wind|gale|wnd)\b/],['SDW',/\b(shadow ?cast\w*|shadow|sdw)\b/],['IRN',/\b(iron ?sing\w*|metal|iron|irn)\b/],['BLD',/\b(blood ?rend\w*|blood|bld)\b/]];
 const AI_WEP=[['HVY',/\b(heavy|greatsword|greataxe|greathammer|great ?sword|great ?axe|hammer)\b/],['LHT',/\b(light weapon|light|dagger|fists?|cestus|katana)\b/],['MED',/\b(medium|sword|spear|rapier|longsword)\b/]];
 const AI_ARCH_ATT=[['FLM',/\b(burn\w*|damage over time|dot|explosions?|explosive|pyro\w*)\b/,'burn'],['ICE',/\b(freez\w*|slows|slowing|crippl\w*)\b/,'freezing / slows'],
   ['LTN',/\b(stun\w*|lock ?down|zon(e|ing)|crowd control)\b/,'stuns / lockdown'],['WND',/\b(high pressure|pressure)\b/,'pressure'],

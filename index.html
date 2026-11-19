@@ -4028,6 +4028,9 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - Auto-pick no longer adds weapon-class talents your weapon can't use (Spear, Club, Rifle, Twinblade talents on a sword build). Compared with your featured builds, auto-pick now picks 76% of the same talents (was 66%).
 - Fortitude: when the optimizer needed points before the shrine to reach Power 8 and used Fortitude 50 for it (then 50 again after), it now tags Fortitude at 1 and puts those points into a stat you raise after the shrine anyway.
 - No more odd before-shrine numbers left behind by the last steps of optimizing (like Galebreathe 59): a final tidy-up snaps them to a clean level when that costs nothing.
+- Smarter optimizing when the budget is tight: before lowering your stats or dropping talents, the optimizer now checks properly whether your required talents and set stats fit (a quick check said "53 over" for a build that fit with points to spare, so it lowered Intelligence 75 and dropped 9 talents). When talents still have to go, it runs one deep search and adds back what the freed points allow.
+- Stats you raise after the shrine are tagged at 1 before it when that's cheaper (example: Fortitude 0 → 50 cost 5 more points than tagging it and putting Strength 60 before the shrine).
+- A build that wasn't using the Shrine of Order now tries a plan that does, with a stat your oath needs (Saltchemist's Intelligence 75) at 100 before it so the shrine brings it to 75.
 - Fixed: an advanced talent whose chain keeps needing a path (Reshape and Remold needs Refine and Reuse, which needs Gilded Path) could be taken next to a path that excludes it (Composite Path: Alloyblood). It's now treated as a conflict.
 
 ## v0.39 | 2026-11-18
@@ -5043,8 +5046,10 @@ function fixReup(res){const dropped=[];let guard=12;
 function rebuildToBudget(seedP){const dropped=[];const C=closure();
   const cand=S.sel.filter(n=>TBY.has(n)&&!isReq(n)).sort((a,b)=>talentVal(b,C)-talentVal(a,C));
   S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));let r=compute({starts:4,iters:80,seedP});
+  if(!r.best||r.best.impossible||r.best.free<0){const r2=compute({starts:40,iters:300});if(r2.best&&!r2.best.impossible&&(!r.best||r.best.impossible||better(r2.best,r.best)))r=r2}
   if(!r.best||r.best.impossible||r.best.free<0){dropped.push(...cand);return {res:r,dropped}}
-  for(const n of cand){if(S.sel.includes(n))continue;S.sel=[...S.sel,n];const t=compute({starts:1,iters:40,seedP:r.best.P});
+  for(const n of cand){if(S.sel.includes(n))continue;S.sel=[...S.sel,n];let t=compute({starts:1,iters:40,seedP:r.best.P});
+    if(!(t.best&&!t.best.impossible&&t.best.free>=0))t=compute({starts:10,iters:150,seedP:r.best.P});
     if(t.best&&!t.best.impossible&&t.best.free>=0)r=t;else{S.sel=S.sel.filter(x=>x!==n);dropped.push(n)}}
   return {res:r,dropped}}
 // If required talents and floors alone don't fit: lower the floors 5 at a time, biggest first (pins and required stay)
@@ -5850,7 +5855,11 @@ function optCore(spend,noFill){autoHeroBlade();
       // still over: ease floors if required talents + floors alone don't fit, then rebuild the picks greedily
       let lowered={};
       // (also when there is no build at all: the floors alone are over the budget)
-      if(!res.best||(res.best.free<0&&!res.best.impossible)){const keep=S.sel;S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const base=compute({starts:4,iters:80});S.sel=keep;let efP=null;
+      if(!res.best||(res.best.free<0&&!res.best.impossible)){const keep=S.sel;S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));
+        // "do the required talents and your set stats fit on their own?" needs a real search: a 4-start one said 53 over where
+        // one with 50 starts fit with points to spare, so floors were lowered and 9 talents dropped for nothing (mass check, November 19, 2026)
+        let base=compute({starts:4,iters:80});if(!base.best||base.best.impossible||base.best.free<0){const b2=compute({starts:40,iters:300});if(b2.best&&!b2.best.impossible&&(!base.best||base.best.impossible||better(b2.best,base.best)))base=b2}
+        S.sel=keep;let efP=null;
         if(!base.best||(!base.best.impossible&&base.best.free<0)){S.sel=S.sel.filter(n=>!TBY.has(n)||isReq(n));const ef=easeFloors();lowered=ef.lowered;efP=ef.res.best&&ef.res.best.P;S.sel=keep}
         else efP=base.best.P;
         const rb=rebuildToBudget(efP);dropped=dropped.concat(rb.dropped);res=compute({starts:18,iters:200,seedP:rb.res.best&&rb.res.best.P});
@@ -5864,6 +5873,15 @@ function optCore(spend,noFill){autoHeroBlade();
         if(S.weapon&&!isReq(S.weapon)){dropped.push(S.weapon+' (weapon)');S.weapon='';S.weaponAuto=false;S.noAutoW=true;res=compute({starts:12,iters:160,seedP:res.best.P});continue}
         break}}
       {const fx=fixReup(res);res=fx.res;dropped=dropped.concat(fx.dropped);Object.assign(lowered,fx.lowered)}
+      // talents had to go to fit the budget: one deep search on what's left (a local search can miss a plan that moves several
+      // stats at once), then whatever points it frees go back into the dropped talents, most valuable first (mass check,
+      // November 19, 2026: a tank build dropped 7 talents at 0 points left where a deeper search found 5 more points)
+      if(dropped.length&&res.best&&!res.best.impossible&&!res.best.manual){const R=res.R;const okE=e=>e&&!e.impossible&&e.free>=0&&!(e.reup>0&&S.noReup!==false)&&!ftdSame(e);
+        const deep=searchStats(R,R.oathAlts,{starts:50,iters:300});
+        if(okE(deep)&&better(deep,res.best)){res={...res,best:deep};const C=closure();
+          const back=dropped.filter(n=>TBY.has(n)&&!S.sel.includes(n)&&!isAvoid(n)&&!conflictOf(n,new Set(C.T.keys()),null,true)).sort((x,y)=>talentVal(y,C)-talentVal(x,C));
+          for(const n of back){S.sel=[...S.sel,n];let t=compute({starts:1,iters:40,seedP:res.best.P});if(!okE(t.best))t=compute({starts:8,iters:150,seedP:res.best.P});
+            if(okE(t.best)&&t.best.free>=0){res=t;dropped=dropped.filter(x=>x!==n)}else S.sel=S.sel.filter(x=>x!==n)}}}
       const lw=Object.entries(lowered);
       const sb=sliderRebalance(res,noFill);res=sb.res;dropped=dropped.concat(sb.dropped);
       if(sb.notes.length||sb.added.length)res=compute({starts:18,iters:200,seedP:res.best.P});
@@ -5891,6 +5909,29 @@ function optCore(spend,noFill){autoHeroBlade();
         if(ok)res=ok;else{S.wtarget=prevW;S.atts=prevA;S.mins=prevM;res=prevRes}
         if(res.best&&res.best.reup){const fx=fixReup(res);res=fx.res;dropped=dropped.concat(fx.dropped)}
       }
+      // no shrine in the plan: also try one that uses it, with a stat the build needs high (an oath's Intelligence 75…) at
+      // target + 25 before it (the shrine takes at most 25 from it), the other final stats tagged at 1, and any points still
+      // missing for Power 8 put into a stat raised after the shrine anyway (mass check, November 19, 2026: Saltchemist with
+      // Intelligence 75 after and no shrine left 5 points on the table)
+      {const b=res.best;if(b&&!b.impossible&&!b.manual&&b.noShrine&&S.order!==false){const R=res.R;let pick=null;
+        const ok=e=>e&&!e.impossible&&!e.noShrine&&e.free>=0&&!(e.reup>0&&S.noReup!==false)&&!ftdSame(e);
+        for(const k of ALL){if(!floorStat(k)||(b.final[k]||0)<40||(S.pin&&k in S.pin))continue;const P3={};for(const j of ALL)P3[j]=Math.max(R.pre[j]||0,(b.final[j]||0)>0?1:0,b.P[j]&&j!==k?b.P[j]:0);
+          P3[k]=Math.min(100,R.max[k]??100,(b.final[k]||0)+25);let need=SHRINE_PTS-ALL.reduce((x,j)=>x+P3[j],0);
+          const room=ALL.filter(j=>j!==k&&(b.final[j]||0)>P3[j]).sort((x,y)=>((b.final[y]||0)-P3[y])-((b.final[x]||0)-P3[x]));
+          for(const j of room){if(need<=0)break;const add=Math.min(need,(b.final[j]||0)-P3[j]);P3[j]+=add;need-=add}if(need>0)continue;
+          let e=evaluate(P3,R,R.oathAlts);if(ok(e)){const t=tidyPlan(e,R,R.oathAlts,ALL);if(ok(t)&&t.free>=e.free)e=t}
+          if(ok(e)&&better(e,b)&&(!pick||better(e,pick)))pick=e}
+        if(pick)res={...res,best:pick}}}
+      // stats that end above 0 but weren't put in before the shrine: tag them at 1 there (the shrine then shares points into
+      // them, so less goes in after) and search again from that plan; keep it only when it's better (owner: Fortitude is tagged at 1;
+      // mass check, November 19, 2026: Fortitude 0 before / 50 after cost 5 points more than tagging it)
+      {const b=res.best;if(b&&!b.impossible&&!b.manual&&!b.noShrine){const un=ALL.filter(k=>!b.P[k]&&(b.final[k]||0)>0&&!(S.pin&&k in S.pin));
+        if(un.length){const P2={...b.P};un.forEach(k=>P2[k]=1);const ok=e=>e&&!e.impossible&&e.free>=0&&!(e.reup>0&&S.noReup!==false)&&!(ftdSame(e)&&!ftdSame(b));
+          let pick=null;const tryP=P=>{const e=evaluate(P,res.R,res.R.oathAlts);if(ok(e)&&better(e,b)&&(!pick||better(e,pick)))pick=e};tryP(P2);
+          // tagging lowers the shrine's average: also try raising one stat already put in before it (5 at a time) to keep the average
+          for(const k of ALL)if(P2[k]>1&&!(S.pin&&k in S.pin))for(let d=5;d<=40;d+=5){const v=P2[k]+d;if(v>100||v>(res.R.max[k]??100))break;tryP({...P2,[k]:v})}
+          const t=compute({starts:6,iters:160,seedP:pick?pick.P:P2});if(ok(t.best)&&better(t.best,b)&&(!pick||better(t.best,pick)))pick=t.best;
+          if(pick)res={...res,best:pick}}}}
       // last tidy-up: steps after the search (re-raise fix, Fortitude fix, slider) can leave an odd value before the shrine
       // ("Galebreathe 59" as filler for the shrine's 135 points); snap it to a clean level when that costs nothing more
       {const b=res.best;if(b&&!b.impossible&&!b.manual&&!b.noShrine&&ALL.some(k=>oddPre(k,res.R,b))){const t=tidyPlan(b,res.R,res.R.oathAlts,ALL);

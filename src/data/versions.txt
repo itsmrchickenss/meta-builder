@@ -5,6 +5,10 @@
 - Adjustments understand everyday words: "bump up int", "take out frost", "a heavier weapon", "get rid of Ghost", and "more"/"less" work for attunements too.
 - AI build maker understands everyday descriptions: "hard to kill", "doesn't die", "heal my friends", "mostly spells, don't want to M1", "from behind", "zooms around", "destroy armor", "steals life", "big sword", "daggers", "hit really hard" / "max damage" (favors damage), "my M1s" (weapon damage).
 - AI build maker: "I don't want any charisma or intelligence" now leaves them out. It used to add Charisma 75 and Intelligence 60.
+- Auto-pick no longer adds weapon-class talents your weapon can't use (Spear, Club, Rifle, Twinblade talents on a sword build). Compared with your featured builds, auto-pick now picks 76% of the same talents (was 66%).
+- Fortitude: when the optimizer needed points before the shrine to reach Power 8 and used Fortitude 50 for it (then 50 again after), it now tags Fortitude at 1 and puts those points into a stat you raise after the shrine anyway.
+- No more odd before-shrine numbers left behind by the last steps of optimizing (like Galebreathe 59): a final tidy-up snaps them to a clean level when that costs nothing.
+- Fixed: an advanced talent whose chain keeps needing a path (Reshape and Remold needs Refine and Reuse, which needs Gilded Path) could be taken next to a path that excludes it (Composite Path: Alloyblood). It's now treated as a conflict.
 
 ## v0.39 | 2026-11-18
 - AI build maker: a number between two stat words now goes to the right one. "shadowcast 100 flame 100 weapon talent" means Flamecharm 100 and weapon 100 (Scorching Decay), with Shadowcast at 40; it used to read "shadowcast 100" and plan two attunements at 100, which doesn't fit. "flame 50 shadow 40" still works the usual way.

@@ -4025,6 +4025,10 @@ Burnout|Igniting enemies reduces their damage by 4% per Black Blood stack, up to
 - Adjustments understand everyday words: "bump up int", "take out frost", "a heavier weapon", "get rid of Ghost", and "more"/"less" work for attunements too.
 - AI build maker understands everyday descriptions: "hard to kill", "doesn't die", "heal my friends", "mostly spells, don't want to M1", "from behind", "zooms around", "destroy armor", "steals life", "big sword", "daggers", "hit really hard" / "max damage" (favors damage), "my M1s" (weapon damage).
 - AI build maker: "I don't want any charisma or intelligence" now leaves them out. It used to add Charisma 75 and Intelligence 60.
+- Auto-pick no longer adds weapon-class talents your weapon can't use (Spear, Club, Rifle, Twinblade talents on a sword build). Compared with your featured builds, auto-pick now picks 76% of the same talents (was 66%).
+- Fortitude: when the optimizer needed points before the shrine to reach Power 8 and used Fortitude 50 for it (then 50 again after), it now tags Fortitude at 1 and puts those points into a stat you raise after the shrine anyway.
+- No more odd before-shrine numbers left behind by the last steps of optimizing (like Galebreathe 59): a final tidy-up snaps them to a clean level when that costs nothing.
+- Fixed: an advanced talent whose chain keeps needing a path (Reshape and Remold needs Refine and Reuse, which needs Gilded Path) could be taken next to a path that excludes it (Composite Path: Alloyblood). It's now treated as a conflict.
 
 ## v0.39 | 2026-11-18
 - AI build maker: a number between two stat words now goes to the right one. "shadowcast 100 flame 100 weapon talent" means Flamecharm 100 and weapon 100 (Scorching Decay), with Shadowcast at 40; it used to read "shadowcast 100" and plan two attunements at 100, which doesn't fit. "flame 50 shadow 40" still works the usual way.
@@ -4609,7 +4613,10 @@ const silentNo=mn=>{const m=MBY.get(mn);return !!m&&m.ty==='N'&&m.at.some(a=>ATT
 const SHOP_FREE=new Set(['Observation','Safety Dance']);
 const isPathT=n=>/Path:/.test(n)||n==='Flashboil';
 function conflictOf(n,have,oath,userPick,unroll){const ps=prereqSet(n);const free=(a,b)=>userPick&&(SHOP_FREE.has(a)||SHOP_FREE.has(b));
-  for(const a of ps.T){if(unroll&&(MBY.has(n)||(TBY.get(n)||{}).r==='A')&&isPathT(a))continue;const ta=TBY.get(a);const via=a===n?'':` (it needs ${a})`;
+  // a path can be unrolled after taking the advanced talent / mantra only when nothing else kept in the chain needs that path
+  // (Reshape and Remold also needs Refine and Reuse, a Scrapsinger talent that keeps needing Gilded Path; mass check, November 19, 2026)
+  const keptNeeds=a=>[...ps.T].some(b=>b!==n&&b!==a&&!isPathT(b)&&(((TBY.get(b)||{}).req||{}).t||[]).includes(a));
+  for(const a of ps.T){if(unroll&&(MBY.has(n)||(TBY.get(n)||{}).r==='A')&&isPathT(a)&&!keptNeeds(a))continue;const ta=TBY.get(a);const via=a===n?'':` (it needs ${a})`;
     for(const x of ta.req.x||[])if(have.has(x)&&!ps.T.has(x)&&!free(a,x))return 'Blocked by '+x+via;
     for(const h of have){if(ps.T.has(h))continue;const th=TBY.get(h);if(th&&(th.req.x||[]).includes(a)&&!free(a,h))return 'Blocked by '+h+via}}
   if((oath||S.oath)==='Silentheart')for(const mn of ps.M)if(silentNo(mn))return `Needs ${mn}: Silentheart can't use attunement mantras`;
@@ -4657,7 +4664,7 @@ function requirements(){
   const names=[...C.T.keys(),...C.M.keys()];
   const blocked=new Set(names.flatMap(n=>(TBY.get(n)||{req:{x:[]}}).req.x||[]));
   const val=[];const cand=new Set([...POP.keys()]);for(const n of names)for(const s of SYN.get(n)||[])cand.add(s.o);
-  for(const n of cand){if(C.T.has(n)||blocked.has(n)||isAvoid(n))continue;const tt=TBY.get(n);if(!tt||!tt.k||tt.r==='Q'||tt.r==='O'||tt.req.q)continue;
+  for(const n of cand){if(C.T.has(n)||blocked.has(n)||isAvoid(n))continue;const tt=TBY.get(n);if(!tt||!tt.k||tt.r==='Q'||tt.r==='O'||tt.req.q||!wClassOk(tt))continue;
     if((tt.req.t||[]).some(x=>x.startsWith('Oath:')&&x!=='Oath: '+S.oath))continue;
     const sy=synW(synOf(n,C));const p=(POP.get(n)||0)+sy*SYN_PTS;if(p<=0)continue;
     const alts=reqAlts(tt.req,false).filter(a=>altOkCaps(a,caps));if(!alts.length||!hasStats(alts))continue;val.push({n,p,alts,pre:canPre(alts),syn:sy})}
@@ -4930,7 +4937,15 @@ const prevP=()=>last&&last.best?last.best.P:null;
 // talents tied to your weapon type or your attunements (they need that stat, or belong to that attunement's family)
 // count for more everywhere talents are ranked
 const KIT_W={HVY:'heavy',MED:'medium',LHT:'light'};
-function kitOf(n,wt,atts){const t=TBY.get(n);if(!t)return 0;wt=wt===undefined?S.wtype:wt;atts=atts||Object.keys(S.atts);
+// weapon-class talents (w=Spear, Club, Rifle, Twinblade…) only work with that kind of weapon: they count as your kit and are
+// auto-picked only when the weapon you use is that class ("Medium Weapon" / "Heavy Weapon" = any weapon of that type). Found
+// comparing auto-pick with the owner's featured builds (November 19, 2026): sword builds were getting Spear and Rifle talents.
+const W_CLASS_ALIAS={Fists:'Fist',Fist:'Fist'};
+function wClassOk(t,wname,wt){if(!t||!t.req||!t.req.w)return true;wname=wname===undefined?S.weapon:wname;wt=wt===undefined?S.wtype:wt;
+  const want=String(t.req.w).split(/\s*,\s*/).map(x=>W_CLASS_ALIAS[x]||x);
+  for(const x of want){const m=x.match(/^(Light|Medium|Heavy) Weapon$/);if(m&&({Light:'LHT',Medium:'MED',Heavy:'HVY'})[m[1]]===wt)return true}
+  const w=wname&&WBY.get(wname);if(!w)return false;const ty=W_CLASS_ALIAS[w.ty]||w.ty;return want.includes(ty)}
+function kitOf(n,wt,atts){const t=TBY.get(n);if(!t)return 0;if(!wClassOk(t,undefined,wt===undefined?S.wtype:wt))return 0;wt=wt===undefined?S.wtype:wt;atts=atts||Object.keys(S.atts);
   const keys=new Set();for(const a of chainStatic(t))for(const k of Object.keys(a.min||{}))keys.add(k);const c=(t.c||'').toLowerCase();
   if(wt&&(keys.has(wt)||c.includes(KIT_W[wt])))return 1;for(const k of atts)if(keys.has(k)||(ATT[k]&&c.includes(ATT[k][0].toLowerCase().slice(0,5))))return 1;return 0}
 // key talents per stat (Infekted's buildmaking guide, May 2026): when your stats reach them you almost always take them
@@ -5012,7 +5027,16 @@ function fixReup(res){const dropped=[];let guard=12;
   const b=res.best;if(b&&!b.impossible&&!b.noShrine&&!b.manual&&b.P.FTD>1&&b.P.FTD===b.final.FTD&&!(S.pin&&'FTD' in S.pin)){const fl=+(S.preMin||{}).FTD||0;
     // 1 before (all after), else a little more or less before so the shrine moves it; keep the first that fits
     const tryF=()=>{const b=res.best;const clean=tidyLevels('FTD',res.R,b).filter(v=>v>1&&v!==b.final.FTD).sort((x,y)=>Math.abs(x-b.P.FTD)-Math.abs(y-b.P.FTD));for(const v of [1,...clean,b.P.FTD+5,b.P.FTD+10,b.P.FTD-5,b.P.FTD+15,b.P.FTD-10,b.P.FTD+20,b.P.FTD+25]){if(v<Math.max(1,fl)||v>100)continue;
-      const e=evaluate({...b.P,FTD:v},res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0&&e.P.FTD!==e.final.FTD){res={...res,best:e};return true}}return false};
+      const e=evaluate({...b.P,FTD:v},res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0&&e.P.FTD!==e.final.FTD){res={...res,best:e};return true}}
+      // Fortitude was filler for the shrine's 135 points (Power 8): tag it at 1 and put those points into stats the build raises
+      // after the shrine anyway (weapon, attunements, attributes it ends higher in), so nothing goes in just to shrink back
+      {const need=Math.max(0,SHRINE_PTS-(Object.values(b.P).reduce((x,y)=>x+y,0)-b.P.FTD+1));if(need>0){let best=null;
+        const room=ALL.filter(k=>k!=='FTD'&&(b.final[k]||0)>(b.P[k]||0)).sort((x,y)=>((b.final[y]||0)-(b.P[y]||0))-((b.final[x]||0)-(b.P[x]||0)));
+        const plans=[room,...room.map(k=>[k])];for(const ks of plans){const P2={...b.P,FTD:Math.max(1,fl)};let left=need;
+          for(const k of ks){const cap=Math.min(100,(b.final[k]||0)+(floorStat(k)?25:0));const add=Math.min(left,Math.max(0,cap-(P2[k]||0)));if(add>0){P2[k]=(P2[k]||0)+add;left-=add}}
+          if(left>0)continue;const e=evaluate(P2,res.R,res.R.oathAlts);if(e&&!e.impossible&&!e.reup&&e.free>=0&&e.P.FTD!==e.final.FTD&&(!best||e.free>best.free))best=e}
+        if(best){const t=tidyPlan(best,res.R,res.R.oathAlts,ALL);if(t&&!t.impossible&&t.free>=0&&!t.reup&&!ftdSame(t))best=t;res={...res,best};return true}}}
+      return false};
     // (with no points to spare the budget wins: moving Fortitude can change whether the shrine is reachable at all)
     tryF()}
   return {res,dropped}}
@@ -5138,7 +5162,7 @@ function recommendations(ctx,limit){
   }
   // synergy partners of picked talents, even if few reference builds take them
   const seen=new Set(out.map(r=>r.t.n));
-  for(const n of picked)for(const s of SYN.get(n)||[]){const t=TBY.get(s.o);if(!t||isAvoid(s.o)||seen.has(s.o)||picked.has(s.o)||!t.k||t.r==='Q'||t.r==='O'||t.req.q)continue;
+  for(const n of picked)for(const s of SYN.get(n)||[]){const t=TBY.get(s.o);if(!t||isAvoid(s.o)||seen.has(s.o)||picked.has(s.o)||!t.k||t.r==='Q'||t.r==='O'||t.req.q||!wClassOk(t))continue;
     const st=statusOf(t,false,ctx);if(st.k==='block'||st.k==='far')continue;seen.add(s.o);out.push({t,share:shareOf(s.o),st,syn:synOf(s.o,ctx.C)})}
   const rank=r=>(r.syn.length?10+synW(r.syn):0)+r.share+0.8*kitOf(r.t.n)+1.2*keyOf(r.t.n);
   out.sort((a,b)=>rank(b)-rank(a));
@@ -5152,7 +5176,7 @@ function autoPickList(ctx,only){
   const cn=counts(ctx.C);let room=cn.cap-cn.nTal;if(room<=0)return [];
   const added=new Set();const have=n=>ctx.C.T.has(n)||added.has(n);
   const blockedBy=n=>!!conflictOf(n,new Set([...ctx.C.T.keys(),...added]));
-  const pool=DB.T.filter(t=>(!only||only.has(t.n))&&t.k&&!isAvoid(t.n)&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&!t.n.startsWith('Oath:')&&!have(t.n));
+  const pool=DB.T.filter(t=>(!only||only.has(t.n))&&t.k&&!isAvoid(t.n)&&t.r!=='Q'&&t.r!=='O'&&!t.req.q&&wClassOk(t)&&!t.n.startsWith('Oath:')&&!have(t.n));
   const ok=new Map();for(const t of pool){const st=statusOf(t,false,ctx);if(st.k==='fit')ok.set(t.n,st)}
   const out=[];
   while(room>0){let best=null;
@@ -5867,6 +5891,10 @@ function optCore(spend,noFill){autoHeroBlade();
         if(ok)res=ok;else{S.wtarget=prevW;S.atts=prevA;S.mins=prevM;res=prevRes}
         if(res.best&&res.best.reup){const fx=fixReup(res);res=fx.res;dropped=dropped.concat(fx.dropped)}
       }
+      // last tidy-up: steps after the search (re-raise fix, Fortitude fix, slider) can leave an odd value before the shrine
+      // ("Galebreathe 59" as filler for the shrine's 135 points); snap it to a clean level when that costs nothing more
+      {const b=res.best;if(b&&!b.impossible&&!b.manual&&!b.noShrine&&ALL.some(k=>oddPre(k,res.R,b))){const t=tidyPlan(b,res.R,res.R.oathAlts,ALL);
+        if(t&&!t.impossible&&t.free>=b.free&&!(t.reup>0&&S.noReup!==false)&&!(ftdSame(t)&&!ftdSame(b)))res={...res,best:t}}}
       return {res,dropped,lw,sb,spend};
 }
 function optMsg(o){const {res,dropped,lw,sb,spend}=o;

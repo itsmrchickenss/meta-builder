@@ -39,6 +39,12 @@ Pre-release numbering is **v0.x** (v0.35 released November 17, 2026). The owner 
 
 ## Owner's rules and preferences (keep these)
 
+- (November 18, 2026, v0.38) Charisma before the shrine follows the Fortitude rule: 1, or exactly a level a talent/mantra in the build, the oath, the user's before / must-hit / floor value or a pin needs (`R.lvPre` in requirements(), checked in evaluate()). Optional "bonus" talents (R.val) don't count: they made the builder go Charisma 75 for Command: Live / Unnecessary Theatrics the user never picked, then drop to 50. A hard rule like this for attunements was tried and reverted (worse plans; high attunements before the shrine are usually for a talent taken there).
+- (v0.38) Unrolling works for advanced talents too (Volcanic Glass needs Eruption; Twisted Puppets excludes Eruption): closure() adds advanced talents last and unrolls a clashing path (`e.unroll`). The owner confirmed mantras stay after unrolling; advanced talents staying is assumed from creator builds (deepwoken.co Hghzqxj9). The talent cap there is still 56 vs 54.
+- (v0.38) Empty stat boxes show the optimizer's number as a placeholder; focusing one fills it with that number so arrows/spinner start there (one click used to lock Medium Weapon at 0 and Bladeharper moved 90 to Heavy). Results warn when the weapon points land in a type other than S.wtype.
+- (v0.38) AI build maker knows short stat names (flm, ltn, wnd, sdw, irn, bld): "100 flm 100 wep" = Scorching Decay only.
+- tests/browser/monkey.py clicks every control on every tab (seed, preset count, optional preset name filter). GitHub's macOS arm64 runners were at capacity on November 18 (job "not acquired by Runner"); rerunning the failed job eventually works.
+
 **Shrine and stats**
 - The Shrine of Order can only be used at **Power 8+** (135 points before it).
 - **Pre-shrine is the peak:** never raise an attribute before the shrine and then raise it again after, **except a small step back up of at most 5 points** (owner, November 18, 2026: "Strength 100 → 75 → 80 is still viable, 5 points for level 5 mantras"; `REUP_OK`, shown as a note; more than 5 is a re-raise). Either about 1 before and the rest after, or high before and the shrine brings it down. Fortitude is **never the same** before and after (no "50 → 50"). Weapon and attunement stats may be re-raised (top builds do Ironsing 60 → 80).

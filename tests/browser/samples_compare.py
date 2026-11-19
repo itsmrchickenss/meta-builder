@@ -35,8 +35,8 @@ with sync_playwright() as p:
         if sum(pre.values()) >= 135:
             pg.evaluate(SETUP, cfg); wait()
             theirs = pg.evaluate(THEIRS, cfg)
-            o = pg.evaluate("c=>{const b=last.best;const C=closure();return {free:b.free,kept:c.tal.filter(n=>TBY.has(n)&&C.T.has(n)).length,asked:c.tal.filter(n=>TBY.has(n)).length,odd:ALL.filter(k=>oddPre(k,last.R,b)),
-              capOnly:c.tal.filter(n=>TBY.has(n)&&!C.T.has(n)).every(n=>{const keep=S.sel.slice();S.sel=[...S.sel,n];const C2=closure();const cn=counts(C2);S.sel=keep;return cn.nTal>cn.cap})}}", cfg)
+            o = pg.evaluate("""c=>{const b=last.best;const C=closure();return {free:b.free,kept:c.tal.filter(n=>TBY.has(n)&&C.T.has(n)).length,asked:c.tal.filter(n=>TBY.has(n)).length,odd:ALL.filter(k=>oddPre(k,last.R,b)),
+              capOnly:c.tal.filter(n=>TBY.has(n)&&!C.T.has(n)).every(n=>{const keep=S.sel.slice();S.sel=[...S.sel,n];const C2=closure();const cn=counts(C2);S.sel=keep;return cn.nTal>cn.cap})}}""", cfg)
             if theirs is not None and theirs >= 0:
                 # a talent left out only because adding it (with the mantra it needs) would pass the talent cap is the cap rule, not a miss
                 check(o['free'] >= theirs - 1 and (o['kept'] == o['asked'] or o['capOnly']) and not o['odd'], f"{name[:34]}: ours {o['free']} points left with {o['kept']}/{o['asked']} talents, theirs {theirs}; odd {o['odd']}")

@@ -9,6 +9,8 @@ with sync_playwright() as p:
     print('tab label',pg.inner_text('#t-bug'),'| ai card',pg.inner_text('.aicard span'))
     print('bug key set',pg.evaluate("BUG_KEY.length>10"))
     pg.evaluate("applyTemplate(TEMPLATES[5])");wait()
+    # top the build up to exactly the talent cap with talents that need no stats (Will o' Wisp can change the template's count)
+    pg.evaluate("""()=>{let g=20;while(g-->0){const C=closure();const c=counts(C);if(c.nTal>=c.cap)break;const t=DB.T.find(t=>t.k&&!C.T.has(t.n)&&!hasStats(reqAlts(t.req,false))&&!t.req.t.length&&t.r!=='Q'&&t.r!=='O'&&!(t.req.x||[]).length);if(!t)break;S.sel.push(t.n)}renderInputs()}""");pg.wait_for_timeout(300)
     print('cap',pg.evaluate("(()=>{const c=counts(closure());return c.nTal+'/'+c.cap})()"))
     n=pg.evaluate("DB.T.find(t=>t.k&&!closure().T.has(t.n)&&!hasStats(reqAlts(t.req,false))&&!t.req.t.length&&t.r!=='Q'&&t.r!=='O'&&!(t.req.x||[]).length).n")
     pg.evaluate("n=>{const el=document.createElement('button');el.dataset.tadd=encodeURIComponent(n);document.body.appendChild(el);el.click();el.remove()}",n);pg.wait_for_timeout(400)
